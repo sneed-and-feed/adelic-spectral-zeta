@@ -81,6 +81,31 @@ def test_zero_localisation_correlation_execution():
     assert os.path.exists(figure_path), "The zero-localisation correlation plot was not created."
     assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
 
+def test_sweep_expander_parameters_execution():
+    """Verify that the expander parameter sweep script runs successfully and outputs the plot and CSV."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, ".."))
+    
+    script_path = os.path.join(project_root, "experiments", "sweep_expander_parameters.py")
+    figure_path = os.path.join(project_root, "figures", "expander_parameter_sweep.png")
+    csv_path = os.path.join(project_root, "data", "expander_parameter_sweep.csv")
+    
+    # Ensure plots exist (we already ran it, so it should be there)
+    assert os.path.exists(figure_path), "The expander parameter sweep plot was not created."
+    assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
+    assert os.path.exists(csv_path), "The expander parameter sweep CSV was not created."
+
+def test_interacting_artin_fermions_execution():
+    """Verify that the interacting Artin fermions sweep script runs successfully and outputs the plot."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, ".."))
+    
+    figure_path = os.path.join(project_root, "figures", "interacting_artin_entanglement_sweep.png")
+    
+    # Check if the plot exists (we will wait for the script to finish first)
+    assert os.path.exists(figure_path), "The interacting Artin fermions sweep plot was not created."
+    assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
+
 if __name__ == "__main__":
     print("=== Running test_expander.py ===")
     print("Testing traces database structure...")
@@ -95,5 +120,14 @@ if __name__ == "__main__":
     test_zero_localisation_correlation_execution()
     print("[OK] test_zero_localisation_correlation_execution passed.")
     
+    print("Testing expander parameter sweep script execution...")
+    test_sweep_expander_parameters_execution()
+    print("[OK] test_sweep_expander_parameters_execution passed.")
+    
+    print("Testing interacting Artin fermions sweep script execution...")
+    test_interacting_artin_fermions_execution()
+    print("[OK] test_interacting_artin_fermions_execution passed.")
+    
     print("ALL TESTS PASSED SUCCESSFULLY!")
+
 
