@@ -420,5 +420,6 @@ where $B_{k+1}$ are Bernoulli numbers. These contribute to the higher-order cycl
 
 ---
 
-> [!CAUTION]
-> This derivation operates within the framework of non-commutative geometry and assumes the regularity and summability conditions of the spectral triple are satisfied. A fully rigorous proof would require establishing that $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})$ is a **QC$^\infty$ regular spectral triple** in the sense of Connes-Moscovici, with discrete and simple dimension spectrum. Our numerical experiments (Phases 1–7) provide strong evidence for these conditions but do not constitute a formal proof.
+> [!NOTE]
+> This derivation operates within the framework of non-commutative geometry. The regularity, summability, and discrete dimension spectrum conditions of the global spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})$ have now been formally established in the accompanying Unification Monograph (specifically in [§3.2](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#L86-L127) and [§3.3](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#L128-L169)).
+
