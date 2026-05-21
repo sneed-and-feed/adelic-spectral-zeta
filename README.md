@@ -1,5 +1,7 @@
 # Adèlic Spectral Geometry
 
+[![DOI](https://zenodo.org/badge/20327753.svg)](https://doi.org/10.5281/zenodo.20327753)
+
 A Python library implementing the **Adèlic Spectral Triple** $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})$ framework for automorphic $L$-functions. This project provides the numerical verification and quantum simulation infrastructure supporting the analytical theorems detailed in [unified_monograph.md](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md).
 
 ---
