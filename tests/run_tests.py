@@ -4,7 +4,7 @@ import os
 print("=== Adélic Spectral Triple Verification Runner ===")
 
 # Run the simulation script
-script_path = "simulation.py"
+script_path = os.path.join("experiments", "simulation.py")
 print(f"Executing {script_path}...")
 result = subprocess.run(["python", script_path], capture_output=True, text=True)
 
@@ -19,10 +19,10 @@ if result.stderr:
 # Check files
 output_dir = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta"
 expected_files = [
-    "phase1_eigenvalues.png",
-    "phase2_regularization.txt",
-    "phase3_metric_inflation.png",
-    "phase3_telemetry.txt"
+    os.path.join("figures", "phase1_eigenvalues.png"),
+    os.path.join("data", "phase2_regularization.txt"),
+    os.path.join("figures", "phase3_metric_inflation.png"),
+    os.path.join("data", "phase3_telemetry.txt")
 ]
 
 print("\n--- Output Verification ---")
@@ -39,3 +39,4 @@ if success and result.returncode == 0:
     print("\nALL PHASES COMPLETED AND VERIFIED SUCCESSFULLY!")
 else:
     print("\nVERIFICATION FAILED. CHECK ERRORS ABOVE.")
+

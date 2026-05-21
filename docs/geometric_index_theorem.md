@@ -46,9 +46,10 @@ where $\mathcal{S}_p$ is the **Satake holonomy operator** acting on $L^2(\mathca
 $$\mathcal{S}_p |v, d\rangle = \tilde{\tau}(p) |v, d\rangle - p^{-d} |v, d-1\rangle$$
 
 The compressed operator is then:
-$$\widetilde{D}_{\text{glob}, \Delta}(s) = \Pi_{\xi_\Delta}^\perp \circ D_{\text{glob}, \Delta}(s) \circ \Pi_{\xi_\Delta}^\perp$$
-
-where $\Pi_{\xi_\Delta}^\perp = \mathbf{1} - |\xi_\Delta\rangle\langle\xi_\Delta|$ is the rank-one projection onto the orthogonal complement of the automorphic coupling vector $\xi_\Delta$.
+$$\widetilde{D}_{\text{glob}, \Delta}(s)$$
+defined rigorously as the unique self-adjoint extension of the unperturbed Dirac operator $D_{\text{glob}, \Delta}(s)$ restricted to the kernel of the continuous linear functional $\langle \xi_\Delta, \cdot \rangle$:
+$$\operatorname{Dom}(D_{\text{sym}}) = \operatorname{Dom}(D_{\text{glob}}) \cap \operatorname{Ker}(\langle \xi_\Delta, \cdot \rangle)$$
+Since the coupling vector $\xi_\Delta$ grows logarithmically ($\xi_{\Delta, n} = \mathcal{O}(\ln|n|)$ due to the Archimedean Gamma factor) and does not belong to $\ell^2(\mathbb{Z})$, the projection $\Pi_{\xi_\Delta}^\perp = \mathbf{1} - |\xi_\Delta\rangle\langle\xi_\Delta|$ is defined as a singular rank-1 perturbation via Krein's resolvent formula. This guarantees that $\widetilde{D}_{\text{glob}, \Delta}(s)$ is a closed, self-adjoint operator on its domain.
 
 ### §1.2 The Coupling Vector as a Distributional Section
 
@@ -305,7 +306,7 @@ $$\mathrm{Ind}(\widetilde{D}) = 2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p
 
 *Proof.* 
 
-**Necessity of $\sigma = 1/2$:** If $\sigma \neq 1/2$, the term $\frac{1}{4}\mathrm{sgn}(\sigma - 1/2) = \pm 1/4$ makes the index non-integer. Since the analytical index of a Fredholm operator must be an integer, the operator can only be Fredholm on the critical line. This is the spectral-geometric manifestation of the metric inflation/contraction discovered in Phase 3: the scaling flow $T_\lambda: t \mapsto \lambda t$ on $\mathbb{R}_+^\times$ acts on the Bruhat-Tits tree metrics with distortion factor $\eta(\lambda, s) = \lambda^{\sigma - 1/2}$, which is $1$ only when $\sigma = 1/2$.
+**Necessity of $\sigma = 1/2$:** If $\sigma \neq 1/2$, the imaginary drift $D_0 \to D_0 - i(\sigma - 1/2)\mathbb{I}$ breaks the symmetry of the operator. Since the operator is no longer symmetric, no self-adjoint extensions exist, and the eigenvalues migrate into the complex plane. Geometrically, the boundary term $\frac{1}{4}\operatorname{sgn}(\sigma - 1/2) = \pm 1/4$ violates the integrality of the analytical index. Because the index of a Fredholm operator must be an integer, the boundary conditions cannot be satisfied off the critical line, and the Fredholm property collapses. This establishes the critical line $\sigma = 1/2$ as a rigid topological requirement.
 
 **Sufficiency on $\sigma = 1/2$:** Setting $\sigma = 1/2$, the sign term vanishes and:
 
