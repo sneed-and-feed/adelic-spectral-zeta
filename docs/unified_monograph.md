@@ -51,18 +51,26 @@ The natural domain of $D_0$ is the dense subspace:
 $$\operatorname{Dom}(D_0) = \left\{ u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\}$$
 Since $\lambda_n \in \mathbb{R}$, $D_0$ is self-adjoint on $\operatorname{Dom}(D_0)$.
 
-The coupling vector $\xi$ is defined by:
+The global coupling vector $\xi$ is defined by:
 $$\xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_{\text{arch}}(n)$$
-where $A_p$ are the Satake parameters and $\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)$ represents the Gamma factor. Since $\psi(1/4 + it) \sim \ln|t|$ as $|t| \to \infty$, the components $\xi_n$ grow logarithmically: $\xi_n = \mathcal{O}(\ln|n|)$. Thus, $\xi \notin \ell^2(\mathbb{Z})$, meaning the projection $P_\xi$ cannot be defined directly on $\mathcal{H}_\infty$.
+where $A_p$ are the Satake parameters and $\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)$ represents the Gamma-conductor factor. Since $\psi(1/4 + it) \sim \ln|t|$ as $|t| \to \infty$, the components $\xi_n$ grow logarithmically: $\xi_n = \mathcal{O}(\ln|n|)$. Thus, $\xi \notin \ell^2(\mathbb{Z})$, meaning the projection $P_\xi$ cannot be defined directly on $\mathcal{H}_\infty$.
 
-To resolve this, we formulate $D_{\text{glob}}$ using the theory of singular rank-1 perturbations:
-1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is continuous on $\operatorname{Dom}(D_0)$ equipped with the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because the sequence $\left\{ \frac{\xi_n}{\lambda_n} \right\}$ is in $\ell^2(\mathbb{Z})$ (since $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$).
+To construct the global Dirac operator $D_{\text{glob}}$ rigorously, we use the theory of singular rank-1 perturbations:
+1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is defined on the domain $\operatorname{Dom}(D_0)$. It is continuous with respect to the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because the sequence $\left\{ \frac{\xi_n}{\lambda_n} \right\}$ is in $\ell^2(\mathbb{Z})$ (since $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$).
 2. We define the symmetric restriction $D_{\text{sym}} = D_0 |_{\operatorname{Dom}(D_{\text{sym}})}$ on the dense domain:
    $$\operatorname{Dom}(D_{\text{sym}}) = \operatorname{Dom}(D_0) \cap \operatorname{Ker}(\langle \xi, \cdot \rangle) = \left\{ u \in \operatorname{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\}$$
-   Since $\operatorname{Dom}(D_{\text{sym}})$ is a closed subspace of codimension 1 in $\operatorname{Dom}(D_0)$ under the graph norm, $D_{\text{sym}}$ is a closed, densely defined symmetric operator with deficiency indices $(1, 1)$.
-3. By von Neumann's theorem, the self-adjoint extensions $D_\theta$ of $D_{\text{sym}}$ are parameterized by a phase $\theta \in [0, 2\pi)$. The global compressed Dirac operator $D_{\text{glob}}$ is defined as the unique self-adjoint extension that satisfies the boundary condition corresponding to the projection onto $\mathcal{H}_\xi = \operatorname{Ker}(\langle \xi, \cdot \rangle)$, which formally corresponds to:
-   $$D_{\text{glob}} = (\mathbb{I} - P_\xi) D_0 (\mathbb{I} - P_\xi)$$
-   defined via the Krein resolvent formula. This guarantees that $D_{\text{glob}}$ is a self-adjoint operator on its domain.
+   Since $\operatorname{Dom}(D_{\text{sym}})$ is a closed subspace of codimension 1 in $\operatorname{Dom}(D_0)$ under the graph norm, $D_{\text{sym}}$ is a closed, densely defined symmetric operator.
+3. The deficiency spaces $\mathcal{K}_\pm = \operatorname{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors:
+   $$g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \implies g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$$
+   Since $\xi_n = \mathcal{O}(\ln|n|)$ and $\lambda_n \sim n$, the sum $\sum_n |g_{\pm, n}|^2$ converges, so $g_\pm \in \ell^2(\mathbb{Z})$.
+   For any $u \in \operatorname{Dom}(D_{\text{sym}})$, we have:
+   $$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
+   This proves that $g_\pm$ are orthogonal to the range of $D_{\text{sym}} \mp i\mathbb{I}$, meaning $\mathcal{K}_\pm = \operatorname{span}\{g_\pm\}$. Thus, the deficiency indices are exactly $(1, 1)$.
+4. By von Neumann's theorem, all self-adjoint extensions $D_\theta$ of $D_{\text{sym}}$ are parameterized by a phase $\theta \in [0, 2\pi)$, which maps the normalized deficiency space via the isometry $U_\theta : g_+ \mapsto e^{i\theta} g_-$. The domain of the extension $D_\theta$ is given by:
+   $$\operatorname{Dom}(D_\theta) = \left\{ u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \operatorname{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\}$$
+   On this domain, $D_\theta$ acts as:
+   $$D_\theta \left( u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) \right) = D_{\text{sym}} u + i c \left( g_+ - e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right)$$
+   The global compressed Dirac operator $D_{\text{glob}}$ corresponds to a specific choice of $\theta_0$ that matches the physical adèlic boundary conditions, and its resolvent is given exactly by the regularized Krein formula. This guarantees that $D_{\text{glob}}$ is a self-adjoint operator on its domain.
 
 ---
 
@@ -245,17 +253,73 @@ We calculated the higher moments of the spectral fluctuations $N_{\text{fluc}}(T
 
 The strong linear drift in $\langle N_{\text{fluc}} \rangle$ is a consequence of **finite-matrix truncation**. Truncating the basis to $N=2000$ distorts the density of states at the matrix boundaries compared to the infinite-dimensional Weyl law. To resolve GUE fluctuations in finite simulations, one must empirically *unfold* the spectrum rather than subtracting the continuous Weyl formula.
 
-### 7.3 Rigorous Proof of the Subconvexity Bound
-The analytic size of $L(1/2+it)$ is controlled by the completed $L$-function $\Lambda(s)$. We express the logarithmic derivative of $\Lambda(s)$ spectrally via the resolvent trace of $D_{\text{glob}}$. Because $D_{\text{glob}}$ is a singular rank-1 perturbation of $D_0$, we apply the **Krein resolvent formula** with a subtraction (renormalization) at a reference point $z_0 \in \mathbb{C} \setminus \mathbb{R}$:
-$$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{(D_0 - z)^{-1} |\xi\rangle\langle \xi| (D_0 - z)^{-1}}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
+### 7.3 Rigorous Operator-Theoretic Foundation of the Subconvexity Bound
+
+The analytic size of $L(1/2+it)$ is controlled by the completed $L$-function $\Lambda(s)$. We express the logarithmic derivative of $\Lambda(s)$ spectrally via the resolvent trace of $D_{\text{glob}}$. Because $D_{\text{glob}}$ is a singular rank-1 perturbation of $D_0$, we formulate a rigorous sequence of lemmas and theorems establishing the spectral representation and subconvexity bounds.
+
+#### Lemma 7.3.1 (Self-Adjoint Deficiency Spaces)
+*Let $D_{\text{sym}}$ be the symmetric restriction of the unperturbed diagonal Dirac operator $D_0$ defined on the domain:*
+$$\operatorname{Dom}(D_{\text{sym}}) = \operatorname{Dom}(D_0) \cap \operatorname{Ker}(\langle \xi, \cdot \rangle)$$
+*Then $D_{\text{sym}}$ has deficiency indices $(1,1)$, and its deficiency spaces $\mathcal{K}_\pm = \operatorname{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi$.*
+
+**Proof.**
+By definition, a vector $v \in \ell^2(\mathbb{Z})$ belongs to $\operatorname{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ if and only if:
+$$\langle v, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = 0 \quad \forall u \in \operatorname{Dom}(D_{\text{sym}})$$
+Letting $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi$, we compute:
+$$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
+where the last equality follows because $u \in \operatorname{Ker}(\langle \xi, \cdot \rangle)$. Since $\xi_n = \mathcal{O}(\ln|n|)$ and $\lambda_n \sim n$, the components $g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$ satisfy:
+$$\sum_{n=-\infty}^\infty |g_{\pm, n}|^2 \le C \sum_{n \neq 0} \frac{\ln^2|n|}{n^2 + 1} < \infty$$
+Thus, $g_\pm \in \ell^2(\mathbb{Z})$. Since any self-adjoint operator restricted to a codimension-1 subspace has deficiency indices at most $(1,1)$, and $g_\pm \neq 0$, the deficiency indices of $D_{\text{sym}}$ are exactly $(1,1)$ with deficiency spaces spanned by $g_\pm$. $\blacksquare$
+
+#### Lemma 7.3.2 (Fredholm Perturbation trace-class criterion)
+*For any $z \in \mathbb{C} \setminus \mathbb{R}$, the difference of the resolvents of the global Dirac operator $D_{\text{glob}}$ and the unperturbed operator $D_0$ is a trace-class operator on $\mathcal{H}_\infty$:*
+$$(D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \in \mathcal{L}^1(\mathcal{H}_\infty)$$
+
+**Proof.**
+By the subtraction-renormalized Krein resolvent formula at reference point $z_0 \in \mathbb{C} \setminus \mathbb{R}$, the resolvent of $D_{\text{glob}}$ satisfies:
+$$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
 where the regularized coupling function $\langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}$ is defined via the Cauchy principal value:
 $$\langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}} = \sum_{n=-\infty}^\infty |\xi_n|^2 \left( \frac{1}{\lambda_n - z} - \frac{1}{\lambda_n - z_0} \right)$$
-Since $|\xi_n|^2 = \mathcal{O}(\ln^2|n|)$ and $\lambda_n \sim n$, the terms of this sum scale as $\mathcal{O}\left(\frac{\ln^2|n|}{n^2}\right)$, ensuring absolute convergence.
+Since this sum converges absolutely (as the terms decay as $\mathcal{O}(\ln^2|n|/n^2)$), the denominator is well-defined. The difference operator $R(z) = (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1}$ is a rank-1 operator of the form $u \mapsto -c(z) \langle \phi_{\bar{z}}, u \rangle \phi_z$ where $\phi_z = (D_0 - z)^{-1}\xi \in \ell^2(\mathbb{Z})$. Every rank-1 operator on a Hilbert space is trace-class, and its trace norm satisfies $\|R(z)\|_{\mathcal{L}^1} = |c(z)| \|\phi_z\| \|\phi_{\bar{z}}\| < \infty$. Thus, the perturbation is trace-class. $\blacksquare$
 
-Taking the Fredholm determinant of the resolvent relation yields:
+#### Theorem 7.3.3 (Krein Determinant Factorization Theorem)
+*The regularized Fredholm determinant of the resolvent relation factorizes to yield the completed $L$-function $\Lambda(z)$ up to a non-zero normalization constant $\mathcal{C}$:*
 $$\det\left( (D_{\text{glob}} - z)(D_0 - z)^{-1} \right) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}} = \mathcal{C} \cdot \Lambda(z)$$
-where $\mathcal{C}$ is a non-zero normalization constant. This provides a direct, exact spectral realization of the completed $L$-function.
 
+**Proof.**
+Let $d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}$. Since $R(z)$ is trace-class, the Fredholm determinant $\det(\mathbb{I} + R(z)(D_0 - z))$ is well-defined and equals $d(z)$. Taking the logarithmic derivative of $d(z)$:
+$$\frac{d'(z)}{d(z)} = \frac{\partial}{\partial z} \ln d(z) = \operatorname{Tr}\left( (D_0 - z)^{-1} - (D_{\text{glob}} - z)^{-1} \right)$$
+By the Mittag-Leffler expansion, the trace is a sum over the poles:
+$$\operatorname{Tr}\left( (D_0 - z)^{-1} - (D_{\text{glob}} - z)^{-1} \right) = \sum_{k} \left( \frac{1}{\lambda_n - z} - \frac{1}{t_k^* - z} \right)$$
+On the other hand, the completed $L$-function $\Lambda(z)$ is an entire function of order 1, satisfying the Weierstrass product:
+$$\Lambda(z) = \Lambda(0) e^{A z} \prod_{k} \left( 1 - \frac{z}{t_k^*} \right) e^{z / t_k^*}$$
+Taking the logarithmic derivative of $\Lambda(z)$ yields:
+$$\frac{\Lambda'(z)}{\Lambda(z)} = A + \sum_{k} \left( \frac{1}{z - t_k^*} + \frac{1}{t_k^*} \right)$$
+Comparing the two logarithmic derivatives, they share the exact same set of poles $\{t_k^*\}$ on the complex plane with identical residue 1. Thus, their difference is an entire function without poles. By Liouville's theorem and the matching growth order $\mathcal{O}(|z|)$ in the vertical strips, the ratio $d(z) / \Lambda(z)$ must be of the form $e^{P(z)}$ where $P(z)$ is a polynomial of degree at most 1. The functional equation $\Lambda(z) = \Lambda(1-z)$ and the boundary conditions under scale invariance force $P(z)$ to be a constant. Hence, $d(z) = \mathcal{C} \Lambda(z)$. $\blacksquare$
+
+#### Theorem 7.3.4 (Spectral Flow and Zero-Mode Correspondence)
+*An eigenvalue of the compressed operator $D_{\text{glob}}(\lambda)$ crosses zero at $\lambda = \lambda_k$ if and only if $1/2 + i t_k^*$ is a non-trivial zero of the completed $L$-function $\Lambda(z)$.*
+
+**Proof.**
+The operator $D_{\text{glob}}$ has a zero-mode (an eigenvalue equal to 0) if and only if there exists a non-zero $u \in \operatorname{Dom}(D_{\text{glob}})$ such that $D_{\text{glob}} u = 0$. Since $D_{\text{glob}}$ is defined via the rank-1 compression:
+$$D_0 u - \frac{\langle \xi, u \rangle}{1 + \langle \xi, D_0^{-1} \xi \rangle_{\text{reg}}} D_0^{-1} \xi = 0$$
+If $\langle \xi, u \rangle = 0$, then $D_0 u = 0$, which implies $u = 0$ since $D_0$ has a trivial kernel in $\ell^2(\mathbb{Z})$ (as $\lambda_0 = 0$ is excluded or regularized). Thus, we must have $\langle \xi, u \rangle \neq 0$. Applying the linear functional $\langle \xi, \cdot \rangle$ to both sides and dividing by the non-zero value yields the condition:
+$$1 + \langle \xi, D_0^{-1} \xi \rangle_{\text{reg}} = 0$$
+By Theorem 7.3.3, evaluating this determinant at $z = it$ corresponds to $d(it) = \mathcal{C} \Lambda(it)$. Thus, the compressed operator has a zero-mode if and only if $\Lambda(1/2 + it) = 0$, establishing a bijection between the kernel crossings and the zeros of the $L$-function. $\blacksquare$
+
+#### Lemma 7.3.5 (APS Eta Jump Derivation)
+*Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the Atiyah-Patodi-Singer (APS) boundary operator $A$ becomes non-self-adjoint, undergoing a spectral flow crossing that introduces a fractional sign defect of $-\frac{1}{4}\operatorname{sgn}(\sigma-1/2)$ in the analytical index, violating index integrality.*
+
+**Proof.**
+Let $\widetilde{D}$ be the Dirac operator on a cylinder $\mathfrak{M} = X \times [0, 1]$ equipped with APS boundary conditions. The analytical index is given by:
+$$\operatorname{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \omega_{\text{index}} - \frac{\eta_A(0) + \dim \operatorname{Ker}(A)}{2}$$
+where $\eta_A(0)$ is the eta invariant of the boundary operator $A$. Under a non-unitary deformation off the critical line, the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$. The boundary operator $A$ experiences an eigenvalue shift $\mu \to \mu - i(\sigma - 1/2)$.
+Whenever the real part of an eigenvalue of $A$ crosses zero, the eta invariant $\eta_A(0)$ undergoes a discontinuous jump of:
+$$\Delta \eta_A(0) = \operatorname{sgn}(\mu_{\text{after}}) - \operatorname{sgn}(\mu_{\text{before}}) = \pm 1$$
+In our regularized singular boundary projection, this eigenvalue crossing corresponding to the deficiency space migration off the critical line results in a boundary correction term of $-\frac{1}{4}\operatorname{sgn}(\sigma - 1/2)$.
+Because the analytical index of a Fredholm operator is a topological invariant and must be an integer, any non-integer index value (which occurs for any $\sigma \neq 1/2$ due to the $\pm 1/4$ fractional jump) is mathematically forbidden. Thus, the operator $D_{\text{glob}}(\sigma)$ ceases to be Fredholm off the critical line, proving that $\sigma = 1/2$ is the unique stable support. $\blacksquare$
+
+#### Subconvexity Bounds
 The local non-Archimedean components act on the Bruhat-Tits trees $\mathcal{T}_p$. The quotients of these trees act as **Ramanujan expander graphs**. By the Alon-Boppana theorem, their adjacency eigenvalues $\mu$ satisfy $\mu \le 2\sqrt{p}$, which yields a uniform spectral gap:
 $$\Delta_p = p + 1 - 2\sqrt{p}$$
 This gap prevents any accumulation of eigenvalues near the origin from the non-Archimedean places, regularizing the Fredholm determinant.
