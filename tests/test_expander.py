@@ -106,6 +106,29 @@ def test_interacting_artin_fermions_execution():
     assert os.path.exists(figure_path), "The interacting Artin fermions sweep plot was not created."
     assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
 
+def test_analytic_slope_verification():
+    """Verify that the analytic slope derivation matches the numerical slope within 15%."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, ".."))
+    script_path = os.path.join(project_root, "scratch", "check_analytic_slope.py")
+    
+    result = subprocess.run(["python", script_path], capture_output=True, text=True)
+    assert result.returncode == 0, f"Script failed with exit code {result.returncode}.\nStderr: {result.stderr}"
+    
+    output = result.stdout
+    assert "Relative error:" in output, "Relative error not found in script output."
+    
+    found = False
+    for line in output.splitlines():
+        if "Relative error:" in line:
+            parts = line.split(":")
+            err_str = parts[1].strip().replace("%", "")
+            err_val = float(err_str)
+            assert err_val < 15.0, f"Relative error of predicted slope is too high: {err_val}%"
+            found = True
+            break
+    assert found, "Could not find and parse the relative error line."
+
 if __name__ == "__main__":
     print("=== Running test_expander.py ===")
     print("Testing traces database structure...")
@@ -128,6 +151,11 @@ if __name__ == "__main__":
     test_interacting_artin_fermions_execution()
     print("[OK] test_interacting_artin_fermions_execution passed.")
     
+    print("Testing analytic slope verification...")
+    test_analytic_slope_verification()
+    print("[OK] test_analytic_slope_verification passed.")
+    
     print("ALL TESTS PASSED SUCCESSFULLY!")
+
 
 
