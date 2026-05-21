@@ -62,6 +62,25 @@ def test_expander_correlation_execution():
     assert os.path.exists(figure_path2), "The zero-mode coupling plot was not created."
     assert os.path.getsize(figure_path2) > 0, "The created zero-mode coupling plot file is empty."
 
+def test_zero_localisation_correlation_execution():
+    """Verify that the zero-mode localisation correlation script runs successfully and outputs the plot."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, ".."))
+    
+    script_path = os.path.join(project_root, "experiments", "zero_localisation_correlation.py")
+    figure_path = os.path.join(project_root, "figures", "zero_localisation_correlation.png")
+    
+    # Ensure clean state
+    if os.path.exists(figure_path):
+        os.remove(figure_path)
+        
+    # Execute the script
+    result = subprocess.run(["python", script_path], capture_output=True, text=True)
+    
+    assert result.returncode == 0, f"Script failed with exit code {result.returncode}.\nStderr: {result.stderr}"
+    assert os.path.exists(figure_path), "The zero-localisation correlation plot was not created."
+    assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
+
 if __name__ == "__main__":
     print("=== Running test_expander.py ===")
     print("Testing traces database structure...")
@@ -71,6 +90,10 @@ if __name__ == "__main__":
     print("Testing expander correlation script execution...")
     test_expander_correlation_execution()
     print("[OK] test_expander_correlation_execution passed.")
+    
+    print("Testing zero-mode localisation correlation script execution...")
+    test_zero_localisation_correlation_execution()
+    print("[OK] test_zero_localisation_correlation_execution passed.")
     
     print("ALL TESTS PASSED SUCCESSFULLY!")
 
