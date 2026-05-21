@@ -139,10 +139,13 @@ ax.legend(facecolor='#1a1a2e', labelcolor='white')
 ax.grid(True, linestyle='--', alpha=0.2, color='#555')
 
 plt.tight_layout()
-plt.savefig('entanglement_entropy_scan.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "entanglement_entropy_scan.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 
-print("\nPlot saved to entanglement_entropy_scan.png")
+print(f"\nPlot saved to {out}")
 print("=" * 70)
 print("TASK 4.3 COMPLETE")
 print("=" * 70)

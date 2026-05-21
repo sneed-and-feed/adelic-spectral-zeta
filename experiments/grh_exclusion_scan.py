@@ -138,10 +138,13 @@ ax.set_ylabel("Real Part $\sigma$", color='white')
 ax.legend(facecolor='#1a1a2e', labelcolor='white')
 
 plt.tight_layout()
-plt.savefig('grh_exclusion_scan.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "grh_exclusion_scan.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 
-print("\nPlot saved to grh_exclusion_scan.png")
+print(f"\nPlot saved to {out}")
 print("=" * 70)
 print("TASK 3.3 COMPLETE")
 print("=" * 70)

@@ -171,10 +171,13 @@ ax.legend(facecolor='#1a1a2e', labelcolor='white')
 ax.grid(True, linestyle='--', alpha=0.3, color='#555')
 
 plt.tight_layout()
-plt.savefig('gl3_projection_test.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "gl3_projection_test.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 
-print("\nPlot saved to gl3_projection_test.png")
+print(f"\nPlot saved to {out}")
 print("=" * 70)
 print("TASK 2.2 COMPLETE")
 print("=" * 70)

@@ -118,10 +118,13 @@ ax.set_xlabel("Spacing", color='white')
 ax.set_ylabel("Frequency", color='white')
 
 plt.tight_layout()
-plt.savefig('artin_spectral_triple.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "artin_spectral_triple.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 
-print("\nPlot saved to artin_spectral_triple.png")
+print(f"\nPlot saved to {out}")
 print("=" * 70)
 print("TASK 3.2 COMPLETE")
 print("=" * 70)

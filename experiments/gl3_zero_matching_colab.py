@@ -227,10 +227,13 @@ ax.grid(True, linestyle='--', alpha=0.3, color='#555')
 ax.set_yscale('log')
 
 plt.tight_layout()
-plt.savefig('gl3_dissonance_sweep.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "gl3_dissonance_sweep.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 
-print("\nPlot saved to gl3_dissonance_sweep.png")
+print(f"\nPlot saved to {out}")
 print("=" * 70)
 print("TASK 2.3 COMPLETE")
 print("=" * 70)

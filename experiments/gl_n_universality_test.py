@@ -320,9 +320,12 @@ for row, (degree, mae1, maeN, overlap, ref_zeros) in enumerate([
 
 plt.suptitle("GL(4) and GL(5) Rank-1 Universality Sweep", color='white', fontsize=16)
 plt.tight_layout()
-plt.savefig('gl_n_universality_test.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "gl_n_universality_test.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
-print("\nPlot saved to gl_n_universality_test.png")
+print(f"\nPlot saved to {out}")
 print("=" * 70)
 print("TASK 8.1 COMPLETE")
 print("=" * 70)

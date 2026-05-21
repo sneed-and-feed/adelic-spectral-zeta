@@ -142,10 +142,13 @@ ax.set_title(f'Dimension Spectrum: Poles of Spectral Zeta Function\n$N={N}$, $\l
 ax.legend(facecolor='#1a1a2e', labelcolor='white')
 
 plt.tight_layout()
-plt.savefig('dimension_spectrum.png', dpi=300, facecolor=fig.get_facecolor())
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "dimension_spectrum.png")
+plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 
-print("Plot saved to dimension_spectrum.png.")
+print(f"Plot saved to {out}.")
 print("=" * 70)
 print("TASK 1.2 COMPLETE")
 print("=" * 70)
