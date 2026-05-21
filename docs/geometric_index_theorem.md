@@ -20,7 +20,7 @@
 | $D_{\text{glob}, \Delta}(s)$ | Weight-shifted compressed Dirac operator |
 | $\Lambda(s, \Delta)$ | Completed $L$-function: $(2\pi)^{-s}\Gamma(s + 11/2) L(s, \Delta)$ |
 
-We work throughout with the **normalized** $L$-function whose functional equation is $\Lambda(s, \Delta) = (-1)^{k/2} \Lambda(1 - s, \Delta) = \Lambda(1 - s, \Delta)$ (since $k = 12$, the sign is $+1$). The critical line is $\operatorname{Re}(s) = 1/2$.
+We work throughout with the **normalized** $L$-function whose functional equation is $\Lambda(s, \Delta) = (-1)^{k/2} \Lambda(1 - s, \Delta) = \Lambda(1 - s, \Delta)$ (since $k = 12$, the sign is $+1$). The critical line is $\mathrm{Re}(s) = 1/2$.
 
 ---
 
@@ -68,7 +68,7 @@ $$\xi_\Delta(n) = \underbrace{\sum_{p \le p_{\max}} \tilde{\tau}(p) \frac{\log p
 Because $\mathfrak{M}_\infty$ is non-compact (the dilation factor $\mathbb{R}_+^\times$ is unbounded), the standard Atiyah-Singer index theorem does not apply directly. Instead, we must use the **Atiyah-Patodi-Singer (APS) index theorem** for manifolds with boundary, treating the compactification of $\mathbb{R}_+^\times$ at $\{0, \infty\}$ as introducing two boundary components.
 
 **Definition 2.1** (Analytical Index). *The analytical index of the global operator is:*
-$$\operatorname{Ind}_a(\widetilde{D}_{\text{glob}, \Delta}(s)) := \dim \ker \widetilde{D}_{\text{glob}, \Delta}^+(s) - \dim \ker \widetilde{D}_{\text{glob}, \Delta}^-(s)$$
+$$\mathrm{Ind}_a(\widetilde{D}_{\text{glob}, \Delta}(s)) := \dim \ker \widetilde{D}_{\text{glob}, \Delta}^+(s) - \dim \ker \widetilde{D}_{\text{glob}, \Delta}^-(s)$$
 
 *where $\widetilde{D}^{\pm}$ are the chiral components of the Dirac operator with respect to the $\mathbb{Z}/2$-grading induced by the $\mathrm{Pin}^+$ structure on $\mathbb{RP}^2$.*
 
@@ -76,17 +76,17 @@ $$\operatorname{Ind}_a(\widetilde{D}_{\text{glob}, \Delta}(s)) := \dim \ker \wid
 
 **Definition 2.2** (Place-wise $\eta$-invariants). *For each place $v$ of $\mathbb{Q}$, define the spectral $\eta$-function:*
 
-$$\eta_v(z) := \sum_{\lambda_v \neq 0} \operatorname{sgn}(\lambda_v) \, |\lambda_v|^{-z}$$
+$$\eta_v(z) := \sum_{\lambda_v \neq 0} \mathrm{sgn}(\lambda_v) \, |\lambda_v|^{-z}$$
 
 *where $\{\lambda_v\}$ are the eigenvalues of the local Dirac operator $D_{v, \Delta}(s)$ restricted to the boundary at that place.*
 
 **Archimedean $\eta$-invariant.** The boundary operator at infinity is the restriction of $D_{\infty, \Delta}(s)$ to the cross-section $\mathbb{RP}^2 \times S^1$ at the boundary of the compactified $\mathbb{R}_+^\times$. Using the Seeley-DeWitt heat kernel expansion for the weight-shifted Gamma factor:
 
-$$\eta_{\infty, \Delta}(z) = \frac{1}{\Gamma\left(\frac{z+1}{2}\right)} \int_0^\infty t^{(z-1)/2} \operatorname{Tr}\left(D_{\infty, \Delta}(s) \, e^{-t D_{\infty, \Delta}(s)^2}\right) dt$$
+$$\eta_{\infty, \Delta}(z) = \frac{1}{\Gamma\left(\frac{z+1}{2}\right)} \int_0^\infty t^{(z-1)/2} \mathrm{Tr}\left(D_{\infty, \Delta}(s) \, e^{-t D_{\infty, \Delta}(s)^2}\right) dt$$
 
 At $z = 0$, by the functional equation of $\Gamma(s + 11/2)$:
 
-$$\eta_{\infty, \Delta}(0) = \frac{1}{\pi} \arg \Gamma\!\left(\frac{1}{2} + it + \frac{11}{2}\right)\bigg|_{\text{boundary}} - \frac{t}{\pi}\ln(2\pi) + \frac{1}{2}\operatorname{sgn}\!\left(\operatorname{Re}(s) - \frac{1}{2}\right)$$
+$$\eta_{\infty, \Delta}(0) = \frac{1}{\pi} \arg \Gamma\!\left(\frac{1}{2} + it + \frac{11}{2}\right)\bigg|_{\text{boundary}} - \frac{t}{\pi}\ln(2\pi) + \frac{1}{2}\mathrm{sgn}\!\left(\mathrm{Re}(s) - \frac{1}{2}\right)$$
 
 The last term is the **spectral asymmetry contribution** from the non-compact end: it detects whether the operator is evaluated on or off the critical line.
 
@@ -106,7 +106,7 @@ $$\det(D_{p, \Delta}(s) - \lambda) = \prod_{[\gamma]} (1 - \chi_\Delta(\gamma) \
 
 where $[\gamma]$ ranges over primitive geodesics of length $\ell(\gamma)$ in $\mathcal{T}_p$ and $\chi_\Delta(\gamma) = \alpha_p^{a(\gamma)} \beta_p^{b(\gamma)}$ is the Satake character evaluated on the geodesic. Taking the regularized product and evaluating $\eta_p(0)$ via analytic continuation:
 
-$$\eta_{p, \Delta}(0) = -\frac{1}{\pi} \operatorname{Im} \log L_p(s, \Delta)^{-1} = \frac{1}{\pi} \arg(1 - \tilde{\tau}(p)p^{-s} + p^{-2s})$$
+$$\eta_{p, \Delta}(0) = -\frac{1}{\pi} \mathrm{Im} \log L_p(s, \Delta)^{-1} = \frac{1}{\pi} \arg(1 - \tilde{\tau}(p)p^{-s} + p^{-2s})$$
 
 $\square$
 
@@ -120,11 +120,11 @@ $$\eta_{\text{global}}(z) := \eta_{\infty, \Delta}(z) + \sum_{p \le p_{\max}} \e
 
 $$\frac{1}{2}\eta_{\text{global}}(0) \equiv 0 \pmod{1}$$
 
-*if and only if $\operatorname{Re}(s) = 1/2$ and $\Lambda(s, \Delta) = 0$.*
+*if and only if $\mathrm{Re}(s) = 1/2$ and $\Lambda(s, \Delta) = 0$.*
 
 *Proof.* At $z = 0$, collecting the place-wise evaluations:
 
-$$\frac{1}{2}\eta_{\text{global}}(0) = \frac{1}{2\pi}\left[\arg\Gamma\!\left(6 + it\right) - t\ln(2\pi) + \sum_{p} \arg(1 - \tilde{\tau}(p)p^{-s} + p^{-2s})\right] + \frac{1}{4}\operatorname{sgn}\!\left(\sigma - \frac{1}{2}\right)$$
+$$\frac{1}{2}\eta_{\text{global}}(0) = \frac{1}{2\pi}\left[\arg\Gamma\!\left(6 + it\right) - t\ln(2\pi) + \sum_{p} \arg(1 - \tilde{\tau}(p)p^{-s} + p^{-2s})\right] + \frac{1}{4}\mathrm{sgn}\!\left(\sigma - \frac{1}{2}\right)$$
 
 where $s = \sigma + it$.
 
@@ -137,7 +137,7 @@ Since $\Lambda(s, \Delta)$ satisfies the functional equation $\Lambda(s) = \Lamb
 **Case 2: $\sigma \neq 1/2$ (off the critical line).** The sign term contributes $\pm 1/4 \notin \mathbb{Z}$, so $\frac{1}{2}\eta_{\text{global}}(0) \notin \mathbb{Z}$ generically. The analytical index becomes non-integer, which is forbidden for a Fredholm operator. This forces the spectral triple to localize on the critical line. $\square$
 
 > [!TIP]
-> The sign term $\frac{1}{4}\operatorname{sgn}(\sigma - 1/2)$ is the spectral-geometric incarnation of the Lefschetz metric inflation discovered in Phase 3: the scaling flow $T_\lambda$ on $\mathbb{R}_+^\times$ is isometric only when $\sigma = 1/2$, and the resulting metric distortion $\lambda^{\sigma - 1/2}$ prevents the APS boundary conditions from being satisfied off the critical line.
+> The sign term $\frac{1}{4}\mathrm{sgn}(\sigma - 1/2)$ is the spectral-geometric incarnation of the Lefschetz metric inflation discovered in Phase 3: the scaling flow $T_\lambda$ on $\mathbb{R}_+^\times$ is isometric only when $\sigma = 1/2$, and the resulting metric distortion $\lambda^{\sigma - 1/2}$ prevents the APS boundary conditions from being satisfied off the critical line.
 
 ---
 
@@ -151,7 +151,7 @@ $$\langle [e] - [1], [D] \rangle = \varphi_0(e) + \sum_{n=1}^{\infty} (-1)^n \fr
 
 where the component cocycles $\varphi_{2n}$ are:
 
-$$\varphi_{2n}(a_0, a_1, \dots, a_{2n}) = \sum_{\alpha} c_{n,\alpha} \operatorname{Res}_{z=0} \operatorname{Tr}\left(a_0 \nabla^{\alpha_1}(a_1) \cdots \nabla^{\alpha_{2n}}(a_{2n}) |D|^{-2(|\alpha| + n) - z}\right)$$
+$$\varphi_{2n}(a_0, a_1, \dots, a_{2n}) = \sum_{\alpha} c_{n,\alpha} \mathrm{Res}_{z=0} \mathrm{Tr}\left(a_0 \nabla^{\alpha_1}(a_1) \cdots \nabla^{\alpha_{2n}}(a_{2n}) |D|^{-2(|\alpha| + n) - z}\right)$$
 
 Here $\nabla(a) = [D^2, a]$, the multi-index $\alpha = (\alpha_1, \dots, \alpha_{2n})$, $|\alpha| = \sum \alpha_i$, and the $c_{n,\alpha}$ are universal combinatorial constants:
 
@@ -159,7 +159,7 @@ $$c_{n,\alpha} = \frac{(-1)^{|\alpha|}}{\alpha! \, (|\alpha| + n)!} \cdot \Gamma
 
 ### §3.2 The Dimension Spectrum
 
-**Proposition 3.1.** *The dimension spectrum $\mathrm{Sd}(\mathcal{A}, \mathcal{H}, D_{\text{glob}, \Delta})$ — the set of poles of the zeta functions $\zeta_b(z) = \operatorname{Tr}(b|D|^{-z})$ for $b \in \mathcal{B}$ (the algebra generated by $\mathcal{A}$ and $[D, \mathcal{A}]$) — is:*
+**Proposition 3.1.** *The dimension spectrum $\mathrm{Sd}(\mathcal{A}, \mathcal{H}, D_{\text{glob}, \Delta})$ — the set of poles of the zeta functions $\zeta_b(z) = \mathrm{Tr}(b|D|^{-z})$ for $b \in \mathcal{B}$ (the algebra generated by $\mathcal{A}$ and $[D, \mathcal{A}]$) — is:*
 
 $$\mathrm{Sd} = \{1\} \cup \{1 - k : k \in \mathbb{Z}_{\ge 0}\}$$
 
@@ -177,27 +177,27 @@ Since $\dim \mathrm{Sd} = 1$, only the $n = 0$ and $n = 1$ terms of the local in
 
 **The $n = 0$ cocycle** (the Dixmier trace contribution):
 
-$$\varphi_0(a_0) = \operatorname{Res}_{z=0} \operatorname{Tr}(a_0 |D|^{-z})$$
+$$\varphi_0(a_0) = \mathrm{Res}_{z=0} \mathrm{Tr}(a_0 |D|^{-z})$$
 
 For $a_0 = \Pi_{\xi_\Delta}^\perp$ (the projection itself), this evaluates to:
 
-$$\varphi_0(\Pi^\perp) = \operatorname{Res}_{z=0}\left[\zeta_D(z) - |\langle \xi_\Delta, |D|^{-z} \xi_\Delta \rangle|\right]$$
+$$\varphi_0(\Pi^\perp) = \mathrm{Res}_{z=0}\left[\zeta_D(z) - |\langle \xi_\Delta, |D|^{-z} \xi_\Delta \rangle|\right]$$
 
 The first term gives the residue of the spectral zeta function of the uncompressed operator — which is $\ln\lambda / \pi$ by the Weyl law — and the second term subtracts the rank-one contribution:
 
-$$\varphi_0(\Pi^\perp) = \frac{\ln\lambda}{\pi} - \operatorname{Res}_{z=0} \sum_n |\xi_\Delta(n)|^2 \left|\frac{n\pi}{\ln\lambda}\right|^{-z}$$
+$$\varphi_0(\Pi^\perp) = \frac{\ln\lambda}{\pi} - \mathrm{Res}_{z=0} \sum_n |\xi_\Delta(n)|^2 \left|\frac{n\pi}{\ln\lambda}\right|^{-z}$$
 
 **The $n = 1$ cocycle** (the curvature contribution):
 
-$$\varphi_2(a_0, a_1, a_2) = \operatorname{Res}_{z=0} \operatorname{Tr}\left(a_0 [D, a_1][D, a_2] |D|^{-2-z}\right) - \frac{1}{2}\operatorname{Res}_{z=0}\operatorname{Tr}\left(a_0 \nabla(a_1)[D, a_2] |D|^{-4-z}\right)$$
+$$\varphi_2(a_0, a_1, a_2) = \mathrm{Res}_{z=0} \mathrm{Tr}\left(a_0 [D, a_1][D, a_2] |D|^{-2-z}\right) - \frac{1}{2}\mathrm{Res}_{z=0}\mathrm{Tr}\left(a_0 \nabla(a_1)[D, a_2] |D|^{-4-z}\right)$$
 
 ### §3.4 The Automorphic Topological Weight
 
 **Theorem 3.2** (Arithmetic Chern Character). *The cyclic cocycle $\varphi_2$, when evaluated on the idempotent $e_\Delta \in M_2(\mathcal{A})$ representing the rank-2 Satake bundle over the adèlic class space, yields:*
 
-$$\varphi_2(e_\Delta - \tfrac{1}{2}, e_\Delta, e_\Delta) = -\sum_{p \le p_{\max}} \frac{\log p}{p - 1} \operatorname{Tr}_{\mathrm{Sat}}\!\left(\begin{pmatrix} \alpha_p & 0 \\ 0 & \beta_p \end{pmatrix}^{\!\!2} - \mathbf{1}\right) \cdot \operatorname{Res}_{z=0} \zeta_{\mathcal{T}_p}(z)$$
+$$\varphi_2(e_\Delta - \tfrac{1}{2}, e_\Delta, e_\Delta) = -\sum_{p \le p_{\max}} \frac{\log p}{p - 1} \mathrm{Tr}_{\mathrm{Sat}}\!\left(\begin{pmatrix} \alpha_p & 0 \\ 0 & \beta_p \end{pmatrix}^{\!\!2} - \mathbf{1}\right) \cdot \mathrm{Res}_{z=0} \zeta_{\mathcal{T}_p}(z)$$
 
-*where $\zeta_{\mathcal{T}_p}(z)$ is the Ihara zeta function of the tree $\mathcal{T}_p$ and $\operatorname{Tr}_{\mathrm{Sat}}$ is the trace in the Satake representation.*
+*where $\zeta_{\mathcal{T}_p}(z)$ is the Ihara zeta function of the tree $\mathcal{T}_p$ and $\mathrm{Tr}_{\mathrm{Sat}}$ is the trace in the Satake representation.*
 
 *Proof.* The commutator $[D, a]$ for $a \in \mathcal{A}$ supported at a prime $p$ is:
 
@@ -209,7 +209,7 @@ $$[\mathcal{S}_p, a](d) = (\tilde{\tau}(p) - p^{-d} - p^{-(d+1)})(a(d) - a(d-1))
 
 Squaring and taking the residue trace:
 
-$$\operatorname{Res}_{z=0}\operatorname{Tr}([D_p, e_\Delta]^2 |D_p|^{-2-z}) = \frac{\log^2 p}{(p-1)} \left(\tilde{\tau}(p)^2 - 2\right) \cdot \operatorname{Res}_{z=0}\zeta_{\mathcal{T}_p}(z)$$
+$$\mathrm{Res}_{z=0}\mathrm{Tr}([D_p, e_\Delta]^2 |D_p|^{-2-z}) = \frac{\log^2 p}{(p-1)} \left(\tilde{\tau}(p)^2 - 2\right) \cdot \mathrm{Res}_{z=0}\zeta_{\mathcal{T}_p}(z)$$
 
 Using $\alpha_p^2 + \beta_p^2 = \tilde{\tau}(p)^2 - 2\alpha_p\beta_p = \tilde{\tau}(p)^2 - 2$ (since $\alpha_p\beta_p = 1$ after normalization), this gives the stated formula. $\square$
 
@@ -240,14 +240,14 @@ This shift is compensated by a corresponding shift in the non-Archimedean eta in
 
 **Theorem 4.1** (Geometric Index Theorem for the Automorphic Spectral Triple). *For the spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta}(s))$ with $s = 1/2 + it$, the following identity holds:*
 
-$$\boxed{\operatorname{Ind}\!\left(\widetilde{D}_{\text{glob}, \Delta}(s)\right) = \int_{\mathfrak{M}_\infty} \widehat{A}(\mathfrak{M}_\infty) \wedge \operatorname{ch}(\mathcal{V}_\Delta) \;-\; \frac{1}{2}\eta_{\text{global}}(0)}$$
+$$\boxed{\mathrm{Ind}\!\left(\widetilde{D}_{\text{glob}, \Delta}(s)\right) = \int_{\mathfrak{M}_\infty} \widehat{A}(\mathfrak{M}_\infty) \wedge \mathrm{ch}(\mathcal{V}_\Delta) \;-\; \frac{1}{2}\eta_{\text{global}}(0)}$$
 
 *where:*
 - *$\widehat{A}(\mathfrak{M}_\infty)$ is the $\widehat{A}$-genus of the Archimedean locus,*
-- *$\operatorname{ch}(\mathcal{V}_\Delta)$ is the Chern character of the automorphic vector bundle associated to the weight-12 representation,*
+- *$\mathrm{ch}(\mathcal{V}_\Delta)$ is the Chern character of the automorphic vector bundle associated to the weight-12 representation,*
 - *$\eta_{\text{global}}(0)$ is the global APS $\eta$-invariant evaluated at $z = 0$.*
 
-*Moreover, $\operatorname{Ind}(\widetilde{D}_{\text{glob}, \Delta}(s)) = 0$ if and only if $\Lambda(s, \Delta) = 0$ with $\operatorname{Re}(s) = 1/2$.*
+*Moreover, $\mathrm{Ind}(\widetilde{D}_{\text{glob}, \Delta}(s)) = 0$ if and only if $\Lambda(s, \Delta) = 0$ with $\mathrm{Re}(s) = 1/2$.*
 
 ### §4.2 Evaluation of the Interior Integral
 
@@ -276,7 +276,7 @@ $$\int_{\mathfrak{M}_\infty} \widehat{A}(\mathfrak{M}_\infty) = 1$$
 
 The automorphic vector bundle $\mathcal{V}_\Delta$ is the rank-2 flat bundle over the adèlic class space associated to the Satake parameters. Its Chern character is:
 
-$$\operatorname{ch}(\mathcal{V}_\Delta) = 2 + c_1(\mathcal{V}_\Delta) + \frac{1}{2}(c_1^2 - 2c_2)(\mathcal{V}_\Delta) + \cdots$$
+$$\mathrm{ch}(\mathcal{V}_\Delta) = 2 + c_1(\mathcal{V}_\Delta) + \frac{1}{2}(c_1^2 - 2c_2)(\mathcal{V}_\Delta) + \cdots$$
 
 Since the Satake representation is self-dual ($\alpha_p \beta_p = 1$), we have $c_1(\mathcal{V}_\Delta) = 0$. The second Chern class is:
 
@@ -284,38 +284,38 @@ $$c_2(\mathcal{V}_\Delta) = \sum_p \frac{\log^2 p}{(p-1)\ln\lambda} \cdot \alpha
 
 Therefore:
 
-$$\int_{\mathfrak{M}_\infty} \widehat{A} \wedge \operatorname{ch}(\mathcal{V}_\Delta) = 2 - \frac{1}{\ln\lambda}\sum_{p \le p_{\max}} \frac{\log^2 p}{p - 1}$$
+$$\int_{\mathfrak{M}_\infty} \widehat{A} \wedge \mathrm{ch}(\mathcal{V}_\Delta) = 2 - \frac{1}{\ln\lambda}\sum_{p \le p_{\max}} \frac{\log^2 p}{p - 1}$$
 
 ### §4.3 Assembly of the Index Identity
 
 Combining the interior integral with the $\eta$-correction:
 
-$$\operatorname{Ind}(\widetilde{D}) = \left(2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-1}\right) - \frac{1}{2}\eta_{\text{global}}(0)$$
+$$\mathrm{Ind}(\widetilde{D}) = \left(2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-1}\right) - \frac{1}{2}\eta_{\text{global}}(0)$$
 
 Substituting the explicit form of $\eta_{\text{global}}(0)$ from Theorem 2.5:
 
-$$\operatorname{Ind}(\widetilde{D}) = 2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-1} - \frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right) - \frac{1}{4}\operatorname{sgn}\!\left(\sigma - \tfrac{1}{2}\right)$$
+$$\mathrm{Ind}(\widetilde{D}) = 2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-1} - \frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right) - \frac{1}{4}\mathrm{sgn}\!\left(\sigma - \tfrac{1}{2}\right)$$
 
 ### §4.4 The Vanishing Condition
 
-**Theorem 4.2** (Zero-Mode Localization). *The index $\operatorname{Ind}(\widetilde{D}_{\text{glob}, \Delta}(s)) = 0$ if and only if:*
+**Theorem 4.2** (Zero-Mode Localization). *The index $\mathrm{Ind}(\widetilde{D}_{\text{glob}, \Delta}(s)) = 0$ if and only if:*
 
-1. *$\operatorname{Re}(s) = 1/2$ (critical line localization), and*
+1. *$\mathrm{Re}(s) = 1/2$ (critical line localization), and*
 2. *$\Lambda(1/2 + it, \Delta) = 0$ (zero of the completed $L$-function).*
 
 *Proof.* 
 
-**Necessity of $\sigma = 1/2$:** If $\sigma \neq 1/2$, the term $\frac{1}{4}\operatorname{sgn}(\sigma - 1/2) = \pm 1/4$ makes the index non-integer. Since the analytical index of a Fredholm operator must be an integer, the operator can only be Fredholm on the critical line. This is the spectral-geometric manifestation of the metric inflation/contraction discovered in Phase 3: the scaling flow $T_\lambda: t \mapsto \lambda t$ on $\mathbb{R}_+^\times$ acts on the Bruhat-Tits tree metrics with distortion factor $\eta(\lambda, s) = \lambda^{\sigma - 1/2}$, which is $1$ only when $\sigma = 1/2$.
+**Necessity of $\sigma = 1/2$:** If $\sigma \neq 1/2$, the term $\frac{1}{4}\mathrm{sgn}(\sigma - 1/2) = \pm 1/4$ makes the index non-integer. Since the analytical index of a Fredholm operator must be an integer, the operator can only be Fredholm on the critical line. This is the spectral-geometric manifestation of the metric inflation/contraction discovered in Phase 3: the scaling flow $T_\lambda: t \mapsto \lambda t$ on $\mathbb{R}_+^\times$ acts on the Bruhat-Tits tree metrics with distortion factor $\eta(\lambda, s) = \lambda^{\sigma - 1/2}$, which is $1$ only when $\sigma = 1/2$.
 
 **Sufficiency on $\sigma = 1/2$:** Setting $\sigma = 1/2$, the sign term vanishes and:
 
-$$\operatorname{Ind}(\widetilde{D}) = \underbrace{2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-1}}_{:= \mathcal{I}_{\text{top}}} - \frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)$$
+$$\mathrm{Ind}(\widetilde{D}) = \underbrace{2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-1}}_{:= \mathcal{I}_{\text{top}}} - \frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)$$
 
 The topological index $\mathcal{I}_{\text{top}}$ is a fixed real constant depending only on $\lambda$ and $p_{\max}$. For the index to vanish:
 
 $$\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right) = 2\pi \mathcal{I}_{\text{top}}$$
 
-Since $\Lambda(s, \Delta)$ is real-valued and positive at $t = 0$ (by the Euler product convergence), and $\arg\Lambda$ is a continuous function that jumps by $\pm\pi$ at each zero, the condition $\operatorname{Ind} = 0$ is satisfied precisely at the zeros of $\Lambda$ where the accumulated phase matches $2\pi\mathcal{I}_{\text{top}}$.
+Since $\Lambda(s, \Delta)$ is real-valued and positive at $t = 0$ (by the Euler product convergence), and $\arg\Lambda$ is a continuous function that jumps by $\pm\pi$ at each zero, the condition $\mathrm{Ind} = 0$ is satisfied precisely at the zeros of $\Lambda$ where the accumulated phase matches $2\pi\mathcal{I}_{\text{top}}$.
 
 In the **thermodynamic limit** $\lambda \to \infty$, $p_{\max} \to \infty$, the topological index converges:
 
@@ -330,7 +330,7 @@ $$\mathcal{I}_{\text{top}} \to 2 - \frac{1}{\ln\lambda}\sum_p \frac{\log^2 p}{p-
 > [!IMPORTANT]
 > **Main Result.** For the Automorphic Spectral Triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})$ with parameters $(\lambda, N, p_{\max})$:
 >
-> $$\operatorname{Ind}\!\left(\widetilde{D}_{\text{glob}, \Delta}\!\left(\tfrac{1}{2} + it\right)\right) = \underbrace{\int_{\mathfrak{M}_\infty} \widehat{A} \wedge \operatorname{ch}(\mathcal{V}_\Delta)}_{\text{topological index}} \;-\; \underbrace{\frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)}_{\text{spectral phase}} \;-\; \underbrace{\frac{1}{4}\operatorname{sgn}\!\left(\sigma - \tfrac{1}{2}\right)}_{\text{APS boundary}}$$
+> $$\mathrm{Ind}\!\left(\widetilde{D}_{\text{glob}, \Delta}\!\left(\tfrac{1}{2} + it\right)\right) = \underbrace{\int_{\mathfrak{M}_\infty} \widehat{A} \wedge \mathrm{ch}(\mathcal{V}_\Delta)}_{\text{topological index}} \;-\; \underbrace{\frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)}_{\text{spectral phase}} \;-\; \underbrace{\frac{1}{4}\mathrm{sgn}\!\left(\sigma - \tfrac{1}{2}\right)}_{\text{APS boundary}}$$
 >
 > The operator is Fredholm only on the critical line $\sigma = 1/2$. Its zero-modes correspond bijectively to the non-trivial zeros of the completed $L$-function $\Lambda(s, \Delta)$.
 
@@ -368,13 +368,13 @@ For completeness, we record the residue evaluations at all poles of the spectral
 
 **Pole at $z = 1$** (Weyl pole):
 
-$$\operatorname{Res}_{z=1} \zeta_D(z) = \frac{\ln\lambda}{\pi}$$
+$$\mathrm{Res}_{z=1} \zeta_D(z) = \frac{\ln\lambda}{\pi}$$
 
 This is the **Weyl volume** of the compressed operator, encoding the average density of eigenvalues.
 
 **Pole at $z = 0$** (topological pole):
 
-$$\operatorname{Res}_{z=0} \zeta_D(z) = 1 - \frac{1}{2\pi}\frac{d}{dt}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)$$
+$$\mathrm{Res}_{z=0} \zeta_D(z) = 1 - \frac{1}{2\pi}\frac{d}{dt}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)$$
 
 The derivative of the argument is the spectral density fluctuation, directly related to the Weil explicit formula:
 
@@ -384,7 +384,7 @@ This matches the numerical Weil trace correlation observed in Phases 5–7.
 
 **Poles at $z = -k$ for $k \ge 1$:**
 
-$$\operatorname{Res}_{z=-k} \zeta_D(z) = (-1)^k \frac{B_{k+1}}{(k+1)!} \cdot \left(\frac{\pi}{\ln\lambda}\right)^k + \text{(tree corrections)}$$
+$$\mathrm{Res}_{z=-k} \zeta_D(z) = (-1)^k \frac{B_{k+1}}{(k+1)!} \cdot \left(\frac{\pi}{\ln\lambda}\right)^k + \text{(tree corrections)}$$
 
 where $B_{k+1}$ are Bernoulli numbers. These contribute to the higher-order cyclic cocycles $\varphi_{2n}$ for $n \ge 2$, which vanish in the thermodynamic limit.
 
@@ -392,7 +392,7 @@ where $B_{k+1}$ are Bernoulli numbers. These contribute to the higher-order cycl
 
 ## §7. Formal Verification: Bordism Invariance under Large Gauge Shifts
 
-**Proposition 7.1.** *The index $\operatorname{Ind}(\widetilde{D}_{\text{glob}, \Delta})$ is invariant under:*
+**Proposition 7.1.** *The index $\mathrm{Ind}(\widetilde{D}_{\text{glob}, \Delta})$ is invariant under:*
 1. *Large gauge transformations $g: S^1 \to U(1)$ with arbitrary winding number $w$.*
 2. *Rescaling of the dilation parameter $\lambda \mapsto \lambda'$.*
 3. *Extension of the prime truncation $p_{\max} \mapsto p_{\max}'$.*

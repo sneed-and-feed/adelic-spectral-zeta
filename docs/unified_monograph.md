@@ -10,7 +10,7 @@ We present a unified geometric and physical framework for the spectral realizati
 
 ## 1. Introduction and Architectural Design
 
-The Riemann Hypothesis (RH) and its generalization to automorphic $L$-functions (GRH) state that all non-trivial zeros of $L(s, \pi)$ lie on the critical line $\operatorname{Re}(s) = 1/2$. The Hilbert-Pólya conjecture suggests that these zeros correspond to the eigenvalues of a self-adjoint operator on a Hilbert space. Alain Connes reformulated this by placing the problem within non-commutative geometry, defining a spectral triple over the adèle class space:
+The Riemann Hypothesis (RH) and its generalization to automorphic $L$-functions (GRH) state that all non-trivial zeros of $L(s, \pi)$ lie on the critical line $\mathrm{Re}(s) = 1/2$. The Hilbert-Pólya conjecture suggests that these zeros correspond to the eigenvalues of a self-adjoint operator on a Hilbert space. Alain Connes reformulated this by placing the problem within non-commutative geometry, defining a spectral triple over the adèle class space:
 $$ \mathbb{A}_{\mathbb{Q}} / \mathbb{Q}^\times $$
 In Connes' original model, the zeros of the Riemann zeta function appeared as a spectral deficiency (absorption spectrum) in a continuous spectrum. 
 
@@ -60,15 +60,15 @@ To establish that $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ de
 ### 3.1 Summability
 An operator $D$ is $d$-summable if the resolvent $(D^2 + 1)^{-1/2}$ belongs to the weak Schatten class $\mathcal{L}^{d,\infty}(\mathcal{H})$. For our 1D Archimedean clock wire, the eigenvalues of $D_0$ scale linearly with $n$:
 $$\lambda_n \approx \frac{n \pi}{\ln \lambda}$$
-Since the eigenvalues grow as $O(n)$, the sum $\sum |\lambda_n|^{-s}$ converges for $\operatorname{Re}(s) > 1$. Thus, the spectral triple is **1-summable**, reflecting the underlying 1-dimensional manifold of the Archimedean wire.
+Since the eigenvalues grow as $O(n)$, the sum $\sum |\lambda_n|^{-s}$ converges for $\mathrm{Re}(s) > 1$. Thus, the spectral triple is **1-summable**, reflecting the underlying 1-dimensional manifold of the Archimedean wire.
 
 ### 3.2 Regularity
 For any element $a \in \mathcal{A}$, both $a$ and the commutator $[D, a]$ must lie in the domain of all iterates of the derivation $\delta(T) = [|D|, T]$. 
 Since the commutator $[D, a]$ is bounded (yielding the standard derivative of $a$ along the wire) and $|D|$ acts diagonally in our basis, the nested commutators $\delta^k(a)$ and $\delta^k([D, a])$ remain bounded operators for all $k \ge 1$.
 
 ### 3.3 Discrete Dimension Spectrum
-The dimension spectrum is the set of poles of the spectral zeta function $\zeta_a(z) = \operatorname{Tr}(a |D|^{-z})$. By mapping the trace using our computed eigenvalues, we demonstrated that the dimension spectrum consists of the set:
-$$\operatorname{DimSp} = \{1\} \cup \{1 - k \mid k \in \mathbb{N}\}$$
+The dimension spectrum is the set of poles of the spectral zeta function $\zeta_a(z) = \mathrm{Tr}(a |D|^{-z})$. By mapping the trace using our computed eigenvalues, we demonstrated that the dimension spectrum consists of the set:
+$$\mathrm{DimSp} = \{1\} \cup \{1 - k \mid k \in \mathbb{N}\}$$
 This matches the dimension spectrum of a 1D manifold with boundary, confirming that the adèlic quotient space behaves topologically as a smooth 1D boundary geometry.
 
 ### 3.4 First-Order Condition
@@ -83,7 +83,7 @@ The non-Archimedean Bruhat-Tits trees have dimension 0, thus contributing degree
 
 ## 4. Higher Langlands Extensions & Rank-1 Universality (GL(3), GL(4), GL(5))
 
-Moving beyond $GL(1)$ and $GL(2)$, we analyzed higher-rank Langlands functorial lifts of the Ramanujan $\Delta$-function, specifically the Symmetric Square ($\operatorname{Sym}^2(\Delta)$, $GL(3)$), Symmetric Cube ($\operatorname{Sym}^3(\Delta)$, $GL(4)$), and Symmetric Fourth Power ($\operatorname{Sym}^4(\Delta)$, $GL(5)$) lifts. 
+Moving beyond $GL(1)$ and $GL(2)$, we analyzed higher-rank Langlands functorial lifts of the Ramanujan $\Delta$-function, specifically the Symmetric Square ($\mathrm{Sym}^2(\Delta)$, $GL(3)$), Symmetric Cube ($\mathrm{Sym}^3(\Delta)$, $GL(4)$), and Symmetric Fourth Power ($\mathrm{Sym}^4(\Delta)$, $GL(5)$) lifts. 
 
 The Satake parameters for a representation of rank $N$ at prime $p$ are defined by the roots $\{\alpha_{p, j}\}_{j=1}^N$. Under the Langlands program, the Hecke trace $A_p = \sum_{j=1}^N \alpha_{p, j}$ defines the coefficient of the corresponding $L$-function. This raises a fundamental structural question: does an $N$-dimensional representation require a rank-$N$ projection operator $P_N$ onto the span of the individual Satake parameters, or is a simple rank-1 projection $P_1$ onto the sum (the Hecke trace) sufficient to match the spectral zeros?
 
@@ -116,7 +116,7 @@ This confirms the **Rank-1 Universality Hypothesis**: the trace $A_p$ acts as a 
 
 ## 5. Artin L-Functions and Critical Line Rigidity
 
-To evaluate the universality of the spectral triple, we targeted the **Icosahedral Artin $L$-function of conductor 800** (originally discovered by Buhler). The coefficients of this $L$-function are traces of Galois representations $\operatorname{Tr}(\rho(\operatorname{Frob}_p))$:
+To evaluate the universality of the spectral triple, we targeted the **Icosahedral Artin $L$-function of conductor 800** (originally discovered by Buhler). The coefficients of this $L$-function are traces of Galois representations $\mathrm{Tr}(\rho(\mathrm{Frob}_p))$:
 * Modulo $p=3$: Splitting type (1,1,3) $\implies A_p = -1$.
 * Modulo $p=7$: Splitting type (5) $\implies A_p = \frac{1-\sqrt{5}}{2} \approx -0.618$.
 * Ramified primes ($p=2, 5$) $\implies A_p = 0$.
@@ -190,17 +190,17 @@ The strong linear drift in $\langle N_{\text{fluc}} \rangle$ is a consequence of
 
 ### 7.3 Proof of the Subconvexity Bound
 The analytic size of $L(1/2+it)$ is controlled by the logarithmic derivative of the completed $L$-function $\Lambda(s)$, which we express spectrally via the resolvent trace of the global Dirac operator $D_{\text{glob}}$:
-$$ \frac{\Lambda'(s)}{\Lambda(s)} = \operatorname{Tr}\left( (D_{\text{glob}} - s)^{-1} - (D_{\text{glob}} - s_0)^{-1} \right) $$
+$$ \frac{\Lambda'(s)}{\Lambda(s)} = \mathrm{Tr}\left( (D_{\text{glob}} - s)^{-1} - (D_{\text{glob}} - s_0)^{-1} \right) $$
 where $s = 1/2 + it$ and $s_0$ is a fixed reference point. Since $D_{\text{glob}} = (I-P)D_0(I-P)$ is a rank-1 projection of the unperturbed Dirac operator $D_0$, we can express the resolvent of $D_{\text{glob}}$ using the Krein formula:
-$$ (D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{(D_0 - z)^{-1} P (D_0 - z)^{-1}}{1 - \operatorname{Tr}(P (D_0 - z)^{-1})} $$
+$$ (D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{(D_0 - z)^{-1} P (D_0 - z)^{-1}}{1 - \mathrm{Tr}(P (D_0 - z)^{-1})} $$
 Because the non-Archimedean components act on the Bruhat-Tits trees $\mathcal{T}_p$, their quotients act as **Ramanujan expander graphs**. By the Alon-Boppana theorem, the adjacency eigenvalues $\mu$ of these quotients are strictly bounded by $2\sqrt{p}$, establishing a uniform spectral gap:
 $$\Delta_p = p + 1 - 2\sqrt{p}$$
 This local spectral gap prevents eigenvalue clustering near the origin. The local non-Archimedean Dirac operator $D_p$ is bounded from below, which regularizes the global Fredholm determinant.
 
 To extract the subconvexity bound, we integrate the real part of the resolvent trace along a shifted vertical line $z = 1/2 + \eta + it$, where $\eta > 0$ is a parameter optimized with respect to $t$:
-$$ \log |\Lambda(1/2 + it)| \le \operatorname{Re} \int_{1/2 + \eta + it_0}^{1/2 + \eta + it} \frac{\Lambda'(z)}{\Lambda(z)} dz + \mathcal{O}(1) $$
+$$ \log |\Lambda(1/2 + it)| \le \mathrm{Re} \int_{1/2 + \eta + it_0}^{1/2 + \eta + it} \frac{\Lambda'(z)}{\Lambda(z)} dz + \mathcal{O}(1) $$
 Using the eigenvalue distribution of the truncated matrix, assuming the density of eigenvalues near the spectral boundary of $D_{\text{glob}}$ is governed by the Tracy-Widom distribution for unitary ensembles (as suggested heuristically by the GUE pair-correlation of the spacings in §7.2), the number of eigenvalues in a window of size $\eta$ near $t$ scales as $\mathcal{O}(t^{1/3})$. Thus, the resolvent trace is bounded by:
-$$ \operatorname{Tr}(D_{\text{glob}} - z)^{-1} \ll \frac{t^{1/3}}{\eta} $$
+$$ \mathrm{Tr}(D_{\text{glob}} - z)^{-1} \ll \frac{t^{1/3}}{\eta} $$
 The standard Phragmén-Lindelöf principle on the strip $[1/2, 1/2+\eta]$ implies:
 $$ \left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{c(\eta)} \ll t^{\frac{1}{3} + \epsilon} $$
 which is obtained by setting $\eta \sim t^{-1/3}$. This breaks the $t^{1/2}$ convexity barrier and recovers the Weyl exponent. Subconvexity is therefore revealed as the analytic manifestation of the Ramanujan expansion properties of the local non-Archimedean Bruhat-Tits trees acting on the global Dirac spectrum.
@@ -228,9 +228,9 @@ The following table summarizes the first five non-trivial zeros on the critical 
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Riemann Zeta $\zeta(s)^{[1]}$ | GL(1) | 1 | 14.1347 | 21.0220 | 25.0108 | 30.4249 | 32.9351 |
 | Ramanujan Delta $L(s, \Delta)^{[2]}$ | GL(2) | 1 | 9.2224 | 13.9075 | 17.4428 | 19.6565 | 22.3361 |
-| Symmetric Square $L(s, \operatorname{Sym}^2(\Delta))^{[3]}$ | GL(3) | 1 | 13.6930 | 17.2210 | 21.0180 | 23.4560 | 26.8910 |
-| Symmetric Cube $L(s, \operatorname{Sym}^3(\Delta))^{[4]}$ | GL(4) | 1 | 7.2028 | 9.5296 | 11.4088 | 12.8476 | 14.2928 |
-| Symmetric Fourth $L(s, \operatorname{Sym}^4(\Delta))^{[5]}$ | GL(5) | 1 | 6.0226 | 6.9512 | 7.6155 | 8.8463 | 10.6141 |
+| Symmetric Square $L(s, \mathrm{Sym}^2(\Delta))^{[3]}$ | GL(3) | 1 | 13.6930 | 17.2210 | 21.0180 | 23.4560 | 26.8910 |
+| Symmetric Cube $L(s, \mathrm{Sym}^3(\Delta))^{[4]}$ | GL(4) | 1 | 7.2028 | 9.5296 | 11.4088 | 12.8476 | 14.2928 |
+| Symmetric Fourth $L(s, \mathrm{Sym}^4(\Delta))^{[5]}$ | GL(5) | 1 | 6.0226 | 6.9512 | 7.6155 | 8.8463 | 10.6141 |
 | Artin L-Function (Conductor 800)$^{[6]}$ | GL(4) | 800 | 5.1015 | 5.5613 | 6.0244 | 6.4910 | 6.9613 |
 
 ---
@@ -238,8 +238,8 @@ The following table summarizes the first five non-trivial zeros on the critical 
 * $^{[1]}$ Standard non-trivial Riemann zeros matching the Odlyzko zero-finding database.
 * $^{[2]}$ First five non-trivial zeros of the Ramanujan cusp form $L$-function of weight 12, matching the tables of Spira (1973).
 * $^{[3]}$ Symmetric square zeros verified against the LMFDB automorphic cusp form database (under representation `12.2.a.a`).
-* $^{[4]}$ Zeros computed via sign-change analysis of the completed $Z_{\operatorname{Sym}^3}(t)$ function, matching the analytic functorial lift structure on $GL(4)$ (cf. Cogdell & Piatetski-Shapiro).
-* $^{[5]}$ Zeros computed via sign-change sweeps of $Z_{\operatorname{Sym}^4}(t)$, consistent with the $GL(2) \to GL(5)$ functorial lifts of Kim & Shahidi.
+* $^{[4]}$ Zeros computed via sign-change analysis of the completed $Z_{\mathrm{Sym}^3}(t)$ function, matching the analytic functorial lift structure on $GL(4)$ (cf. Cogdell & Piatetski-Shapiro).
+* $^{[5]}$ Zeros computed via sign-change sweeps of $Z_{\mathrm{Sym}^4}(t)$, consistent with the $GL(2) \to GL(5)$ functorial lifts of Kim & Shahidi.
 * $^{[6]}$ First five zeros of the Buhler icosahedral Galois representation of conductor 800, matching Buhler's original 1978 calculations.
 
 ---
