@@ -160,3 +160,22 @@ def compute_resolvent_trace_diff(z, dim=1000, lambda_val=800.0, degree=4, OP_P_M
         
     return trace_diff
 
+def compute_perturbation_bound(xi_r1: np.ndarray, xi_components: list, D0_diag: np.ndarray) -> float:
+    """Compute the Hoffman-Wielandt bound on eigenvalue difference
+    between rank-1 and rank-N compressed operators: ||P_N - P_1||_F * ||D_0||_F.
+    """
+    xi_r1_norm = xi_r1 / np.linalg.norm(xi_r1)
+    P1 = np.outer(xi_r1_norm, np.conj(xi_r1_norm))
+    
+    V = np.column_stack(xi_components)
+    Q, _ = np.linalg.qr(V)
+    P_N = Q @ Q.T.conj()
+    
+    frob_norm_diff = np.linalg.norm(P_N - P1, 'fro')
+    D0_frob = np.linalg.norm(D0_diag) # norm of vector is Frobenius norm of diagonal matrix
+    
+    return frob_norm_diff * D0_frob
+
+def compute_frobenius_gap(P1: np.ndarray, PN: np.ndarray) -> float:
+    """Compute ||P_N - P_1||_F, the Frobenius norm of projection difference."""
+    return np.linalg.norm(PN - P1, 'fro')

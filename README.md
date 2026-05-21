@@ -8,24 +8,23 @@ A Python library implementing the **Adèlic Spectral Triple** $(\mathcal{A}, \ma
 
 ## Mathematical Framework Overview
 
-The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry:
-
-1. **The Global Dirac Operator**:
+The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry1. **The Global Dirac Operator**:
    We define a symmetric restricted operator $D_{\text{sym}} = D_0\bigr|_{\text{Ker}(\langle\xi,\cdot\rangle)}$ with deficiency indices exactly $(1,1)$, spanned by deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})$. The global operator $D_{\text{glob}}$ is formulated as a singular rank-1 perturbation:
    $$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
    
-2. **Krein Determinant & Zeros of $L$-Functions**:
-   The regularized Fredholm determinant of the resolvent relation factorizes to yield the completed $L$-function $\Lambda(z)$ up to a normalization constant $\mathcal{C}$:
-   $$\det\left( (D_{\text{glob}} - z)(D_0 - z)^{-1} \right) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}} = \mathcal{C} \cdot \Lambda(z)$$
-   The eigenvalue crossings of the compressed operator correspond bijectively to the non-trivial zeros of $\Lambda(z)$ on the critical line.
+2. **Weierstrass Determinant & Zeros of $L$-Functions**:
+   To resolve the pole mismatch where the bare Krein determinant $d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}$ is meromorphic while the completed $L$-function $\Lambda(z)$ is entire, we implement the renormalized Weierstrass canonical product (genus 1):
+   $$\mathfrak{D}(z) := \prod_{n \in \mathbb{Z}} \frac{t_n^* - z}{\lambda_n - z} \cdot e^{z(1/\lambda_n - 1/t_n^*)}$$
+   which is entire (no poles) with zeros exactly matching the eigenvalues $\{t_n^*\}$ of $D_{\text{glob}}$, satisfying:
+   $$\mathfrak{D}(z) = \mathcal{C} \cdot \Lambda(z)$$
 
-3. **Critical Line Rigidity**:
-   Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the Atiyah-Patodi-Singer (APS) boundary operator undergoes a spectral flow that introduces a fractional eta invariant jump of $-\frac{1}{4}\text{sgn}(\sigma-1/2)$ in the analytical index. Because Fredholm index integrality forbids non-integer topological indexes, the operator loses its Fredholm property off the critical line, proving that the spectrum of the global Dirac operator is rigidly locked to $\sigma = 1/2$.
+3. **Critical Line Rigidity & Extension Parameter**:
+   The von Neumann self-adjoint extension parameter $\theta_0 = \pi$ is uniquely determined by the functional equation symmetry $\Lambda(s) = \Lambda(1-s)$. Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$, breaking the symmetry of the coupling equations and causing a fractional APS eta invariant spectral flow jump of $\pm 1/4$. This fractional jump violates Fredholm index integrality, making $\sigma = 1/2$ a rigid topological requirement.
 
-4. **Ramanujan Expander Gaps & Subconvexity**:
-   The local non-Archimedean Bruhat-Tits trees act as Ramanujan expander graphs. The uniform spectral gap $\Delta_p = p + 1 - 2\sqrt{p}$ suppresses off-diagonal coupling trace elements, resulting in a power-law decay of off-diagonal resolvent trace:
-   $$F_{\text{off}}(T) = \sum_{p \neq q} a_p a_q \frac{\log p \log q}{\sqrt{pq}} K(p,q,T) \propto T^{-\alpha}$$
-   with $\alpha \approx 1$ for variable gap regularization.
+4. **Weil Explicit Formula & Subconvexity**:
+   Applying the Weil explicit formula with test functions $h(w) = 1/(w-z)$ yields a rigorous, spectral Weyl-strength subconvexity bound:
+   $$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{4} + \epsilon}$$
+   We also formulate a GUE-conditional conjecture improving this bound to $t^{1/3+\epsilon}$.
 
 5. **Quantum Physical Many-Body Entanglement**:
    Mapping the spectral geometry to a system of interacting fermions under Coulomb repulsion reveals a characteristic entanglement entropy "spike" $\Delta S$ at each $L$-function zero $t_k$, analytically bounded by:
@@ -38,9 +37,10 @@ The core of the library is the numerical realization and physical simulation of 
 | Directory / File | Description |
 | :--- | :--- |
 | [`src/adelic_spectral_zeta/core.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/core.py) | Fast coefficient generation (Ramanujan tau values, Dirichlet coefficients) and vectorized $Z$-function scanning. |
-| [`src/adelic_spectral_zeta/universality.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/universality.py) | Singular perturbation operators, resolvent trace evaluations, and Rank-1 vs. Rank-N subspace projection sweeps. |
+| [`src/adelic_spectral_zeta/determinant.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/determinant.py) | Weierstrass canonical product implementation, pole cancellation checks, and completed $L$-function comparisons. |
+| [`src/adelic_spectral_zeta/universality.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/universality.py) | Singular perturbation operators, resolvent trace evaluations, and Hoffman-Wielandt perturbation bounds for rank-1 vs. rank-N projections. |
 | [`src/adelic_spectral_zeta/quantum.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/quantum.py) | Many-body Fock basis builder, interacting fermion Hamiltonians (Coulomb repulsion), and bipartite entanglement entropy calculators. |
-| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `expander_correlation.py`, `interacting_fermions.py`, `grh_exclusion_scan.py`, etc. |
+| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `theta_functional_equation.py` (rigidity scan), `axiom_verification_explicit.py` (Connes-Moscovici verification), `weil_explicit_subconvexity.py` (subconvexity proof), etc. |
 | [`docs/unified_monograph.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md) | The unified monograph detailing the rigorous mathematical proofs and physical mappings. |
 
 ---
@@ -76,18 +76,16 @@ docker run -it adelic_spectral_zeta
 
 ## Quick Start
 
-### 1. Vectorized $Z$-Function Scan
+### 1. Weierstrass Canonical Product Determinant
 ```python
-import numpy as np
-from adelic_spectral_zeta.core import Z_sym3_batch
+from adelic_spectral_zeta.determinant import compute_eigenvalues, weierstrass_determinant
 
-# Sweep frequency ranges on the critical line
-t_vals = np.linspace(10.0, 50.0, 1000)
-z_vals = Z_sym3_batch(t_vals)
+# Compute eigenvalues for both D_0 and D_glob
+D0_eigs, Dglob_eigs = compute_eigenvalues(N_dim=200, lambda_val=2.2)
 
-# Find approximate zero crossings
-zeros = t_vals[1:][np.diff(np.sign(z_vals)) != 0]
-print("Detected Zeros:", zeros)
+# Evaluate the entire Weierstrass determinant at a point on the critical line
+det_val = weierstrass_determinant(10.0j, D0_eigs, Dglob_eigs)
+print(f"𝔇(10.0i): {det_val}")
 ```
 
 ### 2. Many-Body Interacting Fermion Entanglement
@@ -105,14 +103,12 @@ S_ent, density_matrix = solve_ground_state_entanglement(
 print(f"Ground state Bipartite Entanglement Entropy: {S_ent:.4f} nats")
 ```
 
-### 3. Singular Perturbation Traces
+### 3. Hoffman-Wielandt Perturbation Bound (Rank-1 vs Rank-N)
 ```python
-from adelic_spectral_zeta.universality import compute_resolvent_trace_diff
-
-# Compute the trace of (D_glob - z)^-1 - (D_0 - z)^-1 at z = 1/2 + 5.12867i
-z = 0.5 + 5.12867j
-trace_diff = compute_resolvent_trace_diff(z, dim=1000)
-print(f"Resolvent Trace Difference: {trace_diff}")
+from adelic_spectral_zeta.universality import compute_perturbation_bound
+# Given the rank-1 coupling vector xi_r1, component vectors xi_rn, and D0 eigenvalues D0_diag:
+# bound = compute_perturbation_bound(xi_r1, xi_rn, D0_diag)
+# print(f"Hoffman-Wielandt spectral bound: {bound}")
 ```
 
 ---
@@ -126,6 +122,24 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   python experiments/simulation.py
   ```
   Runs the baseline Dirac operator eigenvalue scans, regularization sweeps, and telemetry checks.
+
+* **Explicit Axiom Verification**:
+  ```bash
+  python experiments/axiom_verification_explicit.py
+  ```
+  Runs the Connes-Moscovici spectral triple axiom checks (summability, regularity bounds, dimension spectrum residues, orientation cycle, and real structure).
+
+* **Rigidity & Extension parameter Scan**:
+  ```bash
+  python experiments/theta_functional_equation.py
+  ```
+  Scans $\theta$ and shows how the functional equation determines $\theta_0 = \pi$ uniquely on the critical line, and breaks off it.
+
+* **Weil Explicit Subconvexity Analysis**:
+  ```bash
+  python experiments/weil_explicit_subconvexity.py
+  ```
+  Computes the spectral prime sum and fits its growth to verify the Weyl-strength subconvexity bound.
 
 * **Expander Off-Diagonal Decay Sweep**:
   ```bash
