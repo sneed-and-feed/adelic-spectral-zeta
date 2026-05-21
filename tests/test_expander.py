@@ -1,0 +1,55 @@
+import os
+import json
+import subprocess
+import pytest
+
+def test_traces_database_structure():
+    """Verify that the generated trace database is valid and contains expected keys."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, ".."))
+    traces_path = os.path.join(project_root, "data", "a5_hecke_traces.json")
+    
+    assert os.path.exists(traces_path), "Traces database file does not exist."
+    
+    with open(traces_path, "r", encoding="utf-8") as f:
+        db = json.load(f)
+        
+    assert isinstance(db, dict), "Database should be a JSON object (dict)."
+    assert len(db) > 0, "Database should not be empty."
+    
+    # Check Buhler's form
+    buhler_label = "800.1.bh.a"
+    assert buhler_label in db, f"Buhler's form {buhler_label} should be present in the database."
+    
+    buhler_data = db[buhler_label]
+    assert buhler_data["level"] == 800, "Buhler's form should have level 800."
+    assert "traces" in buhler_data, "Buhler's form data should contain traces."
+    
+    traces = buhler_data["traces"]
+    assert isinstance(traces, dict), "Traces should be a dictionary mapped by prime strings."
+    
+    # Verify specific traces for Buhler's form
+    assert traces.get("2") == 0, "Trace a_2 should be 0."
+    assert traces.get("3") == 0, "Trace a_3 should be 0."
+    assert traces.get("5") == -2, "Trace a_5 should be -2."
+    assert traces.get("13") == 6, "Trace a_13 should be 6."
+
+def test_expander_correlation_execution():
+    """Verify that the expander correlation script runs successfully and outputs the plot."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, ".."))
+    
+    # Paths
+    script_path = os.path.join(project_root, "experiments", "expander_correlation.py")
+    figure_path = os.path.join(project_root, "figures", "expander_decay_analysis.png")
+    
+    # Ensure clean state for figure
+    if os.path.exists(figure_path):
+        os.remove(figure_path)
+        
+    # Execute the script
+    result = subprocess.run(["python", script_path], capture_output=True, text=True)
+    
+    assert result.returncode == 0, f"Script failed with exit code {result.returncode}.\nStderr: {result.stderr}"
+    assert os.path.exists(figure_path), "The decay analysis plot was not created."
+    assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
