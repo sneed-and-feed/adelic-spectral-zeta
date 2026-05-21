@@ -48,26 +48,26 @@ $$\psi_n(x) = x^{-1/2 - i n \pi / \ln \lambda}$$
 Formally, we define the Archimedean Hilbert space as $\mathcal{H}_\infty = \ell^2(\mathbb{Z})$ with the unperturbed Dirac operator $D_0$ acting diagonally in the scale-invariant basis $\{|n\rangle\}_{n \in \mathbb{Z}}$:
 $$D_0 |n\rangle = \lambda_n |n\rangle, \quad \lambda_n = \frac{n \pi}{\ln \lambda}$$
 The natural domain of $D_0$ is the dense subspace:
-$$\operatorname{Dom}(D_0) = \left\{ u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\}$$
-Since $\lambda_n \in \mathbb{R}$, $D_0$ is self-adjoint on $\operatorname{Dom}(D_0)$.
+$$\text{Dom}(D_0) = \left\{ u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\}$$
+Since $\lambda_n \in \mathbb{R}$, $D_0$ is self-adjoint on $\text{Dom}(D_0)$.
 
 The global coupling vector $\xi$ is defined by:
 $$\xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_{\text{arch}}(n)$$
 where $A_p$ are the Satake parameters and $\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)$ represents the Gamma-conductor factor. Since $\psi(1/4 + it) \sim \ln|t|$ as $|t| \to \infty$, the components $\xi_n$ grow logarithmically: $\xi_n = \mathcal{O}(\ln|n|)$. Thus, $\xi \notin \ell^2(\mathbb{Z})$, meaning the projection $P_\xi$ cannot be defined directly on $\mathcal{H}_\infty$.
 
 To construct the global Dirac operator $D_{\text{glob}}$ rigorously, we use the theory of singular rank-1 perturbations:
-1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is defined on the domain $\operatorname{Dom}(D_0)$. It is continuous with respect to the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because the sequence $\left\{ \frac{\xi_n}{\lambda_n} \right\}$ is in $\ell^2(\mathbb{Z})$ (since $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$).
-2. We define the symmetric restriction $D_{\text{sym}} = D_0 |_{\operatorname{Dom}(D_{\text{sym}})}$ on the dense domain:
-   $$\operatorname{Dom}(D_{\text{sym}}) = \operatorname{Dom}(D_0) \cap \operatorname{Ker}(\langle \xi, \cdot \rangle) = \left\{ u \in \operatorname{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\}$$
-   Since $\operatorname{Dom}(D_{\text{sym}})$ is a closed subspace of codimension 1 in $\operatorname{Dom}(D_0)$ under the graph norm, $D_{\text{sym}}$ is a closed, densely defined symmetric operator.
-3. The deficiency spaces $\mathcal{K}_\pm = \operatorname{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors:
+1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is defined on the domain $\text{Dom}(D_0)$. It is continuous with respect to the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because the sequence $\left\{ \frac{\xi_n}{\lambda_n} \right\}$ is in $\ell^2(\mathbb{Z})$ (since $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$).
+2. We define the symmetric restriction $D_{\text{sym}} = D_0 |_{\text{Dom}(D_{\text{sym}})}$ on the dense domain:
+   $$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle) = \left\{ u \in \text{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\}$$
+   Since $\text{Dom}(D_{\text{sym}})$ is a closed subspace of codimension 1 in $\text{Dom}(D_0)$ under the graph norm, $D_{\text{sym}}$ is a closed, densely defined symmetric operator.
+3. The deficiency spaces $\mathcal{K}_\pm = \text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors:
    $$g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \implies g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$$
    Since $\xi_n = \mathcal{O}(\ln|n|)$ and $\lambda_n \sim n$, the sum $\sum_n |g_{\pm, n}|^2$ converges, so $g_\pm \in \ell^2(\mathbb{Z})$.
-   For any $u \in \operatorname{Dom}(D_{\text{sym}})$, we have:
+   For any $u \in \text{Dom}(D_{\text{sym}})$, we have:
    $$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
-   This proves that $g_\pm$ are orthogonal to the range of $D_{\text{sym}} \mp i\mathbb{I}$, meaning $\mathcal{K}_\pm = \operatorname{span}\{g_\pm\}$. Thus, the deficiency indices are exactly $(1, 1)$.
+   This proves that $g_\pm$ are orthogonal to the range of $D_{\text{sym}} \mp i\mathbb{I}$, meaning $\mathcal{K}_\pm = \text{span}\{g_\pm\}$. Thus, the deficiency indices are exactly $(1, 1)$.
 4. By von Neumann's theorem, all self-adjoint extensions $D_\theta$ of $D_{\text{sym}}$ are parameterized by a phase $\theta \in [0, 2\pi)$, which maps the normalized deficiency space via the isometry $U_\theta : g_+ \mapsto e^{i\theta} g_-$. The domain of the extension $D_\theta$ is given by:
-   $$\operatorname{Dom}(D_\theta) = \left\{ u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \operatorname{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\}$$
+   $$\text{Dom}(D_\theta) = \left\{ u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \text{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\}$$
    On this domain, $D_\theta$ acts as:
    $$D_\theta \left( u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) \right) = D_{\text{sym}} u + i c \left( g_+ - e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right)$$
    The global compressed Dirac operator $D_{\text{glob}}$ corresponds to a specific choice of $\theta_0$ that matches the physical adèlic boundary conditions, and its resolvent is given exactly by the regularized Krein formula. This guarantees that $D_{\text{glob}}$ is a self-adjoint operator on its domain.
@@ -144,7 +144,7 @@ $$\Vert P_{k+1} \hat{\xi}_{r1} \Vert^2 = 1 \qquad \text{and} \qquad D_{\mathrm{g
 
 **Proof.**
 By the definition of symmetric-power lifts, the local Langlands correspondence maps the Satake parameters of $\pi_p$ to the $k$-th symmetric powers of the two-dimensional representation. The Hecke eigenvalue $A_p$ is precisely the trace of the $(k+1)$-dimensional representation on the Frobenius class:
-$$A_p = \operatorname{Tr}(\operatorname{Sym}^k \rho(\operatorname{Frob}_p)) = \sum_{j=1}^{k+1} \alpha_{p, j}$$
+$$A_p = \text{Tr}(\text{Sym}^k \rho(\text{Frob}_p)) = \sum_{j=1}^{k+1} \alpha_{p, j}$$
 Thus the rank-1 coupling vector $\xi_{r1}$ is the linear combination $\xi_{r1} = \sum_{j=1}^{k+1} \xi_j$ where each $\xi_{j, n} = \sum_p \alpha_{p, j} \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln\lambda} + \frac{1}{k+1} \xi_{\mathrm{arch}}(n)$ is the Fourier-mode vector for the $j$-th Satake root. By construction, this sum lies in the span of $\{\xi_1, \dots, \xi_{k+1}\}$. The orthogonal projection $P_{k+1}$ onto that span therefore satisfies $P_{k+1} \xi_{r1} = \xi_{r1}$, so the normalized overlap is exactly 1. 
 
 The compressed operators coincide because the kernel of $(\mathbb{I} - P_{r1})$ is identical to the kernel of $(\mathbb{I} - P_{k+1})$ on the subspace orthogonal to the trace direction (the higher-rank components are linearly dependent via the trace relation). The Archimedean $\xi_{\mathrm{arch}}(n)$ term is unchanged. Hence the eigenvalue problem for the rank-1 compression is identical (up to the global Weyl-law normalization). This holds for any symmetric-power lift and, by the same trace argument, extends to any automorphic representation whose $L$-function coefficients are given by the character trace of the Langlands parameter. $\blacksquare$
@@ -173,12 +173,12 @@ Evaluating the system off the critical line $s = \sigma + it$ corresponds to a n
 $$D_0 \to D_0(\sigma) = D_0 - i\left(\sigma - \frac{1}{2}\right)\mathbb{I}$$
 For any $\sigma \neq 1/2$, the operator $D_0(\sigma)$ is no longer symmetric because:
 $$D_0(\sigma)^* = D_0 + i\left(\sigma - \frac{1}{2}\right)\mathbb{I} \neq D_0(\sigma)$$
-Since the imaginary drift is a multiple of the identity, the numerical range of $D_0(\sigma)$ is shifted entirely into the complex half-plane: $\operatorname{Im}\langle u, D_0(\sigma) u \rangle = -(\sigma - 1/2) \|u\|^2$. 
+Since the imaginary drift is a multiple of the identity, the numerical range of $D_0(\sigma)$ is shifted entirely into the complex half-plane: $\text{Im}\langle u, D_0(\sigma) u \rangle = -(\sigma - 1/2) \|u\|^2$. 
 
 Consequently:
-1. **Loss of Self-Adjointness**: No self-adjoint extensions exist for the restricted operator $D_{\text{sym}}(\sigma) = D_0(\sigma) |_{\operatorname{Dom}(D_{\text{sym}})}$ since the deficiency spaces collapse or become unbalanced.
+1. **Loss of Self-Adjointness**: No self-adjoint extensions exist for the restricted operator $D_{\text{sym}}(\sigma) = D_0(\sigma) |_{\text{Dom}(D_{\text{sym}})}$ since the deficiency spaces collapse or become unbalanced.
 2. **Eigenvalue Migration**: The eigenvalues of the perturbed operator $D_{\text{glob}}(\sigma)$ migrate off the real axis into the complex plane. 
-3. **Fredholm Collapse**: The APS boundary conditions require the boundary operator to be self-adjoint to define the spectral projection. If $\sigma \neq 1/2$, the boundary term $\frac{1}{4}\operatorname{sgn}(\sigma - 1/2) = \pm 1/4$ violates the integrality of the analytical index. Because the index of a Fredholm operator is topologically invariant and must be an integer, the operator ceases to be Fredholm off the critical line.
+3. **Fredholm Collapse**: The APS boundary conditions require the boundary operator to be self-adjoint to define the spectral projection. If $\sigma \neq 1/2$, the boundary term $\frac{1}{4}\text{sgn}(\sigma - 1/2) = \pm 1/4$ violates the integrality of the analytical index. Because the index of a Fredholm operator is topologically invariant and must be an integer, the operator ceases to be Fredholm off the critical line.
 
 Thus, the critical line $\sigma = 1/2$ is not merely a numerical locus of zeros but a **rigid topological requirement** for the existence of the spectral triple geometry.
 
@@ -188,7 +188,7 @@ To generalize the Artin spectral triple verification beyond Buhler's single exam
 We implemented a pipeline in [lmfdb_trace_fetch.py](../experiments/lmfdb_trace_fetch.py) to parse this data and cached the processed prime traces in [a5_hecke_traces.json](../data/a5_hecke_traces.json).
 
 Because the coefficients of these forms lie in number fields like $\mathbb{Q}(\sqrt{5})$ or cyclotomic extensions, the database stores the traces of the Hecke operators $T_p$ acting on the Galois orbit of the newform. In this framework, the completed $L$-function of the entire Galois orbit decomposes as a product of individual Galois conjugate $L$-functions:
-$$\Lambda(s, \operatorname{Orbit}(\rho)) = \prod_{\sigma} \Lambda(s, \rho^\sigma)$$
+$$\Lambda(s, \text{Orbit}(\rho)) = \prod_{\sigma} \Lambda(s, \rho^\sigma)$$
 The coefficients $a_p$ in the adèlic coupling vector $\xi_n$ are directly the integer traces of $T_p$ on the orbit subspace. For instance, for the level 800 form `800.1.bh.a` of dimension 8, the prime trace values are:
 * $a_2 = 0$
 * $a_3 = 0$
@@ -259,15 +259,15 @@ The analytic size of $L(1/2+it)$ is controlled by the completed $L$-function $\L
 
 #### Lemma 7.3.1 (Self-Adjoint Deficiency Spaces)
 *Let $D_{\text{sym}}$ be the symmetric restriction of the unperturbed diagonal Dirac operator $D_0$ defined on the domain:*
-$$\operatorname{Dom}(D_{\text{sym}}) = \operatorname{Dom}(D_0) \cap \operatorname{Ker}(\langle \xi, \cdot \rangle)$$
-*Then $D_{\text{sym}}$ has deficiency indices $(1,1)$, and its deficiency spaces $\mathcal{K}_\pm = \operatorname{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi$.*
+$$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle)$$
+*Then $D_{\text{sym}}$ has deficiency indices $(1,1)$, and its deficiency spaces $\mathcal{K}_\pm = \text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi$.*
 
 **Proof.**
-By definition, a vector $v \in \ell^2(\mathbb{Z})$ belongs to $\operatorname{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ if and only if:
-$$\langle v, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = 0 \quad \forall u \in \operatorname{Dom}(D_{\text{sym}})$$
+By definition, a vector $v \in \ell^2(\mathbb{Z})$ belongs to $\text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ if and only if:
+$$\langle v, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = 0 \quad \forall u \in \text{Dom}(D_{\text{sym}})$$
 Letting $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi$, we compute:
 $$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
-where the last equality follows because $u \in \operatorname{Ker}(\langle \xi, \cdot \rangle)$. Since $\xi_n = \mathcal{O}(\ln|n|)$ and $\lambda_n \sim n$, the components $g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$ satisfy:
+where the last equality follows because $u \in \text{Ker}(\langle \xi, \cdot \rangle)$. Since $\xi_n = \mathcal{O}(\ln|n|)$ and $\lambda_n \sim n$, the components $g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$ satisfy:
 $$\sum_{n=-\infty}^\infty |g_{\pm, n}|^2 \le C \sum_{n \neq 0} \frac{\ln^2|n|}{n^2 + 1} < \infty$$
 Thus, $g_\pm \in \ell^2(\mathbb{Z})$. Since any self-adjoint operator restricted to a codimension-1 subspace has deficiency indices at most $(1,1)$, and $g_\pm \neq 0$, the deficiency indices of $D_{\text{sym}}$ are exactly $(1,1)$ with deficiency spaces spanned by $g_\pm$. $\blacksquare$
 
@@ -288,9 +288,9 @@ $$\det\left( (D_{\text{glob}} - z)(D_0 - z)^{-1} \right) = 1 + \langle \xi, (D_0
 
 **Proof.**
 Let $d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}$. Since $R(z)$ is trace-class, the Fredholm determinant $\det(\mathbb{I} + R(z)(D_0 - z))$ is well-defined and equals $d(z)$. Taking the logarithmic derivative of $d(z)$:
-$$\frac{d'(z)}{d(z)} = \frac{\partial}{\partial z} \ln d(z) = \operatorname{Tr}\left( (D_0 - z)^{-1} - (D_{\text{glob}} - z)^{-1} \right)$$
+$$\frac{d'(z)}{d(z)} = \frac{\partial}{\partial z} \ln d(z) = \text{Tr}\left( (D_0 - z)^{-1} - (D_{\text{glob}} - z)^{-1} \right)$$
 By the Mittag-Leffler expansion, the trace is a sum over the poles:
-$$\operatorname{Tr}\left( (D_0 - z)^{-1} - (D_{\text{glob}} - z)^{-1} \right) = \sum_{k} \left( \frac{1}{\lambda_n - z} - \frac{1}{t_k^* - z} \right)$$
+$$\text{Tr}\left( (D_0 - z)^{-1} - (D_{\text{glob}} - z)^{-1} \right) = \sum_{k} \left( \frac{1}{\lambda_n - z} - \frac{1}{t_k^* - z} \right)$$
 On the other hand, the completed $L$-function $\Lambda(z)$ is an entire function of order 1, satisfying the Weierstrass product:
 $$\Lambda(z) = \Lambda(0) e^{A z} \prod_{k} \left( 1 - \frac{z}{t_k^*} \right) e^{z / t_k^*}$$
 Taking the logarithmic derivative of $\Lambda(z)$ yields:
@@ -301,22 +301,22 @@ Comparing the two logarithmic derivatives, they share the exact same set of pole
 *An eigenvalue of the compressed operator $D_{\text{glob}}(\lambda)$ crosses zero at $\lambda = \lambda_k$ if and only if $1/2 + i t_k^*$ is a non-trivial zero of the completed $L$-function $\Lambda(z)$.*
 
 **Proof.**
-The operator $D_{\text{glob}}$ has a zero-mode (an eigenvalue equal to 0) if and only if there exists a non-zero $u \in \operatorname{Dom}(D_{\text{glob}})$ such that $D_{\text{glob}} u = 0$. Since $D_{\text{glob}}$ is defined via the rank-1 compression:
+The operator $D_{\text{glob}}$ has a zero-mode (an eigenvalue equal to 0) if and only if there exists a non-zero $u \in \text{Dom}(D_{\text{glob}})$ such that $D_{\text{glob}} u = 0$. Since $D_{\text{glob}}$ is defined via the rank-1 compression:
 $$D_0 u - \frac{\langle \xi, u \rangle}{1 + \langle \xi, D_0^{-1} \xi \rangle_{\text{reg}}} D_0^{-1} \xi = 0$$
 If $\langle \xi, u \rangle = 0$, then $D_0 u = 0$, which implies $u = 0$ since $D_0$ has a trivial kernel in $\ell^2(\mathbb{Z})$ (as $\lambda_0 = 0$ is excluded or regularized). Thus, we must have $\langle \xi, u \rangle \neq 0$. Applying the linear functional $\langle \xi, \cdot \rangle$ to both sides and dividing by the non-zero value yields the condition:
 $$1 + \langle \xi, D_0^{-1} \xi \rangle_{\text{reg}} = 0$$
 By Theorem 7.3.3, evaluating this determinant at $z = it$ corresponds to $d(it) = \mathcal{C} \Lambda(it)$. Thus, the compressed operator has a zero-mode if and only if $\Lambda(1/2 + it) = 0$, establishing a bijection between the kernel crossings and the zeros of the $L$-function. $\blacksquare$
 
 #### Lemma 7.3.5 (APS Eta Jump Derivation)
-*Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the Atiyah-Patodi-Singer (APS) boundary operator $A$ becomes non-self-adjoint, undergoing a spectral flow crossing that introduces a fractional sign defect of $-\frac{1}{4}\operatorname{sgn}(\sigma-1/2)$ in the analytical index, violating index integrality.*
+*Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the Atiyah-Patodi-Singer (APS) boundary operator $A$ becomes non-self-adjoint, undergoing a spectral flow crossing that introduces a fractional sign defect of $-\frac{1}{4}\text{sgn}(\sigma-1/2)$ in the analytical index, violating index integrality.*
 
 **Proof.**
 Let $\widetilde{D}$ be the Dirac operator on a cylinder $\mathfrak{M} = X \times [0, 1]$ equipped with APS boundary conditions. The analytical index is given by:
-$$\operatorname{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \omega_{\text{index}} - \frac{\eta_A(0) + \dim \operatorname{Ker}(A)}{2}$$
+$$\text{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \omega_{\text{index}} - \frac{\eta_A(0) + \dim \text{Ker}(A)}{2}$$
 where $\eta_A(0)$ is the eta invariant of the boundary operator $A$. Under a non-unitary deformation off the critical line, the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$. The boundary operator $A$ experiences an eigenvalue shift $\mu \to \mu - i(\sigma - 1/2)$.
 Whenever the real part of an eigenvalue of $A$ crosses zero, the eta invariant $\eta_A(0)$ undergoes a discontinuous jump of:
-$$\Delta \eta_A(0) = \operatorname{sgn}(\mu_{\text{after}}) - \operatorname{sgn}(\mu_{\text{before}}) = \pm 1$$
-In our regularized singular boundary projection, this eigenvalue crossing corresponding to the deficiency space migration off the critical line results in a boundary correction term of $-\frac{1}{4}\operatorname{sgn}(\sigma - 1/2)$.
+$$\Delta \eta_A(0) = \text{sgn}(\mu_{\text{after}}) - \text{sgn}(\mu_{\text{before}}) = \pm 1$$
+In our regularized singular boundary projection, this eigenvalue crossing corresponding to the deficiency space migration off the critical line results in a boundary correction term of $-\frac{1}{4}\text{sgn}(\sigma - 1/2)$.
 Because the analytical index of a Fredholm operator is a topological invariant and must be an integer, any non-integer index value (which occurs for any $\sigma \neq 1/2$ due to the $\pm 1/4$ fractional jump) is mathematically forbidden. Thus, the operator $D_{\text{glob}}(\sigma)$ ceases to be Fredholm off the critical line, proving that $\sigma = 1/2$ is the unique stable support. $\blacksquare$
 
 #### Subconvexity Bounds
@@ -325,9 +325,9 @@ $$\Delta_p = p + 1 - 2\sqrt{p}$$
 This gap prevents any accumulation of eigenvalues near the origin from the non-Archimedean places, regularizing the Fredholm determinant.
 
 To derive the subconvexity bound, we integrate the real part of the resolvent trace along a shifted vertical line $z = 1/2 + \eta + it$, where the shift $\eta > 0$ is optimized with respect to $t$:
-$$\ln |\Lambda(1/2 + it)| \le \operatorname{Re} \int_{1/2 + \eta + it_0}^{1/2 + \eta + it} \operatorname{Tr}\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) dz + \mathcal{O}(1)$$
+$$\ln |\Lambda(1/2 + it)| \le \text{Re} \int_{1/2 + \eta + it_0}^{1/2 + \eta + it} \text{Tr}\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) dz + \mathcal{O}(1)$$
 Using the GUE spacing statistics established numerically in §7.2, we assume the density of eigenvalues near the spectral boundary of $D_{\text{glob}}$ is governed by the Tracy-Widom distribution. For a GUE-like spectrum, the number of eigenvalues in a window of size $\eta$ near $t$ scales as $\mathcal{O}(t^{1/3})$. Applying this eigenvalue density to bound the regularized resolvent trace yields:
-$$\operatorname{Tr}\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) \ll \frac{t^{1/3}}{\eta}$$
+$$\text{Tr}\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) \ll \frac{t^{1/3}}{\eta}$$
 Integrating this bound and applying the Phragmén-Lindelöf principle on the strip $[1/2, 1/2+\eta]$ gives:
 $$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{3} + \epsilon}$$
 which is obtained by setting the optimal shift $\eta \sim t^{-1/3}$. This breaks the classical $t^{1/2}$ convexity barrier. Subconvexity is thus revealed as the analytic manifestation of the Ramanujan expansion properties of the local non-Archimedean Bruhat-Tits trees acting on the global Dirac spectrum.

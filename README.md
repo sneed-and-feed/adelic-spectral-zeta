@@ -9,7 +9,7 @@ An operator-theoretic and quantum-physical simulation library implementing the *
 The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry:
 
 1. **The Global Dirac Operator**:
-   We define a symmetric restricted operator $D_{\text{sym}} = D_0\bigr|_{\operatorname{Ker}(\langle\xi,\cdot\rangle)}$ with deficiency indices exactly $(1,1)$, spanned by deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})$. The global operator $D_{\text{glob}}$ is formulated as a singular rank-1 perturbation:
+   We define a symmetric restricted operator $D_{\text{sym}} = D_0\bigr|_{\text{Ker}(\langle\xi,\cdot\rangle)}$ with deficiency indices exactly $(1,1)$, spanned by deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})$. The global operator $D_{\text{glob}}$ is formulated as a singular rank-1 perturbation:
    $$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
    
 2. **Krein Determinant & Zeros of $L$-Functions**:
@@ -18,7 +18,7 @@ The core of the library is the numerical realization and physical simulation of 
    The eigenvalue crossings of the compressed operator correspond bijectively to the non-trivial zeros of $\Lambda(z)$ on the critical line.
 
 3. **Critical Line Rigidity**:
-   Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the Atiyah-Patodi-Singer (APS) boundary operator undergoes a spectral flow that introduces a fractional eta invariant jump of $-\frac{1}{4}\operatorname{sgn}(\sigma-1/2)$ in the analytical index. Because Fredholm index integrality forbids non-integer topological indexes, the operator loses its Fredholm property off the critical line, proving that the spectrum of the global Dirac operator is rigidly locked to $\sigma = 1/2$.
+   Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the Atiyah-Patodi-Singer (APS) boundary operator undergoes a spectral flow that introduces a fractional eta invariant jump of $-\frac{1}{4}\text{sgn}(\sigma-1/2)$ in the analytical index. Because Fredholm index integrality forbids non-integer topological indexes, the operator loses its Fredholm property off the critical line, proving that the spectrum of the global Dirac operator is rigidly locked to $\sigma = 1/2$.
 
 4. **Ramanujan Expander Gaps & Subconvexity**:
    The local non-Archimedean Bruhat-Tits trees act as Ramanujan expander graphs. The uniform spectral gap $\Delta_p = p + 1 - 2\sqrt{p}$ suppresses off-diagonal coupling trace elements, resulting in a power-law decay of off-diagonal resolvent trace:
