@@ -58,11 +58,14 @@ def compute_eigenvalues(N_dim: int = 500, lambda_val: float = 29.0,
 def weierstrass_determinant(z: complex, D0_eigs: np.ndarray, 
                              Dglob_eigs: np.ndarray, 
                              genus: int = 1) -> complex:
-    """Compute the renormalized Weierstrass canonical product:
+    """Compute the meromorphic determinant ratio:
     
-    𝔇(z) = ∏_n [(t_n* - z)/(λ_n - z)] · exp(z(1/λ_n - 1/t_n*))
+    𝔇_ratio(z) = ∏_n [(t_n* - z)/(λ_n - z)] · exp(z(1/λ_n - 1/t_n*))
     
     where {t_n*} are eigenvalues of D_glob and {λ_n} are eigenvalues of D_0.
+    Note that this is the ratio of regularized determinants, which is meromorphic
+    and has simple poles at λ_n. The completed spectral determinant is
+    𝔇_glob(z) = 𝔇_ratio(z) * 𝔇_0(z), which is entire.
     """
     # Exclude 0 eigenvalue from both to avoid division by zero
     # D0_eigs has exactly one 0 at the center (n = N_dim)
@@ -97,6 +100,19 @@ def weierstrass_determinant(z: complex, D0_eigs: np.ndarray,
     log_val = np.sum(term_log + term_exp)
     return np.exp(log_val)
 
+def unperturbed_determinant(z: complex, D0_eigs: np.ndarray) -> complex:
+    """Compute the regularized determinant of D_0 (without the zero mode at z=0):
+    
+    𝔇_0(z) = ∏_{λ_n ≠ 0} (1 - z/λ_n) exp(z/λ_n)
+    """
+    D0_non_zero = D0_eigs[np.abs(D0_eigs) > 1e-9]
+    arg_d0 = 1.0 - z / D0_non_zero
+    arg_d0_complex = arg_d0.astype(complex)
+    arg_d0_complex[np.abs(arg_d0_complex) < 1e-30] = 1e-30
+    term_log_d0 = np.log(arg_d0_complex)
+    term_exp_d0 = z / D0_non_zero
+    return np.exp(np.sum(term_log_d0 + term_exp_d0))
+
 def bare_krein_determinant(z: complex, D0_eigs: np.ndarray, 
                             xi: np.ndarray, z0: complex = 1j) -> complex:
     """Compute the bare (MEROMORPHIC) Krein determinant for comparison:
@@ -116,10 +132,10 @@ def bare_krein_determinant(z: complex, D0_eigs: np.ndarray,
 
 def verify_entireness(D0_eigs: np.ndarray, Dglob_eigs: np.ndarray,
                       n_test_points: int = 5) -> Dict[str, Any]:
-    """Verify that 𝔇(z) has no poles near the unperturbed eigenvalues by continuity.
+    """Verify that the completed spectral determinant has no poles near unperturbed eigenvalues.
     
-    Evaluates 𝔇(z) at points z = λ_n + ε for small ε, checking that
-    the ratio 𝔇(λ_n + ε_1) / 𝔇(λ_n + ε_2) remains close to 1.
+    Evaluates 𝔇_glob(z) = 𝔇_ratio(z) * 𝔇_0(z) at points z = λ_n + ε for small ε, checking that
+    the ratio 𝔇_glob(λ_n + ε_1) / 𝔇_glob(λ_n + ε_2) remains close to 1 (poles are cancelled).
     """
     # Let's pick a few eigenvalues of D_0 that are not zero
     test_lambda = D0_eigs[np.abs(D0_eigs) > 1e-2]
@@ -138,8 +154,10 @@ def verify_entireness(D0_eigs: np.ndarray, Dglob_eigs: np.ndarray,
     max_krein_ratio = 0.0
     
     for lam in test_lambda:
-        val_w1 = weierstrass_determinant(lam + eps1, D0_eigs, Dglob_eigs)
-        val_w2 = weierstrass_determinant(lam + eps2, D0_eigs, Dglob_eigs)
+        # Completed determinant value at eps1
+        val_w1 = weierstrass_determinant(lam + eps1, D0_eigs, Dglob_eigs) * unperturbed_determinant(lam + eps1, D0_eigs)
+        # Completed determinant value at eps2
+        val_w2 = weierstrass_determinant(lam + eps2, D0_eigs, Dglob_eigs) * unperturbed_determinant(lam + eps2, D0_eigs)
         
         ratio_w = np.abs(val_w1) / np.abs(val_w2)
         max_ratio_deviation = max(max_ratio_deviation, np.abs(ratio_w - 1.0))
@@ -149,9 +167,9 @@ def verify_entireness(D0_eigs: np.ndarray, Dglob_eigs: np.ndarray,
         ratio_k = np.abs(val_k1) / np.abs(val_k2)
         max_krein_ratio = max(max_krein_ratio, ratio_k)
             
-    # For Weierstrass, ratio should be close to 1 (deviation < 0.1)
+    # For Completed Determinant, ratio should be extremely close to 1 (deviation < 0.01)
     # For bare Krein, it should blow up (ratio_k should be around eps1/eps2 ~ 100)
-    poles_cancelled = max_ratio_deviation < 0.05 and max_krein_ratio > 10.0
+    poles_cancelled = max_ratio_deviation < 0.01 and max_krein_ratio > 10.0
     
     return {
         'max_ratio_deviation': max_ratio_deviation,
@@ -164,25 +182,19 @@ def compare_with_completed_L(t_arr: np.ndarray, D0_eigs: np.ndarray,
                               Dglob_eigs: np.ndarray) -> Dict[str, Any]:
     """Compute 𝔇_glob(t)/Λ(1/2+it) at multiple real points t and verify the ratio is constant.
     
-    𝔇_glob(t) = 𝔇(t) * 𝔇_0(t)
+    𝔇_glob(t) = 𝔇_ratio(t) * 𝔇_0(t)
     Λ(s) = π^{-s/2} Γ(s/2) ζ(s)
     """
     ratios = []
-    D0_non_zero = D0_eigs[np.abs(D0_eigs) > 1e-9]
     
     for t in t_arr:
-        # Evaluate 𝔇(t)
+        # Evaluate 𝔇_ratio(t)
         val_w = weierstrass_determinant(t, D0_eigs, Dglob_eigs)
         
         # Compute Weierstrass product of D0: 𝔇_0(t)
-        arg_d0 = 1.0 - t / D0_non_zero
-        arg_d0_complex = arg_d0.astype(complex)
-        arg_d0_complex[np.abs(arg_d0_complex) < 1e-30] = 1e-30
-        term_log_d0 = np.log(arg_d0_complex)
-        term_exp_d0 = t / D0_non_zero
-        val_d0 = np.exp(np.sum(term_log_d0 + term_exp_d0))
+        val_d0 = unperturbed_determinant(t, D0_eigs)
         
-        # Completed product 𝔇_glob(t) = 𝔇(t) * 𝔇_0(t)
+        # Completed product 𝔇_glob(t) = 𝔇_ratio(t) * 𝔇_0(t)
         val_glob = val_w * val_d0
         
         # Evaluate completed L-function Λ(1/2+it)

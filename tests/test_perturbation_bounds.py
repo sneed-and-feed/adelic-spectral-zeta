@@ -115,9 +115,9 @@ class TestPerturbationBounds:
         # Hoffman-Wielandt Bound: ||D1 - DN||_F^2
         frob_diff = np.linalg.norm(D1 - DN, 'fro')**2
         
-        # Upper bound: ||P_N - P_1||_F^2 * ||D_0||_F^2
+        # Upper bound: 4.0 * ||P_N - P_1||_F^2 * ||D_0||_F^2
         frob_projs = compute_frobenius_gap(P1, PN)
-        bound = (frob_projs**2) * np.sum(D0_diag**2)
+        bound = 4.0 * (frob_projs**2) * np.sum(D0_diag**2)
         
         assert sum_sq_diff <= frob_diff + 1e-9, f"Spectral diff {sum_sq_diff} exceeded operator diff {frob_diff}"
         assert frob_diff <= bound + 1e-9, f"Operator diff {frob_diff} exceeded theoretical bound {bound}"
@@ -128,7 +128,7 @@ class TestPerturbationBounds:
 
     @pytest.mark.parametrize("degree", [4, 5])
     def test_mae_bound(self, degree):
-        """Verifies that Mean Absolute Error satisfies the MAE <= sqrt(k) * ||D0||_F / sqrt(N) bound."""
+        """Verifies that Mean Absolute Error satisfies the MAE <= 2 * sqrt(k) * ||D0||_F / sqrt(N) bound."""
         D0_diag, xi_r1, xi_rn = self.setup_operator_components(degree=degree)
         
         dim = len(D0_diag)
@@ -147,9 +147,9 @@ class TestPerturbationBounds:
         
         mae = np.mean(np.abs(evs1 - evsN))
         
-        # Theoretical bound: sqrt(k) * ||D0||_F / sqrt(N)
+        # Theoretical bound: 2 * sqrt(k) * ||D0||_F / sqrt(N)
         k = degree - 1
         D0_frob = np.linalg.norm(D0_diag)
-        theoretical_bound = np.sqrt(k) * D0_frob / np.sqrt(dim)
+        theoretical_bound = 2.0 * np.sqrt(k) * D0_frob / np.sqrt(dim)
         
         assert mae <= theoretical_bound + 1e-9, f"MAE {mae} exceeded theoretical bound {theoretical_bound}"

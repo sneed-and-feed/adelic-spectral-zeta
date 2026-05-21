@@ -13,10 +13,10 @@ The core of the library is the numerical realization and physical simulation of 
    $$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
    
 2. **Weierstrass Determinant & Zeros of $L$-Functions**:
-   To resolve the pole mismatch where the bare Krein determinant $d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}$ is meromorphic while the completed $L$-function $\Lambda(z)$ is entire, we implement the renormalized Weierstrass canonical product (genus 1):
-   $$\mathfrak{D}(z) := \prod_{n \in \mathbb{Z}} \frac{t_n^* - z}{\lambda_n - z} \cdot e^{z(1/\lambda_n - 1/t_n^*)}$$
-   which is entire (no poles) with zeros exactly matching the eigenvalues $\{t_n^*\}$ of $D_{\text{glob}}$, satisfying:
-   $$\mathfrak{D}(z) = \mathcal{C} \cdot \Lambda(z)$$
+   To resolve the pole mismatch where the bare Krein determinant/ratio $\mathfrak{D}_{\text{ratio}}(z)$ is meromorphic with poles at $\{\lambda_n\}$, while the completed $L$-function $\Lambda(z)$ is entire, we define the completed spectral determinant:
+   $$\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)$$
+   where $\mathfrak{D}_0(z)$ is the Weierstrass product over the unperturbed eigenvalues $\{\lambda_n\}$. The multiplication by $\mathfrak{D}_0(z)$ exactly cancels the poles of $\mathfrak{D}_{\text{ratio}}(z)$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $\{t_n^*\}$, satisfying:
+   $$\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)$$
 
 3. **Critical Line Rigidity & Extension Parameter**:
    The von Neumann self-adjoint extension parameter $\theta_0 = \pi$ is uniquely determined by the functional equation symmetry $\Lambda(s) = \Lambda(1-s)$. Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$, breaking the symmetry of the coupling equations and causing a fractional APS eta invariant spectral flow jump of $\pm 1/4$. This fractional jump violates Fredholm index integrality, making $\sigma = 1/2$ a rigid topological requirement.

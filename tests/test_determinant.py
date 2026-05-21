@@ -15,9 +15,9 @@ class TestWeierstrassDeterminant:
         return compute_eigenvalues(N_dim=200, lambda_val=29.0, p_max=151)
     
     def test_entireness_no_poles(self, eigenvalues):
-        """𝔇(z) must have no poles at unperturbed eigenvalues λ_n."""
+        """𝔇_glob(z) must have no poles at unperturbed eigenvalues λ_n."""
         result = verify_entireness(*eigenvalues, n_test_points=5)
-        assert result['max_weierstrass_at_poles'] < 1e5
+        assert result['max_weierstrass_at_poles'] < 0.05
     
     def test_bare_krein_has_poles(self, eigenvalues):
         """The bare Krein determinant d(z) SHOULD have poles at λ_n."""
