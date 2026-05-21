@@ -17,7 +17,8 @@ if result.stderr:
     print(result.stderr)
 
 # Check files
-output_dir = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+output_dir = os.path.abspath(os.path.join(script_dir, ".."))
 expected_files = [
     os.path.join("figures", "phase1_eigenvalues.png"),
     os.path.join("data", "phase2_regularization.txt"),

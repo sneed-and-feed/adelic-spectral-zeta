@@ -6,8 +6,12 @@ import scipy.linalg as la
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-# Ensure output directory exists
-os.makedirs("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta", exist_ok=True)
+# Determine project root dynamically relative to this script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+figures_dir = os.path.join(script_dir, "..", "figures")
+data_dir = os.path.join(script_dir, "..", "data")
+os.makedirs(figures_dir, exist_ok=True)
+os.makedirs(data_dir, exist_ok=True)
 
 # Set matplotlib backend to Agg to run headlessly
 import matplotlib
@@ -27,7 +31,7 @@ all_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61
 print("Precomputing first 100 true Riemann zeros...")
 true_zeros = np.array([float(mpmath.zetazero(k).imag) for k in range(1, 101)])
 
-csv_path = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/optimization_telemetry.csv"
+csv_path = os.path.join(data_dir, "optimization_telemetry.csv")
 telemetry_data = []
 
 # Open CSV for writing
@@ -169,8 +173,8 @@ ax.set_title(f'Phase Space Dissonance Landscape (N = {N_opt})')
 ax.scatter([optimal_run['lambda']], [optimal_run['p_max']], [optimal_run['mean_error_50']], color='red', s=100, label='Global Optimum')
 ax.legend()
 
-plt.savefig("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/dissonance_landscape.png", dpi=300)
+plt.savefig(os.path.join(figures_dir, "dissonance_landscape.png"), dpi=300)
 plt.close()
 
-print("Plot successfully saved to scratch/adelic_spectral_zeta/dissonance_landscape.png")
+print(f"Plot successfully saved to {os.path.join(figures_dir, 'dissonance_landscape.png')}")
 print("=== Optimization Process Finished ===")

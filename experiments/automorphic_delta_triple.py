@@ -191,8 +191,8 @@ ax2.set_title(f'Twisted Fluctuation vs Automorphic Weil Comb\n(corr = {corr:.4f}
 ax2.legend(facecolor='#1a1a2e', labelcolor='white')
 ax2.grid(True, linestyle='--', alpha=0.3, color='#555')
 
-plt.tight_layout()
-out_path = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/automorphic_resonance_landscape.png"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out_path = os.path.join(script_dir, "..", "figures", "automorphic_resonance_landscape.png")
 plt.savefig(out_path, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 print(f"\nPlot saved to: {out_path}")

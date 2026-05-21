@@ -195,7 +195,9 @@ axes[2].legend(facecolor='#1a1a2e', labelcolor='white')
 axes[2].grid(True, linestyle='--', alpha=0.3, color='#555')
 
 plt.tight_layout()
-out = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/gue_pair_correlation.png"
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "gue_pair_correlation.png")
 plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 

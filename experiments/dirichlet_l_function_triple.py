@@ -4,8 +4,10 @@ import mpmath
 import scipy.linalg as la
 import matplotlib.pyplot as plt
 
-# Ensure output directory exists
-os.makedirs("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta", exist_ok=True)
+# Ensure figures directory exists
+script_dir = os.path.dirname(os.path.abspath(__file__))
+figures_dir = os.path.join(script_dir, "..", "figures")
+os.makedirs(figures_dir, exist_ok=True)
 
 # Set matplotlib backend to Agg to run headlessly
 import matplotlib
@@ -169,9 +171,8 @@ ax2.set_title(f'Twisted Fluctuation vs Dirichlet Weil Comb (corr={corr:.4f})')
 ax2.grid(True, linestyle='--', alpha=0.5)
 ax2.legend()
 
-plt.tight_layout()
-plt.savefig("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/dirichlet_character_resonance.png", dpi=300)
+plt.savefig(os.path.join(figures_dir, "dirichlet_character_resonance.png"), dpi=300)
 plt.close()
 
-print("Plots successfully saved to scratch/adelic_spectral_zeta/dirichlet_character_resonance.png")
+print(f"Plots successfully saved to {os.path.join(figures_dir, 'dirichlet_character_resonance.png')}")
 print("=== Dirichlet Sandbox Modulo 3 Sweep Finished ===")

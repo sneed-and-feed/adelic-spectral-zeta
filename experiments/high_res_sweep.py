@@ -5,8 +5,12 @@ import mpmath
 import scipy.linalg as la
 import matplotlib.pyplot as plt
 
-# Ensure output directory exists
-os.makedirs("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta", exist_ok=True)
+# Determine project root dynamically relative to this script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+figures_dir = os.path.join(script_dir, "..", "figures")
+data_dir = os.path.join(script_dir, "..", "data")
+os.makedirs(figures_dir, exist_ok=True)
+os.makedirs(data_dir, exist_ok=True)
 
 # Set matplotlib backend to Agg to run headlessly
 import matplotlib
@@ -28,7 +32,7 @@ all_primes = [
 print("Precomputing first 150 true Riemann zeros...")
 true_zeros = np.array([float(mpmath.zetazero(k).imag) for k in range(1, 151)])
 
-csv_path = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/high_res_asymptotics.csv"
+csv_path = os.path.join(data_dir, "high_res_asymptotics.csv")
 telemetry_data = []
 
 total_runs = len(lambdas) * len(Ns) * len(p_maxs)
@@ -209,8 +213,8 @@ ax2.grid(True, linestyle='--', alpha=0.5)
 ax2.legend()
 
 plt.tight_layout()
-plt.savefig("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/horizon_expansion_analysis.png", dpi=300)
+plt.savefig(os.path.join(figures_dir, "horizon_expansion_analysis.png"), dpi=300)
 plt.close()
 
-print("Dual-panel plot saved to scratch/adelic_spectral_zeta/horizon_expansion_analysis.png")
+print(f"Dual-panel plot saved to {os.path.join(figures_dir, 'horizon_expansion_analysis.png')}")
 print("=== Asymptotic Sweep Completed Successfully ===")

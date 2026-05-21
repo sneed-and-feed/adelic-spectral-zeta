@@ -5,8 +5,12 @@ import scipy.linalg as la
 import sympy as sp
 import matplotlib.pyplot as plt
 
-# Ensure output directory exists
-os.makedirs("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta", exist_ok=True)
+# Determine project root dynamically relative to this script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+figures_dir = os.path.join(script_dir, "..", "figures")
+data_dir = os.path.join(script_dir, "..", "data")
+os.makedirs(figures_dir, exist_ok=True)
+os.makedirs(data_dir, exist_ok=True)
 
 # Set matplotlib backend to Agg to run headlessly
 import matplotlib
@@ -89,7 +93,7 @@ plt.ylabel('Imaginary Part / Eigenvalue')
 plt.title(f'Phase 1: Eigenvalue Convergence (lambda={lam_opt}, N={N_val})')
 plt.legend()
 plt.grid(True, linestyle='--', alpha=0.6)
-plt.savefig("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/phase1_eigenvalues.png", dpi=300)
+plt.savefig(os.path.join(figures_dir, "phase1_eigenvalues.png"), dpi=300)
 plt.close()
 
 # ==============================================================================
@@ -137,7 +141,7 @@ print("Global regularization eliminates local C_p scaling constants because the 
 print("of the regularized determinant depends only on the Euler factor derivatives, which contain no C_p.")
 
 # Write Phase 2 verification results to a report file
-with open("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/phase2_regularization.txt", "w") as f:
+with open(os.path.join(data_dir, "phase2_regularization.txt"), "w") as f:
     f.write("=== Phase 2 Verification Report ===\n")
     f.write(f"Local p-adic residue at z=1: {residue_p}\n")
     f.write(f"Regularized log determinant: {log_det_p_reg}\n")
@@ -174,7 +178,7 @@ plt.ylabel('Metric Inflation/Contraction Factor eta')
 plt.title('Phase 3: Scaling Flow Metric Inflation on Bruhat-Tits Tree')
 plt.legend()
 plt.grid(True, which="both", linestyle='--', alpha=0.6)
-plt.savefig("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/phase3_metric_inflation.png", dpi=300)
+plt.savefig(os.path.join(figures_dir, "phase3_metric_inflation.png"), dpi=300)
 plt.close()
 
 # Evaluate telemetry at Re(s) = 0.5 (critical line) and off the critical line
@@ -186,10 +190,10 @@ for r in telemetry_re_s:
     print(f"Re(s) = {r:.1f}: Distortion Ratio = {ratio:.6f} ({status})")
 
 # Write telemetry report
-with open("C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/phase3_telemetry.txt", "w") as f:
+with open(os.path.join(data_dir, "phase3_telemetry.txt"), "w") as f:
     f.write("=== Phase 3 Telemetry Report ===\n")
     for r in re_s_vals[::10]:
         ratio = 2.0**(r - 0.5)
         f.write(f"Re(s)={r:.2f}, ratio={ratio:.6f}\n")
 
-print("\nAll simulations completed successfully. Outputs saved to scratch/adelic_spectral_zeta/")
+print(f"\nAll simulations completed successfully. Outputs saved relative to the project root.")

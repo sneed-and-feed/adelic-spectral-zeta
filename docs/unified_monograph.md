@@ -116,7 +116,7 @@ The simulation results for $GL(4)$ and $GL(5)$ sweeps over $\lambda \in [15.0, 3
   - **Rank-5 Min MAE**: $5.487830$
   - **Average Subspace Overlap**: $1.000000$
 
-The plots illustrating these sweeps are saved in [gl_n_universality_test.png](file:///C:/Users/x/.gemini/antigravity/brain/81eb0745-119e-44e5-bd21-2ef9489c13f3/gl_n_universality_test.png).
+The plots illustrating these sweeps are saved in [gl_n_universality_test.png](../figures/gl_n_universality_test.png).
 
 ### 4.2 Geometric Interpretation
 The fact that the subspace overlap factor $\Vert P_N \xi_{r1} \Vert^2$ is exactly $1.000000$ yields a vital mathematical simplification. Because the rank-1 coupling vector $\xi_{r1}$ is the sum of the Satake vectors:
@@ -178,7 +178,7 @@ To investigate the impact of strong electron correlations on the subconvexity bo
 $$ H_{\text{int}} = U \sum_{i < j} \frac{n_i n_j}{|i - j|} $$
 We simulated this interacting system via exact many-body diagonalization for $L=12$ modes at half-filling (Fock space dimension 924). Sweeping the scale parameter $\lambda$ across the first Riemann zero $t \approx 14.1347$ for different interaction strengths $U \in \{0.0, 1.0, 3.0\}$ yielded the bipartite ground-state von Neumann entanglement entropy $S(\lambda)$.
 
-The results, saved in [interacting_entanglement_sweep.png](file:///C:/Users/x/.gemini/antigravity/brain/81eb0745-119e-44e5-bd21-2ef9489c13f3/interacting_entanglement_sweep.png), demonstrate that:
+The results, saved in [interacting_entanglement_sweep.png](../figures/interacting_entanglement_sweep.png), demonstrate that:
 1. The sharp entanglement entropy spike at the Riemann zero persists under strong Coulomb repulsion.
 2. Increasing the interaction strength $U$ suppresses the baseline entropy while modulating the spike height, proving that the topological quantum critical transition is robust against many-body perturbation.
 

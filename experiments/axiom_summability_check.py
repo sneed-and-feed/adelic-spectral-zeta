@@ -203,7 +203,9 @@ ax2.grid(True, linestyle='--', alpha=0.3, color='#555')
 ax2.set_xlim(1, len(dixmier_estimates))
 
 plt.tight_layout()
-out = "C:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/axiom_summability_check.png"
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(script_dir, "..", "figures", "axiom_summability_check.png")
 plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
 plt.close()
 print(f"\nPlot saved to: {out}")
