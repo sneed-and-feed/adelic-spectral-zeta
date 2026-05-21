@@ -45,10 +45,29 @@ The core of the library is the numerical realization and physical simulation of 
 
 ## Installation
 
-Build and install the package in editable mode locally:
+The repository provides several deterministic installation options. Using [uv](https://github.com/astral-sh/uv) is highly recommended for exact dependency locking and speed.
 
+### 1. Using `uv` (Recommended)
+Clone the repository and sync the locked environment:
 ```bash
-pip install -e .
+git clone https://github.com/user/adelic_spectral_zeta.git
+cd adelic_spectral_zeta
+uv sync
+```
+*Note: This strictly resolves packages against the provided `uv.lock`.*
+
+### 2. Using Conda / Mamba
+An `environment.yml` is provided for the Anaconda ecosystem:
+```bash
+conda env create -f environment.yml
+conda activate adelic_spectral_zeta
+```
+
+### 3. Using Docker
+For isolated pipelines or ingestion bots:
+```bash
+docker build -t adelic_spectral_zeta .
+docker run -it adelic_spectral_zeta
 ```
 
 ---

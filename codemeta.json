@@ -1,0 +1,32 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "adelic_spectral_zeta",
+  "version": "1.0.0",
+  "description": "A quantum many-body simulator and spectral solver for adèlic spectral triples and automorphic L-functions. It implements a non-commutative geometry framework realizing GRH zeros as Dirac operator eigenvalues, supported by high-performance quantum modeling.",
+  "license": "https://spdx.org/licenses/CC-BY-4.0",
+  "codeRepository": "https://github.com/user/adelic_spectral_zeta",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "The User"
+    },
+    {
+      "@type": "Person",
+      "name": "Antigravity"
+    }
+  ],
+  "programmingLanguage": [
+    {
+      "@type": "ComputerLanguage",
+      "name": "Python",
+      "url": "https://www.python.org/"
+    }
+  ],
+  "softwareRequirements": [
+    "numpy>=1.20.0",
+    "scipy>=1.6.0",
+    "mpmath>=1.2.0",
+    "matplotlib>=3.3.0"
+  ]
+}
