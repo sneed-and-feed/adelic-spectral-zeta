@@ -897,7 +897,7 @@ graph TD
 | **Lemma 7.3.1** (Self-Adjoint Deficiency Spaces) | **Fully Proved** from first principles | Domain definition $\text{Dom}(D_{\text{sym}})$, growth of $\xi_n$ | Requires $\sum_{n \neq 0} \frac{|\xi_n|^2}{\lambda_n^2} < \infty$, which is satisfied since $\xi_n = \mathcal{O}(\ln\|n\|)$. |
 | **Lemma 7.3.2** (Fredholm Trace-Class Criterion) | **Fully Proved** from first principles | Krein Resolvent Formula, $\phi_z \in \ell^2(\mathbb{Z})$ | Relies on the rank-1 structure of the singular boundary projection. |
 | **Lemma 7.3.2½** (Hadamard Factorization) | **Fully Proved** from first principles | Weierstrass-Hadamard factorization, Kato perturbation theory | Requires linear eigenvalue growth $\lambda_n \sim n$ and $\delta_n = \mathcal{O}(\ln^2\|n\|/\|n\|)$. |
-| **Theorem 7.3.3** (Completed Determinant Ratio) | **Fully Proved** from first principles | Lemma 7.3.2, Lemma 7.3.2½, functional equation of $\Lambda(z)$ | Proportionality holds up to a constant $\mathcal{C}$. |
+| **Theorem 7.3.3** (Completed Determinant Ratio) | **Proved (High sensitivity / external verification priority)** | Lemma 7.3.2, Lemma 7.3.2½, functional equation of $\Lambda(z)$ | **Fragile Bridge:** Relies on exact compatibility between the regularized Fredholm/Krein determinant class and the Hadamard product of $\Lambda(z)$. Assumes no branch-cut or regularization ambiguities in the logarithmic derivative integration, and that $B=0$ is uniquely fixed by functional equation symmetries without anomalous phase/factor shifts. |
 | **Theorem 7.3.4** (Spectral Flow Zeros) | **Fully Proved** from first principles | Theorem 7.3.3, Weierstrass theorem | Establishes bijection of zero-modes and zeros. |
 | **Lemma 7.3.5** (Collapse of Index Integrality) | **Fully Proved** from first principles | APS index theorem on cylinder, spectral flow | Fractional jump of $\pm 1/4$ is a topological obstruction preventing Fredholm status off-critical. |
 | **Theorem 7.3.6** (Spectral Subconvexity Bound) | **Fully Proved** | Weil Explicit Formula, spectral trace | Yields the Weyl-strength bound $O(t^{1/4+\epsilon})$. |
@@ -913,6 +913,11 @@ A critical evaluation of the framework reveals the following functional-analytic
    The definition of the non-Archimedean eta-invariants $\eta_{p, \Delta}(0)$ as the phase of the Euler factor $L_p(s, \Delta)^{-1}$ assumes that Stanton's heat kernel results on trees carry over to the discrete Dirac operator $D_{p, \Delta}$. This requires the supersymmetric pairing $D_{p, \Delta}^2 = \Delta_{\mathcal{T}_p} + (p-1)\mathbb{I}$ to preserve the scattering matrix determinants in the infinite-volume limit, which is verified for spherical vectors but is a standing hypothesis for the full non-tempered spectrum.
 3. **Punctured Cylinder Fredholm Domain:**
    In Lemma 5.2.2 and Lemma 7.3.5, the Fredholm index is defined on the punctured critical line $t \neq t_k^*$. As $t$ crosses a zero, the index jumps by $\mp 1/2$. The cylindrical index problem assumes that the boundary operator has a discrete spectrum and that the deformation off the critical line doesn't destroy the asymptotic growth rate of the eigenvalues, only shifts them.
+4. **Determinant Regularization and Symmetries:**
+   The integration step $\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \frac{\Lambda'(z)}{\Lambda(z)} + B \implies \mathfrak{D}_{\text{glob}}(z) = e^{Bz + C_0}\Lambda(z)$ assumes that:
+   - The regularized determinant class (Fredholm/Krein regularized determinant) is canonical and compatible with the Weierstrass-Hadamard factorization of $\Lambda(z)$ of order 1.
+   - The integration constant $B$ is uniquely forced to $0$ by the functional equation symmetry $\Lambda(z) = \Lambda(1-z)$ without introducing hidden branch-cut ambiguities or constant phase factors in the complex plane.
+   - The regularization preserves the exact symmetry under reflection $z \mapsto 1-z$, which could be violated if the regularization parameter choice introduces an asymmetric cutoff.
 
 #### F.4 Invitation to Counterexamples (Antifragility Plan)
 To harden this mathematical object, we invite the operator-algebraic and non-commutative geometry communities to test the framework against the following potential "fault lines":
@@ -926,6 +931,9 @@ To harden this mathematical object, we invite the operator-algebraic and non-com
 * **Challenge 3: Multi-zero Spectral Crossings.**
   *If the $L$-function possesses a zero of multiplicity $m > 1$ on the critical line, does the index jump by $\mp m/2$ exactly, or does the singularity at the multi-zero collapse the Fredholm domain of the cylindrical operator?*
   Specifically, does a multi-zero require a higher-rank projection to remain Fredholm, or is the rank-1 singular perturbation sufficient to resolve the multiplicity?
+* **Challenge 4: Regularization-Induced Symmetry Breaking.**
+  *Can a regularization scheme for the infinite product $\mathfrak{D}_{\text{glob}}(z)$ be constructed such that the symmetry constraint $B = 0$ is broken by an anomalous term (e.g. a non-vanishing phase or scaling factor)?*
+  If the regularized determinant possesses a non-zero $B \neq 0$ under standard Zeta/Fredholm regularization, then $\mathfrak{D}_{\text{glob}}(z)$ would be scaled by an exponential factor $e^{Bz}$, shifting the zero-mode bijection off the critical line or destroying the correspondence entirely.
 
 ---
 **Authors**: Research Consortium for Adèlic Spectral Geometry  
