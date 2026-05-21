@@ -154,7 +154,7 @@ Thus, the critical line $\sigma = 1/2$ is not merely a numerical locus of zeros 
 ### 5.3 Systematic Conductor Sweep & Orbit Traces
 To generalize the Artin spectral triple verification beyond Buhler's single example, we programmatically queried the LMFDB for all weight-1 cuspidal newforms of level $N \le 10^5$ whose projective Galois representation image is $A_5$ (icosahedral). We successfully compiled a database of 100 such representations spanning levels from $N = 633$ (the minimal possible level for an $A_5$ form) up to $N = 2863$.
 
-We implemented a pipeline in [lmfdb_trace_fetch.py](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments/lmfdb_trace_fetch.py) to parse this data and cached the processed prime traces in [a5_hecke_traces.json](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/data/a5_hecke_traces.json).
+We implemented a pipeline in [lmfdb_trace_fetch.py](../experiments/lmfdb_trace_fetch.py) to parse this data and cached the processed prime traces in [a5_hecke_traces.json](../data/a5_hecke_traces.json).
 
 Because the coefficients of these forms lie in number fields like $\mathbb{Q}(\sqrt{5})$ or cyclotomic extensions, the database stores the traces of the Hecke operators $T_p$ acting on the Galois orbit of the newform. In this framework, the completed $L$-function of the entire Galois orbit decomposes as a product of individual Galois conjugate $L$-functions:
 $$\Lambda(s, \operatorname{Orbit}(\rho)) = \prod_{\sigma} \Lambda(s, \rho^\sigma)$$
@@ -252,7 +252,7 @@ on a frequency sweep $T \in [1, 100]$. The Plancherel-like kernel is given by $K
 
 In the unregularized scenario (representing standard large sieve bounds with no spectral gap influence), the off-diagonal coupling exhibits large amplitude oscillations and a logarithmic growth with the prime bound. In the expander-regularized scenario, we weight each $p \neq q$ term by the tree-distance decay factor $(pq)^{-\gamma}$, where the decay rate $\gamma = 0.20$ is proportional to the bottom of the local Ramanujan spectral gaps ($\lambda_1(\Delta_p) \ge p+1-2\sqrt{p} \ge 3-2\sqrt{2} \approx 0.17$ for $p \ge 2$).
 
-Using the script [expander_correlation.py](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments/expander_correlation.py), we computed both cases for the prime traces of Buhler's level 800 Artin representation.
+Using the script [expander_correlation.py](../experiments/expander_correlation.py), we computed both cases for the prime traces of Buhler's level 800 Artin representation.
 
 ![Expander Suppression of Off-Diagonal Coupling](../figures/expander_decay_analysis.png)
 
