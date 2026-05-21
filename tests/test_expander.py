@@ -35,21 +35,42 @@ def test_traces_database_structure():
     assert traces.get("13") == 6, "Trace a_13 should be 6."
 
 def test_expander_correlation_execution():
-    """Verify that the expander correlation script runs successfully and outputs the plot."""
+    """Verify that the expander correlation script runs successfully and outputs the plots."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     
     # Paths
     script_path = os.path.join(project_root, "experiments", "expander_correlation.py")
-    figure_path = os.path.join(project_root, "figures", "expander_decay_analysis.png")
+    figure_path1 = os.path.join(project_root, "figures", "expander_decay_analysis.png")
+    figure_path2 = os.path.join(project_root, "figures", "zero_mode_coupling.png")
     
-    # Ensure clean state for figure
-    if os.path.exists(figure_path):
-        os.remove(figure_path)
+    # Ensure clean state for figures
+    for fig in [figure_path1, figure_path2]:
+        if os.path.exists(fig):
+            os.remove(fig)
         
     # Execute the script
     result = subprocess.run(["python", script_path], capture_output=True, text=True)
     
     assert result.returncode == 0, f"Script failed with exit code {result.returncode}.\nStderr: {result.stderr}"
-    assert os.path.exists(figure_path), "The decay analysis plot was not created."
-    assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
+    
+    # Verify first plot
+    assert os.path.exists(figure_path1), "The decay analysis plot was not created."
+    assert os.path.getsize(figure_path1) > 0, "The created decay analysis plot file is empty."
+    
+    # Verify second plot
+    assert os.path.exists(figure_path2), "The zero-mode coupling plot was not created."
+    assert os.path.getsize(figure_path2) > 0, "The created zero-mode coupling plot file is empty."
+
+if __name__ == "__main__":
+    print("=== Running test_expander.py ===")
+    print("Testing traces database structure...")
+    test_traces_database_structure()
+    print("[OK] test_traces_database_structure passed.")
+    
+    print("Testing expander correlation script execution...")
+    test_expander_correlation_execution()
+    print("[OK] test_expander_correlation_execution passed.")
+    
+    print("ALL TESTS PASSED SUCCESSFULLY!")
+
