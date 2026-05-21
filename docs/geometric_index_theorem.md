@@ -373,6 +373,9 @@ graph LR
 
 The non-commutative spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ is a **universal containment vessel**: by changing only the coupling vector $\xi$ and the Archimedean phase shift, it locks onto any automorphic $L$-function and forces its zeros to appear as topological zero-modes of the Dirac operator on the critical line.
 
+> [!NOTE]
+> For a complete analysis of the theorem dependency graph, functional-analytic hypotheses (including convergence conditions and supersymmetric tree pairings), and a classification of proved versus perturbative lemmas, see [Appendix F of the Unification Monograph](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#appendix-f-rigor-audit-and-theorem-dependency-analysis).
+
 ---
 
 ## §6. Residue Evaluations at the Weyl Poles
