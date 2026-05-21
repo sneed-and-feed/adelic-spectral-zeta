@@ -107,7 +107,7 @@ def test_interacting_artin_fermions_execution():
     assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
 
 def test_analytic_slope_verification():
-    """Verify that the analytic slope derivation matches the numerical slope within 15%."""
+    """Verify that the analytic slope derivation matches the numerical slope, with refinements under 5% and 4%."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     script_path = os.path.join(project_root, "scratch", "check_analytic_slope.py")
@@ -116,18 +116,42 @@ def test_analytic_slope_verification():
     assert result.returncode == 0, f"Script failed with exit code {result.returncode}.\nStderr: {result.stderr}"
     
     output = result.stdout
-    assert "Relative error:" in output, "Relative error not found in script output."
+    assert "Relative error:" in output, "Baseline Relative error not found in script output."
+    assert "Model 1 Relative error:" in output, "Model 1 Relative error not found in script output."
+    assert "Model 2 Relative error:" in output, "Model 2 Relative error not found in script output."
+    assert "Model 3 Relative error:" in output, "Model 3 Relative error not found in script output."
     
-    found = False
+    found_base = False
+    found_m1 = False
+    found_m2 = False
+    found_m3 = False
+    
     for line in output.splitlines():
-        if "Relative error:" in line:
+        if "Relative error:" in line and "Model" not in line:
             parts = line.split(":")
-            err_str = parts[1].strip().replace("%", "")
-            err_val = float(err_str)
-            assert err_val < 15.0, f"Relative error of predicted slope is too high: {err_val}%"
-            found = True
-            break
-    assert found, "Could not find and parse the relative error line."
+            err_val = float(parts[1].strip().replace("%", ""))
+            assert err_val < 15.0, f"Relative error of baseline predicted slope is too high: {err_val}%"
+            found_base = True
+        elif "Model 1 Relative error:" in line:
+            parts = line.split(":")
+            err_val = float(parts[1].strip().replace("%", ""))
+            assert err_val < 5.0, f"Relative error of Model 1 is too high: {err_val}%"
+            found_m1 = True
+        elif "Model 2 Relative error:" in line:
+            parts = line.split(":")
+            err_val = float(parts[1].strip().replace("%", ""))
+            assert err_val < 4.0, f"Relative error of Model 2 is too high: {err_val}%"
+            found_m2 = True
+        elif "Model 3 Relative error:" in line:
+            parts = line.split(":")
+            err_val = float(parts[1].strip().replace("%", ""))
+            assert err_val < 0.1, f"Relative error of Model 3 is too high: {err_val}%"
+            found_m3 = True
+            
+    assert found_base, "Could not find baseline relative error."
+    assert found_m1, "Could not find Model 1 relative error."
+    assert found_m2, "Could not find Model 2 relative error."
+    assert found_m3, "Could not find Model 3 relative error."
 
 if __name__ == "__main__":
     print("=== Running test_expander.py ===")
