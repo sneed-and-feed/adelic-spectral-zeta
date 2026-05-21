@@ -1,0 +1,47 @@
+import numpy as np
+import mpmath
+import scipy.linalg as la
+
+N = 250
+lam = 26.0
+log_lam = np.log(lam)
+n_vals = np.arange(-N, N + 1)
+D0_diag = n_vals * np.pi / log_lam
+
+primes_43 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43]
+
+# Ramanujan tau values
+tau = {
+    2: -24, 3: 252, 5: 4830, 7: -16744, 11: 534612, 13: -577738,
+    17: -6905934, 19: 10661420, 23: 18643272, 29: 128406630,
+    31: -52843168, 37: -182213314, 41: 308120442, 43: -17125708
+}
+
+def tau_tilde(p):
+    return float(tau[p] * (p**(-5.5)))
+
+xi = np.zeros(2*N + 1, dtype=complex)
+for p in primes_43:
+    t_val = tau_tilde(p)
+    phases = -1j * n_vals * np.pi * np.log(p) / log_lam
+    xi += (t_val * np.log(p) / np.sqrt(p)) * np.exp(phases)
+
+for i, n in enumerate(n_vals):
+    t = n * np.pi / log_lam
+    s_val = 0.5 + 1j * t
+    psi_val = complex(mpmath.psi(0, s_val + 5.5))
+    xi[i] += 1.0 * (psi_val - np.log(2 * np.pi))
+
+xi_norm = xi / np.linalg.norm(xi)
+I = np.eye(2*N + 1)
+P = np.outer(xi_norm, np.conj(xi_norm))
+Proj = I - P
+
+D = Proj @ np.diag(D0_diag) @ Proj
+eigenvalues = la.eigvalsh(D)
+eigenvalues_filtered = sorted([val for val in eigenvalues if abs(val) > 1e-8])
+pos_eigenvalues = np.array([val for val in eigenvalues_filtered if val > 0])
+
+print("First 20 positive eigenvalues of D:")
+print(pos_eigenvalues[:20])
+print("Length of pos_eigenvalues:", len(pos_eigenvalues))

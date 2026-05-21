@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "adelic_spectral_zeta"
+version = "1.0.0"
+description = "A quantum many-body simulator and spectral solver for adèlic spectral triples and automorphic L-functions."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Antigravity & The User" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.20.0",
+    "scipy>=1.6.0",
+    "mpmath>=1.2.0",
+    "matplotlib>=3.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/user/adelic_spectral_zeta"

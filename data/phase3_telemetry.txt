@@ -1,0 +1,21 @@
+=== Phase 3 Telemetry Report ===
+Re(s)=-0.50, ratio=0.500000
+Re(s)=-0.40, ratio=0.536073
+Re(s)=-0.30, ratio=0.574749
+Re(s)=-0.20, ratio=0.616216
+Re(s)=-0.10, ratio=0.660674
+Re(s)=0.00, ratio=0.708339
+Re(s)=0.10, ratio=0.759444
+Re(s)=0.20, ratio=0.814235
+Re(s)=0.30, ratio=0.872980
+Re(s)=0.40, ratio=0.935962
+Re(s)=0.51, ratio=1.003489
+Re(s)=0.61, ratio=1.075888
+Re(s)=0.71, ratio=1.153510
+Re(s)=0.81, ratio=1.236732
+Re(s)=0.91, ratio=1.325958
+Re(s)=1.01, ratio=1.421622
+Re(s)=1.11, ratio=1.524187
+Re(s)=1.21, ratio=1.634153
+Re(s)=1.31, ratio=1.752052
+Re(s)=1.41, ratio=1.878457
