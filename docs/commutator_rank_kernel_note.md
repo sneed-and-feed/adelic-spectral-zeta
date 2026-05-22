@@ -102,11 +102,12 @@ K_d K_d^\dagger = I_d + J_d - (M_d + M_d^\dagger)
 K_d K_d^\dagger = (A_d B_d - B_d A_d)(B_d^\dagger A_d^\dagger - A_d^\dagger B_d^\dagger) = A_d B_d B_d^\dagger A_d^\dagger - B_d A_d B_d^\dagger A_d^\dagger - A_d B_d A_d^\dagger B_d^\dagger + B_d A_d A_d^\dagger B_d^\dagger
 ```
 Using $A_d A_d^\dagger = I_d$ and Lemma 1:
-1. $B_d A_d A_d^\dagger B_d^\dagger = B_d B_d^\dagger = \frac{1}{2}(I_d + J_d)$.
-2. Since $J_d = A_d^{2^{d-1}}$ is a power of the shift operator, it commutes with $A_d$. Thus:
-   ```math
-   A_d B_d B_d^\dagger A_d^\dagger = A_d \left( \frac{1}{2}(I_d + J_d) \right) A_d^\dagger = \frac{1}{2}(I_d + J_d) A_d A_d^\dagger = \frac{1}{2}(I_d + J_d)
-   ```
+- **1.** $B_d A_d A_d^\dagger B_d^\dagger = B_d B_d^\dagger = \frac{1}{2}(I_d + J_d)$.
+- **2.** Since $J_d = A_d^{2^{d-1}}$ is a power of the shift operator, it commutes with $A_d$. Thus:
+
+$$
+A_d B_d B_d^\dagger A_d^\dagger = A_d \left( \frac{1}{2}(I_d + J_d) \right) A_d^\dagger = \frac{1}{2}(I_d + J_d) A_d A_d^\dagger = \frac{1}{2}(I_d + J_d)
+$$
 Summing these two terms gives $(I_d + J_d)$. Substituting back yields the desired expression:
 ```math
 K_d K_d^\dagger = I_d + J_d - (B_d A_d B_d^\dagger A_d^\dagger + A_d B_d A_d^\dagger B_d^\dagger) = I_d + J_d - (M_d + M_d^\dagger)
@@ -157,14 +158,17 @@ Applying the shift $A_d$ shifts the index by $-1$:
 ```math
 (A_d B_d^\dagger A_d^\dagger f)(y) = (B_d^\dagger A_d^\dagger f)(y-1 \pmod{2^d})
 ```
-- If $y$ is even, $y-1$ is odd. Thus:
-  ```math
-  (A_d B_d^\dagger A_d^\dagger f)(y) = f\left(\frac{3(y-1)+1}{2}+1\right) = f\left(\frac{3y-2}{2}+1\right) = f\left(\frac{3y}{2}\right)
-  ```
-- If $y$ is odd, $y-1$ is even. Thus:
-  ```math
-  (A_d B_d^\dagger A_d^\dagger f)(y) = f\left(\frac{y-1}{2}+1\right) = f\left(\frac{y+1}{2}\right)
-  ```
+- **If $y$ is even, $y-1$ is odd. Thus:**
+
+$$
+(A_d B_d^\dagger A_d^\dagger f)(y) = f\left(\frac{3(y-1)+1}{2}+1\right) = f\left(\frac{3y-2}{2}+1\right) = f\left(\frac{3y}{2}\right)
+$$
+
+- **If $y$ is odd, $y-1$ is even. Thus:**
+
+$$
+(A_d B_d^\dagger A_d^\dagger f)(y) = f\left(\frac{y-1}{2}+1\right) = f\left(\frac{y+1}{2}\right)
+$$
 Now, applying the transfer operator $B_d$:
 ```math
 (M_d f)(x) = \frac{1}{2} (A_d B_d^\dagger A_d^\dagger f)(2x) + \frac{1}{2} (A_d B_d^\dagger A_d^\dagger f)(3^{-1}(2x-1))
@@ -212,13 +216,15 @@ Using the graph correspondence established in Section 3, we can determine the ex
 ```
 
 *Proof.* The eigenvalues of $K_d K_d^\dagger$ are the union of its eigenvalues on $V_-$ and $V_+$.
-1. By Theorem 3, $K_d K_d^\dagger$ is identically $0$ on $V_-$, giving a zero eigenvalue of multiplicity $\dim(V_-) = 2^{d-1}$.
-2. By Theorem 4, the eigenvalues of $K_d K_d^\dagger$ on $V_+$ are given by $2 - \frac{1}{2}\mu$, where $\mu$ are the eigenvalues of the adjacency matrix $A_{G_d}$.
-Since $G_d$ is a 4-regular graph, the maximum eigenvalue of $A_{G_d}$ is $\mu = 4$, corresponding to the constant eigenvector $f(x) = c$. Since the graph is connected, the eigenvalue $\mu = 4$ has multiplicity exactly 1.
-For $\mu = 4$, we have:
-```math
+- **1.** By Theorem 3, $K_d K_d^\dagger$ is identically $0$ on $V_-$, giving a zero eigenvalue of multiplicity $\dim(V_-) = 2^{d-1}$.
+- **2.** By Theorem 4, the eigenvalues of $K_d K_d^\dagger$ on $V_+$ are given by $2 - \frac{1}{2}\mu$, where $\mu$ are the eigenvalues of the adjacency matrix $A_{G_d}$.
+
+Since $G_d$ is a 4-regular graph, the maximum eigenvalue of $A_{G_d}$ is $\mu = 4$, corresponding to the constant eigenvector $f(x) = c$. Since the graph is connected, the eigenvalue $\mu = 4$ has multiplicity exactly 1. For $\mu = 4$, we have:
+
+$$
 2 - \frac{1}{2}\mu = 2 - 2 = 0
-```
+$$
+
 which contributes exactly 1 zero eigenvalue. For any other eigenvalue $\mu < 4$, the eigenvalue of $K_d K_d^\dagger$ is $2 - \frac{1}{2}\mu > 0$.
 Thus, the total number of zero eigenvalues of $K_d K_d^\dagger$ (counted with multiplicity) is exactly $2^{d-1} + 1$.
 Since $K_d$ is a square matrix, the dimension of its kernel is equal to the dimension of the kernel of $K_d K_d^\dagger$:
@@ -249,13 +255,15 @@ We now address the question of whether the infinite-limit kernel consists only o
 (K_d L f)(x) = \frac{1}{2} \left[ L f(2x-2) - L f(2x-1) \right] + \frac{1}{2} \left[ L f(3^{-1}(2x-3)) - L f(3^{-1}(2x-1)-1) \right] \pmod{2^d}
 ```
 Let $z = x \pmod{2^{d-1}}$. Since $L f$ has period $2^{d-1}$:
-1. $L f(2x-2) = f(2x-2 \pmod{2^{d-1}}) = f(2z-2 \pmod{2^{d-1}})$.
-2. $L f(2x-1) = f(2z-1 \pmod{2^{d-1}})$.
-3. Since $3^{-1} \pmod{2^d} \equiv 3^{-1} \pmod{2^{d-1}}$, we have:
-   ```math
-   L f(3^{-1}(2x-3)) = f(3^{-1}(2z-3) \pmod{2^{d-1}})
-   ```
-4. $L f(3^{-1}(2x-1)-1) = f(3^{-1}(2z-1)-1 \pmod{2^{d-1}})$.
+- **1.** $L f(2x-2) = f(2x-2 \pmod{2^{d-1}}) = f(2z-2 \pmod{2^{d-1}})$.
+- **2.** $L f(2x-1) = f(2z-1 \pmod{2^{d-1}})$.
+- **3.** Since $3^{-1} \pmod{2^d} \equiv 3^{-1} \pmod{2^{d-1}}$, we have:
+
+$$
+L f(3^{-1}(2x-3)) = f(3^{-1}(2z-3) \pmod{2^{d-1}})
+$$
+
+- **4.** $L f(3^{-1}(2x-1)-1) = f(3^{-1}(2z-1)-1 \pmod{2^{d-1}})$.
 
 Substituting these yields:
 ```math
@@ -306,13 +314,15 @@ At each depth $d \ge 3$, the new eigenvalues $\mu$ are roots of an irreducible p
 - **Depth $d=7$**: $z^8 - 32z^7 + 400z^6 - 2496z^5 + 8200z^4 - 13568z^3 + 9536z^2 - 1664z + 4 = 0$ (multiplicity 2)
 
 For all $d \ge 5$, the minimal polynomial $P_d(z)$ has:
-1. Leading coefficient $1$ (monic).
-2. Constant term $P_d(0) = +4$, which implies the product of the new eigenvalues squared is always $4$, i.e., the product of the new eigenvalues is $\pm 2$.
-3. Second coefficient $-2^{d-2}$, which is the sum of the roots $z$. Thus, the average of the squared new eigenvalues is always exactly:
-   ```math
-   \frac{2^{d-2}}{2^{d-3}} = 2
-   ```
-4. All roots of $P_d(z)$ are real, positive, and lie in the interval $(0, 16)$, which ensures that the corresponding singular values $\sigma = \sqrt{2 - \frac{1}{2}\mu}$ are real.
+- **1.** Leading coefficient $1$ (monic).
+- **2.** Constant term $P_d(0) = +4$, which implies the product of the new eigenvalues squared is always $4$, i.e., the product of the new eigenvalues is $\pm 2$.
+- **3.** Second coefficient $-2^{d-2}$, which is the sum of the roots $z$. Thus, the average of the squared new eigenvalues is always exactly:
+
+$$
+\frac{2^{d-2}}{2^{d-3}} = 2
+$$
+
+- **4.** All roots of $P_d(z)$ are real, positive, and lie in the interval $(0, 16)$, which ensures that the corresponding singular values $\sigma = \sqrt{2 - \frac{1}{2}\mu}$ are real.
 
 ---
 

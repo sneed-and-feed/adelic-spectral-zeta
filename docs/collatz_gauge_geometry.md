@@ -298,28 +298,38 @@ is equivalent to the standard 2-adic metric $|x-y|_2$.
 *where $u(x) = (-1)^x$ is the parity function, and $v(y) = 1$ if $y \equiv 0, 1 \pmod 4$ and $-1$ if $y \equiv 2, 3 \pmod 4$.*
 
 *Proof.* We evaluate the actions of $B\omega$ and $\omega B$:
-1. For $B\omega$, since $B |1_0\rangle = B |1_1\rangle = \frac{1}{\sqrt{2}} |1\rangle$, we have:
-   ```math
-   B\omega = \frac{1}{2} ( |B 1_0\rangle \langle 1_1| + |B 1_1\rangle \langle 1_0| ) = \frac{1}{2} |1\rangle \langle 1|
-   ```
-2. For $\omega B$, the adjoint action maps the parity sectors to their preimages under $T$. Evaluating the integrals of $Bf$ over each sector:
-   ```math
-   \langle 1_0, Bf \rangle = \sqrt{2} \int_{y \equiv 0, 1 \bmod 4} f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1+v, f \rangle
-   ```
-   ```math
-   \langle 1_1, Bf \rangle = \sqrt{2} \int_{y \equiv 2, 3 \bmod 4} f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1-v, f \rangle
-   ```
-   Substituting into $\omega B$:
-   ```math
-   \omega B = \frac{1}{2} ( |1_0\rangle \langle 1_1| B + |1_1\rangle \langle 1_0| B ) = \frac{1}{2} \mathbf{P}_0 \langle 1-v| + \frac{1}{2} \mathbf{P}_1 \langle 1+v|
-   ```
-3. Subtracting the two terms yields:
-   ```math
-   [B, \omega] = \frac{1}{2}(\mathbf{P}_0 + \mathbf{P}_1)\langle 1| - \frac{1}{2}\mathbf{P}_0\langle 1-v| - \frac{1}{2}\mathbf{P}_1\langle 1+v|
-   ```
-   ```math
-   = \frac{1}{2} \mathbf{P}_0 \langle v| - \frac{1}{2} \mathbf{P}_1 \langle v| = \frac{1}{2} |u\rangle \langle v|
-   ```
+- **1. For $B\omega$, since $B |1_0\rangle = B |1_1\rangle = \frac{1}{\sqrt{2}} |1\rangle$, we have:**
+
+$$
+B\omega = \frac{1}{2} ( |B 1_0\rangle \langle 1_1| + |B 1_1\rangle \langle 1_0| ) = \frac{1}{2} |1\rangle \langle 1|
+$$
+
+- **2. For $\omega B$, the adjoint action maps the parity sectors to their preimages under $T$. Evaluating the integrals of $Bf$ over each sector:**
+
+$$
+\langle 1_0, Bf \rangle = \sqrt{2} \int_{y \equiv 0, 1 \bmod 4} f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1+v, f \rangle
+$$
+
+$$
+\langle 1_1, Bf \rangle = \sqrt{2} \int_{y \equiv 2, 3 \bmod 4} f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1-v, f \rangle
+$$
+
+Substituting into $\omega B$:
+
+$$
+\omega B = \frac{1}{2} ( |1_0\rangle \langle 1_1| B + |1_1\rangle \langle 1_0| B ) = \frac{1}{2} \mathbf{P}_0 \langle 1-v| + \frac{1}{2} \mathbf{P}_1 \langle 1+v|
+$$
+
+- **3. Subtracting the two terms yields:**
+
+$$
+[B, \omega] = \frac{1}{2}(\mathbf{P}_0 + \mathbf{P}_1)\langle 1| - \frac{1}{2}\mathbf{P}_0\langle 1-v| - \frac{1}{2}\mathbf{P}_1\langle 1+v|
+$$
+
+$$
+= \frac{1}{2} \mathbf{P}_0 \langle v| - \frac{1}{2} \mathbf{P}_1 \langle v| = \frac{1}{2} |u\rangle \langle v|
+$$
+
 This completes the proof. $\square$
 
 ---
