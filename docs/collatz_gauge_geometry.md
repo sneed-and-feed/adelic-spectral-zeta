@@ -236,25 +236,39 @@ We establish the properties of this spectral triple rigorously below:
 \text{Dom}(D) = \left\{ f \in L^2(\mathbb{Z}_2, \mu_2) \ \middle|\ \sum_{j=1}^\infty \lambda_j^2 \|P_j f\|^2 < \infty \right\}
 ```
 
-*where $P_j$ is the orthogonal projection onto the $j$-th wavelet scale eigenspace, and $\lambda_j = \frac{1}{2}(2^j - 1)$.*
+*where $P_j$ is the orthogonal projection onto the $j$-th wavelet scale eigenspace, and $\lambda_j = \frac{3 \cdot 2^{j-1} - 1}{2}$.*
 
 *Proof.* Let $\{ \psi_{j, k} \}$ be the orthonormal basis of Kozyrev wavelets (or Haar wavelets) on $\mathbb{Z}_2$. For each scale $j \ge 1$ and index $k \in \{1, \dots, 2^{j-1}\}$, the function $\psi_{j, k}$ is constant on balls of radius $2^{-j}$ and has mean zero on balls of radius $2^{-j+1}$.
-For any wavelet $f = \psi_{j, k}$, we evaluate $D f(x)$. If $y$ is in the same ball of radius $2^{-j}$ as $x$, then $f(x) = f(y)$. If $|x-y|_2 = 2^{-m}$ for $m < j$, the function $f(y)$ integrates to zero over the sphere $S_m(x) = \{y \mid |x-y|_2 = 2^{-m}\}$ because $f$ has mean zero on balls of radius $2^{-j+1} \le 2^{-m}$. Therefore, the integral simplifies to:
+For any wavelet $f = \psi_{j, k}$, we evaluate $D f(x)$ for $x$ in the support of $f$. We decompose the integration domain $\mathbb{Z}_2$ into concentric spheres $S_m(x) = \{y \in \mathbb{Z}_2 \mid |x-y|_2 = 2^{-m}\}$:
+1. **For $m \ge j$ (so $|x-y|_2 \le 2^{-j}$):**
+   The point $y$ lies in the same subball of radius $2^{-j}$ as $x$, where $f$ is constant. Thus, $f(y) = f(x)$ and $f(x) - f(y) = 0$.
+2. **For $m = j-1$ (so $|x-y|_2 = 2^{-j+1}$):**
+   The point $y$ lies in the sibling subball of radius $2^{-j}$ within the parent ball of radius $2^{-j+1}$. Since $f$ has mean zero on the parent ball and takes constant opposite values on the two sibling subballs, we have $f(y) = -f(x)$. Thus, $f(x) - f(y) = 2f(x)$.
+3. **For $m < j-1$ (so $|x-y|_2 > 2^{-j+1}$):**
+   The point $y$ lies outside the support ball of the wavelet $f$. Hence, $f(y) = 0$, giving $f(x) - f(y) = f(x)$.
+
+Splitting the integral over these regions:
 ```math
-(D f)(x) = f(x) \int_{|x-y|_2 > 2^{-j}} \frac{d\mu_2(y)}{|x-y|_2^2} = f(x) \sum_{m=0}^{j-1} 2^{2m} \mu_2(S_m(x))
+(D f)(x) = \int_{S_{j-1}(x)} \frac{2f(x)}{|x-y|_2^2} d\mu_2(y) + \sum_{m=0}^{j-2} \int_{S_m(x)} \frac{f(x)}{|x-y|_2^2} d\mu_2(y)
 ```
-Using the Haar measure of the spheres $\mu_2(S_m(x)) = 2^{-m-1}$, we obtain:
+On each sphere $S_m(x)$, the distance $|x-y|_2 = 2^{-m}$ is constant. Since the Haar measure of the sphere of radius $2^{-k}$ is $\mu_2(S_k(x)) = 2^{-k-1}$, we compute:
 ```math
-(D f)(x) = f(x) \sum_{m=0}^{j-1} 2^{2m} 2^{-m-1} = \frac{1}{2} f(x) \sum_{m=0}^{j-1} 2^m = \frac{1}{2}(2^j - 1) f(x)
+(D f)(x) = 2^{2j-2} \cdot 2f(x) \mu_2(S_{j-1}(x)) + f(x) \sum_{m=0}^{j-2} 2^{2m} \mu_2(S_m(x))
 ```
-Thus, the wavelets of scale $j$ are eigenfunctions of $D$ with eigenvalues $\lambda_j = \frac{1}{2}(2^j - 1)$. The constant function $1$ has eigenvalue $\lambda_0 = 0$. Since $D$ is diagonalized by the orthonormal wavelet basis with real eigenvalues, it is self-adjoint on the domain of square-summable eigenvalue weights $\text{Dom}(D)$. $\square$
+```math
+= 2^{2j-1} f(x) \cdot 2^{-j} + f(x) \sum_{m=0}^{j-2} 2^{2m} \cdot 2^{-m-1}
+```
+```math
+= 2^{j-1} f(x) + \frac{1}{2} f(x) \sum_{m=0}^{j-2} 2^m = 2^{j-1} f(x) + \frac{2^{j-1} - 1}{2} f(x) = \frac{3 \cdot 2^{j-1} - 1}{2} f(x)
+```
+Thus, the wavelets of scale $j$ are eigenfunctions of $D$ with eigenvalues $\lambda_j = \frac{3 \cdot 2^{j-1} - 1}{2}$. The constant function $1$ has eigenvalue $\lambda_0 = 0$. Since $D$ is diagonalized by the orthonormal wavelet basis with real eigenvalues, it is self-adjoint on the domain of square-summable eigenvalue weights $\text{Dom}(D)$. $\square$
 
 #### Proposition 5: Compact Resolvent Axiom
 *The operator $D$ has a compact resolvent; specifically, $(D^2 + \mathbb{I})^{-1/2}$ is a compact operator.*
 
 *Proof.* The eigenvalues of $(D^2 + \mathbb{I})^{-1/2}$ are given by $\mu_0 = 1$ (for the constant functions, multiplicity 1) and:
 ```math
-\mu_j = \left( \frac{1}{4}(2^j - 1)^2 + 1 \right)^{-1/2} \quad \text{for } j \ge 1
+\mu_j = \left( \frac{1}{4}(3 \cdot 2^{j-1} - 1)^2 + 1 \right)^{-1/2} \quad \text{for } j \ge 1
 ```
 The eigenspace associated with scale $j \ge 1$ has dimension equal to the number of wavelets at that scale, which is $2^{j} - 2^{j-1} = 2^{j-1}$. Each eigenvalue has finite multiplicity, and:
 ```math
@@ -298,39 +312,46 @@ is equivalent to the standard 2-adic metric $|x-y|_2$.
 *where $u(x) = (-1)^x$ is the parity function, and $v(y) = 1$ if $y \equiv 0, 1 \pmod 4$ and $-1$ if $y \equiv 2, 3 \pmod 4$.*
 
 *Proof.* We evaluate the actions of $B\omega$ and $\omega B$:
-- **1. For $B\omega$, since $B |1_0\rangle = B |1_1\rangle = \frac{1}{\sqrt{2}} |1\rangle$, we have:**
+- **1. Action of $B\omega$:**
+  Recall that $|1_0\rangle = \sqrt{2}\mathbf{P}_0 \mathbf{1}$ and $|1_1\rangle = \sqrt{2}\mathbf{P}_1 \mathbf{1}$ are the normalized indicators of the even and odd sectors, where $\mathbf{1}$ is the constant 1 function (which is normalized, $\|\mathbf{1}\| = 1$).
+  Evaluating the transfer operator $B$ on the normalized state $|1_0\rangle$:
+  $$(B|1_0\rangle)(x) = \frac{1}{2} |1_0\rangle(2x) + \frac{1}{2} |1_0\rangle(3^{-1}(2x-1))$$
+  Since $2x$ is even, $|1_0\rangle(2x) = \sqrt{2}$. Since $3^{-1}(2x-1)$ is odd, $|1_0\rangle(3^{-1}(2x-1)) = 0$.
+  This yields $(B|1_0\rangle)(x) = \frac{\sqrt{2}}{2} = \frac{1}{\sqrt{2}}$ for all $x$. Thus, $B|1_0\rangle = \frac{1}{\sqrt{2}}|1\rangle$.
+  Similarly, for $|1_1\rangle$:
+  $$(B|1_1\rangle)(x) = \frac{1}{2} |1_1\rangle(2x) + \frac{1}{2} |1_1\rangle(3^{-1}(2x-1))$$
+  Since $2x$ is even, $|1_1\rangle(2x) = 0$. Since $3^{-1}(2x-1)$ is odd, $|1_1\rangle(3^{-1}(2x-1)) = \sqrt{2}$.
+  This yields $B|1_1\rangle = \frac{1}{\sqrt{2}}|1\rangle$.
+  Substituting these into $B\omega$:
+  $$B\omega = \frac{1}{2} ( |B 1_0\rangle \langle 1_1| + |B 1_1\rangle \langle 1_0| ) = \frac{1}{2} \left( \frac{1}{\sqrt{2}} |1\rangle \langle 1_1| + \frac{1}{\sqrt{2}} |1\rangle \langle 1_0| \right) = \frac{1}{2} |1\rangle \langle \frac{1}{\sqrt{2}}(1_1 + 1_0)|$$
+  Since $\frac{1}{\sqrt{2}}(|1_0\rangle + |1_1\rangle) = \mathbf{P}_0 \mathbf{1} + \mathbf{P}_1 \mathbf{1} = |1\rangle$, we obtain:
+  $$B\omega = \frac{1}{2} |1\rangle \langle 1|$$
 
-$$
-B\omega = \frac{1}{2} ( |B 1_0\rangle \langle 1_1| + |B 1_1\rangle \langle 1_0| ) = \frac{1}{2} |1\rangle \langle 1|
-$$
-
-- **2. For $\omega B$, the adjoint action maps the parity sectors to their preimages under $T$. Evaluating the integrals of $Bf$ over each sector:**
-
-$$
-\langle 1_0, Bf \rangle = \sqrt{2} \int_{y \equiv 0, 1 \bmod 4} f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1+v, f \rangle
-$$
-
-$$
-\langle 1_1, Bf \rangle = \sqrt{2} \int_{y \equiv 2, 3 \bmod 4} f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1-v, f \rangle
-$$
-
-Substituting into $\omega B$:
-
-$$
-\omega B = \frac{1}{2} ( |1_0\rangle \langle 1_1| B + |1_1\rangle \langle 1_0| B ) = \frac{1}{2} \mathbf{P}_0 \langle 1-v| + \frac{1}{2} \mathbf{P}_1 \langle 1+v|
-$$
+- **2. Action of $\omega B$:**
+  We evaluate $\langle 1_0, Bf \rangle$ and $\langle 1_1, Bf \rangle$ for any $f \in \mathcal{H}$ using the adjoint relation $\langle g, Bf \rangle = \langle B^\dagger g, f \rangle$, where $B^\dagger$ is the Koopman operator $(B^\dagger g)(y) = g(T(y))$.
+  For the unnormalized indicator function of the even sector $\mathbf{1}_{even} = \mathbf{P}_0 \mathbf{1}$, its preimage under $T$ is the indicator of $\{y \in \mathbb{Z}_2 \mid T(y) \text{ even}\} = \{y \in \mathbb{Z}_2 \mid y \equiv 0, 1 \pmod 4\}$, which is $\mathbf{1}_{y \equiv 0, 1 \pmod 4}$. Thus:
+  $$B^\dagger \mathbf{1}_{even} = \mathbf{1}_{y \equiv 0, 1 \pmod 4} = \frac{1+v}{2}$$
+  where $v(y) = 1$ if $y \equiv 0, 1 \pmod 4$ and $-1$ if $y \equiv 2, 3 \pmod 4$.
+  Since $|1_0\rangle = \sqrt{2} \mathbf{1}_{even}$, the adjoint action is:
+  $$B^\dagger |1_0\rangle = \sqrt{2} B^\dagger \mathbf{1}_{even} = \sqrt{2} \mathbf{1}_{y \equiv 0, 1 \pmod 4} = \frac{1}{\sqrt{2}}(1+v)$$
+  Taking the inner product:
+  $$\langle 1_0, Bf \rangle = \langle B^\dagger 1_0, f \rangle = \int_{\mathbb{Z}_2} \sqrt{2} \mathbf{1}_{y \equiv 0, 1 \pmod 4}(y) f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1+v, f \rangle$$
+  Similarly, for the odd sector, the preimage of $\mathbf{1}_{odd}$ under $T$ is $\mathbf{1}_{y \equiv 2, 3 \pmod 4} = \frac{1-v}{2}$. Thus, $B^\dagger |1_1\rangle = \sqrt{2} B^\dagger \mathbf{1}_{odd} = \frac{1}{\sqrt{2}}(1-v)$, and:
+  $$\langle 1_1, Bf \rangle = \langle B^\dagger 1_1, f \rangle = \int_{\mathbb{Z}_2} \sqrt{2} \mathbf{1}_{y \equiv 2, 3 \pmod 4}(y) f(y) d\mu_2(y) = \frac{1}{\sqrt{2}} \langle 1-v, f \rangle$$
+  Evaluating the operator action of $\omega B$ on a state $f$:
+  $$\omega B |f\rangle = \frac{1}{2} |1_0\rangle \langle 1_1, Bf \rangle + \frac{1}{2} |1_1\rangle \langle 1_0, Bf \rangle$$
+  $$= \frac{1}{2} |1_0\rangle \left( \frac{1}{\sqrt{2}} \langle 1-v, f \rangle \right) + \frac{1}{2} |1_1\rangle \left( \frac{1}{\sqrt{2}} \langle 1+v, f \rangle \right)$$
+  Using $|1_0\rangle = \sqrt{2} \mathbf{P}_0 \mathbf{1}$ and $|1_1\rangle = \sqrt{2} \mathbf{P}_1 \mathbf{1}$, this simplifies to:
+  $$\omega B = \frac{1}{2} |\mathbf{P}_0 \mathbf{1}\rangle \langle 1-v| + \frac{1}{2} |\mathbf{P}_1 \mathbf{1}\rangle \langle 1+v|$$
 
 - **3. Subtracting the two terms yields:**
-
-$$
-[B, \omega] = \frac{1}{2}(\mathbf{P}_0 + \mathbf{P}_1)\langle 1| - \frac{1}{2}\mathbf{P}_0\langle 1-v| - \frac{1}{2}\mathbf{P}_1\langle 1+v|
-$$
-
-$$
-= \frac{1}{2} \mathbf{P}_0 \langle v| - \frac{1}{2} \mathbf{P}_1 \langle v| = \frac{1}{2} |u\rangle \langle v|
-$$
-
-This completes the proof. $\square$
+  Since $|1\rangle = |\mathbf{P}_0 \mathbf{1}\rangle + |\mathbf{P}_1 \mathbf{1}\rangle$, we expand $B\omega$:
+  $$B\omega = \frac{1}{2} |\mathbf{P}_0 \mathbf{1}\rangle \langle 1| + \frac{1}{2} |\mathbf{P}_1 \mathbf{1}\rangle \langle 1|$$
+  Thus:
+  $$[B, \omega] = B\omega - \omega B = \frac{1}{2} |\mathbf{P}_0 \mathbf{1}\rangle ( \langle 1| - \langle 1-v| ) + \frac{1}{2} |\mathbf{P}_1 \mathbf{1}\rangle ( \langle 1| - \langle 1+v| )$$
+  $$= \frac{1}{2} |\mathbf{P}_0 \mathbf{1}\rangle \langle v| - \frac{1}{2} |\mathbf{P}_1 \mathbf{1}\rangle \langle v| = \frac{1}{2} ( |\mathbf{P}_0 \mathbf{1}\rangle - |\mathbf{P}_1 \mathbf{1}\rangle ) \langle v|$$
+  $$= \frac{1}{2} |u\rangle \langle v|$$
+  where $u = \mathbf{P}_0 \mathbf{1} - \mathbf{P}_1 \mathbf{1}$ is the parity function $u(x) = (-1)^x$. This completes the proof. $\square$
 
 ---
 
@@ -479,11 +500,46 @@ The vertices of $G$ are $\mathbb{Z}/2^{d-1}\mathbb{Z}$, and the edges connect:
 - $v \leftrightarrow 3v - 1 \pmod{2^{d-1}}$ (from even columns)
 - $v \leftrightarrow 3v \pmod{2^{d-1}}$ (from odd columns)
 
-We show that $G$ is connected ($C=1$) by proving that every vertex $v \in \mathbb{Z}/2^{d-1}\mathbb{Z}$ is connected to $0$. Since $3$ is odd, any 2-adic integer $z \in \mathbb{Z}_2$ has a unique representation $z = \sum_{i=0}^\infty a_i 3^i$ with $a_i \in \{0, 1\}$. Projecting this modulo $2^{d-1}$ implies that every $v \in \mathbb{Z}/2^{d-1}\mathbb{Z}$ can be written as:
-```math
-v \equiv \sum_{i=0}^{d-2} a_i 3^i \pmod{2^{d-1}}
-```
-with $a_i \in \{0, 1\}$. By starting at $0$ and walking along the edges $x \leftrightarrow 3x - a_i$ for $i = d-2, \dots, 0$, we construct a path of length at most $d-1$ from $0$ to $-v$. Since the graph is undirected, this path connects $v$ to $0$.
+We prove that the graph $G$ is connected ($C=1$) by induction on $d$:
+- **Base Case**: For $d=2$, the graph $G$ has 2 vertices $\{0, 1\}$ with the edge $0 \sim 3(0)-1 \equiv 1 \pmod 2$. Thus, $G$ is connected.
+- **Inductive Step**: Assume the graph $G_{d-1}$ at depth $d-1$ is connected for $d \geq 3$. Let $G_d$ denote the graph at depth $d$. Define the projection $\pi: G_d \to G_{d-1}$ by $\pi(x) = x \pmod{2^{d-2}}$. We show $G_d$ is connected by establishing the following properties:
+  1. **Regular Covering Property**: The fiber of each vertex $v \in V(G_{d-1})$ under $\pi$ consists of exactly two vertices $\{v, v + 2^{d-2}\} \subset V(G_d)$. The deck transformation group is $\Gamma = \{id, \tau\} \cong \mathbb{Z}/2\mathbb{Z}$, generated by the involution $\tau(x) = x + 2^{d-2} \pmod{2^{d-1}}$. The map $\tau$ is a graph automorphism of $G_d$ because it preserves the types of all directed edges. To verify this, we write the adjacency operator $A_{G_d}$ on $L^2(G_d)$ as a sum of four transition operators $A_{G_d} = T_1 + T_2 + T_3 + T_4$, where:
+     - $(T_1 f)(x) = f(3x \bmod 2^{d-1})$
+     - $(T_2 f)(x) = f((3x-1) \bmod 2^{d-1})$
+     - $(T_3 f)(x) = f(3^{-1}x \bmod 2^{d-1})$
+     - $(T_4 f)(x) = f(3^{-1}(x+1) \bmod 2^{d-1})$
+     
+     We verify that $\tau$ commutes with each transition operator $T_i$ on $L^2(G_d)$:
+     - **For $T_1$**: 
+       $$T_1(\tau f)(x) = (\tau f)(3x) = f(3x + 2^{d-2})$$
+       $$\tau(T_1 f)(x) = (T_1 f)(x + 2^{d-2}) = f(3(x + 2^{d-2})) = f(3x + 3 \cdot 2^{d-2}) = f(3x + 2^{d-2} + 2^{d-1}) \equiv f(3x + 2^{d-2}) \pmod{2^{d-1}}$$
+       Thus, $T_1 \tau = \tau T_1$.
+     - **For $T_2$**:
+       $$T_2(\tau f)(x) = (\tau f)(3x-1) = f(3x - 1 + 2^{d-2})$$
+       $$\tau(T_2 f)(x) = (T_2 f)(x + 2^{d-2}) = f(3(x + 2^{d-2}) - 1) = f(3x - 1 + 3 \cdot 2^{d-2}) \equiv f(3x - 1 + 2^{d-2}) \pmod{2^{d-1}}$$
+       Thus, $T_2 \tau = \tau T_2$.
+     - **For $T_3$**: Let $3^{-1} = 2k+1$ modulo $2^{d-1}$. Then $3^{-1} 2^{d-2} = (2k+1) 2^{d-2} = k 2^{d-1} + 2^{d-2} \equiv 2^{d-2} \pmod{2^{d-1}}$.
+       $$T_3(\tau f)(x) = (\tau f)(3^{-1}x) = f(3^{-1}x + 2^{d-2})$$
+       $$\tau(T_3 f)(x) = (T_3 f)(x + 2^{d-2}) = f(3^{-1}(x + 2^{d-2})) = f(3^{-1}x + 3^{-1} 2^{d-2}) \equiv f(3^{-1}x + 2^{d-2}) \pmod{2^{d-1}}$$
+       Thus, $T_3 \tau = \tau T_3$.
+     - **For $T_4$**:
+       $$T_4(\tau f)(x) = (\tau f)(3^{-1}(x+1)) = f(3^{-1}(x+1) + 2^{d-2})$$
+       $$\tau(T_4 f)(x) = (T_4 f)(x + 2^{d-2}) = f(3^{-1}(x + 2^{d-2} + 1)) = f(3^{-1}(x+1) + 3^{-1} 2^{d-2}) \equiv f(3^{-1}(x+1) + 2^{d-2}) \pmod{2^{d-1}}$$
+       Thus, $T_4 \tau = \tau T_4$.
+       
+     Since $\tau$ commutes with all $T_i$, it commutes with $A_{G_d}$. The group $\Gamma = \{id, \tau\}$ acts freely on $V(G_d)$ because $x + 2^{d-2} \equiv x \pmod{2^{d-1}}$ would imply $2^{d-2} \equiv 0 \pmod{2^{d-1}}$, which is impossible since $2^{d-1} > 2^{d-2}$ for all $d \geq 3$. Since $\Gamma$ acts freely and by graph automorphisms, and its orbits are precisely the fibers of $\pi$, the projection $\pi: G_d \to G_{d-1}$ is a regular 2-fold graph covering.
+  2. **Local Neighborhood Isomorphism**: To verify that the covering projection $\pi$ is locally bijective on edges, we define $G_d$ as a 4-regular multigraph with labeled edges of types 1, 2, 3, and 4. For any vertex $x \in V_d$, the incident edges of types 1, 2, 3, and 4 connect $x$ to $3x$, $3x-1$, $3^{-1}x$, and $3^{-1}(x+1) \pmod{2^{d-1}}$. Under the projection $\pi$, these targets map to:
+     - $\pi(3x) = 3\pi(x) \pmod{2^{d-2}}$
+     - $\pi(3x-1) = 3\pi(x)-1 \pmod{2^{d-2}}$
+     - $\pi(3^{-1}x) = 3^{-1}\pi(x) \pmod{2^{d-2}}$
+     - $\pi(3^{-1}(x+1)) = 3^{-1}(\pi(x)+1) \pmod{2^{d-2}}$
+     which are precisely the target vertices of the four labeled edges incident to $\pi(x)$ in $G_{d-1}$. This defines a bijection between the sets of directed edges incident to $x$ in $G_d$ and those incident to $\pi(x)$ in $G_{d-1}$.
+  3. **Nontrivial Loop Lifting (Monodromy)**: In $G_{d-1}$, the vertex $y = 2^{d-3} \in \mathbb{Z}/2^{d-2}\mathbb{Z}$ has a loop (a self-connecting edge of type 1) because $3y = 3 \cdot 2^{d-3} = 2^{d-3} + 2^{d-2} \equiv 2^{d-3} \pmod{2^{d-2}}$. The fiber of $y$ in $G_d$ consists of $y_1 = 2^{d-3}$ and $y_2 = 2^{d-3} + 2^{d-2}$. In $G_d$, evaluating the type-1 edge at $x = y_1$ gives:
+     $$
+     3 y_1 = 3 \cdot 2^{d-3} = 2^{d-3} + 2^{d-2} = y_2 \pmod{2^{d-1}}
+     $$
+     Thus, the loop at $y$ in $G_{d-1}$ lifts to the vertical edge $\{2^{d-3}, 2^{d-3} + 2^{d-2}\}$ in $G_d$, which connects the two sheets of the covering.
+  4. **Connectivity of the Cover**: For any $u, w \in V(G_d)$, we lift paths from $\pi(u)$ and $\pi(w)$ to $y$ in $G_{d-1}$. The lifts end at either $y_1$ or $y_2$. Since the vertical edge $\{y_1, y_2\}$ connects the two sheets, $u$ and $w$ are connected in $G_d$. Since $u, w$ were arbitrary, $G_d$ is connected.
 Thus, $G$ is connected ($C = 1$), which guarantees:
 ```math
 \text{rank}(K_d) = \text{rank}(M_d) = V - 1 = 2^{d-1} - 1

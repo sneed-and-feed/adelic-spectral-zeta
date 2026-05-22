@@ -133,3 +133,61 @@ def test_rank_1_commutator():
         
         # Check that they match to machine precision
         assert np.allclose(comm, target)
+
+
+def test_exact_graph_correspondence():
+    """Verifies that (M_d + M_d^T) L = 1/2 L A_G_d holds on the periodic subspace."""
+    for depth in range(2, 9):
+        N = 1 << depth
+        half_N = 1 << (depth - 1)
+        
+        # 1. Shift operator A_d
+        A = np.zeros((N, N))
+        for x in range(N):
+            A[(x + 1) % N, x] = 1.0
+            
+        # 2. Transfer operator B_d
+        B = np.zeros((N, N))
+        inv_3 = 1
+        for i in range(1, N):
+            if (3 * i) % N == 1:
+                inv_3 = i
+                break
+        for x in range(N):
+            y1 = (2 * x) % N
+            B[x, y1] += 0.5
+            y2 = ((2 * x - 1) * inv_3) % N
+            B[x, y2] += 0.5
+            
+        # Adjoints
+        B_dag = B.T.copy()
+        A_dag = A.T.copy()
+        
+        # M_d = B_d A_d B_d^dagger A_d^dagger
+        M = B @ A @ B_dag @ A_dag
+        
+        # Adjacency matrix of G_d on Z / 2^(d-1) Z
+        A_G = np.zeros((half_N, half_N))
+        inv_3_half = 1
+        for i in range(1, half_N):
+            if (3 * i) % half_N == 1:
+                inv_3_half = i
+                break
+                
+        for x in range(half_N):
+            A_G[(3 * x) % half_N, x] += 1.0
+            A_G[(3 * x - 1) % half_N, x] += 1.0
+            A_G[(inv_3_half * x) % half_N, x] += 1.0
+            A_G[(inv_3_half * (x + 1)) % half_N, x] += 1.0
+
+        # Periodic extension map L: V_{d-1} -> V_d
+        L = np.zeros((N, half_N))
+        for x in range(N):
+            L[x, x % half_N] = 1.0
+            
+        # Check identity: (M + M^T) L = 1/2 L A_G
+        lhs = (M + M.T) @ L
+        rhs = 0.5 * L @ A_G
+        defect = lhs - rhs
+        assert norm(defect, 'fro') < 1e-12
+
