@@ -49,6 +49,22 @@ Mapping the spectral geometry to a system of interacting fermions under Coulomb 
 \Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 \vert L'\left(\frac{1}{2}+it_k\right)\vert ^2}
 ```
 
+### 6. Collatz Gauge Geometry & Commutator Rigidity
+We study finite truncations of a natural transfer representation of the shortcut Collatz map on $\mathbb{Z}_2$, proving exact commutator rank and kernel formulas, reducing the commutator square to a 4-regular graph adjacency model, and establishing infinite-dimensionality of the projective-limit kernel. We further formulate a conjectural spectral recursion verified computationally through depth 8.
+
+Specifically:
+* **Commutator Dimension Identity**: The finite-dimensional commutator $K_d = [A_d, B_d]$ between the $2^d$-dimensional translation $A_d$ and the transfer operator $B_d$ satisfies:
+  ```math
+  \text{rank}(K_d) = 2^{d-1} - 1 \quad \text{and} \quad \dim(\ker(K_d)) = 2^{d-1} + 1
+  ```
+* **Graph Correspondence**: The commutator square $K_d K_d^\dagger$ on the anti-periodic subspace $V_+$ reduces to the adjacency operator $A_{G_d}$ of a 4-regular covering graph $G_d$:
+  ```math
+  M_d + M_d^\dagger = \frac{1}{2} A_{G_d}
+  ```
+  where $M_d = B_d A_d B_d^\dagger A_d^\dagger$. We show that $G_d$ is a regular 2-fold covering of $G_{d-1}$ with connected sheets, proving $\text{rank}(M_d) = 2^{d-1} - 1$.
+* **Projective-Limit Kernel**: In the infinite-dimensional limit $d \to \infty$, the global commutator kernel $\ker([A, B])$ contains the dense union of all cylinder commutator kernels $\Phi_d(\ker(K_d))$, confirming it is infinite-dimensional.
+* **Spectral Recursion**: The new singular values of $K_d$ at each depth are governed by a sequence of monic polynomials $P_d(z)$ of degree $2^{d-3}$ (for $d \ge 4$) with constant term $P_d(0) = 4$ and sum of roots equal to $2^{d-2}$, verified via symbolic computer algebra up to depth $d = 8$.
+
 ---
 
 ## Directory Structure
@@ -62,6 +78,7 @@ Mapping the spectral geometry to a system of interacting fermions under Coulomb 
 | [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `theta_functional_equation.py` (rigidity scan), `collatz_dynamics.py` (2-adic Collatz conjugacy), `collatz_gauge_sweep.py` (curvature sweep), etc. |
 | [`docs/unified_monograph.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md) | The unified monograph detailing the rigorous mathematical proofs and physical mappings. |
 | [`docs/collatz_gauge_geometry.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/collatz_gauge_geometry.md) | Formal mathematical framework representing the Collatz map as a gauge-covariant connection on the 2-adic tree. |
+| [`docs/commutator_rank_kernel_note.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/commutator_rank_kernel_note.md) | Technical note resolving the exact commutator rank, kernel dimension, covering graph, and spectral recursion. |
 
 ---
 
