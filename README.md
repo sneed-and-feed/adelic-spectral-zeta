@@ -21,10 +21,10 @@ $$
 To resolve the pole mismatch where the bare Krein determinant/ratio $``\mathfrak{D}_{\text{ratio}}(z)``$ is meromorphic with poles at $``\{\lambda_n\}``$, while the completed $``L``$-function $``\Lambda(z)``$ is entire, we define the completed spectral determinant:
 
 $$
-\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)
+\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_{n}^\ast \neq 0} \left( 1 - \frac{z}{t_{n}^\ast} \right) \exp\!\left( \frac{z}{t_{n}^\ast} \right)
 $$
 
-where $``\mathfrak{D}_0(z)``$ is the Weierstrass product over the unperturbed eigenvalues $``\{\lambda_n\}``$. The multiplication by $``\mathfrak{D}_0(z)``$ exactly cancels the poles of $``\mathfrak{D}_{\text{ratio}}(z)``$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $s = 1/2 + i t_n^*$, satisfying:
+where $``\mathfrak{D}_0(z)``$ is the Weierstrass product over the unperturbed eigenvalues $``\{\lambda_n\}``$. The multiplication by $``\mathfrak{D}_0(z)``$ exactly cancels the poles of $``\mathfrak{D}_{\text{ratio}}(z)``$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $s = 1/2 + i t_{n}^\ast$, satisfying:
 
 $$
 \mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)

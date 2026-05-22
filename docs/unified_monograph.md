@@ -532,10 +532,10 @@ $$
    $`\blacksquare`$
 
 **Corollary (Residue–Coupling Universality)**
-*Under the rank-1 antenna $`\xi_{r1}`$, the off-diagonal coupling trace $`F_{\mathrm{var}}(t_k^*)`$ at any automorphic zero satisfies:*
+*Under the rank-1 antenna $`\xi_{r1}`$, the off-diagonal coupling trace $`F_{\mathrm{var}}(t_{k}^\ast)`$ at any automorphic zero satisfies:*
 
 $$
-F_{\mathrm{var}}(t_k^*) \propto |L'(1/2 + it_k^*)|^{-1}
+F_{\mathrm{var}}(t_{k}^\ast) \propto |L'(1/2 + it_{k}^\ast)|^{-1}
 $$
 
 *with Pearson correlation $`r \approx -0.9440`$ ($p = 0.0158$) across Buhler's first five zeros. Because $`\xi_{r1}`$ lies exactly in the column space of any higher-rank Satake projection $`P_N`$ (by the trace definition of the Hecke eigenvalues), this residue-level correlation is independent of representation rank. Thus the entanglement spike height formula:*
@@ -833,10 +833,10 @@ $$
 Since this sum converges absolutely (as the terms decay as $`\mathcal{O}(\ln^2|n|/n^2)`$), the denominator is well-defined. The difference operator $`R(z) = (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1}`$ is a rank-1 operator of the form $`u \mapsto -c(z) \langle \phi_{\bar{z}}, u \rangle \phi_z`$ where $`\phi_z = (D_0 - z)^{-1}\xi \in \ell^2(\mathbb{Z})`$. Every rank-1 operator on a Hilbert space is trace-class, and its trace norm satisfies $`\|R(z)\|_{\mathcal{L}^1} = |c(z)| \|\phi_z\| \|\phi_{\bar{z}}\| < \infty`$. Thus, the perturbation is trace-class. $`\blacksquare`$
 
 #### Lemma 7.3.2½ (Hadamard Factorization of the Completed Spectral Determinant)
-*Let $`\{\lambda_n\}_{n \in \mathbb{Z}}`$ denote the eigenvalues of $`D_0`$ and $`\{t_n^*\}_{n \in \mathbb{Z}}`$ the eigenvalues of $`D_{\text{glob}}`$, both enumerated in increasing order. Define the meromorphic determinant ratio $`\mathfrak{D}_{\text{ratio}}(z)`$ and the unperturbed determinant $`\mathfrak{D}_0(z)`$ by:*
+*Let $`\{\lambda_n\}_{n \in \mathbb{Z}}`$ denote the eigenvalues of $`D_0`$ and $`\{t_{n}^\ast\}_{n \in \mathbb{Z}}`$ the eigenvalues of $`D_{\text{glob}}`$, both enumerated in increasing order. Define the meromorphic determinant ratio $`\mathfrak{D}_{\text{ratio}}(z)`$ and the unperturbed determinant $`\mathfrak{D}_0(z)`$ by:*
 
 $$
-\mathfrak{D}_{\text{ratio}}(z) := \prod_{n \in \mathbb{Z}, \lambda_n \neq 0} \frac{t_n^* - z}{\lambda_n - z} \cdot \exp\!\left( z \left( \frac{1}{\lambda_n} - \frac{1}{t_n^*} \right) \right)
+\mathfrak{D}_{\text{ratio}}(z) := \prod_{n \in \mathbb{Z}, \lambda_n \neq 0} \frac{t_{n}^\ast - z}{\lambda_n - z} \cdot \exp\!\left( z \left( \frac{1}{\lambda_n} - \frac{1}{t_{n}^\ast} \right) \right)
 $$
 
 $$
@@ -846,21 +846,21 @@ $$
 *Then the completed spectral determinant:*
 
 $$
-\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)
+\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_{n}^\ast \neq 0} \left( 1 - \frac{z}{t_{n}^\ast} \right) \exp\!\left( \frac{z}{t_{n}^\ast} \right)
 $$
 
-*is an entire function of order 1, with zeros precisely at the non-zero eigenvalues $`\{t_n^*\}`$ of $`D_{\text{glob}}`$ (with multiplicity).*
+*is an entire function of order 1, with zeros precisely at the non-zero eigenvalues $`\{t_{n}^\ast\}`$ of $`D_{\text{glob}}`$ (with multiplicity).*
 
 **Proof.**
-The bare Krein determinant quotient $`d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}`$ is meromorphic with simple poles at every unperturbed eigenvalue $`\lambda_n`$. The regularized determinant ratio $`\mathfrak{D}_{\text{ratio}}(z)`$ captures this quotient, sharing the same pole-zero structure: it has zeros at the perturbed eigenvalues $`\{t_n^*\}`$ and poles at the unperturbed eigenvalues $`\{\lambda_n\}`$.
+The bare Krein determinant quotient $`d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}`$ is meromorphic with simple poles at every unperturbed eigenvalue $`\lambda_n`$. The regularized determinant ratio $`\mathfrak{D}_{\text{ratio}}(z)`$ captures this quotient, sharing the same pole-zero structure: it has zeros at the perturbed eigenvalues $`\{t_{n}^\ast\}`$ and poles at the unperturbed eigenvalues $`\{\lambda_n\}`$.
 Since $`D_0`$ has eigenvalues $`\lambda_n = n \pi / \ln\lambda`$, they grow linearly, so $`\sum_{n \neq 0} |\lambda_n|^{-2} < \infty`$. By the Weierstrass-Hadamard factorization theorem, the unperturbed determinant $`\mathfrak{D}_0(z)`$ is an entire function of order 1 with zeros precisely at $`\{\lambda_n\}`$.
 Multiplying the meromorphic quotient $`\mathfrak{D}_{\text{ratio}}(z)`$ by $`\mathfrak{D}_0(z)`$ yields the completed spectral determinant:
 
 $$
-\mathfrak{D}_{\text{glob}}(z) = \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)
+\mathfrak{D}_{\text{glob}}(z) = \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_{n}^\ast \neq 0} \left( 1 - \frac{z}{t_{n}^\ast} \right) \exp\!\left( \frac{z}{t_{n}^\ast} \right)
 $$
 
-By Kato's perturbation theory for rank-one perturbations, the eigenvalues satisfy $`t_n^* = \lambda_n + \delta_n`$ where $`\delta_n = \mathcal{O}(\ln^2|n| / |n|)`$. Thus, the perturbed eigenvalues grow linearly, which ensures $`\sum_{t_n^* \neq 0} |t_n^*|^{-2} < \infty`$. By Hadamard's theorem, the product converges absolutely and uniformly on compact subsets of $`\mathbb{C}`$, defining an entire function of order 1. The multiplication by $`\mathfrak{D}_0(z)`$ cancels every pole of $`\mathfrak{D}_{\text{ratio}}(z)`$ at $`z = \lambda_n`$. This cancellation is exact (not merely asymptotic) because $`\mathfrak{D}_0(z)`$ has a simple zero at each $`z = \lambda_n`$ while $`\mathfrak{D}_{\text{ratio}}(z)`$ has a simple pole there; thus, the product remains locally bounded and analytic in a neighborhood of each unperturbed eigenvalue $`\lambda_n`$. Consequently, all singularities are resolved, establishing that $`\mathfrak{D}_{\text{glob}}(z)`$ is entire. $`\blacksquare`$
+By Kato's perturbation theory for rank-one perturbations, the eigenvalues satisfy $`t_{n}^\ast = \lambda_n + \delta_n`$ where $`\delta_n = \mathcal{O}(\ln^2|n| / |n|)`$. Thus, the perturbed eigenvalues grow linearly, which ensures $`\sum_{t_{n}^\ast \neq 0} |t_{n}^\ast|^{-2} < \infty`$. By Hadamard's theorem, the product converges absolutely and uniformly on compact subsets of $`\mathbb{C}`$, defining an entire function of order 1. The multiplication by $`\mathfrak{D}_0(z)`$ cancels every pole of $`\mathfrak{D}_{\text{ratio}}(z)`$ at $`z = \lambda_n`$. This cancellation is exact (not merely asymptotic) because $`\mathfrak{D}_0(z)`$ has a simple zero at each $`z = \lambda_n`$ while $`\mathfrak{D}_{\text{ratio}}(z)`$ has a simple pole there; thus, the product remains locally bounded and analytic in a neighborhood of each unperturbed eigenvalue $`\lambda_n`$. Consequently, all singularities are resolved, establishing that $`\mathfrak{D}_{\text{glob}}(z)`$ is entire. $`\blacksquare`$
 
 > **Remark.** The bare Krein determinant quotient $`d(z) = \mathfrak{D}_{\text{ratio}}(z)`$ is meromorphic and cannot equal the entire completed $L$-function $`\Lambda(z)`$. The completed spectral determinant $`\mathfrak{D}_{\text{glob}}(z) = \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z)`$ resolves this by canceling every pole at $`\lambda_n`$ against the corresponding zero of $`\mathfrak{D}_0(z)`$, yielding a globally entire function with the correct zero set.
 
@@ -877,10 +877,10 @@ Both $`\mathfrak{D}_{\text{glob}}(z)`$ and $`\Lambda(z)`$ are entire functions o
 **Step 1: Logarithmic derivative of $`\mathfrak{D}_{\text{glob}}(z)`$.** Differentiating:
 
 $$
-\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \sum_{n, t_n^* \neq 0} \left( \frac{1}{z - t_n^*} + \frac{1}{t_n^*} \right)
+\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \sum_{n, t_{n}^\ast \neq 0} \left( \frac{1}{z - t_{n}^\ast} + \frac{1}{t_{n}^\ast} \right)
 $$
 
-This is a meromorphic function with simple poles at each $`t_n^*`$ with residue $+1$.
+This is a meromorphic function with simple poles at each $`t_{n}^\ast`$ with residue $+1$.
 
 **Step 2: Logarithmic derivative of $`\Lambda(z)`$.** By the Hadamard product for the completed $L$-function:
 
@@ -893,7 +893,7 @@ where $`\{\rho_k\}`$ are the non-trivial zeros of $`\Lambda(z)`$ and $A$ is a co
 **Step 3: Identification.** By the resolvent trace identity (Lemma 7.3.2), the difference of the resolvents is trace-class and its trace is:
 
 $$
-\text{Tr}\!\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) = \sum_n \left( \frac{1}{t_n^* - z} - \frac{1}{\lambda_n - z} \right)
+\text{Tr}\!\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) = \sum_n \left( \frac{1}{t_{n}^\ast - z} - \frac{1}{\lambda_n - z} \right)
 $$
 
 This trace matches the logarithmic derivative of $`\mathfrak{D}_{\text{ratio}}(z) = \mathfrak{D}_{\text{glob}}(z) / \mathfrak{D}_0(z)`$, which equals:
@@ -980,19 +980,19 @@ $$
 which locks the proportionality $`\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \Lambda(z)`$. $`\blacksquare`$
 
 #### Theorem 7.3.4 (Spectral Flow and Zero-Mode Correspondence)
-*An eigenvalue of the compressed operator $`D_{\text{glob}}(\lambda)`$ crosses zero at $`\lambda = \lambda_k`$ if and only if $`1/2 + i t_k^*`$ is a non-trivial zero of the completed $L$-function $`\Lambda(z)`$.*
+*An eigenvalue of the compressed operator $`D_{\text{glob}}(\lambda)`$ crosses zero at $`\lambda = \lambda_k`$ if and only if $`1/2 + i t_{k}^\ast`$ is a non-trivial zero of the completed $L$-function $`\Lambda(z)`$.*
 
 **Proof.**
-By Lemma 7.3.2½, the completed spectral determinant $`\mathfrak{D}_{\text{glob}}(z)`$ is an entire function whose zeros are precisely the eigenvalues $`\{t_n^*\}`$ of $`D_{\text{glob}}`$. By Theorem 7.3.3, $`\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)`$ with $`\mathcal{C} \neq 0`$. Therefore:
+By Lemma 7.3.2½, the completed spectral determinant $`\mathfrak{D}_{\text{glob}}(z)`$ is an entire function whose zeros are precisely the eigenvalues $`\{t_{n}^\ast\}`$ of $`D_{\text{glob}}`$. By Theorem 7.3.3, $`\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)`$ with $`\mathcal{C} \neq 0`$. Therefore:
 
 $$
-t_k^* \text{ is an eigenvalue of } D_{\text{glob}} \iff \mathfrak{D}_{\text{glob}}(t_k^*) = 0 \iff \Lambda(t_k^*) = 0
+t_{k}^\ast \text{ is an eigenvalue of } D_{\text{glob}} \iff \mathfrak{D}_{\text{glob}}(t_{k}^\ast) = 0 \iff \Lambda(t_{k}^\ast) = 0
 $$
 
 In particular, evaluating at $z = it$ on the critical line $s = 1/2 + it$, the operator $`D_{\text{glob}}`$ has a zero-mode (eigenvalue crossing zero as $`\lambda`$ varies) if and only if $`\Lambda(1/2 + it) = 0`$. This establishes a bijection between the kernel crossings of the spectral flow and the non-trivial zeros of the $L$-function, with multiplicities preserved by the order of vanishing of $`\mathfrak{D}_{\text{glob}}(z)`$.
 
 > [!NOTE]
-> The index $`\mathrm{Ind}(\widetilde{D}_{\text{glob}})`$ is computed on the punctured critical line (excluding the discrete set of zeros $`\{t_k^*\}`$), where the argument of the completed determinant $`\mathfrak{D}_{\text{glob}}`$ is locally constant/smooth and well-defined. As the parameter $t$ crosses an eigenvalue/zero $`t_k^*`$, the argument jumps discontinuously by $`\pm \pi`$, introducing a jump discontinuity of $`\mp 1/2`$ in the index formula. This is fully consistent with the Atiyah-Patodi-Singer index theorem, where the boundary $`\eta`$-invariant jumps discontinuously at spectral crossings as zero-modes enter or leave the spectrum. $`\blacksquare`$
+> The index $`\mathrm{Ind}(\widetilde{D}_{\text{glob}})`$ is computed on the punctured critical line (excluding the discrete set of zeros $`\{t_{k}^\ast\}`$), where the argument of the completed determinant $`\mathfrak{D}_{\text{glob}}`$ is locally constant/smooth and well-defined. As the parameter $t$ crosses an eigenvalue/zero $`t_{k}^\ast`$, the argument jumps discontinuously by $`\pm \pi`$, introducing a jump discontinuity of $`\mp 1/2`$ in the index formula. This is fully consistent with the Atiyah-Patodi-Singer index theorem, where the boundary $`\eta`$-invariant jumps discontinuously at spectral crossings as zero-modes enter or leave the spectrum. $`\blacksquare`$
 
 #### Lemma 7.3.5 (Collapse of Fredholm Index Integrality Off the Critical Line)
 *Under a non-unitary deformation off the critical line ($`\sigma \neq 1/2`$), the operator becomes non-self-adjoint, undergoing a spectral flow crossing that formally introduces a fractional sign defect of $`-\frac{1}{4}\text{sgn}(\sigma-1/2)`$ in the analytical index, causing the Fredholm property to collapse and violating index integrality.*
@@ -1025,7 +1025,7 @@ $$
 1. **Resolvent trace from the Weil explicit formula**: By the Weil explicit formula, for a test function $h$ with Fourier transform $`\widehat{h}`$ supported in $[-T, T]$:
 
 $$
-\sum_k h(t_k^*) = \widehat{h}(0) \frac{\ln \lambda}{\pi} - \sum_{p, m} \frac{\mathrm{Tr}(\theta_p^m) \log p}{p^{m/2}} \widehat{h}(m \log p) + O(\ln T)
+\sum_k h(t_{k}^\ast) = \widehat{h}(0) \frac{\ln \lambda}{\pi} - \sum_{p, m} \frac{\mathrm{Tr}(\theta_p^m) \log p}{p^{m/2}} \widehat{h}(m \log p) + O(\ln T)
 $$
 
    Using $`h(w) = \frac{1}{w-z}`$ (with $`z = 1/2 + \eta + it`$), this corresponds to evaluating the logarithmic derivative of the completed $L$-function spectrally via the resolvent trace:
@@ -1093,11 +1093,11 @@ Our numerical results (plotted above) reveal that:
 3. **Suppression of Interference**: This confirms that the local expander graph properties eliminate the destructive/constructive off-diagonal interference, ensuring that the zero-modes are highly localized and stable under the adèlic coupling.
 
 ### 7.6 Quantitative Correlation: Coupling Trace vs. L-Derivative
-To close the loop between the expander suppression numerics and the physical sharpness of the zeros, we test the correlation between the off-diagonal coupling trace $`F_{\text{var}}(t_k^*)`$ and the inverse L-derivative $`|L'(1/2 + it_k^*)|^{-1}`$ (which controls the bipartite entanglement entropy spike height $`\Delta S(t_k)`$) at Buhler's first five $`A_5`$ zeros.
+To close the loop between the expander suppression numerics and the physical sharpness of the zeros, we test the correlation between the off-diagonal coupling trace $`F_{\text{var}}(t_{k}^\ast)`$ and the inverse L-derivative $`|L'(1/2 + it_{k}^\ast)|^{-1}`$ (which controls the bipartite entanglement entropy spike height $`\Delta S(t_k)`$) at Buhler's first five $`A_5`$ zeros.
 
-The exact zero coordinates $`t_k^*`$ are found by minimisation of the Approximate Functional Equation (AFE). We calculate the L-derivatives $`D_k = |L'(1/2 + it_k^*)|`$ numerically and compute $`F_{\text{var}}(t_k^*)`$ using the variable gap decay model. The results are summarized below:
+The exact zero coordinates $`t_{k}^\ast`$ are found by minimisation of the Approximate Functional Equation (AFE). We calculate the L-derivatives $`D_k = |L'(1/2 + it_{k}^\ast)|`$ numerically and compute $`F_{\text{var}}(t_{k}^\ast)`$ using the variable gap decay model. The results are summarized below:
 
-| Zero | Target $`t_k`$ | Exact $`t_k^*`$ | L-Derivative $`D_k = |L'|`$ | Inv. Derivative $`D_k^{-1}`$ | Coupling $`F_{\text{var}}(t_k^*)`$ |
+| Zero | Target $`t_k`$ | Exact $`t_{k}^\ast`$ | L-Derivative $`D_k = |L'|`$ | Inv. Derivative $`D_k^{-1}`$ | Coupling $`F_{\text{var}}(t_{k}^\ast)`$ |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | $`t_1`$ | 5.1015 | 5.128673 | 26.786862 | 0.037332 | 0.007695 |
 | $`t_2`$ | 5.5613 | 5.646348 | 9.087135 | 0.110046 | 0.006963 |
@@ -1110,7 +1110,7 @@ The exact zero coordinates $`t_k^*`$ are found by minimisation of the Approximat
 A Pearson correlation analysis reveals:
 * **First-order Correlation**: $`r(F_{\text{var}}, |L'|^{-1}) \approx -0.9440`$ with a highly significant $p$-value of $0.0158$.
 * **Second-order Correlation**: $`r(F_{\text{var}}, |L'|^{-2}) \approx -0.8905`$ ($p = 0.0428$).
-* **Linear Fit**: $`|L'(1/2+it_k^*)|^{-1} \approx -592.32 \cdot F_{\text{var}}(t_k^*) + 4.40`$.
+* **Linear Fit**: $`|L'(1/2+it_{k}^\ast)|^{-1} \approx -592.32 \cdot F_{\text{var}}(t_{k}^\ast) + 4.40`$.
 
 This negative correlation is highly significant and confirms the physical mechanism:
 1. At the lower zeroes (e.g. $`t_1`$), the off-diagonal coupling trace $`F_{\text{var}}`$ is relatively larger. This corresponds to a sharper zero (larger $`D_k`$, smaller $`D_k^{-1}`$), meaning the zero-mode is highly localized on the Archimedean wire with minimal leakage to the boundary dots, preserving a high entanglement entropy spike $`\Delta S(t_k)`$.
@@ -1142,28 +1142,28 @@ $$
 H(t) = N^{1/4} (2\pi)^{-1/2} |\Gamma(1/2 + it)|
 $$
 
-At any non-trivial zero $`t_k^*`$ of $L(s)$ on the critical line, we have $`\Lambda(1/2 + it_k^*) = 0`$. Therefore, differentiating the completed L-function at $`t_k^*`$ yields:
+At any non-trivial zero $`t_{k}^\ast`$ of $L(s)$ on the critical line, we have $`\Lambda(1/2 + it_{k}^\ast) = 0`$. Therefore, differentiating the completed L-function at $`t_{k}^\ast`$ yields:
 
 $$
-\Lambda'(1/2 + it_k^*) = i H(t_k^*) L'(1/2 + it_k^*)
+\Lambda'(1/2 + it_{k}^\ast) = i H(t_{k}^\ast) L'(1/2 + it_{k}^\ast)
 $$
 
 Taking the absolute value:
 
 $$
-|\Lambda'(1/2 + it_k^*)| = H(t_k^*) |L'(1/2 + it_k^*)|
+|\Lambda'(1/2 + it_{k}^\ast)| = H(t_{k}^\ast) |L'(1/2 + it_{k}^\ast)|
 $$
 
 Substituting this into the Fredholm determinant relation gives:
 
 $$
-|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)| = \mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*) |L'(1/2 + it_k^*)|
+|G_{\text{diag}}(t_{k}^\ast) + G_{\text{off}}(t_{k}^\ast)| = \mathcal{C}_{\text{mag}}(t_{k}^\ast) H(t_{k}^\ast) |L'(1/2 + it_{k}^\ast)|
 $$
 
 Rearranging to solve for the inverse derivative:
 
 $$
-|L'(1/2 + it_k^*)|^{-1} = \frac{\mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*)}{|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)|}
+|L'(1/2 + it_{k}^\ast)|^{-1} = \frac{\mathcal{C}_{\text{mag}}(t_{k}^\ast) H(t_{k}^\ast)}{|G_{\text{diag}}(t_{k}^\ast) + G_{\text{off}}(t_{k}^\ast)|}
 $$
 
 Now, we model the effect of the off-diagonal coupling as a perturbation on the diagonal trace. The off-diagonal term $`G_{\text{off}}(t)`$ is directly proportional to the regularized off-diagonal coupling trace $`F_{\text{var}}(t)`$ under the variable spectral gap model:
@@ -1177,7 +1177,7 @@ where $`\beta`$ is a scaling factor determined by the local prime traces.
 Differentiating the inverse derivative $`|L'|^{-1}`$ with respect to the off-diagonal coupling $`F_{\text{var}}`$ at the zeros yields the slope:
 
 $$
-c_1 = \frac{\partial |L'(1/2 + it_k^*)|^{-1}}{\partial F_{\text{var}}} = - \frac{\mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*) \beta}{|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)|^2}
+c_1 = \frac{\partial |L'(1/2 + it_{k}^\ast)|^{-1}}{\partial F_{\text{var}}} = - \frac{\mathcal{C}_{\text{mag}}(t_{k}^\ast) H(t_{k}^\ast) \beta}{|G_{\text{diag}}(t_{k}^\ast) + G_{\text{off}}(t_{k}^\ast)|^2}
 $$
 
 To compute the global slope $`c_1`$ across the zero spectrum, we average this derivative over the first five non-trivial zeros:
@@ -1223,7 +1223,7 @@ $$
    - $`\beta_{\text{real}} \approx 1083.0003`$, $`\alpha_{\text{real}} \approx -3.2402`$
    - $`\beta_{\text{imag}} \approx 102.2411`$, $`\alpha_{\text{imag}} \approx -0.6722`$
    
-   Using the predicted trace $`G_{\text{off}}^{(1)}(t) = \mathrm{Re}(G_{\text{off}}(t)) + i \mathrm{Im}(G_{\text{off}}(t))`$ to evaluate $`|L'(1/2 + it_k^*)|^{-1}`$ yields a predicted slope of **$-615.13$** (Relative Error: **$`3.85\%`$**).
+   Using the predicted trace $`G_{\text{off}}^{(1)}(t) = \mathrm{Re}(G_{\text{off}}(t)) + i \mathrm{Im}(G_{\text{off}}(t))`$ to evaluate $`|L'(1/2 + it_{k}^\ast)|^{-1}`$ yields a predicted slope of **$-615.13$** (Relative Error: **$`3.85\%`$**).
 
 2. **Model 2: $t$-Dependent Coupling Strength $`\beta(t)`$**
    Because high-frequency modes in the regularised Dirac operator resolvent decay as $`\mathcal{O}(t^{-2})`$ at larger values of $t$, the coupling coefficient $`\beta`$ is not strictly constant across the spectrum but decays monotonically. We model the ratio $`\beta(t) = G_{\text{off}}(t) / F_{\text{var}}(t)`$ linearly:
@@ -1242,7 +1242,7 @@ $$
    If the coupling is evaluated pointwise at each zero:
 
 $$
-\beta_k = \frac{G_{\text{off}}(t_k^*)}{F_{\text{var}}(t_k^*)}
+\beta_k = \frac{G_{\text{off}}(t_{k}^\ast)}{F_{\text{var}}(t_{k}^\ast)}
 $$
 
    the predicted slope reproduces the empirical slope of **$-592.32$** exactly (**$`0.00\%`$** error), demonstrating that the first-principles Fredholm relation maps to the subconvexity mechanism with complete precision when the full frequency dependence is taken into account.
@@ -1283,7 +1283,7 @@ $$
 Our calculations across three physical regimes—non-interacting ($U=0.0$), weakly interacting ($U=1.0$), and strongly interacting ($U=3.0$)—reveal several key phenomena:
 1. **Robustness of Zero-Mode Footprints**: The entanglement entropy spikes corresponding to the Buhler $`A_5`$ zeros remain distinct and align precisely with the exact zeros (vertical dashed lines) in all three regimes. This shows that the spectral localization of the Dirac operator zero-modes survives many-body interaction and is topologically protected.
 2. **Thermal-like Spike Broadening**: As the Coulomb repulsion $U$ increases, the background entanglement entropy rises and the spikes broaden. This represents the Coulomb interaction mixing the single-particle zero-modes with the surrounding Fermi sea, causing a partial leakage (decoherence-like mixing) of the zero-mode into the non-Archimedean prime dots.
-3. **Locking of Entanglement Maxima**: The local maxima of $S(t)$ remain locked near the critical zero heights $`t_k^*`$, confirming that the quantum simulator's entanglement structure serves as a stable, noise-tolerant detector of automorphic zeros even in strongly correlated regimes.
+3. **Locking of Entanglement Maxima**: The local maxima of $S(t)$ remain locked near the critical zero heights $`t_{k}^\ast`$, confirming that the quantum simulator's entanglement structure serves as a stable, noise-tolerant detector of automorphic zeros even in strongly correlated regimes.
 
 ---
 
@@ -1495,7 +1495,7 @@ A critical evaluation of the framework reveals the following functional-analytic
 2. **Supersymmetric Pairing on Trees:**
    The definition of the non-Archimedean eta-invariants $`\eta_{p, \Delta}(0)`$ as the phase of the Euler factor $`L_p(s, \Delta)^{-1}`$ assumes that Stanton's heat kernel results on trees carry over to the discrete Dirac operator $`D_{p, \Delta}`$. This requires the supersymmetric pairing $`D_{p, \Delta}^2 = \Delta_{\mathcal{T}_p} + (p-1)\mathbb{I}`$ to preserve the scattering matrix determinants in the infinite-volume limit, which is verified for spherical vectors but is a standing hypothesis for the full non-tempered spectrum.
 3. **Punctured Cylinder Fredholm Domain:**
-   In Lemma 5.2.2 and Lemma 7.3.5, the Fredholm index is defined on the punctured critical line $`t \neq t_k^*`$. As $t$ crosses a zero, the index jumps by $`\mp 1/2`$. The cylindrical index problem assumes that the boundary operator has a discrete spectrum and that the deformation off the critical line doesn't destroy the asymptotic growth rate of the eigenvalues, only shifts them.
+   In Lemma 5.2.2 and Lemma 7.3.5, the Fredholm index is defined on the punctured critical line $`t \neq t_{k}^\ast`$. As $t$ crosses a zero, the index jumps by $`\mp 1/2`$. The cylindrical index problem assumes that the boundary operator has a discrete spectrum and that the deformation off the critical line doesn't destroy the asymptotic growth rate of the eigenvalues, only shifts them.
 4. **Determinant Regularization and Symmetries:**
    As formulated in Lemma 7.3.3½, the integration step locking $B = 0$ requires the regularized determinant class to be compatible with Hadamard growth and preserve operator-level reflection symmetry (imposing $b = 0$ in the reflection covariance relation $`\mathfrak{D}_{\text{glob}}(z) = e^{a+bz}\mathfrak{D}_{\text{glob}}(1-z)`$). Any cutoff scheme that introduces asymmetry into the eigenvalue summation would break this symmetry and shift the zero-mode correspondence.
 
