@@ -53,7 +53,7 @@ D_{p, \Delta}(s) = \log p \cdot (x\partial_x) - \left(s - \frac{1}{2}\right)\log
 where $`\mathcal{S}_p`$ is the **Satake holonomy operator** acting on $`L^2(\mathcal{T}_p)`$. At each vertex $`v`$ of the tree at distance $`d`$ from the root, $`\mathcal{S}_p`$ acts via the rank-2 character:
 
 ```math
-\mathcal{S}_p |v, d\rangle = \tilde{\tau}(p) |v, d\rangle - p^{-d} |v, d-1\rangle
+\mathcal{S}_p \vert v, d\rangle = \tilde{\tau}(p) \vert v, d\rangle - p^{-d} \vert v, d-1\rangle
 ```
 
 The compressed operator is then:
@@ -68,7 +68,7 @@ defined rigorously as the unique self-adjoint extension of the unperturbed Dirac
 \text{Dom}(D_{\text{sym}}) = \text{Dom}(D_{\text{glob}}) \cap \text{Ker}(\langle \xi_\Delta, \cdot \rangle)
 ```
 
-Since the coupling vector $`\xi_\Delta`$ grows logarithmically ($`\xi_{\Delta, n} = \mathcal{O}(\ln|n|)`$ due to the Archimedean Gamma factor) and does not belong to $`\ell^2(\mathbb{Z})`$, the projection $`\Pi_{\xi_\Delta}^\perp = \mathbf{1} - |\xi_\Delta\rangle\langle\xi_\Delta|`$ is defined as a singular rank-1 perturbation via Krein's resolvent formula. This guarantees that $`\widetilde{D}_{\text{glob}, \Delta}(s)`$ is a closed, self-adjoint operator on its domain.
+Since the coupling vector $`\xi_\Delta`$ grows logarithmically ($`\xi_{\Delta, n} = \mathcal{O}(\ln\vert n\vert )`$ due to the Archimedean Gamma factor) and does not belong to $`\ell^2(\mathbb{Z})`$, the projection $`\Pi_{\xi_\Delta}^\perp = \mathbf{1} - \vert \xi_\Delta\rangle\langle\xi_\Delta\vert `$ is defined as a singular rank-1 perturbation via Krein's resolvent formula. This guarantees that $`\widetilde{D}_{\text{glob}, \Delta}(s)`$ is a closed, self-adjoint operator on its domain.
 
 ### §1.2 The Coupling Vector as a Distributional Section
 
@@ -102,7 +102,7 @@ Because $`\mathfrak{M}_\infty`$ is non-compact (the dilation factor $`\mathbb{R}
 **Definition 2.2** (Place-wise $`\eta`$-invariants). *For each place $`v`$ of $`\mathbb{Q}`$, define the spectral $`\eta`$-function:*
 
 ```math
-\eta_v(z) := \sum_{\lambda_v \neq 0} \mathrm{sgn}(\lambda_v) \, |\lambda_v|^{-z}
+\eta_v(z) := \sum_{\lambda_v \neq 0} \mathrm{sgn}(\lambda_v) \, \vert \lambda_v\vert ^{-z}
 ```
 
 *where $`\{\lambda_v\}`$ are the eigenvalues of the local Dirac operator $`D_{v, \Delta}(s)`$ restricted to the boundary at that place.*
@@ -116,7 +116,7 @@ Because $`\mathfrak{M}_\infty`$ is non-compact (the dilation factor $`\mathbb{R}
 At $`z = 0`$, by the functional equation of $`\Gamma(s + 11/2)`$:
 
 ```math
-\eta_{\infty, \Delta}(0) = \frac{1}{\pi} \arg \Gamma\!\left(\frac{1}{2} + it + \frac{11}{2}\right)\bigg|_{\text{boundary}} - \frac{t}{\pi}\ln(2\pi) + \frac{1}{2}\mathrm{sgn}\!\left(\mathrm{Re}(s) - \frac{1}{2}\right)
+\eta_{\infty, \Delta}(0) = \frac{1}{\pi} \arg \Gamma\!\left(\frac{1}{2} + it + \frac{11}{2}\right)\bigg\vert _{\text{boundary}} - \frac{t}{\pi}\ln(2\pi) + \frac{1}{2}\mathrm{sgn}\!\left(\mathrm{Re}(s) - \frac{1}{2}\right)
 ```
 
 The last term is the **spectral asymmetry contribution** from the non-compact end: it detects whether the operator is evaluated on or off the critical line.
@@ -124,7 +124,7 @@ The last term is the **spectral asymmetry contribution** from the non-compact en
 **Non-Archimedean $`\eta`$-invariants.** For each prime $`p`$, the Bruhat-Tits tree $`\mathcal{T}_p`$ is a locally finite tree of infinite volume, which implies that the spectrum of the local Dirac operator $`D_{p, \Delta}(s)`$ contains an absolutely continuous component supported on the Alon-Boppana band. Consequently, the naive discrete sum:
 
 ```math
-\eta_{p, \Delta}(z) = \sum_{d=0}^\infty (p+1)p^{d-1} \sum_{\epsilon = \pm 1} \epsilon \, |\lambda_{p,d,\epsilon}|^{-z}
+\eta_{p, \Delta}(z) = \sum_{d=0}^\infty (p+1)p^{d-1} \sum_{\epsilon = \pm 1} \epsilon \, \vert \lambda_{p,d,\epsilon}\vert ^{-z}
 ```
 
 over the deep boundary states is divergent in the infinite-volume limit. To rigorously define $`\eta_{p, \Delta}(0)`$, we employ Melrose's scattering theory on non-compact manifolds adapted to trees (see Stanton, *The Heat Equation on Trees*). The eta-invariant is defined via the regularized trace of the boundary scattering matrix $`S_p(\lambda)`$, which acts as a Fredholm determinant on the tree boundary:
@@ -210,18 +210,18 @@ For our spectral triple $`(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob
 where the component cocycles $`\varphi_{2n}`$ are:
 
 ```math
-\varphi_{2n}(a_0, a_1, \dots, a_{2n}) = \sum_{\alpha} c_{n,\alpha} \mathrm{Res}_{z=0} \mathrm{Tr}\left(a_0 \nabla^{\alpha_1}(a_1) \cdots \nabla^{\alpha_{2n}}(a_{2n}) |D|^{-2(|\alpha| + n) - z}\right)
+\varphi_{2n}(a_0, a_1, \dots, a_{2n}) = \sum_{\alpha} c_{n,\alpha} \mathrm{Res}_{z=0} \mathrm{Tr}\left(a_0 \nabla^{\alpha_1}(a_1) \cdots \nabla^{\alpha_{2n}}(a_{2n}) \vert D\vert ^{-2(\vert \alpha\vert  + n) - z}\right)
 ```
 
-Here $`\nabla(a) = [D^2, a]`$, the multi-index $`\alpha = (\alpha_1, \dots, \alpha_{2n})`$, $`|\alpha| = \sum \alpha_i`$, and the $`c_{n,\alpha}`$ are universal combinatorial constants:
+Here $`\nabla(a) = [D^2, a]`$, the multi-index $`\alpha = (\alpha_1, \dots, \alpha_{2n})`$, $`\vert \alpha\vert  = \sum \alpha_i`$, and the $`c_{n,\alpha}`$ are universal combinatorial constants:
 
 ```math
-c_{n,\alpha} = \frac{(-1)^{|\alpha|}}{\alpha! \, (|\alpha| + n)!} \cdot \Gamma(|\alpha| + n)
+c_{n,\alpha} = \frac{(-1)^{\vert \alpha\vert }}{\alpha! \, (\vert \alpha\vert  + n)!} \cdot \Gamma(\vert \alpha\vert  + n)
 ```
 
 ### §3.2 The Dimension Spectrum
 
-**Proposition 3.1.** *The dimension spectrum $`\mathrm{Sd}(\mathcal{A}, \mathcal{H}, D_{\text{glob}, \Delta})`$ — the set of poles of the zeta functions $`\zeta_b(z) = \mathrm{Tr}(b|D|^{-z})`$ for $`b \in \mathcal{B}`$ (the algebra generated by $`\mathcal{A}`$ and $`[D, \mathcal{A}]`$) — is:*
+**Proposition 3.1.** *The dimension spectrum $`\mathrm{Sd}(\mathcal{A}, \mathcal{H}, D_{\text{glob}, \Delta})`$ — the set of poles of the zeta functions $`\zeta_b(z) = \mathrm{Tr}(b\vert D\vert ^{-z})`$ for $`b \in \mathcal{B}`$ (the algebra generated by $`\mathcal{A}`$ and $`[D, \mathcal{A}]`$) — is:*
 
 ```math
 \mathrm{Sd} = \{1\} \cup \{1 - k : k \in \mathbb{Z}_{\ge 0}\}
@@ -244,25 +244,25 @@ Since $`\dim \mathrm{Sd} = 1`$, only the $`n = 0`$ and $`n = 1`$ terms of the lo
 **The $`n = 0`$ cocycle** (the Dixmier trace contribution):
 
 ```math
-\varphi_0(a_0) = \mathrm{Res}_{z=0} \mathrm{Tr}(a_0 |D|^{-z})
+\varphi_0(a_0) = \mathrm{Res}_{z=0} \mathrm{Tr}(a_0 \vert D\vert ^{-z})
 ```
 
 For $`a_0 = \Pi_{\xi_\Delta}^\perp`$ (the projection itself), this evaluates to:
 
 ```math
-\varphi_0(\Pi^\perp) = \mathrm{Res}_{z=0}\left[\zeta_D(z) - |\langle \xi_\Delta, |D|^{-z} \xi_\Delta \rangle|\right]
+\varphi_0(\Pi^\perp) = \mathrm{Res}_{z=0}\left[\zeta_D(z) - \vert \langle \xi_\Delta, \vert D\vert ^{-z} \xi_\Delta \rangle\vert \right]
 ```
 
 The first term gives the residue of the spectral zeta function of the uncompressed operator — which is $`\ln\lambda / \pi`$ by the Weyl law — and the second term subtracts the rank-one contribution:
 
 ```math
-\varphi_0(\Pi^\perp) = \frac{\ln\lambda}{\pi} - \mathrm{Res}_{z=0} \sum_n |\xi_\Delta(n)|^2 \left|\frac{n\pi}{\ln\lambda}\right|^{-z}
+\varphi_0(\Pi^\perp) = \frac{\ln\lambda}{\pi} - \mathrm{Res}_{z=0} \sum_n \vert \xi_\Delta(n)\vert ^2 \left\vert \frac{n\pi}{\ln\lambda}\right\vert ^{-z}
 ```
 
 **The $`n = 1`$ cocycle** (the curvature contribution):
 
 ```math
-\varphi_2(a_0, a_1, a_2) = \mathrm{Res}_{z=0} \mathrm{Tr}\left(a_0 [D, a_1][D, a_2] |D|^{-2-z}\right) - \frac{1}{2}\mathrm{Res}_{z=0}\mathrm{Tr}\left(a_0 \nabla(a_1)[D, a_2] |D|^{-4-z}\right)
+\varphi_2(a_0, a_1, a_2) = \mathrm{Res}_{z=0} \mathrm{Tr}\left(a_0 [D, a_1][D, a_2] \vert D\vert ^{-2-z}\right) - \frac{1}{2}\mathrm{Res}_{z=0}\mathrm{Tr}\left(a_0 \nabla(a_1)[D, a_2] \vert D\vert ^{-4-z}\right)
 ```
 
 ### §3.4 The Automorphic Topological Weight
@@ -290,7 +290,7 @@ The first term gives the usual derivative along the tree edge. The second term �
 Squaring and taking the residue trace:
 
 ```math
-\mathrm{Res}_{z=0}\mathrm{Tr}([D_p, e_\Delta]^2 |D_p|^{-2-z}) = \frac{\log^2 p}{(p-1)} \left(\tilde{\tau}(p)^2 - 2\right) \cdot \mathrm{Res}_{z=0}\zeta_{\mathcal{T}_p}(z)
+\mathrm{Res}_{z=0}\mathrm{Tr}([D_p, e_\Delta]^2 \vert D_p\vert ^{-2-z}) = \frac{\log^2 p}{(p-1)} \left(\tilde{\tau}(p)^2 - 2\right) \cdot \mathrm{Res}_{z=0}\zeta_{\mathcal{T}_p}(z)
 ```
 
 Using $`\alpha_p^2 + \beta_p^2 = \tilde{\tau}(p)^2 - 2\alpha_p\beta_p = \tilde{\tau}(p)^2 - 2`$ (since $`\alpha_p\beta_p = 1`$ after normalization), this gives the stated formula. $`\square`$
@@ -427,7 +427,7 @@ Substituting the explicit form of $`\eta_{\text{global}}(0)`$ from Theorem 2.5:
 
 *Proof.* 
 
-**Necessity of $`\sigma = 1/2`$:** If $`\sigma \neq 1/2`$, the non-unitary imaginary drift $`D_0 \to D_0 - i(\sigma - 1/2)\mathbb{I}`$ deforms the system off the critical line. By Monograph [Theorem 5.2.1](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#L217-L230), this breaks the spectral symmetry of the unperturbed operator, bounding the symmetry score from below by $`2|\sigma - 1/2| \ge 0.40`$. Consequently, no extension parameter $`\theta`$ can satisfy the functional equation. By Monograph [Lemma 5.2.2](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#L217-L230), the resulting spectral flow shift introduces a boundary index defect of $`\Delta \mathrm{Ind} = -\frac{1}{4}\mathrm{sgn}(\sigma - 1/2) = \pm 1/4`$, violating index integrality. Since a Fredholm operator must possess an integer-valued index, the Fredholm property collapses off the critical line, establishing $`\sigma = 1/2`$ as a rigid topological requirement.
+**Necessity of $`\sigma = 1/2`$:** If $`\sigma \neq 1/2`$, the non-unitary imaginary drift $`D_0 \to D_0 - i(\sigma - 1/2)\mathbb{I}`$ deforms the system off the critical line. By Monograph [Theorem 5.2.1](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#L217-L230), this breaks the spectral symmetry of the unperturbed operator, bounding the symmetry score from below by $`2\vert \sigma - 1/2\vert  \ge 0.40`$. Consequently, no extension parameter $`\theta`$ can satisfy the functional equation. By Monograph [Lemma 5.2.2](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md#L217-L230), the resulting spectral flow shift introduces a boundary index defect of $`\Delta \mathrm{Ind} = -\frac{1}{4}\mathrm{sgn}(\sigma - 1/2) = \pm 1/4`$, violating index integrality. Since a Fredholm operator must possess an integer-valued index, the Fredholm property collapses off the critical line, establishing $`\sigma = 1/2`$ as a rigid topological requirement.
 
 **Sufficiency on $`\sigma = 1/2`$:** Setting $`\sigma = 1/2`$, the sign term vanishes and:
 
@@ -449,7 +449,7 @@ In the **thermodynamic limit** $`\lambda \to \infty`$, the scaling factor $`\fra
 \mathcal{I}_{\text{top}} \to 2
 ```
 
-In this limit, the vanishing condition simplifies to $`\arg\Lambda(1/2 + it, \Delta) = 4\pi \equiv 0 \bmod 2\pi`$, which is equivalent to $`\Lambda(1/2 + it, \Delta) \in \mathbb{R}_{> 0}`$. Combined with the fact that $`\Lambda`$ changes sign at its zeros, **the zero-modes of $`\widetilde{D}`$ are in bijection with the zeros of $`\Lambda(s, \Delta)`$ on the critical line.**
+In this limit, the vanishing condition simplifies to $`\arg\Lambda(1/2 + it, \Delta) = 4\pi \equiv 0 \bmod 2\pi`$, which is equivalent to $`\Lambda(1/2 + it, \Delta) \in \mathbb{R}_{\gt  0}`$. Combined with the fact that $`\Lambda`$ changes sign at its zeros, **the zero-modes of $`\widetilde{D}`$ are in bijection with the zeros of $`\Lambda(s, \Delta)`$ on the critical line.**
 
 Specifically, the index identity must be understood as being defined on the punctured critical line (excluding the discrete set of zeros $`\{t_k\}`$), where $`\arg\Lambda`$ is locally constant/smooth and well-defined. As the parameter $`t`$ crosses a zero $`t_k`$ of the $`L`$-function, $`\arg\Lambda(1/2 + it, \Delta)`$ jumps discontinuously by $`\pm\pi`$, which translates to a jump discontinuity of $`\mp 1/2`$ in the index. This behavior is completely analogous to the classical Atiyah-Patodi-Singer index theorem, where the boundary $`\eta`$-invariant jumps by $`\pm 1`$ as eigenvalues cross zero, reflecting the birth or death of a zero-mode in the bulk. $`\square`$
 

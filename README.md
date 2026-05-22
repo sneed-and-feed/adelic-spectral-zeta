@@ -11,10 +11,10 @@ A Python library implementing the **Adèlic Spectral Triple** $`(\mathcal{A}, \m
 The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry:
 
 ### 1. The Global Dirac Operator
-We define a symmetric restricted operator $`D_{\text{sym}} = D_0\bigr|_{\text{Ker}(\langle\xi,\cdot\rangle)}`$ with deficiency indices exactly $`(1,1)`$, spanned by deficiency vectors $`g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})`$. The global operator $`D_{\text{glob}}`$ is formulated as a singular rank-1 perturbation:
+We define a symmetric restricted operator $`D_{\text{sym}} = D_0\bigr\vert _{\text{Ker}(\langle\xi,\cdot\rangle)}`$ with deficiency indices exactly $`(1,1)`$, spanned by deficiency vectors $`g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})`$. The global operator $`D_{\text{glob}}`$ is formulated as a singular rank-1 perturbation:
 
 ```math
-(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}
+(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{\vert (D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi\vert }{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}
 ```
    
 ### 2. Weierstrass Determinant & Zeros of $`L`$-Functions
@@ -37,7 +37,7 @@ The von Neumann self-adjoint extension parameter $`\theta_0 = \pi`$ is uniquely 
 Applying the Weil explicit formula with test functions $`h(w) = 1/(w-z)`$ yields a rigorous, spectral Weyl-strength subconvexity bound:
 
 ```math
-\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{4} + \epsilon}
+\left\vert  L\left(\frac{1}{2}+it, \Delta\right) \right\vert  \ll t^{\frac{1}{4} + \epsilon}
 ```
 
 We also formulate a GUE-conditional conjecture improving this bound to $`t^{1/3+\epsilon}`$.
@@ -46,7 +46,7 @@ We also formulate a GUE-conditional conjecture improving this bound to $`t^{1/3+
 Mapping the spectral geometry to a system of interacting fermions under Coulomb repulsion reveals a characteristic entanglement entropy "spike" $`\Delta S`$ at each $`L`$-function zero $`t_k`$, analytically bounded by:
 
 ```math
-\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 |L'\left(\frac{1}{2}+it_k\right)|^2}
+\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 \vert L'\left(\frac{1}{2}+it_k\right)\vert ^2}
 ```
 
 ---
