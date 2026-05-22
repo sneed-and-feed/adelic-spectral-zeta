@@ -26,23 +26,24 @@ T(A^2(x)) = A(T(x)) P_0(x) + A^3(T(x)) P_1(x)
 *Proof.* Since $`P_0`$ and $`P_1`$ partition $`\mathbb{Z}_2`$, we evaluate the relation on each sector:
 1. **Even Sector ($`P_0(x) = 1, P_1(x) = 0`$):**
    Since $`x`$ is even, $`x+2`$ is also even. The LHS evaluates to:
-   ```math
+   $$
    T(A^2(x)) = T(x+2) = \frac{x+2}{2} = \frac{x}{2} + 1 = T(x) + 1 = A(T(x))
-   ```
+   $$
    The RHS evaluates to:
-   ```math
+   $$
    A(T(x)) \cdot 1 + A^3(T(x)) \cdot 0 = A(T(x))
-   ```
+   $$
+
 2. **Odd Sector ($`P_0(x) = 0, P_1(x) = 1`$):**
    Since $`x`$ is odd, $`x+2`$ is also odd. The LHS evaluates to:
-   ```math
+   $$
    T(A^2(x)) = T(x+2) = \frac{3(x+2)+1}{2} = \frac{3x+1}{2} + 3 = T(x) + 3 = A^3(T(x))
-   ```
+   $$
    The RHS evaluates to:
-   ```math
+   $$
    A(T(x)) \cdot 0 + A^3(T(x)) \cdot 1 = A^3(T(x))
-   ```
-In both cases, the LHS matches the RHS identically. $`\square`$
+   $$
+   In both cases, the LHS matches the RHS identically. $`\square`$
 
 ---
 
@@ -71,41 +72,42 @@ B \mathbf{A}^2 = \mathbf{A} B \mathbf{P}_0 + \mathbf{A}^3 B \mathbf{P}_1
 
 *Proof.* We evaluate the action of both sides on a test function $`f \in \mathcal{H}`$ at an arbitrary point $`x \in \mathbb{Z}_2`$:
 1. **Left-Hand Side:**
-   ```math
+   $$
    (B \mathbf{A}^2 f)(x) = \frac{1}{2} (\mathbf{A}^2 f)(2x) + \frac{1}{2} (\mathbf{A}^2 f)\left(\frac{2x-1}{3}\right) \mathbb{I}_{\text{odd}}(2x-1)
-   ```
-   ```math
+   $$
+   $$
    = \frac{1}{2} f(2x-2) + \frac{1}{2} f\left(\frac{2x-1}{3} - 2\right) \mathbb{I}_{\text{odd}}(2x-1)
-   ```
+   $$
    Using $`\frac{2x-1}{3} - 2 = \frac{2x-7}{3}`$, this simplifies to:
-   ```math
+   $$
    (B \mathbf{A}^2 f)(x) = \frac{1}{2} f(2x-2) + \frac{1}{2} f\left(\frac{2x-7}{3}\right) \mathbb{I}_{\text{odd}}(2x-1)
-   ```
+   $$
+
 2. **Right-Hand Side:**
-   ```math
+   $$
    (\mathbf{A} B \mathbf{P}_0 f + \mathbf{A}^3 B \mathbf{P}_1 f)(x) = (B \mathbf{P}_0 f)(x-1) + (B \mathbf{P}_1 f)(x-3)
-   ```
+   $$
    Expanding the first term:
-   ```math
+   $$
    (B \mathbf{P}_0 f)(x-1) = \frac{1}{2} (\mathbf{P}_0 f)(2x-2) + \frac{1}{2} (\mathbf{P}_0 f)\left(\frac{2x-3}{3}\right) \mathbb{I}_{\text{odd}}(2x-3)
-   ```
+   $$
    Since $`2x-2`$ is even, $`(\mathbf{P}_0 f)(2x-2) = f(2x-2)`$. Since $`y = (2x-3)/3`$ satisfies $`3y = 2x-3 \equiv 1 \pmod 2`$, $`y`$ is odd, so $`(\mathbf{P}_0 f)(y) = 0`$. Thus:
-   ```math
+   $$
    (B \mathbf{P}_0 f)(x-1) = \frac{1}{2} f(2x-2)
-   ```
+   $$
    Expanding the second term:
-   ```math
+   $$
    (B \mathbf{P}_1 f)(x-3) = \frac{1}{2} (\mathbf{P}_1 f)(2x-6) + \frac{1}{2} (\mathbf{P}_1 f)\left(\frac{2x-7}{3}\right) \mathbb{I}_{\text{odd}}(2x-7)
-   ```
+   $$
    Since $`2x-6`$ is even, $`(\mathbf{P}_1 f)(2x-6) = 0`$. Since $`y = (2x-7)/3`$ is odd, $`(\mathbf{P}_1 f)(y) = f(y)`$. Thus:
-   ```math
+   $$
    (B \mathbf{P}_1 f)(x-3) = \frac{1}{2} f\left(\frac{2x-7}{3}\right) \mathbb{I}_{\text{odd}}(2x-7)
-   ```
-Since $`2x-7 \equiv 2x-1 \equiv 1 \pmod 2`$, the indicator functions match. Adding the two terms yields:
-```math
-\frac{1}{2} f(2x-2) + \frac{1}{2} f\left(\frac{2x-7}{3}\right) \mathbb{I}_{\text{odd}}(2x-1)
-```
-which is exactly the LHS. This completes the proof. $`\square`$
+   $$
+   Since $`2x-7 \equiv 2x-1 \equiv 1 \pmod 2`$, the indicator functions match. Adding the two terms yields:
+   $$
+   \frac{1}{2} f(2x-2) + \frac{1}{2} f\left(\frac{2x-7}{3}\right) \mathbb{I}_{\text{odd}}(2x-1)
+   $$
+   which is exactly the LHS. This completes the proof. $`\square`$
 
 ---
 
