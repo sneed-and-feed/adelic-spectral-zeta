@@ -25,13 +25,17 @@ y_0 = 2x \quad (\text{even}) \quad \text{and} \quad y_1 = \frac{2x-1}{3} \quad (
 *Proof.* 
 1.  **Existence & Parity of Even Preimage:** Let $`y_0 = 2x`$. Since $`y_0`$ is even, $`T(y_0) = y_0/2 = x`$. Thus $`y_0 \in T^{-1}(x)`$ and is even.
 2.  **Existence & Parity of Odd Preimage:** Let $`y_1 = (2x-1)/3`$. In $`\mathbb{Z}_2`$, $`3`$ is a unit (since $`|3|_2 = 2^{-0} = 1`$), so $`3^{-1}`$ exists and is in $`\mathbb{Z}_2`$, meaning $`y_1 \in \mathbb{Z}_2`$. Evaluating modulo 2:
-    ```math
-    3 y_1 = 2x-1 \equiv 1 \pmod{2} \implies 1 \cdot y_1 \equiv 1 \pmod{2} \implies y_1 \equiv 1 \pmod{2}
-    ```
+
+```math
+3 y_1 = 2x-1 \equiv 1 \pmod{2} \implies 1 \cdot y_1 \equiv 1 \pmod{2} \implies y_1 \equiv 1 \pmod{2}
+```
+
     Thus $`y_1`$ is odd. Applying $`T`$ yields:
-    ```math
-    T(y_1) = \frac{3y_1+1}{2} = \frac{3\frac{2x-1}{3}+1}{2} = x
-    ```
+
+```math
+T(y_1) = \frac{3y_1+1}{2} = \frac{3\frac{2x-1}{3}+1}{2} = x
+```
+
     So $`y_1 \in T^{-1}(x)`$ and is odd.
 3.  **Uniqueness:** Any preimage $`y`$ must be even or odd. If $`y`$ is even, $`y/2 = x \implies y = 2x`$. If $`y`$ is odd, $`(3y+1)/2 = x \implies 3y+1 = 2x \implies y = (2x-1)/3`$. Thus, $`T^{-1}(x)`$ has exactly these two elements. $`\square`$
 
@@ -55,17 +59,23 @@ g_0(x) = 2x, \quad g_1(x) = \frac{2x-1}{3}
 
 *Proof.*
 1.  **Even Branch:**
-    ```math
-    |g_0(x) - g_0(y)|_2 = |2x - 2y|_2 = |2|_2 |x - y|_2 = \frac{1}{2} |x - y|_2
-    ```
+
+```math
+|g_0(x) - g_0(y)|_2 = |2x - 2y|_2 = |2|_2 |x - y|_2 = \frac{1}{2} |x - y|_2
+```
+
 2.  **Odd Branch:**
-    ```math
-    |g_1(x) - g_1(y)|_2 = \left| \frac{2x-1}{3} - \frac{2y-1}{3} \right)_2 = \left| \frac{2(x-y)}{3} \right)_2 = \frac{|2|_2}{|3|_2} |x - y|_2
-    ```
+
+```math
+|g_1(x) - g_1(y)|_2 = \left| \frac{2x-1}{3} - \frac{2y-1}{3} \right|_2 = \left| \frac{2(x-y)}{3} \right|_2 = \frac{|2|_2}{|3|_2} |x - y|_2
+```
+
     Since $`3 \equiv 1 \pmod{2}`$, $`3`$ is not divisible by $`2`$, so $`v_2(3) = 0 \implies |3|_2 = 1`$. Thus:
-    ```math
-    |g_1(x) - g_1(y)|_2 = \frac{1/2}{1} |x - y|_2 = \frac{1}{2} |x - y|_2
-    ```
+
+```math
+|g_1(x) - g_1(y)|_2 = \frac{1/2}{1} |x - y|_2 = \frac{1}{2} |x - y|_2
+```
+
     Both branches contract the 2-adic distance by exactly the factor $`1/2`$. $`\square`$
 
 ---
