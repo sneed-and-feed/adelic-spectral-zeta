@@ -12,7 +12,9 @@ We present a unified geometric and physical framework for the spectral realizati
 
 The Riemann Hypothesis (RH) and its generalization to automorphic $L$-functions (GRH) state that all non-trivial zeros of $`L(s, \pi)`$ lie on the critical line $`\mathrm{Re}(s) = 1/2`$. The Hilbert-Pólya conjecture suggests that these zeros correspond to the eigenvalues of a self-adjoint operator on a Hilbert space. Alain Connes reformulated this by placing the problem within non-commutative geometry, defining a spectral triple over the adèle class space:
 
-$$ \mathbb{A}_{\mathbb{Q}} / \mathbb{Q}^\times $$
+$$
+\mathbb{A}_{\mathbb{Q}} / \mathbb{Q}^\times
+$$
 
 In Connes' original model, the zeros of the Riemann zeta function appeared as a spectral deficiency (absorption spectrum) in a continuous spectrum. 
 
@@ -38,33 +40,45 @@ We define the global spectral triple associated to an automorphic representation
 ### 2.1 The Algebra $`\mathcal{A}`$
 The algebra $`\mathcal{A}`$ is the non-commutative algebra of smooth, rapidly decreasing functions on the adèle class space, which can be represented as:
 
-$$\mathcal{A} = \mathcal{C}^\infty(S^1 \rtimes \mathbb{R}_+^\times) \otimes \bigotimes_{p} \mathcal{C}_{\text{loc}}(\mathcal{T}_p)$$
+$$
+\mathcal{A} = \mathcal{C}^\infty(S^1 \rtimes \mathbb{R}_+^\times) \otimes \bigotimes_{p} \mathcal{C}_{\text{loc}}(\mathcal{T}_p)
+$$
 
 where $`S^1 \rtimes \mathbb{R}_+^\times`$ represents the Archimedean dilation group, and $`\mathcal{T}_p`$ is the Bruhat-Tits tree associated to $`PGL_2(\mathbb{Q}_p)`$.
 
 ### 2.2 The Hilbert Space $`\mathcal{H}_{\text{glob}}`$
 The global Hilbert space is the direct sum of the Archimedean and non-Archimedean components:
 
-$$\mathcal{H}_{\text{glob}} = \mathcal{H}_\infty \otimes \bigotimes_{p} \mathcal{H}_p$$
+$$
+\mathcal{H}_{\text{glob}} = \mathcal{H}_\infty \otimes \bigotimes_{p} \mathcal{H}_p
+$$
 
 We discretize the continuous Archimedean component by projecting onto a Fourier-like scale-invariant basis. The basis states $`|n\rangle`$ for $`n \in \mathbb{Z}`$ represent states on the 1D Archimedean wire, corresponding to logarithmic wavefunctions:
 
-$$\psi_n(x) = x^{-1/2 - i n \pi / \ln \lambda}$$
+$$
+\psi_n(x) = x^{-1/2 - i n \pi / \ln \lambda}
+$$
 
 ### 2.3 Rigorous Operator-Theoretic Construction of $`D_{\text{glob}}`$
 Formally, we define the Archimedean Hilbert space as $`\mathcal{H}_\infty = \ell^2(\mathbb{Z})`$ with the unperturbed Dirac operator $`D_0`$ acting diagonally in the scale-invariant basis $`\{|n\rangle\}_{n \in \mathbb{Z}}`$:
 
-$$D_0 |n\rangle = \lambda_n |n\rangle, \quad \lambda_n = \frac{n \pi}{\ln \lambda}$$
+$$
+D_0 |n\rangle = \lambda_n |n\rangle, \quad \lambda_n = \frac{n \pi}{\ln \lambda}
+$$
 
 The natural domain of $`D_0`$ is the dense subspace:
 
-$$\text{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\rbrace$$
+$$
+\text{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\rbrace
+$$
 
 Since $`\lambda_n \in \mathbb{R}`$, $`D_0`$ is self-adjoint on $`\text{Dom}(D_0)`$.
 
 The global coupling vector $`\xi`$ is defined by:
 
-$$\xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_{\text{arch}}(n)$$
+$$
+\xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_{\text{arch}}(n)
+$$
 
 where $`A_p`$ are the Satake parameters and $`\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)`$ represents the Gamma-conductor factor. Since $`\psi(1/4 + it) \sim \ln|t|`$ as $`|t| \to \infty`$, the components $`\xi_n`$ grow logarithmically: $`\xi_n = \mathcal{O}(\ln|n|)`$. Thus, $`\xi \notin \ell^2(\mathbb{Z})`$, meaning the projection $`P_\xi`$ cannot be defined directly on $`\mathcal{H}_\infty`$.
 
@@ -72,26 +86,36 @@ To construct the global Dirac operator $`D_{\text{glob}}`$ rigorously, we use th
 1. The linear functional $`\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n`$ is defined on the domain $`\text{Dom}(D_0)`$. It is continuous with respect to the graph norm $`\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}`$ because the sequence $`\left\lbrace \frac{\xi_n}{\lambda_n} \right\rbrace`$ is in $`\ell^2(\mathbb{Z})`$ (since $`\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty`$).
 2. We define the symmetric restriction $`D_{\text{sym}} = D_0 |_{\text{Dom}(D_{\text{sym}})}`$ on the dense domain:
 
-$$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle) = \left\lbrace u \in \text{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\rbrace$$
+$$
+\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle) = \left\lbrace u \in \text{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\rbrace
+$$
 
    Since $`\text{Dom}(D_{\text{sym}})`$ is a closed subspace of codimension 1 in $`\text{Dom}(D_0)`$ under the graph norm, $`D_{\text{sym}}`$ is a closed, densely defined symmetric operator.
 3. The deficiency spaces $`\mathcal{K}_\pm = \text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})`$ are spanned by the deficiency vectors:
 
-$$g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \implies g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$$
+$$
+g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \implies g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}
+$$
 
    Since $`\xi_n = \mathcal{O}(\ln|n|)`$ and $`\lambda_n \sim n`$, the sum $`\sum_n |g_{\pm, n}|^2`$ converges, so $`g_\pm \in \ell^2(\mathbb{Z})`$.
    For any $`u \in \text{Dom}(D_{\text{sym}})`$, we have:
 
-$$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
+$$
+\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0
+$$
 
    This proves that $`g_\pm`$ are orthogonal to the range of $`D_{\text{sym}} \mp i\mathbb{I}`$, meaning $`\mathcal{K}_\pm = \text{span}\{g_\pm\}`$. Thus, the deficiency indices are exactly $(1, 1)$.
 4. By von Neumann's theorem, all self-adjoint extensions $`D_\theta`$ of $`D_{\text{sym}}`$ are parameterized by a phase $`\theta \in [0, 2\pi)`$, which maps the normalized deficiency space via the isometry $`U_\theta : g_+ \mapsto e^{i\theta} g_-`$. The domain of the extension $`D_\theta`$ is given by:
 
-$$\text{Dom}(D_\theta) = \left\lbrace u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \text{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\rbrace$$
+$$
+\text{Dom}(D_\theta) = \left\lbrace u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \text{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\rbrace
+$$
 
    On this domain, $`D_\theta`$ acts as:
 
-$$D_\theta \left( u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) \right) = D_{\text{sym}} u + i c \left( g_+ - e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right)$$
+$$
+D_\theta \left( u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) \right) = D_{\text{sym}} u + i c \left( g_+ - e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right)
+$$
 
    The global compressed Dirac operator $`D_{\text{glob}}`$ corresponds to a specific choice of $`\theta_0`$ that matches the physical adèlic boundary conditions, and its resolvent is given exactly by the regularized Krein formula. This guarantees that $`D_{\text{glob}}`$ is a self-adjoint operator on its domain.
 
@@ -104,7 +128,9 @@ To establish that $`(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})`$ 
 ### 3.1 Summability
 An operator $D$ is $d$-summable if the resolvent $`(D^2 + 1)^{-1/2}`$ belongs to the weak Schatten class $`\mathcal{L}^{d,\infty}(\mathcal{H})`$. For our 1D Archimedean clock wire, the eigenvalues of $`D_0`$ scale linearly with $n$:
 
-$$\lambda_n \approx \frac{n \pi}{\ln \lambda}$$
+$$
+\lambda_n \approx \frac{n \pi}{\ln \lambda}
+$$
 
 Since the eigenvalues grow as $O(n)$, the sum $`\sum |\lambda_n|^{-s}`$ converges for $`\mathrm{Re}(s) > 1`$. Thus, the spectral triple is **1-summable**, reflecting the underlying 1-dimensional manifold of the Archimedean wire.
 
@@ -116,7 +142,9 @@ To establish that $`(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})`$ 
    We define the global smooth subalgebra as $`\mathcal{A} = \mathcal{A}_\infty \otimes \bigotimes_p \mathcal{A}_p`$.
    - The Archimedean component $`\mathcal{A}_\infty = C^\infty(S^1)`$ is isomorphic to the Schwartz space of sequences on the Fourier dual group:
 
-$$\mathcal{A}_\infty \cong \left\lbrace a = \sum_{m \in \mathbb{Z}} a_m S^m \in \mathcal{B}(\ell^2(\mathbb{Z})) : \sup_{m \in \mathbb{Z}} (1 + |m|)^p |a_m| < \infty \quad \forall p \in \mathbb{N}_0 \right\rbrace$$
+$$
+\mathcal{A}_\infty \cong \left\lbrace a = \sum_{m \in \mathbb{Z}} a_m S^m \in \mathcal{B}(\ell^2(\mathbb{Z})) : \sup_{m \in \mathbb{Z}} (1 + |m|)^p |a_m| < \infty \quad \forall p \in \mathbb{N}_0 \right\rbrace
+$$
 
      where $S$ is the unitary shift operator $`S|n\rangle = |n+1\rangle`$.
    - The non-Archimedean component $`\mathcal{A}_p = \mathcal{C}_{\text{loc}}(\mathcal{T}_p)`$ consists of locally constant, compactly supported functions on the Bruhat-Tits tree $`\mathcal{T}_p`$.
@@ -124,27 +152,37 @@ $$\mathcal{A}_\infty \cong \left\lbrace a = \sum_{m \in \mathbb{Z}} a_m S^m \in 
 2. **Explicit Domain Control**:
    The unperturbed Archimedean Dirac operator $`D_0`$ acts diagonally as $`D_0 |n\rangle = \lambda_n |n\rangle`$ with $`\lambda_n = n \pi / \ln \lambda`$ on the Hilbert space $`\mathcal{H}_\infty = \ell^2(\mathbb{Z})`$. The domain of $`D_0`$ is:
 
-$$\text{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n \in \mathbb{Z}} (1 + n^2) |u_n|^2 < \infty \right\rbrace$$
+$$
+\text{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n \in \mathbb{Z}} (1 + n^2) |u_n|^2 < \infty \right\rbrace
+$$
 
    For the singular coupling vector $`\xi \notin \ell^2(\mathbb{Z})`$ with component-wise growth $`\xi_n = \mathcal{O}(\ln|n|)`$, the global compressed Dirac operator $`D_{\text{glob}} = P_\xi^\perp D_0 P_\xi^\perp`$ is defined on the domain:
 
-$$\text{Dom}(D_{\text{glob}}) = P_\xi^\perp \text{Dom}(D_0) = \left\lbrace u \in \text{Dom}(D_0) : \sum_{n \in \mathbb{Z}} \bar{\xi}_n u_n = 0 \right\rbrace$$
+$$
+\text{Dom}(D_{\text{glob}}) = P_\xi^\perp \text{Dom}(D_0) = \left\lbrace u \in \text{Dom}(D_0) : \sum_{n \in \mathbb{Z}} \bar{\xi}_n u_n = 0 \right\rbrace
+$$
 
    which is a closed subspace of codimension 1 in $`\text{Dom}(D_0)`$ under the graph norm.
 
 3. **Estimates on $`\delta^k(a)`$ for the Unperturbed Triple**:
    Let $`\delta_0(T) = [|D_0|, T]`$. For the generator $S$, the action is:
 
-$$\delta_0(S)|n\rangle = (|D_0| S - S |D_0|)|n\rangle = (|\lambda_{n+1}| - |\lambda_n|) S|n\rangle$$
+$$
+\delta_0(S)|n\rangle = (|D_0| S - S |D_0|)|n\rangle = (|\lambda_{n+1}| - |\lambda_n|) S|n\rangle
+$$
 
    Since $`||\lambda_{n+1}| - |\lambda_n|| = \frac{\pi}{\ln\lambda} ||n+1| - |n|| \le \frac{\pi}{\ln\lambda}`$, the commutator $`\delta_0(S)`$ is bounded, with $`\|\delta_0(S)\| \le \frac{\pi}{\ln\lambda}`$.
    Inductively, for any $`m \in \mathbb{Z}`$, the shift operator $S^m$ satisfies:
 
-$$\delta_0^k(S^m)|n\rangle = (|\lambda_{n+m}| - |\lambda_n|)^k S^m|n\rangle \implies \|\delta_0^k(S^m)\| \le \left( \frac{\pi}{\ln\lambda} \right)^k |m|^k$$
+$$
+\delta_0^k(S^m)|n\rangle = (|\lambda_{n+m}| - |\lambda_n|)^k S^m|n\rangle \implies \|\delta_0^k(S^m)\| \le \left( \frac{\pi}{\ln\lambda} \right)^k |m|^k
+$$
 
    For any smooth algebra element $`a = \sum_m a_m S^m \in \mathcal{A}_\infty`$, we estimate the norm of the $k$-th derivation iterate:
 
-$$\|\delta_0^k(a)\| \le \sum_{m \in \mathbb{Z}} |a_m| \|\delta_0^k(S^m)\| \le \left( \frac{\pi}{\ln\lambda} \right)^k \sum_{m \in \mathbb{Z}} |a_m| |m|^k$$
+$$
+\|\delta_0^k(a)\| \le \sum_{m \in \mathbb{Z}} |a_m| \|\delta_0^k(S^m)\| \le \left( \frac{\pi}{\ln\lambda} \right)^k \sum_{m \in \mathbb{Z}} |a_m| |m|^k
+$$
 
    Since $`\{a_m\} \in \mathcal{S}(\mathbb{Z})`$, the sum $`\sum_m |a_m| |m|^k`$ converges absolutely for all $`k \in \mathbb{N}_0`$, proving that $`\delta_0^k(a)`$ is a bounded operator.
 
@@ -152,16 +190,22 @@ $$\|\delta_0^k(a)\| \le \sum_{m \in \mathbb{Z}} |a_m| \|\delta_0^k(S^m)\| \le \l
    The perturbed Dirac operator is $`D_{\text{glob}} = D_0 + V`$, where the perturbation $`V = - P_\xi D_0 - D_0 P_\xi + P_\xi D_0 P_\xi`$. To show that the regularity is preserved under this compression, we use the regularized deficiency space construction. The projection $`P_\xi`$ is onto the normalized vector $`\hat{\xi}`$ with components $`\hat{\xi}_n = \xi_n / \|\xi\|_N`$. 
    The commutator of the perturbation with $`a \in \mathcal{A}_\infty`$ is:
 
-$$[V, a] = - |\hat{\xi}\rangle\langle a^* D_0 \hat{\xi}| - |D_0 \hat{\xi}\rangle\langle a^* \hat{\xi}| + \langle \hat{\xi}, D_0 \hat{\xi} \rangle |\hat{\xi}\rangle\langle a^* \hat{\xi}| + |a \hat{\xi}\rangle\langle D_0 \hat{\xi}| + |a D_0 \hat{\xi}\rangle\langle \hat{\xi}| - \langle \hat{\xi}, D_0 \hat{\xi} \rangle |a \hat{\xi}\rangle\langle \hat{\xi}|$$
+$$
+[V, a] = - |\hat{\xi}\rangle\langle a^* D_0 \hat{\xi}| - |D_0 \hat{\xi}\rangle\langle a^* \hat{\xi}| + \langle \hat{\xi}, D_0 \hat{\xi} \rangle |\hat{\xi}\rangle\langle a^* \hat{\xi}| + |a \hat{\xi}\rangle\langle D_0 \hat{\xi}| + |a D_0 \hat{\xi}\rangle\langle \hat{\xi}| - \langle \hat{\xi}, D_0 \hat{\xi} \rangle |a \hat{\xi}\rangle\langle \hat{\xi}|
+$$
 
    Since $`\hat{\xi}`$ lies in the domain of $`D_0`$ under the finite-dimensional truncation of size $N$, $[V, a]$ is a finite-rank operator. 
    To control the iterates of the derivation in the infinite-dimensional limit, we note that the difference between the absolute values $`|D_{\text{glob}}| - |D_0|`$ is a bounded operator. By the integral representation of the absolute value of a self-adjoint operator:
 
-$$|D| = \frac{1}{\pi} \int_0^\infty \frac{1}{\sqrt{t}} \left( 1 - t(D^2 + t)^{-1} \right) dt$$
+$$
+|D| = \frac{1}{\pi} \int_0^\infty \frac{1}{\sqrt{t}} \left( 1 - t(D^2 + t)^{-1} \right) dt
+$$
 
    Substituting the Krein resolvent formula shows that the difference $`|D_{\text{glob}}| - |D_0|`$ is trace-class (hence bounded). Specifically:
 
-$$\| |D_{\text{glob}}| - |D_0| \|_{\mathcal{L}^1} < \infty$$
+$$
+\| |D_{\text{glob}}| - |D_0| \|_{\mathcal{L}^1} < \infty
+$$
 
    Since the difference is bounded and commutes with the algebra up to trace-class terms, the derivation $`\delta(T) = [|D_{\text{glob}}|, T] = \delta_0(T) + [|D_{\text{glob}}| - |D_0|, T]`$ maps bounded operators to bounded operators, preserving the regularity class of $`\mathcal{A}_\infty`$.
 
@@ -172,71 +216,97 @@ $$\| |D_{\text{glob}}| - |D_0| \|_{\mathcal{L}^1} < \infty$$
 
 The dimension spectrum $`\mathrm{DimSp}`$ of the spectral triple is defined as the set of poles of the spectral zeta functions $`\zeta_a(z) = \mathrm{Tr}(a |D_{\text{glob}}|^{-z})`$ for $`a \in \mathcal{A}`$. Let $`a = \mathbb{I} - P_{\xi} = \Pi_{\xi}^{\perp}`$ be the projection onto the coupling complement. Under the spectral mapping, the spectral zeta function is given by:
 
-$$\zeta_{\Pi^{\perp}}(z) = \mathrm{Tr}( \Pi_{\xi}^{\perp} |D_{\text{glob}}|^{-z} ) = \sum_{n \neq 0} \left( 1 - \frac{|\xi_n|^2}{\|\xi\|_N^2} \right) \left| \frac{n \pi}{\ln \lambda} \right|^{-z}$$
+$$
+\zeta_{\Pi^{\perp}}(z) = \mathrm{Tr}( \Pi_{\xi}^{\perp} |D_{\text{glob}}|^{-z} ) = \sum_{n \neq 0} \left( 1 - \frac{|\xi_n|^2}{\|\xi\|_N^2} \right) \left| \frac{n \pi}{\ln \lambda} \right|^{-z}
+$$
 
 We establish the meromorphic continuation of this sum and compute its residues:
 
 1. **Archimedean Contribution**: The unperturbed part of the sum decomposes into two Riemann zeta functions:
 
-$$\zeta_0(z) = 2 \left( \frac{\pi}{\ln \lambda} \right)^{-z} \zeta(z)$$
+$$
+\zeta_0(z) = 2 \left( \frac{\pi}{\ln \lambda} \right)^{-z} \zeta(z)
+$$
 
    By the analytic theory of the Riemann zeta function, $`\zeta_0(z)`$ is meromorphic in the entire complex plane $`\mathbb{C}`$ with a unique simple pole at $z = 1$ with residue:
 
-$$\mathrm{Res}_{z=1} \zeta_0(z) = 2 \left( \frac{\ln \lambda}{\pi} \right) \cdot 1 = \frac{2 \ln \lambda}{\pi}$$
+$$
+\mathrm{Res}_{z=1} \zeta_0(z) = 2 \left( \frac{\ln \lambda}{\pi} \right) \cdot 1 = \frac{2 \ln \lambda}{\pi}
+$$
 
    In the projection-compressed sum, the term corresponding to $`\zeta_0(z)`$ thus contributes a simple pole at $z=1$ with residue $`\frac{2 \ln \lambda}{\pi}`$.
 
 2. **Coupling Vector Perturbation Asymptotics**:
    The correction term is given by:
 
-$$\zeta_{\text{pert}}(z) = -\frac{2}{\|\xi\|_N^2} \left( \frac{\ln\lambda}{\pi} \right)^z \sum_{n=1}^\infty |\xi_n|^2 n^{-z}$$
+$$
+\zeta_{\text{pert}}(z) = -\frac{2}{\|\xi\|_N^2} \left( \frac{\ln\lambda}{\pi} \right)^z \sum_{n=1}^\infty |\xi_n|^2 n^{-z}
+$$
 
    Recall that $`\xi_n`$ consists of a Gamma-conductor factor $`\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)`$ plus non-Archimedean prime sums. 
    Using the asymptotic expansion of the digamma function $`\psi(w)`$ as $`|w| \to \infty`$ in the sector $`|\arg w| < \pi`$:
 
-$$\psi(w) \sim \ln w - \frac{1}{2w} - \sum_{k=1}^\infty \frac{B_{2k}}{2k w^{2k}}$$
+$$
+\psi(w) \sim \ln w - \frac{1}{2w} - \sum_{k=1}^\infty \frac{B_{2k}}{2k w^{2k}}
+$$
 
    where $`B_{2k}`$ are the Bernoulli numbers. For $`w_n = \frac{1}{4} + i \frac{n\pi}{2\ln\lambda}`$, we have:
 
-$$\ln(w_n) = \ln|n| + \ln\left( \frac{\pi}{2\ln\lambda} \right) + i \frac{\pi}{2} \mathrm{sgn}(n) + \mathcal{O}(n^{-2})$$
+$$
+\ln(w_n) = \ln|n| + \ln\left( \frac{\pi}{2\ln\lambda} \right) + i \frac{\pi}{2} \mathrm{sgn}(n) + \mathcal{O}(n^{-2})
+$$
 
    Thus, squaring the components yields the asymptotic expansion:
 
-$$|\xi_n|^2 = \frac{1}{4} (\ln n)^2 + c_1 \ln n + c_0 + \sum_{k=1}^\infty e_k n^{-2k}$$
+$$
+|\xi_n|^2 = \frac{1}{4} (\ln n)^2 + c_1 \ln n + c_0 + \sum_{k=1}^\infty e_k n^{-2k}
+$$
 
    where the coefficients $`e_k`$ are determined by the expansion coefficients of the digamma function.
 
 3. **Meromorphic Continuation via Mellin-Barnes Transform**:
    We evaluate the sum $`\sum_{n=1}^\infty |\xi_n|^2 n^{-z}`$ by substituting the asymptotic expansion. For the logarithmic terms, we utilize the relation:
 
-$$\sum_{n=1}^\infty n^{-z} (\ln n)^m = (-1)^m \zeta^{(m)}(z)$$
+$$
+\sum_{n=1}^\infty n^{-z} (\ln n)^m = (-1)^m \zeta^{(m)}(z)
+$$
 
    Thus:
 
-$$\sum_{n=1}^\infty |\xi_n|^2 n^{-z} = \frac{1}{4} \zeta''(z) - c_1 \zeta'(z) + c_0 \zeta(z) + \sum_{k=1}^\infty e_k \zeta(z + 2k)$$
+$$
+\sum_{n=1}^\infty |\xi_n|^2 n^{-z} = \frac{1}{4} \zeta''(z) - c_1 \zeta'(z) + c_0 \zeta(z) + \sum_{k=1}^\infty e_k \zeta(z + 2k)
+$$
 
    The derivatives $`\zeta^{(m)}(z)`$ of the Riemann zeta function are meromorphic with a pole of order $m+1$ at $z=1$ and are analytic everywhere else.
    The sum $`\sum_{k=1}^\infty e_k \zeta(z + 2k)`$ converges absolutely for $`\mathrm{Re}(z) > -M`$ for any $M > 0$ after subtracting a finite number of terms. The terms $`\zeta(z+2k)`$ introduce simple poles at:
 
-$$z + 2k = 1 \implies z = 1 - 2k \quad \text{for } k \in \mathbb{N}$$
+$$
+z + 2k = 1 \implies z = 1 - 2k \quad \text{for } k \in \mathbb{N}
+$$
 
    The residue of $`\zeta(z+2k)`$ at $z = 1-2k$ is exactly 1.
    Therefore, the meromorphic continuation of $`\zeta_{\text{pert}}(z)`$ has:
    - A triple pole at $z=1$ from $`\zeta''(z)`$,
    - Simple poles at $z = 1-2k$ for $`k \in \mathbb{N}`$ with residues:
 
-$$\mathrm{Res}_{z=1-2k} \zeta_{\Pi^\perp}(z) = -\frac{2 e_k}{\|\xi\|_N^2} \left( \frac{\ln\lambda}{\pi} \right)^{1-2k}$$
+$$
+\mathrm{Res}_{z=1-2k} \zeta_{\Pi^\perp}(z) = -\frac{2 e_k}{\|\xi\|_N^2} \left( \frac{\ln\lambda}{\pi} \right)^{1-2k}
+$$
    
    Thus, the dimension spectrum $`\mathrm{DimSp}`$ of the triple, representing the poles of $`\zeta_{\Pi^\perp}(z)`$, is:
 
-$$\mathrm{DimSp} = \{1\} \cup \{1 - 2k \mid k \in \mathbb{N}\}$$
+$$
+\mathrm{DimSp} = \{1\} \cup \{1 - 2k \mid k \in \mathbb{N}\}
+$$
 
    which is discrete and contains only simple poles off $z=1$, matching the boundary dimension spectrum of a 1D manifold.
 
 ### 3.4 Real Structure and First-Order Condition
 The real structure is defined by the anti-unitary operator $`J: \mathcal{H}_{\text{glob}} \to \mathcal{H}_{\text{glob}}`$ acting as charge conjugation. In the Fourier basis $`\{|n\rangle\}`$, $J$ is defined as:
 
-$$J \left( \sum_n x_n |n\rangle \right) = \sum_n \bar{x}_{-n} |n\rangle$$
+$$
+J \left( \sum_n x_n |n\rangle \right) = \sum_n \bar{x}_{-n} |n\rangle
+$$
 
 which corresponds to $`J = P \mathcal{C}`$ where $`P|n\rangle = |-n\rangle`$ is the parity operator and $`\mathcal{C}`$ is complex conjugation.
 1. **Axiomatic Properties**:
@@ -247,59 +317,83 @@ which corresponds to $`J = P \mathcal{C}`$ where $`P|n\rangle = |-n\rangle`$ is 
    
    For any $`z \in \mathbb{C} \setminus \mathbb{R}`$, we require that for all $`a, b \in \mathcal{A}_\infty`$:
 
-$$[[ (D_{\text{glob}} - z)^{-1}, a], J b^* J^{-1}] = 0 \quad \text{modulo compact (finite-rank) operators}$$
+$$
+[[ (D_{\text{glob}} - z)^{-1}, a], J b^* J^{-1}] = 0 \quad \text{modulo compact (finite-rank) operators}
+$$
    
    **Theorem 3.4.1 (Resolvent First-Order Condition and Norm Estimate)**
    *Let $`a, b \in \mathcal{A}_\infty = C^\infty(S^1)`$, and let $J$ be the real structure operator. The double commutator of the resolvent:*
 
-$$\mathcal{T}_{a,b}(z) = [[ (D_{\text{glob}} - z)^{-1}, a], J b^* J^{-1}]$$
+$$
+\mathcal{T}_{a,b}(z) = [[ (D_{\text{glob}} - z)^{-1}, a], J b^* J^{-1}]
+$$
 
    *is a rank-4 operator. Furthermore, its operator norm is bounded by:*
 
-$$\| \mathcal{T}_{a,b}(z) \| \le \frac{4}{|d(z)|} \| a \| \| b \| \|\phi_z\| \|\phi_{\bar{z}}\|$$
+$$
+\| \mathcal{T}_{a,b}(z) \| \le \frac{4}{|d(z)|} \| a \| \| b \| \|\phi_z\| \|\phi_{\bar{z}}\|
+$$
 
    *where $`\phi_z = (D_0 - z)^{-1}\xi \in \ell^2(\mathbb{Z})`$ and $`d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}`$. Since $`\xi_n = \mathcal{O}(\ln|n|)`$ and $`\lambda_n \sim n`$, we have $`\phi_z \in \ell^2(\mathbb{Z})`$, proving that the double commutator is bounded and trace-class in the infinite-dimensional limit.*
 
    **Proof.**
    By the subtraction-renormalized Krein resolvent formula, the resolvent of $`D_{\text{glob}}`$ is:
 
-$$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|\phi_{\bar{z}}\rangle\langle\phi_z|}{d(z)}$$
+$$
+(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|\phi_{\bar{z}}\rangle\langle\phi_z|}{d(z)}
+$$
 
    where $`\phi_z = (D_0 - z)^{-1}\xi`$. Since $`\phi_{z, n} = \frac{\xi_n}{\lambda_n - z}`$, the sum $`\sum_n |\phi_{z, n}|^2 \le C \sum_{n \neq 0} \frac{\ln^2|n|}{n^2 + 1} < \infty`$, so $`\phi_z \in \ell^2(\mathbb{Z})`$.
    
    We compute the commutator with $`a \in \mathcal{A}_\infty`$:
 
-$$[(D_{\text{glob}} - z)^{-1}, a] = [(D_0 - z)^{-1}, a] - \frac{1}{d(z)} [|\phi_{\bar{z}}\rangle\langle\phi_z|, a]$$
+$$
+[(D_{\text{glob}} - z)^{-1}, a] = [(D_0 - z)^{-1}, a] - \frac{1}{d(z)} [|\phi_{\bar{z}}\rangle\langle\phi_z|, a]
+$$
 
    Expanding the second term:
 
-$$[|\phi_{\bar{z}}\rangle\langle\phi_z|, a] = |a \phi_{\bar{z}}\rangle\langle\phi_z| - |\phi_{\bar{z}}\rangle\langle a^* \phi_z|$$
+$$
+[|\phi_{\bar{z}}\rangle\langle\phi_z|, a] = |a \phi_{\bar{z}}\rangle\langle\phi_z| - |\phi_{\bar{z}}\rangle\langle a^* \phi_z|
+$$
 
    Now we take the double commutator with $`T_b = J b^* J^{-1}`$. Since $`J b^* J^{-1}`$ commutes with all diagonal operators (as it acts as multiplication by $`\bar{b}(-x)`$ on $S^1$, and the classical algebra is commutative), it commutes with the unperturbed resolvent $`(D_0 - z)^{-1}`$ and its commutator:
 
-$$[[(D_0 - z)^{-1}, a], T_b] = 0$$
+$$
+[[(D_0 - z)^{-1}, a], T_b] = 0
+$$
 
    Thus, the double commutator reduces to:
 
-$$\mathcal{T}_{a,b}(z) = -\frac{1}{d(z)} [[|a \phi_{\bar{z}}\rangle\langle\phi_z| - |\phi_{\bar{z}}\rangle\langle a^* \phi_z|, T_b]$$
+$$
+\mathcal{T}_{a,b}(z) = -\frac{1}{d(z)} [[|a \phi_{\bar{z}}\rangle\langle\phi_z| - |\phi_{\bar{z}}\rangle\langle a^* \phi_z|, T_b]
+$$
 
    Evaluating this explicitly:
 
-$$\mathcal{T}_{a,b}(z) = -\frac{1}{d(z)} \left( |T_b a \phi_{\bar{z}}\rangle\langle\phi_z| - |a \phi_{\bar{z}}\rangle\langle T_b^* \phi_z| - |T_b \phi_{\bar{z}}\rangle\langle a^* \phi_z| + |\phi_{\bar{z}}\rangle\langle T_b^* a^* \phi_z| \right)$$
+$$
+\mathcal{T}_{a,b}(z) = -\frac{1}{d(z)} \left( |T_b a \phi_{\bar{z}}\rangle\langle\phi_z| - |a \phi_{\bar{z}}\rangle\langle T_b^* \phi_z| - |T_b \phi_{\bar{z}}\rangle\langle a^* \phi_z| + |\phi_{\bar{z}}\rangle\langle T_b^* a^* \phi_z| \right)
+$$
 
    This is a sum of four rank-1 operators, meaning $`\mathcal{T}_{a,b}(z)`$ is an operator of rank at most 4.
    
    Applying the triangle inequality and noting that $`\| |u\rangle\langle v| \| = \|u\| \|v\|`$:
 
-$$\| \mathcal{T}_{a,b}(z) \| \le \frac{1}{|d(z)|} \left( \|T_b a \phi_{\bar{z}}\| \|\phi_z\| + \|a \phi_{\bar{z}}\| \|T_b^* \phi_z\| + \|T_b \phi_{\bar{z}}\| \|a^* \phi_z\| + \|\phi_{\bar{z}}\| \|T_b^* a^* \phi_z\| \right)$$
+$$
+\| \mathcal{T}_{a,b}(z) \| \le \frac{1}{|d(z)|} \left( \|T_b a \phi_{\bar{z}}\| \|\phi_z\| + \|a \phi_{\bar{z}}\| \|T_b^* \phi_z\| + \|T_b \phi_{\bar{z}}\| \|a^* \phi_z\| + \|\phi_{\bar{z}}\| \|T_b^* a^* \phi_z\| \right)
+$$
 
    Since $a$ is a bounded operator and $`T_b`$ is a unitary representation of $b$ (which is bounded with $`\|T_b\| = \|b\|`$):
 
-$$\| T_b a \phi_{\bar{z}} \| \le \|b\| \|a\| \|\phi_{\bar{z}}\|, \quad \| T_b^* \phi_z \| \le \|b\| \|\phi_z\|$$
+$$
+\| T_b a \phi_{\bar{z}} \| \le \|b\| \|a\| \|\phi_{\bar{z}}\|, \quad \| T_b^* \phi_z \| \le \|b\| \|\phi_z\|
+$$
 
    Substituting these bounds into the inequality yields:
 
-$$\| \mathcal{T}_{a,b}(z) \| \le \frac{4}{|d(z)|} \|a\| \|b\| \|\phi_z\| \|\phi_{\bar{z}}\|\mathcal{O}(1)$$
+$$
+\| \mathcal{T}_{a,b}(z) \| \le \frac{4}{|d(z)|} \|a\| \|b\| \|\phi_z\| \|\phi_{\bar{z}}\|\mathcal{O}(1)
+$$
 
    which completes the proof. $`\blacksquare`$
 
@@ -307,16 +401,22 @@ $$\| \mathcal{T}_{a,b}(z) \| \le \frac{4}{|d(z)|} \|a\| \|b\| \|\phi_z\| \|\phi_
 The orientation axiom requires that the volume form of the spectral triple is represented by the image of a Hochschild homology cycle. For the 1D Archimedean clock wire, the smooth algebra is $`C^{\infty}(S^1)`$, generated by the unitary $u = S$. The Hochschild 1-cycle is $`c = u^{-1} \otimes u \in C_1(\mathcal{A}_{\infty}, \mathcal{A}_{\infty})`$.
 1. **Representation Map**: The representation of the cycle under the Dirac operator is:
 
-$$\pi_D(c) = u^{-1}[D_0, u] = S^{-1} \left( \frac{\pi}{\ln \lambda} S \right) = \frac{\pi}{\ln \lambda} \mathbb{I}$$
+$$
+\pi_D(c) = u^{-1}[D_0, u] = S^{-1} \left( \frac{\pi}{\ln \lambda} S \right) = \frac{\pi}{\ln \lambda} \mathbb{I}
+$$
 
    which is a non-zero constant multiple of the identity, verifying the orientation axiom.
 2. **Adèlic Künneth Product**: For the global tensor product algebra $`\mathcal{A} = \mathcal{A}_{\infty} \otimes \mathcal{A}_d`$, the Hochschild homology groups decompose via the Künneth formula:
 
-$$H_1(\mathcal{A}) \cong H_1(\mathcal{A}_{\infty}) \otimes H_0(\mathcal{A}_d) \oplus H_0(\mathcal{A}_{\infty}) \otimes H_1(\mathcal{A}_d)$$
+$$
+H_1(\mathcal{A}) \cong H_1(\mathcal{A}_{\infty}) \otimes H_0(\mathcal{A}_d) \oplus H_0(\mathcal{A}_{\infty}) \otimes H_1(\mathcal{A}_d)
+$$
 
    The non-Archimedean Bruhat-Tits trees are contractible complexes, meaning their 1-dimensional homology vanishes ($`H_1(\mathcal{A}_d) = 0`$). Thus, only the Archimedean cycle survives:
 
-$$[c] = [c_{\infty}] \otimes [1_d]$$
+$$
+[c] = [c_{\infty}] \otimes [1_d]
+$$
 
    The global volume form is therefore $`\pi_D(c) = \frac{\pi}{\ln \lambda} \mathbb{I} \otimes \mathbb{I}_d`$, satisfying the orientation condition for a 1-dimensional global geometry.
 
@@ -347,7 +447,9 @@ The plots illustrating these sweeps are saved in [gl_n_universality_test.png](..
 ### 4.2 Geometric Interpretation
 The fact that the subspace overlap factor $`\Vert P_N \xi_{r1} \Vert^2`$ is exactly $1.000000$ yields a vital mathematical simplification. Because the rank-1 coupling vector $`\xi_{r1}`$ is the sum of the Satake vectors:
 
-$$\xi_{r1} = \sum_{j=1}^N \xi_j$$
+$$
+\xi_{r1} = \sum_{j=1}^N \xi_j
+$$
 
 it lies **exactly within the column space** of the rank-$N$ projection. Thus, the rank-1 projection is geometrically nested inside the higher-rank projection. 
 
@@ -360,61 +462,87 @@ This confirms the **Rank-1 Universality Hypothesis**: the trace $`A_p`$ acts as 
 
 **(a) Subspace Nesting**: *The normalized rank-1 coupling vector $`\hat{\xi}_{r1}`$ lies exactly in the column space of the rank-$(k+1)$ projection $`P_{k+1}`$, so:*
 
-$$\Vert P_{k+1} \hat{\xi}_{r1} \Vert^2 = 1$$
+$$
+\Vert P_{k+1} \hat{\xi}_{r1} \Vert^2 = 1
+$$
 
 **(b) Eigenvalue Perturbation Bound**: *The eigenvalues $`\{\mu_j^{(1)}\}`$ of $`D_1`$ and $`\{\mu_j^{(k+1)}\}`$ of $`D_{k+1}`$, ordered by magnitude, satisfy the Hoffman-Wielandt perturbation bound with an explicit constant factor of $2$ (4 when squared) derived from the compression difference:*
 
-$$\sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right|^2 \le 4 \| P_{k+1} - P_1 \|_F^2 \cdot \| D_0 \|_F^2$$
+$$
+\sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right|^2 \le 4 \| P_{k+1} - P_1 \|_F^2 \cdot \| D_0 \|_F^2
+$$
 
 *where $`\| \cdot \|_F`$ denotes the Frobenius norm. Under finite-dimensional truncation of size $N$:*
 
-$$\mathrm{MAE} = \frac{1}{N} \sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right| \le 2\sqrt{k} \frac{\| D_0 \|_F}{\sqrt{N}}$$
+$$
+\mathrm{MAE} = \frac{1}{N} \sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right| \le 2\sqrt{k} \frac{\| D_0 \|_F}{\sqrt{N}}
+$$
 
 **(c) Angular Concentration**: *The Frobenius difference of the projections is bounded by the misalignment of the individual Satake components, satisfying:*
 
-$$\|P_{k+1} - P_1\|_F^2 = k - \frac{\|\xi_{r1}\|^2}{\max_j \|\xi_j\|^2} + O(p_{\max}^{-1/2})$$
+$$
+\|P_{k+1} - P_1\|_F^2 = k - \frac{\|\xi_{r1}\|^2}{\max_j \|\xi_j\|^2} + O(p_{\max}^{-1/2})
+$$
 
 **Proof.**
 1. **Subspace Nesting (a)**: By the definition of symmetric-power lifts, the local Langlands correspondence maps the Satake parameters of $`\pi_p`$ to the $k$-th symmetric powers of the two-dimensional representation. The Hecke eigenvalue $`A_p`$ is precisely the trace of the $(k+1)$-dimensional representation:
 
-$$A_p = \sum_{j=1}^{k+1} \alpha_{p, j}$$
+$$
+A_p = \sum_{j=1}^{k+1} \alpha_{p, j}
+$$
 
    Thus, the rank-1 coupling vector $`\xi_{r1}`$ is the linear combination $`\xi_{r1} = \sum_{j=1}^{k+1} \xi_j`$ where each $`\xi_{j, n} = \sum_p \alpha_{p, j} \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln\lambda} + \frac{1}{k+1} \xi_{\mathrm{arch}}(n)`$ is the mode vector for the $j$-th Satake root. Since $`\xi_{r1}`$ is a linear combination of the generators of $`\mathrm{Range}(P_{k+1})`$, it lies in the column space. Thus, $`P_{k+1}\hat{\xi}_{r1} = \hat{\xi}_{r1}`$ and the overlap norm is 1.
 
 2. **Perturbation Bound (b)**: The difference between the two compressed operators is:
 
-$$D_1 - D_{k+1} = (\mathbb{I} - P_1) D_0 (\mathbb{I} - P_1) - (\mathbb{I} - P_{k+1}) D_0 (\mathbb{I} - P_{k+1})$$
+$$
+D_1 - D_{k+1} = (\mathbb{I} - P_1) D_0 (\mathbb{I} - P_1) - (\mathbb{I} - P_{k+1}) D_0 (\mathbb{I} - P_{k+1})
+$$
 
    Let $`\Delta P = P_{k+1} - P_1`$ be the difference projection. Since $`P_1`$ is nested in $`P_{k+1}`$, we have $`(\mathbb{I} - P_1) \Delta P = \Delta P (\mathbb{I} - P_1) = \Delta P`$. The compression difference decomposes as:
 
-$$D_1 - D_{k+1} = \Delta P D_0 (\mathbb{I} - P_{k+1}) + (\mathbb{I} - P_1) D_0 \Delta P$$
+$$
+D_1 - D_{k+1} = \Delta P D_0 (\mathbb{I} - P_{k+1}) + (\mathbb{I} - P_1) D_0 \Delta P
+$$
 
    Taking the Frobenius norm:
 
-$$\| D_1 - D_{k+1} \|_F \le \| \Delta P D_0 (\mathbb{I} - P_{k+1}) \|_F + \| (\mathbb{I} - P_1) D_0 \Delta P \|_F \le 2 \| \Delta P \|_F \| D_0 \|_{\text{op}} \le 2 \| P_{k+1} - P_1 \|_F \| D_0 \|_F$$
+$$
+\| D_1 - D_{k+1} \|_F \le \| \Delta P D_0 (\mathbb{I} - P_{k+1}) \|_F + \| (\mathbb{I} - P_1) D_0 \Delta P \|_F \le 2 \| \Delta P \|_F \| D_0 \|_{\text{op}} \le 2 \| P_{k+1} - P_1 \|_F \| D_0 \|_F
+$$
 
    By the Hoffman-Wielandt inequality for self-adjoint operators, the sum of squared differences of their eigenvalues is bounded by the Frobenius norm of their difference:
 
-$$\sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right|^2 \le \| D_1 - D_{k+1} \|_F^2 \le 4 \| P_{k+1} - P_1 \|_F^2 \cdot \| D_0 \|_F^2$$
+$$
+\sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right|^2 \le \| D_1 - D_{k+1} \|_F^2 \le 4 \| P_{k+1} - P_1 \|_F^2 \cdot \| D_0 \|_F^2
+$$
 
    Applying the Cauchy-Schwarz inequality to the Mean Absolute Error (MAE):
 
-$$\mathrm{MAE} = \frac{1}{N} \sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right| \le \frac{1}{N} \sqrt{N} \left( \sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right|^2 \right)^{1/2} \le 2 \frac{1}{\sqrt{N}} \| P_{k+1} - P_1 \|_F \| D_0 \|_F$$
+$$
+\mathrm{MAE} = \frac{1}{N} \sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right| \le \frac{1}{N} \sqrt{N} \left( \sum_j \left| \mu_j^{(1)} - \mu_j^{(k+1)} \right|^2 \right)^{1/2} \le 2 \frac{1}{\sqrt{N}} \| P_{k+1} - P_1 \|_F \| D_0 \|_F
+$$
 
    Since $`P_1`$ is a rank-1 projection nested inside the rank-$(k+1)$ projection $`P_{k+1}`$, the difference $`P_{k+1} - P_1`$ is a projection of rank at most $k$. Its Frobenius norm is thus $`\| P_{k+1} - P_1 \|_F = \sqrt{\mathrm{Tr}(P_{k+1} - P_1)} \le \sqrt{k}`$. This completes the proof of the MAE bound:
 
-$$\mathrm{MAE} \le 2 \sqrt{k} \frac{\| D_0 \|_F}{\sqrt{N}}$$
+$$
+\mathrm{MAE} \le 2 \sqrt{k} \frac{\| D_0 \|_F}{\sqrt{N}}
+$$
 
    $`\blacksquare`$
 
 **Corollary (Residue–Coupling Universality)**
 *Under the rank-1 antenna $`\xi_{r1}`$, the off-diagonal coupling trace $`F_{\mathrm{var}}(t_k^*)`$ at any automorphic zero satisfies:*
 
-$$F_{\mathrm{var}}(t_k^*) \propto |L'(1/2 + it_k^*)|^{-1}$$
+$$
+F_{\mathrm{var}}(t_k^*) \propto |L'(1/2 + it_k^*)|^{-1}
+$$
 
 *with Pearson correlation $`r \approx -0.9440`$ ($p = 0.0158$) across Buhler's first five zeros. Because $`\xi_{r1}`$ lies exactly in the column space of any higher-rank Satake projection $`P_N`$ (by the trace definition of the Hecke eigenvalues), this residue-level correlation is independent of representation rank. Thus the entanglement spike height formula:*
 
-$$\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 |L'(1/2+it_k)|^2}$$
+$$
+\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 |L'(1/2+it_k)|^2}
+$$
 
 *holds uniformly for $GL(2)$ through $GL(5)$ symmetric powers. The universal antenna not only matches zeros but also reproduces the precise residue-controlled leakage into the prime-dot boundary, explaining the observed spike modulation without needing higher-rank projections.*
 
@@ -434,22 +562,30 @@ We ran a 2D computational sweep of the complex plane over $`\sigma \in [0.1, 0.9
 
 Evaluating the spectral triple off the critical line $`s = \sigma + it`$ corresponds to a non-unitary deformation of the scale-invariant basis. Formally, this deforms the unperturbed Archimedean Dirac operator:
 
-$$D_0 \to D_0(\sigma) = D_0 - i\left(\sigma - \frac{1}{2}\right)\mathbb{I}$$
+$$
+D_0 \to D_0(\sigma) = D_0 - i\left(\sigma - \frac{1}{2}\right)\mathbb{I}
+$$
 
 For any $`\sigma \neq 1/2`$, the operator $`D_0(\sigma)`$ is no longer self-adjoint (nor is it symmetric), as its adjoint is:
 
-$$D_0(\sigma)^* = D_0 + i\left(\sigma - \frac{1}{2}\right)\mathbb{I}$$
+$$
+D_0(\sigma)^* = D_0 + i\left(\sigma - \frac{1}{2}\right)\mathbb{I}
+$$
 
 We perform a rigorous analysis of the deficiency spaces and eigenvalue behavior of the deformed system.
 
 #### Theorem 5.2.1 (Deficiency-Index Bifurcation and Non-Self-Adjointness)
 *Let $`D_{\text{sym}}(\sigma)`$ be the symmetric restriction of the real part of $`D_0(\sigma)`$ to the domain:*
 
-$$\text{Dom}(D_{\text{sym}}(\sigma)) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle)$$
+$$
+\text{Dom}(D_{\text{sym}}(\sigma)) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle)
+$$
 
 *For any $`\sigma \in (-1/2, 3/2)`$, the deficiency indices of $`D_{\text{sym}}(\sigma)`$ are exactly $(1, 1)$, and the deficiency spaces $`\mathcal{K}_\pm(\sigma) = \text{Ker}(D_{\text{sym}}(\sigma)^* \mp i\mathbb{I})`$ are spanned by the deficiency vectors:*
 
-$$g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi$$
+$$
+g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi
+$$
 
 *where $`z_\pm = \mp i - i(\sigma - 1/2)`$. However, for any $`\sigma \neq 1/2`$, the imaginary shift $`-i(\sigma - 1/2)\mathbb{I}`$ prevents the existence of any self-adjoint extensions for the full operator $`D_0(\sigma)|_{\text{Dom}(D_{\text{sym}}(\sigma))}`$, and all eigenvalues are forced into the complex plane.*
 
@@ -457,34 +593,48 @@ $$g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi$$
 We calculate the deficiency spaces by identifying the solutions $`u \in \text{Dom}(D_{\text{sym}}(\sigma)^*)`$ to the adjoint eigenvalue equation $`D_{\text{sym}}(\sigma)^* u = \pm i u`$.
 Since $`D_0(\sigma)^* = D_0 + i(\sigma - 1/2)\mathbb{I}`$, the adjoint equation on the boundary-restricted domain is:
 
-$$(D_0 + i(\sigma - 1/2)\mathbb{I}) u = \pm i u \pmod{\text{span}\{\xi\}}$$
+$$
+(D_0 + i(\sigma - 1/2)\mathbb{I}) u = \pm i u \pmod{\text{span}\{\xi\}}
+$$
 
 which is equivalent to:
 
-$$(D_0 - z_\mp) u = c \xi$$
+$$
+(D_0 - z_\mp) u = c \xi
+$$
 
 where the poles are shifted to $`z_\mp = \pm i - i(\sigma - 1/2) = -i(\sigma - 1/2 \mp 1)`$.
 The deficiency vectors are given by $`g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi`$, with components:
 
-$$g_{\pm, n}(\sigma) = \frac{\xi_n}{\lambda_n - z_\pm}$$
+$$
+g_{\pm, n}(\sigma) = \frac{\xi_n}{\lambda_n - z_\pm}
+$$
 
 The norm of these vectors is:
 
-$$\| g_\pm(\sigma) \|^2 = \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{|\lambda_n - z_\pm|^2} = \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{\lambda_n^2 + (\sigma - 1/2 \mp 1)^2}$$
+$$
+\| g_\pm(\sigma) \|^2 = \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{|\lambda_n - z_\pm|^2} = \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{\lambda_n^2 + (\sigma - 1/2 \mp 1)^2}
+$$
 
 Since $`\lambda_n \sim n`$ and $`\xi_n = \mathcal{O}(\ln|n|)`$, the sum converges absolutely if and only if the denominator is non-vanishing for all $n$. The poles $`z_\pm`$ remain in the upper or lower half-planes for all $`\sigma \in (-1/2, 3/2)`$, so $`\| g_\pm(\sigma) \| < \infty`$, establishing that the deficiency indices are $(1,1)$.
 
 However, the full operator is $`D_{\text{glob}}(\sigma) = P_\xi^\perp D_0(\sigma) P_\xi^\perp`$. Its eigenvalues $`z \in \mathbb{C}`$ are the roots of the Krein secular equation:
 
-$$d_{\theta, \sigma}(z) = 1 + \cot(\theta/2) + \sum_{n \in \mathbb{Z}} |\xi_n|^2 \left( \frac{1}{\lambda_n - i(\sigma - 1/2) - z} - \frac{1}{\lambda_n - z_0} \right) = 0$$
+$$
+d_{\theta, \sigma}(z) = 1 + \cot(\theta/2) + \sum_{n \in \mathbb{Z}} |\xi_n|^2 \left( \frac{1}{\lambda_n - i(\sigma - 1/2) - z} - \frac{1}{\lambda_n - z_0} \right) = 0
+$$
 
 Let us assume $`D_{\text{glob}}(\sigma)`$ has a real eigenvalue $`z = E \in \mathbb{R}`$. Then the imaginary part of $`d_{\theta, \sigma}(E)`$ must vanish:
 
-$$\mathrm{Im}\left( d_{\theta, \sigma}(E) \right) = \mathrm{Im}\left( \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{\lambda_n - E - i(\sigma - 1/2)} \right) = (\sigma - 1/2) \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} = 0$$
+$$
+\mathrm{Im}\left( d_{\theta, \sigma}(E) \right) = \mathrm{Im}\left( \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{\lambda_n - E - i(\sigma - 1/2)} \right) = (\sigma - 1/2) \sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} = 0
+$$
 
 Since $`|\xi_n|^2 \ge c > 0`$ for infinitely many $n$, the sum is strictly positive:
 
-$$\sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} > 0$$
+$$
+\sum_{n \in \mathbb{Z}} \frac{|\xi_n|^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} > 0
+$$
 
 Therefore, $`\mathrm{Im}\left( d_{\theta, \sigma}(E) \right) = 0`$ is possible if and only if $`\sigma = 1/2`$.
 For any $`\sigma \neq 1/2`$, the imaginary part is non-zero for all $`E \in \mathbb{R}`$, which proves that $`D_{\text{glob}}(\sigma)`$ cannot possess any real eigenvalues. Since a self-adjoint operator must have a real spectrum, $`D_{\text{glob}}(\sigma)`$ is non-self-adjoint for any $`\sigma \neq 1/2`$. $`\blacksquare`$
@@ -495,21 +645,29 @@ For any $`\sigma \neq 1/2`$, the imaginary part is non-zero for all $`E \in \mat
 **Proof.**
 Let $`\widetilde{D}`$ be the Dirac operator on the cylinder $`\mathfrak{M} = X \times [0, 1]`$ equipped with Atiyah-Patodi-Singer (APS) boundary conditions. The APS index theorem states that the analytical index of $`\widetilde{D}`$ is:
 
-$$\mathrm{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \alpha(x) \, dx - \frac{\eta_A(0) + \dim \mathrm{Ker}(A)}{2}$$
+$$
+\mathrm{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \alpha(x) \, dx - \frac{\eta_A(0) + \dim \mathrm{Ker}(A)}{2}
+$$
 
 where $A$ is the boundary Dirac operator, and $`\eta_A(s) = \sum_{\mu \neq 0} \mathrm{sgn}(\mu) |\mu|^{-s}`$ is the eta invariant.
 Under the off-critical deformation $`\sigma \neq 1/2`$, the boundary operator is $`A(\sigma) = A - i(\sigma - 1/2)\mathbb{I}`$. Since $`A(\sigma)`$ is non-self-adjoint, its eigenvalues $`\mu_n(\sigma) = \mu_n - i(\sigma - 1/2)`$ are complex.
 The eta invariant for a non-self-adjoint operator must be regularized by considering the spectral asymmetry of the real parts of its eigenvalues:
 
-$$\eta_{A(\sigma)}(0) = \lim_{s \to 0} \sum_{\mu_n \neq 0} \mathrm{sgn}(\mathrm{Re}(\mu_n(\sigma))) |\mu_n(\sigma)|^{-s}$$
+$$
+\eta_{A(\sigma)}(0) = \lim_{s \to 0} \sum_{\mu_n \neq 0} \mathrm{sgn}(\mathrm{Re}(\mu_n(\sigma))) |\mu_n(\sigma)|^{-s}
+$$
 
 As $`\sigma`$ varies across $1/2$, the eigenvalues cross the imaginary axis. Under the regularization of the singular boundary projection, this non-unitary deformation introduces a boundary index defect. Specifically, the boundary eta invariant undergoes a fractional jump:
 
-$$\Delta \eta_A(0) = \frac{1}{2} \mathrm{sgn}\left(\sigma - \frac{1}{2}\right)$$
+$$
+\Delta \eta_A(0) = \frac{1}{2} \mathrm{sgn}\left(\sigma - \frac{1}{2}\right)
+$$
 
 which contributes a non-integer defect to the index formula:
 
-$$\Delta \mathrm{Ind} = -\frac{1}{2} \Delta \eta_A(0) = -\frac{1}{4} \mathrm{sgn}\left(\sigma - \frac{1}{2}\right)$$
+$$
+\Delta \mathrm{Ind} = -\frac{1}{2} \Delta \eta_A(0) = -\frac{1}{4} \mathrm{sgn}\left(\sigma - \frac{1}{2}\right)
+$$
 
 Because the index of a Fredholm operator must be an integer, the occurrence of this non-integer defect indicates that the deformed operator is no longer Fredholm, and the underlying spectral triple axioms collapse. Thus, the critical line $`\sigma = 1/2`$ is topologically forced. $`\blacksquare`$
 
@@ -520,7 +678,9 @@ We implemented a pipeline in [lmfdb_trace_fetch.py](../experiments/lmfdb_trace_f
 
 Because the coefficients of these forms lie in number fields like $`\mathbb{Q}(\sqrt{5})`$ or cyclotomic extensions, the database stores the traces of the Hecke operators $`T_p`$ acting on the Galois orbit of the newform. In this framework, the completed $L$-function of the entire Galois orbit decomposes as a product of individual Galois conjugate $L$-functions:
 
-$$\Lambda(s, \text{Orbit}(\rho)) = \prod_{\sigma} \Lambda(s, \rho^\sigma)$$
+$$
+\Lambda(s, \text{Orbit}(\rho)) = \prod_{\sigma} \Lambda(s, \rho^\sigma)
+$$
 
 The coefficients $`a_p`$ in the adèlic coupling vector $`\xi_n`$ are directly the integer traces of $`T_p`$ on the orbit subspace. For instance, for the level 800 form `800.1.bh.a` of dimension 8, the prime trace values are:
 * $`a_2 = 0`$
@@ -537,11 +697,17 @@ We establish a mapping between the adèlic spectral geometry and a physical 1D t
 ### 6.1 The Hamiltonian & Physical Parameter Dictionary
 The many-body Hamiltonian decomposes as:
 
-$$ H = H_{\text{wire}} + H_{\text{dots}} + H_{\text{coupling}} + H_{\text{int}} $$
+$$
+H = H_{\text{wire}} + H_{\text{dots}} + H_{\text{coupling}} + H_{\text{int}}
+$$
 
-$$ H_{\text{wire}} = \sum_n \left( \epsilon_n c^\dagger_n c_n - J (c^\dagger_{n+1} c_n + c^\dagger_n c_{n+1}) \right) $$
+$$
+H_{\text{wire}} = \sum_n \left( \epsilon_n c^\dagger_n c_n - J (c^\dagger_{n+1} c_n + c^\dagger_n c_{n+1}) \right)
+$$
 
-$$ H_{\text{coupling}} = \sum_{n, p} V_{n, p} c^\dagger_n d_p + \text{h.c.} $$
+$$
+H_{\text{coupling}} = \sum_{n, p} V_{n, p} c^\dagger_n d_p + \text{h.c.}
+$$
 
 where the coupling $`V_{n, p} \propto A_p \frac{\log p}{\sqrt{p}} e^{-i n \pi \log p / \ln \lambda}`$ acts as an incommensurate Moiré potential. To realize this physically, we propose two hardware architectures:
 
@@ -559,7 +725,9 @@ To scale this physical transmon setup for mapping higher-frequency zeros via the
 ### 6.2 Interacting Fermions & Coulomb Repulsion Sweeps (Task 8.2)
 To investigate the impact of strong electron correlations on the subconvexity bound, we introduce a Coulomb-like repulsion term between the prime quantum dots:
 
-$$ H_{\text{int}} = U \sum_{i < j} \frac{n_i n_j}{|i - j|} $$
+$$
+H_{\text{int}} = U \sum_{i < j} \frac{n_i n_j}{|i - j|}
+$$
 
 We simulated this interacting system via exact many-body diagonalization for $L=12$ modes at half-filling (Fock space dimension 924). Sweeping the scale parameter $`\lambda`$ across the first Riemann zero $`t \approx 14.1347`$ for different interaction strengths $`U \in \{0.0, 1.0, 3.0\}`$ yielded the bipartite ground-state von Neumann entanglement entropy $`S(\lambda)`$.
 
@@ -570,15 +738,21 @@ The results, saved in [interacting_entanglement_sweep.png](../figures/interactin
 ### 6.3 Analytical Derivation of the Entanglement Spike Height (Task 9.2)
 We derive the closed-form height of the entanglement spike $`\Delta S`$ at an $L$-function zero $`t_k`$. Near the linear zero-mode crossing $`E_0(t) = \gamma(t-t_k)`$ (with finite-size regularization $`\delta`$), the occupation probability of the zero-mode transitions via:
 
-$$\rho_0(t) = \frac{1}{2} \left( 1 - \frac{\gamma (t - t_k)}{\sqrt{\gamma^2 (t - t_k)^2 + \delta^2}} \right)$$
+$$
+\rho_0(t) = \frac{1}{2} \left( 1 - \frac{\gamma (t - t_k)}{\sqrt{\gamma^2 (t - t_k)^2 + \delta^2}} \right)
+$$
 
 At $`t=t_k`$, the zero-mode is half-occupied ($`\rho_0(t_k) = 1/2`$). The spatial symmetry of the coupling vector $`\xi`$ guarantees that the zero-mode is equally distributed across the bipartite cut (projection $`p_A = 1/2`$). This yields a maximum free-fermion spike height of:
 
-$$\Delta S_{\max} = - \left[ \left(\frac{1}{4}\right) \ln\left(\frac{1}{4}\right) + \left(\frac{3}{4}\right) \ln\left(\frac{3}{4}\right) \right] = \frac{1}{2} \ln(2) + \frac{3}{4} \ln\left(\frac{4}{3}\right) \approx 0.5623 \text{ nats}$$
+$$
+\Delta S_{\max} = - \left[ \left(\frac{1}{4}\right) \ln\left(\frac{1}{4}\right) + \left(\frac{3}{4}\right) \ln\left(\frac{3}{4}\right) \right] = \frac{1}{2} \ln(2) + \frac{3}{4} \ln\left(\frac{4}{3}\right) \approx 0.5623 \text{ nats}
+$$
 
 More generally, the leakage of the zero-mode into the prime-dot boundary is controlled by the inverse derivative of the completed L-function (resolvent residue $`\mathcal{R}_k = |L'(1/2+it_k)|^{-1}`$), yielding the general spike height:
 
-$$\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 |L'\left(\frac{1}{2}+it_k\right)|^2}$$
+$$
+\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 |L'\left(\frac{1}{2}+it_k\right)|^2}
+$$
 
 where $`\Delta_0`$ is the spectral gap. This formula directly links the derivative of the $L$-function to the entanglement entropy of the quantum simulator.
 
@@ -589,7 +763,9 @@ where $`\Delta_0`$ is the spectral gap. This formula directly links the derivati
 ### 7.1 Sato-Tate Distribution of Chern-Simons Invariants
 We analyzed the Sato-Tate distribution of the normalized Chern-Simons invariants:
 
-$$ \widetilde{\tau}(p)^2 - 2 $$
+$$
+\widetilde{\tau}(p)^2 - 2
+$$
 
 The empirical histogram matched the classic $GL(2)$ Sato-Tate distribution, indicating that the local tree geometries are statistically distributed according to the Haar measure of the compact symplectic group $`USp(2) \cong SU(2)`$, cementing the connection between the geometry of the trees and classical number theory.
 
@@ -607,51 +783,71 @@ The analytic size of $L(1/2+it)$ is controlled by the completed $L$-function $`\
 #### Lemma 7.3.1 (Self-Adjoint Deficiency Spaces)
 *Let $`D_{\text{sym}}`$ be the symmetric restriction of the unperturbed diagonal Dirac operator $`D_0`$ defined on the domain:*
 
-$$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle)$$
+$$
+\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle)
+$$
 
 *Then $`D_{\text{sym}}`$ has deficiency indices $(1,1)$, and its deficiency spaces $`\mathcal{K}_\pm = \text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})`$ are spanned by the deficiency vectors $`g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi`$.*
 
 **Proof.**
 By definition, a vector $`v \in \ell^2(\mathbb{Z})`$ belongs to $`\text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})`$ if and only if:
 
-$$\langle v, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = 0 \quad \forall u \in \text{Dom}(D_{\text{sym}})$$
+$$
+\langle v, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = 0 \quad \forall u \in \text{Dom}(D_{\text{sym}})
+$$
 
 Letting $`g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi`$, we compute:
 
-$$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
+$$
+\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0
+$$
 
 where the last equality follows because $`u \in \text{Ker}(\langle \xi, \cdot \rangle)`$. Since $`\xi_n = \mathcal{O}(\ln|n|)`$ and $`\lambda_n \sim n`$, the components $`g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}`$ satisfy:
 
-$$\sum_{n=-\infty}^\infty |g_{\pm, n}|^2 \le C \sum_{n \neq 0} \frac{\ln^2|n|}{n^2 + 1} < \infty$$
+$$
+\sum_{n=-\infty}^\infty |g_{\pm, n}|^2 \le C \sum_{n \neq 0} \frac{\ln^2|n|}{n^2 + 1} < \infty
+$$
 
 Thus, $`g_\pm \in \ell^2(\mathbb{Z})`$. Since any self-adjoint operator restricted to a codimension-1 subspace has deficiency indices at most $(1,1)$, and $`g_\pm \neq 0`$, the deficiency indices of $`D_{\text{sym}}`$ are exactly $(1,1)$ with deficiency spaces spanned by $`g_\pm`$. $`\blacksquare`$
 
 #### Lemma 7.3.2 (Fredholm Perturbation trace-class criterion)
 *For any $`z \in \mathbb{C} \setminus \mathbb{R}`$, the difference of the resolvents of the global Dirac operator $`D_{\text{glob}}`$ and the unperturbed operator $`D_0`$ is a trace-class operator on $`\mathcal{H}_\infty`$:*
 
-$$(D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \in \mathcal{L}^1(\mathcal{H}_\infty)$$
+$$
+(D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \in \mathcal{L}^1(\mathcal{H}_\infty)
+$$
 
 **Proof.**
 By the subtraction-renormalized Krein resolvent formula at reference point $`z_0 \in \mathbb{C} \setminus \mathbb{R}`$, the resolvent of $`D_{\text{glob}}`$ satisfies:
 
-$$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
+$$
+(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}
+$$
 
 where the regularized coupling function $`\langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}`$ is defined via the Cauchy principal value:
 
-$$\langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}} = \sum_{n=-\infty}^\infty |\xi_n|^2 \left( \frac{1}{\lambda_n - z} - \frac{1}{\lambda_n - z_0} \right)$$
+$$
+\langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}} = \sum_{n=-\infty}^\infty |\xi_n|^2 \left( \frac{1}{\lambda_n - z} - \frac{1}{\lambda_n - z_0} \right)
+$$
 
 Since this sum converges absolutely (as the terms decay as $`\mathcal{O}(\ln^2|n|/n^2)`$), the denominator is well-defined. The difference operator $`R(z) = (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1}`$ is a rank-1 operator of the form $`u \mapsto -c(z) \langle \phi_{\bar{z}}, u \rangle \phi_z`$ where $`\phi_z = (D_0 - z)^{-1}\xi \in \ell^2(\mathbb{Z})`$. Every rank-1 operator on a Hilbert space is trace-class, and its trace norm satisfies $`\|R(z)\|_{\mathcal{L}^1} = |c(z)| \|\phi_z\| \|\phi_{\bar{z}}\| < \infty`$. Thus, the perturbation is trace-class. $`\blacksquare`$
 
 #### Lemma 7.3.2½ (Hadamard Factorization of the Completed Spectral Determinant)
 *Let $`\{\lambda_n\}_{n \in \mathbb{Z}}`$ denote the eigenvalues of $`D_0`$ and $`\{t_n^*\}_{n \in \mathbb{Z}}`$ the eigenvalues of $`D_{\text{glob}}`$, both enumerated in increasing order. Define the meromorphic determinant ratio $`\mathfrak{D}_{\text{ratio}}(z)`$ and the unperturbed determinant $`\mathfrak{D}_0(z)`$ by:*
 
-$$\mathfrak{D}_{\text{ratio}}(z) := \prod_{n \in \mathbb{Z}, \lambda_n \neq 0} \frac{t_n^* - z}{\lambda_n - z} \cdot \exp\!\left( z \left( \frac{1}{\lambda_n} - \frac{1}{t_n^*} \right) \right)$$
+$$
+\mathfrak{D}_{\text{ratio}}(z) := \prod_{n \in \mathbb{Z}, \lambda_n \neq 0} \frac{t_n^* - z}{\lambda_n - z} \cdot \exp\!\left( z \left( \frac{1}{\lambda_n} - \frac{1}{t_n^*} \right) \right)
+$$
 
-$$\mathfrak{D}_0(z) := \prod_{n \in \mathbb{Z}, \lambda_n \neq 0} \left( 1 - \frac{z}{\lambda_n} \right) \exp\!\left( \frac{z}{\lambda_n} \right)$$
+$$
+\mathfrak{D}_0(z) := \prod_{n \in \mathbb{Z}, \lambda_n \neq 0} \left( 1 - \frac{z}{\lambda_n} \right) \exp\!\left( \frac{z}{\lambda_n} \right)
+$$
 
 *Then the completed spectral determinant:*
 
-$$\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)$$
+$$
+\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)
+$$
 
 *is an entire function of order 1, with zeros precisely at the non-zero eigenvalues $`\{t_n^*\}`$ of $`D_{\text{glob}}`$ (with multiplicity).*
 
@@ -660,7 +856,9 @@ The bare Krein determinant quotient $`d(z) = 1 + \langle \xi, (D_0 - z)^{-1} \xi
 Since $`D_0`$ has eigenvalues $`\lambda_n = n \pi / \ln\lambda`$, they grow linearly, so $`\sum_{n \neq 0} |\lambda_n|^{-2} < \infty`$. By the Weierstrass-Hadamard factorization theorem, the unperturbed determinant $`\mathfrak{D}_0(z)`$ is an entire function of order 1 with zeros precisely at $`\{\lambda_n\}`$.
 Multiplying the meromorphic quotient $`\mathfrak{D}_{\text{ratio}}(z)`$ by $`\mathfrak{D}_0(z)`$ yields the completed spectral determinant:
 
-$$\mathfrak{D}_{\text{glob}}(z) = \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)$$
+$$
+\mathfrak{D}_{\text{glob}}(z) = \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)
+$$
 
 By Kato's perturbation theory for rank-one perturbations, the eigenvalues satisfy $`t_n^* = \lambda_n + \delta_n`$ where $`\delta_n = \mathcal{O}(\ln^2|n| / |n|)`$. Thus, the perturbed eigenvalues grow linearly, which ensures $`\sum_{t_n^* \neq 0} |t_n^*|^{-2} < \infty`$. By Hadamard's theorem, the product converges absolutely and uniformly on compact subsets of $`\mathbb{C}`$, defining an entire function of order 1. The multiplication by $`\mathfrak{D}_0(z)`$ cancels every pole of $`\mathfrak{D}_{\text{ratio}}(z)`$ at $`z = \lambda_n`$. This cancellation is exact (not merely asymptotic) because $`\mathfrak{D}_0(z)`$ has a simple zero at each $`z = \lambda_n`$ while $`\mathfrak{D}_{\text{ratio}}(z)`$ has a simple pole there; thus, the product remains locally bounded and analytic in a neighborhood of each unperturbed eigenvalue $`\lambda_n`$. Consequently, all singularities are resolved, establishing that $`\mathfrak{D}_{\text{glob}}(z)`$ is entire. $`\blacksquare`$
 
@@ -669,42 +867,58 @@ By Kato's perturbation theory for rank-one perturbations, the eigenvalues satisf
 #### Theorem 7.3.3 (Completed Spectral Determinant Factorization Theorem)
 *The completed spectral determinant $`\mathfrak{D}_{\text{glob}}(z)`$ equals the completed $L$-function $`\Lambda(z)`$ up to a non-zero normalization constant $`\mathcal{C}`$:*
 
-$$\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)$$
+$$
+\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)
+$$
 
 **Proof.**
 Both $`\mathfrak{D}_{\text{glob}}(z)`$ and $`\Lambda(z)`$ are entire functions of order 1. We show they are proportional by comparing their logarithmic derivatives.
 
 **Step 1: Logarithmic derivative of $`\mathfrak{D}_{\text{glob}}(z)`$.** Differentiating:
 
-$$\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \sum_{n, t_n^* \neq 0} \left( \frac{1}{z - t_n^*} + \frac{1}{t_n^*} \right)$$
+$$
+\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \sum_{n, t_n^* \neq 0} \left( \frac{1}{z - t_n^*} + \frac{1}{t_n^*} \right)
+$$
 
 This is a meromorphic function with simple poles at each $`t_n^*`$ with residue $+1$.
 
 **Step 2: Logarithmic derivative of $`\Lambda(z)`$.** By the Hadamard product for the completed $L$-function:
 
-$$\frac{\Lambda'(z)}{\Lambda(z)} = A + \sum_{k} \left( \frac{1}{z - \rho_k} + \frac{1}{\rho_k} \right)$$
+$$
+\frac{\Lambda'(z)}{\Lambda(z)} = A + \sum_{k} \left( \frac{1}{z - \rho_k} + \frac{1}{\rho_k} \right)
+$$
 
 where $`\{\rho_k\}`$ are the non-trivial zeros of $`\Lambda(z)`$ and $A$ is a constant.
 
 **Step 3: Identification.** By the resolvent trace identity (Lemma 7.3.2), the difference of the resolvents is trace-class and its trace is:
 
-$$\text{Tr}\!\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) = \sum_n \left( \frac{1}{t_n^* - z} - \frac{1}{\lambda_n - z} \right)$$
+$$
+\text{Tr}\!\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right) = \sum_n \left( \frac{1}{t_n^* - z} - \frac{1}{\lambda_n - z} \right)
+$$
 
 This trace matches the logarithmic derivative of $`\mathfrak{D}_{\text{ratio}}(z) = \mathfrak{D}_{\text{glob}}(z) / \mathfrak{D}_0(z)`$, which equals:
 
-$$\frac{\mathfrak{D}'_{\text{ratio}}(z)}{\mathfrak{D}_{\text{ratio}}(z)} = \frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} - \frac{\mathfrak{D}'_0(z)}{\mathfrak{D}_0(z)}$$
+$$
+\frac{\mathfrak{D}'_{\text{ratio}}(z)}{\mathfrak{D}_{\text{ratio}}(z)} = \frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} - \frac{\mathfrak{D}'_0(z)}{\mathfrak{D}_0(z)}
+$$
 
 Comparing this with the automorphic resolvent trace formula (Weil explicit formula) shows that the trace equals $`-\Lambda'(z)/\Lambda(z) + \mathfrak{D}'_0(z)/\mathfrak{D}_0(z) + B'`$ for some constant $B'$. Therefore:
 
-$$\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \frac{\Lambda'(z)}{\Lambda(z)} + B$$
+$$
+\frac{\mathfrak{D}'_{\text{glob}}(z)}{\mathfrak{D}_{\text{glob}}(z)} = \frac{\Lambda'(z)}{\Lambda(z)} + B
+$$
 
 for some constant $B$ (absorbing the difference in regularization constants). Integrating this relation yields:
 
-$$\mathfrak{D}_{\text{glob}}(z) = e^{Bz + C_0} \Lambda(z)$$
+$$
+\mathfrak{D}_{\text{glob}}(z) = e^{Bz + C_0} \Lambda(z)
+$$
 
 **Step 4: Reduction to a constant.** The functional equation $`\Lambda(z) = \Lambda(1-z)`$ imposes the constraint that $`\mathfrak{D}_{\text{glob}}(z)/\mathfrak{D}_{\text{glob}}(1-z)`$ must equal $`\Lambda(z)/\Lambda(1-z) = 1`$ (up to constants). Substituting $`\mathfrak{D}_{\text{glob}}(z) = e^{Bz+C_0}\Lambda(z)`$ gives:
 
-$$\frac{e^{Bz+C_0} \Lambda(z)}{e^{B(1-z)+C_0} \Lambda(1-z)} = e^{B(2z-1)} = 1 \quad \text{for all } z$$
+$$
+\frac{e^{Bz+C_0} \Lambda(z)}{e^{B(1-z)+C_0} \Lambda(1-z)} = e^{B(2z-1)} = 1 \quad \text{for all } z
+$$
 
 This forces $B = 0$. Hence $`\mathfrak{D}_{\text{glob}}(z) = e^{C_0} \Lambda(z) = \mathcal{C} \cdot \Lambda(z)`$. $`\blacksquare`$
 
@@ -721,33 +935,47 @@ This forces $B = 0$. Hence $`\mathfrak{D}_{\text{glob}}(z) = e^{C_0} \Lambda(z) 
 **Proof.**
 By conditions 1, 2, and 5, integrating the logarithmic derivative relation gives:
 
-$$\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} e^{B z} \Lambda(z)$$
+$$
+\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} e^{B z} \Lambda(z)
+$$
 
 where $`B \in \mathbb{C}`$ is the integration constant. Since both $`\mathfrak{D}_{\text{glob}}(z)`$ and $`\Lambda(z)`$ satisfy the real-symmetric condition (condition 4), they are real-valued for $`z \in \mathbb{R}`$, which forces $`\mathcal{C} \in \mathbb{R}`$ and $`B \in \mathbb{R}`$.
 
 Applying the reflection covariance (condition 3) to both sides:
 
-$$\mathcal{C} e^{B z} \Lambda(z) = e^{a + b z} \mathcal{C} e^{B(1-z)} \Lambda(1-z)$$
+$$
+\mathcal{C} e^{B z} \Lambda(z) = e^{a + b z} \mathcal{C} e^{B(1-z)} \Lambda(1-z)
+$$
 
 Using the functional equation of the completed $L$-function, $`\Lambda(z) = \Lambda(1-z)`$, and the fact that $`\Lambda(z)`$ is not identically zero, we divide both sides by $`\mathcal{C} \Lambda(z)`$ to obtain:
 
-$$e^{B z} = e^{a + B + (b - B)z}$$
+$$
+e^{B z} = e^{a + B + (b - B)z}
+$$
 
 For this identity to hold for all $`z \in \mathbb{C}`$, the exponents must match modulo $`2\pi i \mathbb{Z}`$:
 
-$$B \equiv b - B \pmod{2\pi i} \implies 2B - b \equiv 0 \pmod{2\pi i}$$
+$$
+B \equiv b - B \pmod{2\pi i} \implies 2B - b \equiv 0 \pmod{2\pi i}
+$$
 
 Thus, $`2B = b + 2\pi i k`$ for some $`k \in \mathbb{Z}`$. Since $B$ is constrained to be real by condition 4, taking the real and imaginary parts yields:
 
-$$\text{Re}(b) = 2B, \quad \text{Im}(b) = -2\pi k$$
+$$
+\text{Re}(b) = 2B, \quad \text{Im}(b) = -2\pi k
+$$
 
 Consequently, the integration constant $B$ is uniquely fixed by the reflection shift $b$:
 
-$$B = \frac{1}{2}\text{Re}(b)$$
+$$
+B = \frac{1}{2}\text{Re}(b)
+$$
 
 Under reflection-symmetric regularization (where $b = 0$, meaning $`\mathfrak{D}_{\text{glob}}(z) = e^a \mathfrak{D}_{\text{glob}}(1-z)`$), we have:
 
-$$B = 0$$
+$$
+B = 0
+$$
 
 which locks the proportionality $`\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \Lambda(z)`$. $`\blacksquare`$
 
@@ -757,7 +985,9 @@ which locks the proportionality $`\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \L
 **Proof.**
 By Lemma 7.3.2½, the completed spectral determinant $`\mathfrak{D}_{\text{glob}}(z)`$ is an entire function whose zeros are precisely the eigenvalues $`\{t_n^*\}`$ of $`D_{\text{glob}}`$. By Theorem 7.3.3, $`\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)`$ with $`\mathcal{C} \neq 0`$. Therefore:
 
-$$t_k^* \text{ is an eigenvalue of } D_{\text{glob}} \iff \mathfrak{D}_{\text{glob}}(t_k^*) = 0 \iff \Lambda(t_k^*) = 0$$
+$$
+t_k^* \text{ is an eigenvalue of } D_{\text{glob}} \iff \mathfrak{D}_{\text{glob}}(t_k^*) = 0 \iff \Lambda(t_k^*) = 0
+$$
 
 In particular, evaluating at $z = it$ on the critical line $s = 1/2 + it$, the operator $`D_{\text{glob}}`$ has a zero-mode (eigenvalue crossing zero as $`\lambda`$ varies) if and only if $`\Lambda(1/2 + it) = 0`$. This establishes a bijection between the kernel crossings of the spectral flow and the non-trivial zeros of the $L$-function, with multiplicities preserved by the order of vanishing of $`\mathfrak{D}_{\text{glob}}(z)`$.
 
@@ -770,12 +1000,16 @@ In particular, evaluating at $z = it$ on the critical line $s = 1/2 + it$, the o
 **Proof.**
 Let $`\widetilde{D}`$ be the Dirac operator on a cylinder $`\mathfrak{M} = X \times [0, 1]`$ equipped with APS boundary conditions. The analytical index is given by:
 
-$$\text{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \omega_{\text{index}} - \frac{\eta_A(0) + \dim \text{Ker}(A)}{2}$$
+$$
+\text{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \omega_{\text{index}} - \frac{\eta_A(0) + \dim \text{Ker}(A)}{2}
+$$
 
 where $`\eta_A(0)`$ is the eta invariant of the boundary operator $A$. Under a non-unitary deformation off the critical line, the unperturbed operator shifts by $`-i(\sigma - 1/2)\mathbb{I}`$. The boundary operator $A$ experiences an eigenvalue shift $`\mu \to \mu - i(\sigma - 1/2)`$, becoming non-self-adjoint.
 Whenever the real part of an eigenvalue of $A$ crosses zero, the eta invariant $`\eta_A(0)`$ formally undergoes a discontinuous jump of:
 
-$$\Delta \eta_A(0) = \text{sgn}(\mu_{\text{after}}) - \text{sgn}(\mu_{\text{before}}) = \pm 1$$
+$$
+\Delta \eta_A(0) = \text{sgn}(\mu_{\text{after}}) - \text{sgn}(\mu_{\text{before}}) = \pm 1
+$$
 
 In our regularized singular boundary projection, this eigenvalue crossing corresponding to the deficiency space migration off the critical line results in a formal boundary correction term of $`-\frac{1}{4}\text{sgn}(\sigma - 1/2)`$.
 Because the analytical index of a Fredholm operator is a topological invariant and must be an integer, any non-integer index value (which occurs for any $`\sigma \neq 1/2`$ due to the $`\pm 1/4`$ fractional jump) is mathematically forbidden. Thus, the operator $`D_{\text{glob}}(\sigma)`$ ceases to be Fredholm off the critical line due to the loss of self-adjointness, proving that $`\sigma = 1/2`$ is the unique stable support for the spectral triple. $`\blacksquare`$
@@ -783,25 +1017,35 @@ Because the analytical index of a Fredholm operator is a topological invariant a
 #### Theorem 7.3.6 (Spectral Subconvexity Bound via Weil Explicit Formula)
 *For the completed $L$-function $`\Lambda(s, \Delta)`$ realized via the adèlic spectral triple, the following Weyl-strength bound holds on the critical line:*
 
-$$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{4} + \epsilon}$$
+$$
+\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{4} + \epsilon}
+$$
 
 **Proof.**
 1. **Resolvent trace from the Weil explicit formula**: By the Weil explicit formula, for a test function $h$ with Fourier transform $`\widehat{h}`$ supported in $[-T, T]$:
 
-$$\sum_k h(t_k^*) = \widehat{h}(0) \frac{\ln \lambda}{\pi} - \sum_{p, m} \frac{\mathrm{Tr}(\theta_p^m) \log p}{p^{m/2}} \widehat{h}(m \log p) + O(\ln T)$$
+$$
+\sum_k h(t_k^*) = \widehat{h}(0) \frac{\ln \lambda}{\pi} - \sum_{p, m} \frac{\mathrm{Tr}(\theta_p^m) \log p}{p^{m/2}} \widehat{h}(m \log p) + O(\ln T)
+$$
 
    Using $`h(w) = \frac{1}{w-z}`$ (with $`z = 1/2 + \eta + it`$), this corresponds to evaluating the logarithmic derivative of the completed $L$-function spectrally via the resolvent trace:
 
-$$\text{Tr}\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right)$$
+$$
+\text{Tr}\left( (D_{\text{glob}} - z)^{-1} - (D_0 - z)^{-1} \right)
+$$
 
 2. **Expander gap regularization**: The Ramanujan property $`|\tilde{\tau}(p)| \le 2`$ bounds the Satake parameters and gives uniform control on the prime sum:
 
-$$\left| \sum_{p \le P} \tilde{\tau}(p) \frac{\log p}{\sqrt{p}} p^{-it} \right| \ll \sqrt{t}$$
+$$
+\left| \sum_{p \le P} \tilde{\tau}(p) \frac{\log p}{\sqrt{p}} p^{-it} \right| \ll \sqrt{t}
+$$
 
    while the local expander spectral gap $`\Delta_p = p + 1 - 2\sqrt{p}`$ prevents any off-diagonal accumulation of eigenvalues, suppressing high-frequency interference.
 3. **Phragmén-Lindelöf strip interpolation**: On the boundary line $`\mathrm{Re}(s) = 1`$, we have the standard bound $`|L(1+it)| \gg 1/\ln t`$. On $`\mathrm{Re}(s) = 1/2 + \eta`$, the explicit formula bounds the resolvent trace as $`\ll \frac{t^{1/2}}{\eta}`$. Applying the Phragmén-Lindelöf principle on the strip $[1/2, 1]$ interpolating between the two lines:
 
-$$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1-\sigma_0}{2(1-\sigma_0)} \cdot \frac{1}{2} + \epsilon} = t^{\frac{1}{4} + \epsilon}$$
+$$
+\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1-\sigma_0}{2(1-\sigma_0)} \cdot \frac{1}{2} + \epsilon} = t^{\frac{1}{4} + \epsilon}
+$$
 
    which recovers the classical Weyl-strength bound of $`O(t^{1/4+\epsilon})`$ using purely spectral methods. $`\blacksquare`$
 
@@ -811,12 +1055,16 @@ $$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1-\sigma_0}{2
 #### Conjecture 7.3.7 (GUE-Conditional Subconvexity)
 *If the zeros of $`L(s, \Delta)`$ satisfy the GUE local spacing statistics (the Montgomery-Odlyzko conjecture), the eigenvalue density near the spectral boundary is governed by the Tracy-Widom distribution. In this case, the number of eigenvalues in a window of size $`\eta`$ near $t$ scales as $`\mathcal{O}(t^{1/3})`$, improving the spectral resolvent trace bound to $`\ll \frac{t^{1/3}}{\eta}`$ and yielding:*
 
-$$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{3} + \epsilon}$$
+$$
+\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{3} + \epsilon}
+$$
 
 ### 7.4 Numerical Verification of Expander Decay & Power-Law Exponents
 To verify how the Ramanujan spectral gap of the local Bruhat-Tits trees affects the off-diagonal resolvent coupling, we simulated the bilinear form representing the off-diagonal resolvent trace:
 
-$$F_{\text{off}}(T) = \sum_{p \neq q} a_p a_q \frac{\log p \log q}{\sqrt{pq}} K(p,q,T)$$
+$$
+F_{\text{off}}(T) = \sum_{p \neq q} a_p a_q \frac{\log p \log q}{\sqrt{pq}} K(p,q,T)
+$$
 
 on a frequency sweep $`T \in [1, 100]`$. The Plancherel-like kernel is given by $`K(p,q,T) = \frac{e^{i T \log(p/q)}}{\sqrt{1 + T^2 \log^2(p/q)}}`$.
 
@@ -876,47 +1124,67 @@ To establish a quantitative model for the negative correlation slope of $`\appro
 
 The regularized resolvent trace $`G(t) = G_{\text{diag}}(t) + G_{\text{off}}(t)`$ is defined on the critical line $z = it$ in terms of the Connes spectral trace. By the Fredholm determinant relation (Krein resolvent formula), the completed L-function $`\Lambda(s)`$ relates to the regularized trace via:
 
-$$G(t) = i \mathcal{C}(t) \Lambda'(1/2 + it)$$
+$$
+G(t) = i \mathcal{C}(t) \Lambda'(1/2 + it)
+$$
 
 where $`\mathcal{C}(t) = \mathcal{C}_{\text{mag}}(t) e^{i\phi(t)}`$ is a complex coupling parameter characterizing the regularized mode amplitude.
 
 Recall that the completed $L$-function is defined as:
 
-$$\Lambda(1/2 + it) = H(t) L(1/2 + it)$$
+$$
+\Lambda(1/2 + it) = H(t) L(1/2 + it)
+$$
 
 where $H(t)$ is the Archimedean gamma-conductor factor:
 
-$$H(t) = N^{1/4} (2\pi)^{-1/2} |\Gamma(1/2 + it)|$$
+$$
+H(t) = N^{1/4} (2\pi)^{-1/2} |\Gamma(1/2 + it)|
+$$
 
 At any non-trivial zero $`t_k^*`$ of $L(s)$ on the critical line, we have $`\Lambda(1/2 + it_k^*) = 0`$. Therefore, differentiating the completed L-function at $`t_k^*`$ yields:
 
-$$\Lambda'(1/2 + it_k^*) = i H(t_k^*) L'(1/2 + it_k^*)$$
+$$
+\Lambda'(1/2 + it_k^*) = i H(t_k^*) L'(1/2 + it_k^*)
+$$
 
 Taking the absolute value:
 
-$$|\Lambda'(1/2 + it_k^*)| = H(t_k^*) |L'(1/2 + it_k^*)|$$
+$$
+|\Lambda'(1/2 + it_k^*)| = H(t_k^*) |L'(1/2 + it_k^*)|
+$$
 
 Substituting this into the Fredholm determinant relation gives:
 
-$$|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)| = \mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*) |L'(1/2 + it_k^*)|$$
+$$
+|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)| = \mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*) |L'(1/2 + it_k^*)|
+$$
 
 Rearranging to solve for the inverse derivative:
 
-$$|L'(1/2 + it_k^*)|^{-1} = \frac{\mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*)}{|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)|}$$
+$$
+|L'(1/2 + it_k^*)|^{-1} = \frac{\mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*)}{|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)|}
+$$
 
 Now, we model the effect of the off-diagonal coupling as a perturbation on the diagonal trace. The off-diagonal term $`G_{\text{off}}(t)`$ is directly proportional to the regularized off-diagonal coupling trace $`F_{\text{var}}(t)`$ under the variable spectral gap model:
 
-$$\mathrm{Re}(G_{\text{off}}(t)) \approx \beta F_{\text{var}}(t)$$
+$$
+\mathrm{Re}(G_{\text{off}}(t)) \approx \beta F_{\text{var}}(t)
+$$
 
 where $`\beta`$ is a scaling factor determined by the local prime traces. 
 
 Differentiating the inverse derivative $`|L'|^{-1}`$ with respect to the off-diagonal coupling $`F_{\text{var}}`$ at the zeros yields the slope:
 
-$$c_1 = \frac{\partial |L'(1/2 + it_k^*)|^{-1}}{\partial F_{\text{var}}} = - \frac{\mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*) \beta}{|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)|^2}$$
+$$
+c_1 = \frac{\partial |L'(1/2 + it_k^*)|^{-1}}{\partial F_{\text{var}}} = - \frac{\mathcal{C}_{\text{mag}}(t_k^*) H(t_k^*) \beta}{|G_{\text{diag}}(t_k^*) + G_{\text{off}}(t_k^*)|^2}
+$$
 
 To compute the global slope $`c_1`$ across the zero spectrum, we average this derivative over the first five non-trivial zeros:
 
-$$c_1 = - \frac{\langle \mathcal{C}_{\text{mag}} H \rangle \cdot \beta}{\langle |G_{\text{diag}} + G_{\text{off}}| \rangle^2}$$
+$$
+c_1 = - \frac{\langle \mathcal{C}_{\text{mag}} H \rangle \cdot \beta}{\langle |G_{\text{diag}} + G_{\text{off}}| \rangle^2}
+$$
 
 Evaluating this expression numerically using the level 800 $`A_5`$ representation database yields:
 1. **Coupling Integral Mean**: $`\langle \mathcal{C}_{\text{mag}} H \rangle \approx 0.460972`$
@@ -925,11 +1193,15 @@ Evaluating this expression numerically using the level 800 $`A_5`$ representatio
 
 This gives the predicted slope:
 
-$$c_1 = - \frac{0.460972 \times 1083.0003}{(0.963473)^2} \approx -537.80$$
+$$
+c_1 = - \frac{0.460972 \times 1083.0003}{(0.963473)^2} \approx -537.80
+$$
 
 Comparing this with the empirical slope of $-592.32$ obtained via direct linear regression, we find:
 
-$$\text{Relative Error} = \frac{|-537.80 - (-592.32)|}{592.32} \approx 9.20\%$$
+$$
+\text{Relative Error} = \frac{|-537.80 - (-592.32)|}{592.32} \approx 9.20\%
+$$
 
 This remarkable agreement ($`<10\%`$ relative error) verifies that the anti-correlation is a robust consequence of the adèlic Fredholm determinant, and mathematically links the prime expander graphs to the spectral rigidity of automorphic L-zeros.
 
@@ -939,9 +1211,13 @@ To close the remaining $`9.20\%`$ gap between the first-principles baseline mode
 1. **Model 1: Phase Separation with Baseline Intercepts**
    The baseline model assumed that $`\mathrm{Re}(G_{\text{off}})`$ was directly proportional to $`F_{\text{var}}`$ without an intercept, and ignored the imaginary part of the coupling trace. In practice, the diagonal and off-diagonal modes introduce baseline offsets due to regularised high-frequency components. Fitting the real and imaginary parts of $`G_{\text{off}}`$ independently against $`F_{\text{var}}`$ yields:
 
-$$\mathrm{Re}(G_{\text{off}}(t)) \approx \beta_{\text{real}} F_{\text{var}}(t) + \alpha_{\text{real}}$$
+$$
+\mathrm{Re}(G_{\text{off}}(t)) \approx \beta_{\text{real}} F_{\text{var}}(t) + \alpha_{\text{real}}
+$$
 
-$$\mathrm{Im}(G_{\text{off}}(t)) \approx \beta_{\text{imag}} F_{\text{var}}(t) + \alpha_{\text{imag}}$$
+$$
+\mathrm{Im}(G_{\text{off}}(t)) \approx \beta_{\text{imag}} F_{\text{var}}(t) + \alpha_{\text{imag}}
+$$
 
    A linear fit to the numerical database yields:
    - $`\beta_{\text{real}} \approx 1083.0003`$, $`\alpha_{\text{real}} \approx -3.2402`$
@@ -952,16 +1228,22 @@ $$\mathrm{Im}(G_{\text{off}}(t)) \approx \beta_{\text{imag}} F_{\text{var}}(t) +
 2. **Model 2: $t$-Dependent Coupling Strength $`\beta(t)`$**
    Because high-frequency modes in the regularised Dirac operator resolvent decay as $`\mathcal{O}(t^{-2})`$ at larger values of $t$, the coupling coefficient $`\beta`$ is not strictly constant across the spectrum but decays monotonically. We model the ratio $`\beta(t) = G_{\text{off}}(t) / F_{\text{var}}(t)`$ linearly:
 
-$$\beta_{\text{real}}(t) \approx -89.6296 \cdot t + 1123.7094$$
+$$
+\beta_{\text{real}}(t) \approx -89.6296 \cdot t + 1123.7094
+$$
 
-$$\beta_{\text{imag}}(t) \approx -19.8595 \cdot t + 118.3864$$
+$$
+\beta_{\text{imag}}(t) \approx -19.8595 \cdot t + 118.3864
+$$
 
    This $t$-dependent coupling captures the spectral decay of the off-diagonal resolvent matrix elements. Evaluating the slope with this model yields a predicted slope of **$-609.81$** (Relative Error: **$`2.95\%`$**).
 
 3. **Model 3: Pointwise Quotient Limit**
    If the coupling is evaluated pointwise at each zero:
 
-$$\beta_k = \frac{G_{\text{off}}(t_k^*)}{F_{\text{var}}(t_k^*)}$$
+$$
+\beta_k = \frac{G_{\text{off}}(t_k^*)}{F_{\text{var}}(t_k^*)}
+$$
 
    the predicted slope reproduces the empirical slope of **$-592.32$** exactly (**$`0.00\%`$** error), demonstrating that the first-principles Fredholm relation maps to the subconvexity mechanism with complete precision when the full frequency dependence is taken into account.
 
@@ -980,15 +1262,21 @@ The key findings from this multidimensional parameter scan include:
 ### 7.7 Many-Body Interacting Fermions under Coulomb Repulsion
 To determine if the zero-mode footprints remain robust in the presence of strong electronic correlations, we generalized the single-particle Dirac operator $D$ to a many-body tight-binding Hamiltonian of interacting fermions. The system consists of $L = 12$ single-particle modes at half-filling ($`N_f = 6`$ fermions), yielding a Fock space of dimension:
 
-$$\dim \mathcal{H}_{\text{Fock}} = \binom{12}{6} = 924$$
+$$
+\dim \mathcal{H}_{\text{Fock}} = \binom{12}{6} = 924
+$$
 
 The many-body Hamiltonian $`\hat{H}`$ is constructed via exact diagonalization:
 
-$$\hat{H} = \sum_{i,j=1}^{L} D_{i,j} \hat{c}_i^\dagger \hat{c}_j + U \sum_{1 \le i < j \le L} \frac{\hat{n}_i \hat{n}_j}{|i - j|}$$
+$$
+\hat{H} = \sum_{i,j=1}^{L} D_{i,j} \hat{c}_i^\dagger \hat{c}_j + U \sum_{1 \le i < j \le L} \frac{\hat{n}_i \hat{n}_j}{|i - j|}
+$$
 
 where $U$ governs the strength of the long-range Coulomb repulsion between prime place dots, and $`\hat{n}_i = \hat{c}_i^\dagger \hat{c}_i`$ is the number operator for mode $i$. We swept the scaling parameter $`\lambda`$ (corresponding to height $`t \in [4.5, 7.5]`$) and computed the ground-state wavefunction $`|\Psi_0\rangle`$ and its bipartite von Neumann entanglement entropy $S$ across the Archimedean/non-Archimedean spatial split:
 
-$$S = -\mathrm{Tr}(\rho_A \log \rho_A)$$
+$$
+S = -\mathrm{Tr}(\rho_A \log \rho_A)
+$$
 
 ![Interacting Artin Fermions Entanglement Sweep](../figures/interacting_artin_entanglement_sweep.png)
 
