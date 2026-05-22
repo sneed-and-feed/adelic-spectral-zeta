@@ -59,8 +59,9 @@ Mapping the spectral geometry to a system of interacting fermions under Coulomb 
 | [`src/adelic_spectral_zeta/determinant.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/determinant.py) | Weierstrass canonical product implementation, pole cancellation checks, and completed $`L`$-function comparisons. |
 | [`src/adelic_spectral_zeta/universality.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/universality.py) | Singular perturbation operators, resolvent trace evaluations, and Hoffman-Wielandt perturbation bounds for rank-1 vs. rank-N projections. |
 | [`src/adelic_spectral_zeta/quantum.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/quantum.py) | Many-body Fock basis builder, interacting fermion Hamiltonians (Coulomb repulsion), and bipartite entanglement entropy calculators. |
-| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `theta_functional_equation.py` (rigidity scan), `axiom_verification_explicit.py` (Connes-Moscovici verification), `weil_explicit_subconvexity.py` (subconvexity proof), etc. |
+| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `theta_functional_equation.py` (rigidity scan), `collatz_dynamics.py` (2-adic Collatz conjugacy), `collatz_gauge_sweep.py` (curvature sweep), etc. |
 | [`docs/unified_monograph.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md) | The unified monograph detailing the rigorous mathematical proofs and physical mappings. |
+| [`docs/collatz_gauge_geometry.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/collatz_gauge_geometry.md) | Formal mathematical framework representing the Collatz map as a gauge-covariant connection on the 2-adic tree. |
 
 ---
 
@@ -177,6 +178,18 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   python experiments/chern_simons_statistics.py
   ```
   Computes normalized Chern-Simons invariants and verifies their convergence toward the $`GL(2)`$ Sato-Tate distribution.
+
+* **2-Adic Collatz Conjugacy Dynamics**:
+  ```bash
+  python experiments/collatz_dynamics.py
+  ```
+  Verifies the Lagarias topological conjugacy to the 2-adic shift and computes transfer operator eigenvalues.
+
+* **Collatz Gauge & Spectral Sweep**:
+  ```bash
+  python experiments/collatz_gauge_sweep.py
+  ```
+  Measures the non-abelian gauge curvature scaling and spectral gap behavior across tree depths.
 
 ---
 

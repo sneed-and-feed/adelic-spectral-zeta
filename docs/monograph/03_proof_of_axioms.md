@@ -125,7 +125,7 @@ We establish the meromorphic continuation of this sum and compute its residues:
 \zeta_{\text{pert}}(z) = -\frac{2}{\Vert \xi\Vert _N^2} \left( \frac{\ln\lambda}{\pi} \right)^z \sum_{n=1}^\infty \vert \xi_n\vert ^2 n^{-z}
 ```
 
-   Recall that $`\xi_n`$ consists of a Gamma-conductor factor $`\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)`$ plus non-Archimedean prime sums. 
+   Recall that $`\xi_n`$ consists of a Gamma-conductor factor $`\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(\pi)`$ plus non-Archimedean prime sums. 
    Using the asymptotic expansion of the digamma function $`\psi(w)`$ as $`\vert w\vert  \to \infty`$ in the sector $`\vert \arg w\vert  \lt  \pi`$:
 
 ```math

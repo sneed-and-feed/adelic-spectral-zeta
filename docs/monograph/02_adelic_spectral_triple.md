@@ -50,7 +50,7 @@ The global coupling vector $`\xi`$ is defined by:
 \xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_{\text{arch}}(n)
 ```
 
-where $`A_p`$ are the Satake parameters and $`\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)`$ represents the Gamma-conductor factor. Since $`\psi(1/4 + it) \sim \ln\vert t\vert `$ as $`\vert t\vert  \to \infty`$, the components $`\xi_n`$ grow logarithmically: $`\xi_n = \mathcal{O}(\ln\vert n\vert )`$. Thus, $`\xi \notin \ell^2(\mathbb{Z})`$, meaning the projection $`P_\xi`$ cannot be defined directly on $`\mathcal{H}_\infty`$.
+where $`A_p`$ are the Satake parameters and $`\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(\pi)`$ represents the Gamma-conductor factor. Since $`\psi(1/4 + it) \sim \ln\vert t\vert `$ as $`\vert t\vert  \to \infty`$, the components $`\xi_n`$ grow logarithmically: $`\xi_n = \mathcal{O}(\ln\vert n\vert )`$. Thus, $`\xi \notin \ell^2(\mathbb{Z})`$, meaning the projection $`P_\xi`$ cannot be defined directly on $`\mathcal{H}_\infty`$.
 
 To construct the global Dirac operator $`D_{\text{glob}}`$ rigorously, we use the theory of singular rank-1 perturbations:
 1. The linear functional $`\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n`$ is defined on the domain $`\text{Dom}(D_0)`$. It is continuous with respect to the graph norm $`\Vert u\Vert _{D_0} = \sqrt{\Vert u\Vert ^2 + \Vert D_0 u\Vert ^2}`$ because the sequence $`\left\lbrace \frac{\xi_n}{\lambda_n} \right\rbrace`$ is in $`\ell^2(\mathbb{Z})`$ (since $`\sum_{n \neq 0} \frac{\ln^2\vert n\vert }{n^2} \lt  \infty`$).
