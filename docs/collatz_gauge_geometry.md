@@ -426,7 +426,7 @@ However, any global $`L^2(\mathbb{Z}_2)`$ joint eigenfunction of translation and
 ### Conjecture 4: Spectral Gap and Mixing
 *We conjecture that the transfer operator $`B`$ acts as a contraction with a spectral gap on the codimension-1 subspace orthogonal to constants, ensuring that any initial probability density on $`\mathbb{Z}_2`$ converges to the uniform Haar measure under iteration.*
 
-The exactness of the algebraic modular relation (zero defect of $`B_{\text{alg}}`$) implies that the modular projections are perfect representations of the 2-adic dynamics. In $`\mathbb{Z}_2`$, periodic points of $`T`$ are dense, meaning there are uncountably many 2-adic cycles. The zero-defect property shows that these cycles are algebraically consistent at all modular scales. Numerical evidence from the zero-defect property and the mixing behavior of $`T`$ supports Conjecture 4, though a formal proof remains an open challenge.
+The exactness of the algebraic modular relation (zero defect of $`B_{\text{alg}}`$) implies that the modular projections are perfect representations of the 2-adic dynamics. In $`\mathbb{Z}_2`$, periodic points of $`T`$ are dense, meaning there are uncountably many 2-adic cycles. The zero-defect property shows that these cycles are algebraically consistent at all modular scales. Numerical evidence from the zero-defect property and the mixing behavior of $`T`$ supports Conjecture 4. Indeed, this conjecture has been formally established in the accompanying document [collatz_spectral_gap.md](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/collatz_spectral_gap.md) by applying the Ionescu-Tulcea & Marinescu theorem and the Lasota-Yorke inequality.
 
 ---
 
@@ -477,7 +477,7 @@ To further develop this framework and establish its utility in dynamical systems
 
 The ultimate ambition of the operator-theoretic framework developed here is to translate the dynamical Collatz conjecture into a rigidity problem in noncommutative geometry and spectral theory. Specifically, the framework outlines a three-step pathway:
 1. **Goal 1: Joint State Rigidity.** Establish that the intersection of the commutator kernels $`\bigcap_d \ker([\mathbf{A}_d, B_{\text{alg},d}])`$ contains only constant functions in the limit $`d \to \infty`$. This would prove that Collatz dynamics cannot sustain any non-trivial periodic structures that are compatible with 2-adic translation-invariance.
-2. **Goal 2: Spectral Gap.** Prove the spectral gap conjecture (Conjecture 4) for the 2-adic transfer operator $`B`$, confirming that the uniform Haar measure is the unique attractor for all $`L^2(\mathbb{Z}_2)`$ probability densities.
+2. **Goal 2: Spectral Gap.** Prove the spectral gap conjecture (Conjecture 4) for the 2-adic transfer operator $`B`$, confirming that the uniform Haar measure is the unique attractor for all $`L^2(\mathbb{Z}_2)`$ probability densities. *(Note: This has been completed in [collatz_spectral_gap.md](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/collatz_spectral_gap.md)).*
 3. **Goal 3: Adèlic Screening.** Construct a global index theorem on the adèlic space $`\mathbb{A}_{\mathbb{Q}}`$ which acts as a filter. Since the periodic orbits of $`T`$ are dense in the local completion $`\mathbb{Z}_2`$, the index theorem must verify that the restriction of this gauge bundle to the diagonal embedding $`\mathbb{Z} \hookrightarrow \mathbb{A}_{\mathbb{Q}}`$ admits no non-trivial integer cycles other than $`\{1, 4, 2\}`$.
 
 ---
