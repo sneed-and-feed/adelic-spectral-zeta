@@ -48,7 +48,7 @@ $$\psi_n(x) = x^{-1/2 - i n \pi / \ln \lambda}$$
 Formally, we define the Archimedean Hilbert space as $\mathcal{H}_\infty = \ell^2(\mathbb{Z})$ with the unperturbed Dirac operator $D_0$ acting diagonally in the scale-invariant basis $\{|n\rangle\}_{n \in \mathbb{Z}}$:
 $$D_0 |n\rangle = \lambda_n |n\rangle, \quad \lambda_n = \frac{n \pi}{\ln \lambda}$$
 The natural domain of $D_0$ is the dense subspace:
-$$\text{Dom}(D_0) = \left\{ u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\}$$
+$$\text{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\rbrace$$
 Since $\lambda_n \in \mathbb{R}$, $D_0$ is self-adjoint on $\text{Dom}(D_0)$.
 
 The global coupling vector $\xi$ is defined by:
@@ -56,9 +56,9 @@ $$\xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_
 where $A_p$ are the Satake parameters and $\xi_{\text{arch}}(n) = \frac{1}{2} \psi(1/4 + i \lambda_n / 2) - \frac{1}{2} \ln(2\pi)$ represents the Gamma-conductor factor. Since $\psi(1/4 + it) \sim \ln|t|$ as $|t| \to \infty$, the components $\xi_n$ grow logarithmically: $\xi_n = \mathcal{O}(\ln|n|)$. Thus, $\xi \notin \ell^2(\mathbb{Z})$, meaning the projection $P_\xi$ cannot be defined directly on $\mathcal{H}_\infty$.
 
 To construct the global Dirac operator $D_{\text{glob}}$ rigorously, we use the theory of singular rank-1 perturbations:
-1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is defined on the domain $\text{Dom}(D_0)$. It is continuous with respect to the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because the sequence $\left\{ \frac{\xi_n}{\lambda_n} \right\}$ is in $\ell^2(\mathbb{Z})$ (since $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$).
+1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is defined on the domain $\text{Dom}(D_0)$. It is continuous with respect to the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because the sequence $\left\lbrace \frac{\xi_n}{\lambda_n} \right\rbrace$ is in $\ell^2(\mathbb{Z})$ (since $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$).
 2. We define the symmetric restriction $D_{\text{sym}} = D_0 |_{\text{Dom}(D_{\text{sym}})}$ on the dense domain:
-   $$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle) = \left\{ u \in \text{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\}$$
+   $$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle) = \left\lbrace u \in \text{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\rbrace$$
    Since $\text{Dom}(D_{\text{sym}})$ is a closed subspace of codimension 1 in $\text{Dom}(D_0)$ under the graph norm, $D_{\text{sym}}$ is a closed, densely defined symmetric operator.
 3. The deficiency spaces $\mathcal{K}_\pm = \text{Ker}(D_{\text{sym}}^* \mp i\mathbb{I})$ are spanned by the deficiency vectors:
    $$g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \implies g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i}$$
@@ -67,7 +67,7 @@ To construct the global Dirac operator $D_{\text{glob}}$ rigorously, we use the 
    $$\langle g_\pm, (D_{\text{sym}} \mp i\mathbb{I})u \rangle = \langle (D_0 \mp i\mathbb{I})^{-1}\xi, (D_0 \mp i\mathbb{I})u \rangle = \langle \xi, u \rangle = 0$$
    This proves that $g_\pm$ are orthogonal to the range of $D_{\text{sym}} \mp i\mathbb{I}$, meaning $\mathcal{K}_\pm = \text{span}\{g_\pm\}$. Thus, the deficiency indices are exactly $(1, 1)$.
 4. By von Neumann's theorem, all self-adjoint extensions $D_\theta$ of $D_{\text{sym}}$ are parameterized by a phase $\theta \in [0, 2\pi)$, which maps the normalized deficiency space via the isometry $U_\theta : g_+ \mapsto e^{i\theta} g_-$. The domain of the extension $D_\theta$ is given by:
-   $$\text{Dom}(D_\theta) = \left\{ u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \text{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\}$$
+   $$\text{Dom}(D_\theta) = \left\lbrace u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) : u \in \text{Dom}(D_{\text{sym}}), c \in \mathbb{C} \right\rbrace$$
    On this domain, $D_\theta$ acts as:
    $$D_\theta \left( u + c \left( g_+ + e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right) \right) = D_{\text{sym}} u + i c \left( g_+ - e^{i\theta} \frac{\|g_+\|}{\|g_-\|} g_- \right)$$
    The global compressed Dirac operator $D_{\text{glob}}$ corresponds to a specific choice of $\theta_0$ that matches the physical adèlic boundary conditions, and its resolvent is given exactly by the regularized Krein formula. This guarantees that $D_{\text{glob}}$ is a self-adjoint operator on its domain.
@@ -90,15 +90,15 @@ To establish that $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ is
 1. **Exact Smooth Subalgebra Definition**:
    We define the global smooth subalgebra as $\mathcal{A} = \mathcal{A}_\infty \otimes \bigotimes_p \mathcal{A}_p$.
    - The Archimedean component $\mathcal{A}_\infty = C^\infty(S^1)$ is isomorphic to the Schwartz space of sequences on the Fourier dual group:
-     $$\mathcal{A}_\infty \cong \left\{ a = \sum_{m \in \mathbb{Z}} a_m S^m \in \mathcal{B}(\ell^2(\mathbb{Z})) : \sup_{m \in \mathbb{Z}} (1 + |m|)^p |a_m| < \infty \quad \forall p \in \mathbb{N}_0 \right\}$$
+     $$\mathcal{A}_\infty \cong \left\lbrace a = \sum_{m \in \mathbb{Z}} a_m S^m \in \mathcal{B}(\ell^2(\mathbb{Z})) : \sup_{m \in \mathbb{Z}} (1 + |m|)^p |a_m| < \infty \quad \forall p \in \mathbb{N}_0 \right\rbrace$$
      where $S$ is the unitary shift operator $S|n\rangle = |n+1\rangle$.
    - The non-Archimedean component $\mathcal{A}_p = \mathcal{C}_{\text{loc}}(\mathcal{T}_p)$ consists of locally constant, compactly supported functions on the Bruhat-Tits tree $\mathcal{T}_p$.
 
 2. **Explicit Domain Control**:
    The unperturbed Archimedean Dirac operator $D_0$ acts diagonally as $D_0 |n\rangle = \lambda_n |n\rangle$ with $\lambda_n = n \pi / \ln \lambda$ on the Hilbert space $\mathcal{H}_\infty = \ell^2(\mathbb{Z})$. The domain of $D_0$ is:
-   $$\text{Dom}(D_0) = \left\{ u \in \ell^2(\mathbb{Z}) : \sum_{n \in \mathbb{Z}} (1 + n^2) |u_n|^2 < \infty \right\}$$
+   $$\text{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n \in \mathbb{Z}} (1 + n^2) |u_n|^2 < \infty \right\rbrace$$
    For the singular coupling vector $\xi \notin \ell^2(\mathbb{Z})$ with component-wise growth $\xi_n = \mathcal{O}(\ln|n|)$, the global compressed Dirac operator $D_{\text{glob}} = P_\xi^\perp D_0 P_\xi^\perp$ is defined on the domain:
-   $$\text{Dom}(D_{\text{glob}}) = P_\xi^\perp \text{Dom}(D_0) = \left\{ u \in \text{Dom}(D_0) : \sum_{n \in \mathbb{Z}} \bar{\xi}_n u_n = 0 \right\}$$
+   $$\text{Dom}(D_{\text{glob}}) = P_\xi^\perp \text{Dom}(D_0) = \left\lbrace u \in \text{Dom}(D_0) : \sum_{n \in \mathbb{Z}} \bar{\xi}_n u_n = 0 \right\rbrace$$
    which is a closed subspace of codimension 1 in $\text{Dom}(D_0)$ under the graph norm.
 
 3. **Estimates on $\delta^k(a)$ for the Unperturbed Triple**:
