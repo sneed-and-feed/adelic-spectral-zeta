@@ -57,13 +57,13 @@ Specifically:
   ```math
   \text{rank}(K_d) = 2^{d-1} - 1 \quad \text{and} \quad \dim(\ker(K_d)) = 2^{d-1} + 1
   ```
-* **Graph Correspondence**: The commutator square $K_d K_d^\dagger$ on the anti-periodic subspace $V_+$ reduces to the adjacency operator $A_{G_d}$ of a 4-regular covering graph $G_d$:
+* **Graph Correspondence**: The commutator square $K_d K_d^\dagger$ on the periodic subspace $V_+$ reduces to the adjacency operator $A_{G_d}$ of a 4-regular covering graph $G_d$:
   ```math
-  M_d + M_d^\dagger = \frac{1}{2} A_{G_d}
+  K_d K_d^\dagger \Big|_{V_+} = 2 I - \frac{1}{2} A_{G_d}
   ```
-  where $M_d = B_d A_d B_d^\dagger A_d^\dagger$. We show that $G_d$ is a regular 2-fold covering of $G_{d-1}$ with connected sheets, proving $\text{rank}(M_d) = 2^{d-1} - 1$.
+  where $G_d$ is an undirected graph on $2^{d-1}$ vertices. We show that $G_d$ is a regular 2-fold covering of $G_{d-1}$ with connected sheets, proving $\text{rank}(K_d\bigr\vert_{V_+}) = 2^{d-1} - 1$.
 * **Projective-Limit Kernel**: In the infinite-dimensional limit $d \to \infty$, the global commutator kernel $\ker([A, B])$ contains the dense union of all cylinder commutator kernels $\Phi_d(\ker(K_d))$, confirming it is infinite-dimensional.
-* **Spectral Recursion**: The new singular values of $K_d$ at each depth are governed by a sequence of monic polynomials $P_d(z)$ of degree $2^{d-3}$ (for $d \ge 4$) with constant term $P_d(0) = 4$ and sum of roots equal to $2^{d-2}$, verified via symbolic computer algebra up to depth $d = 8$.
+* **Spectral Recursion**: The new adjacency eigenvalues $\mu$ at each depth are roots of a sequence of monic polynomials $P_d(z) = 0$ in $z = \mu^2$ of degree $2^{d-4}$ (for $d \ge 4$) with constant term $P_d(0) = 4$ and sum of roots equal to $2^{d-2}$ (yielding an average root value of exactly 4). The new singular values of $K_d$ satisfy the exact product formula $\prod_{\text{new}} \sigma_i = P_d(16) / 4^{2^{d-4}}$, verified via symbolic computer algebra up to depth $d = 8$.
 
 ---
 

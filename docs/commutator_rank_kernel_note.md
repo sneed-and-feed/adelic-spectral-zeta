@@ -520,23 +520,30 @@ where the new eigenvalues are associated with anti-symmetric eigenvectors $g$ sa
 Based on exact symbolic algebraic computations up to depth $d = 7$, we formulate the following conjecture regarding the minimal polynomials of the new eigenvalues:
 
 **Conjectural spectral recursion supported by exact computation to depth 7:**
-At each depth $d \ge 3$, the new eigenvalues $\mu$ are roots of an irreducible polynomial $P_d(z) = 0$ in $z = \mu^2$ of degree $2^{d-3}$ (for $d \ge 4$):
-- **Depth $d=3$**: $z - 8 = 0 \implies \mu = \pm 2\sqrt{2}$ (multiplicity 1)
-- **Depth $d=4$**: $z - 4 = 0 \implies \mu = \pm 2$ (multiplicity 2)
-- **Depth $d=5$**: $z^2 - 8z + 4 = 0 \implies \mu = \pm (1 \pm \sqrt{3})$ (multiplicity 2)
-- **Depth $d=6$**: $z^4 - 16z^3 + 72z^2 - 96z + 4 = 0$ (multiplicity 2)
-- **Depth $d=7$**: $z^8 - 32z^7 + 400z^6 - 2496z^5 + 8200z^4 - 13568z^3 + 9536z^2 - 1664z + 4 = 0$ (multiplicity 2)
+At each depth $d \ge 3$, the new eigenvalues $\mu$ are roots of an irreducible polynomial $P_d(z) = 0$ in $z = \mu^2$ of degree $2^{d-4}$ (for $d \ge 4$):
+- **Depth $d=3$**: $z - 8 = 0 \implies \mu = \pm 2\sqrt{2}$ (multiplicity 1, degree 1 in $z = \mu^2$)
+- **Depth $d=4$**: $z - 4 = 0 \implies \mu = \pm 2$ (multiplicity 2, degree 1)
+- **Depth $d=5$**: $z^2 - 8z + 4 = 0 \implies \mu = \pm (1 \pm \sqrt{3})$ (multiplicity 2, degree 2)
+- **Depth $d=6$**: $z^4 - 16z^3 + 72z^2 - 96z + 4 = 0$ (multiplicity 2, degree 4)
+- **Depth $d=7$**: $z^8 - 32z^7 + 400z^6 - 2496z^5 + 8200z^4 - 13568z^3 + 9536z^2 - 1664z + 4 = 0$ (multiplicity 2, degree 8)
 
-For all $d \ge 5$, the minimal polynomial $P_d(z)$ is conjectured (and verified up to depth $d=7$) to satisfy:
+For all $d \ge 5$, the minimal polynomial $P_d(z)$ of the distinct squared eigenvalues is conjectured (and verified up to depth $d=7$) to satisfy:
 - **1.** Leading coefficient $1$ (monic).
 - **2.** Constant term $P_d(0) = +4$, which implies the product of the new eigenvalues squared is always $4$, i.e., the product of the new eigenvalues is $\pm 2$.
 - **3.** Second coefficient $-2^{d-2}$, which is the sum of the roots $z$. Thus, the average of the squared new eigenvalues is always exactly:
 
 $$
-\frac{2^{d-2}}{2^{d-3}} = 2
+\frac{2^{d-2}}{2^{d-4}} = 4
 $$
 
 - **4.** All roots of $P_d(z)$ are real, positive, and lie in the interval $(0, 16)$, which ensures that the corresponding singular values $\sigma = \sqrt{2 - \frac{1}{2}\mu}$ are real.
+- **5.** The product of the new singular values $\sigma_i = \sqrt{2 - \frac{1}{2}\mu_i}$ at depth $d \ge 4$ satisfies:
+
+$$
+\prod_{\text{new}} \sigma_i = \frac{P_d(16)}{4^{2^{d-4}}}
+$$
+
+which evaluates to $3$ for $d=4$, $8.25$ for $d=5$, $66.015625$ for $d=6$, and $\frac{70727169}{16384} \approx 4316.8438$ for $d=7$. This exact behavior indicates that the singular spectrum of the commutator is highly constrained across scales.
 
 ---
 
@@ -567,3 +574,13 @@ The following table summarizes the non-zero singular values of $K_d$ and their m
 | | Plus all of the above from $d=5$ | | |
 | **$d=7$** | $\text{Roots of the degree-32 polynomial in } \sigma$ | 2 each (16 distinct values) | Roots of $65536z^{16} - 2097152z^{15} + 30932992z^{14} - 278921216z^{13} + 1719205888z^{12} - 7672954880z^{11} + 25620971520z^{10} - 65210155008z^9 + 127676975104z^8 - 192648609792z^7 + 222886772736z^6 - 195268902912z^5 + 126710600704z^4 - 58720428032z^3 + 18270635520z^2 - 3396999168z + 282908676 = 0$ for $z=\sigma^2$ |
 | | Plus all of the above from $d=6$ | | |
+
+---
+
+## 8. Open Problems
+
+### Open Problem 1: Global Intertwining Operators
+Can the finite-dimensional graph covering structure be lifted to a bounded operator $\mathcal{U}$ on $L^2(\mathbb{Z}_2)$ that conjugates the global commutator $[A, B]$ to a multiplication operator? 
+
+The product of the new singular values $\prod_{\text{new}} \sigma_i = \frac{P_d(16)}{4^{2^{d-4}}}$ provides a necessary compatibility condition at each finite depth $d$. However, the construction of compatible embeddings between the wavelet detail spaces $\mathcal{W}_d$ (which would require constructing explicit partial isometries $U_d: \mathcal{W}_d \to \mathcal{W}_{d+1}$ compatible with the graph covering projection) and the proof of their convergence to a well-defined global intertwiner remain open questions.
+
