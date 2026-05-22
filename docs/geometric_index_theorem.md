@@ -35,20 +35,27 @@ $$D_{\text{glob}, \Delta}(s) = D_{\infty, \Delta}(s) \otimes \mathbf{1} + \sum_{
 where:
 
 **Archimedean component** ($v = \infty$):
+
 $$D_{\infty, \Delta}(s) = -i\frac{d}{d\theta} \otimes \sigma_3 + \left(s - \frac{1}{2}\right) \sigma_1 + \frac{1}{2}\left[\psi\!\left(s + \frac{11}{2}\right) - \ln(2\pi)\right] \sigma_2$$
 
 Here $\theta$ is the coordinate on $S^1 \subset \mathfrak{M}_\infty$, the $\sigma_i$ are Pauli matrices acting on the $\mathrm{Pin}^+$ spinor bundle of $\mathbb{RP}^2$, and the digamma contribution encodes the weight-12 Gamma factor.
 
 **Non-Archimedean component** ($v = p$):
+
 $$D_{p, \Delta}(s) = \log p \cdot (x\partial_x) - \left(s - \frac{1}{2}\right)\log p + \log p \cdot \mathcal{S}_p$$
 
 where $\mathcal{S}_p$ is the **Satake holonomy operator** acting on $L^2(\mathcal{T}_p)$. At each vertex $v$ of the tree at distance $d$ from the root, $\mathcal{S}_p$ acts via the rank-2 character:
+
 $$\mathcal{S}_p |v, d\rangle = \tilde{\tau}(p) |v, d\rangle - p^{-d} |v, d-1\rangle$$
 
 The compressed operator is then:
+
 $$\widetilde{D}_{\text{glob}, \Delta}(s)$$
+
 defined rigorously as the unique self-adjoint extension of the unperturbed Dirac operator $D_{\text{glob}, \Delta}(s)$ restricted to the kernel of the continuous linear functional $\langle \xi_\Delta, \cdot \rangle$:
+
 $$\text{Dom}(D_{\text{sym}}) = \text{Dom}(D_{\text{glob}}) \cap \text{Ker}(\langle \xi_\Delta, \cdot \rangle)$$
+
 Since the coupling vector $\xi_\Delta$ grows logarithmically ($\xi_{\Delta, n} = \mathcal{O}(\ln|n|)$ due to the Archimedean Gamma factor) and does not belong to $\ell^2(\mathbb{Z})$, the projection $\Pi_{\xi_\Delta}^\perp = \mathbf{1} - |\xi_\Delta\rangle\langle\xi_\Delta|$ is defined as a singular rank-1 perturbation via Krein's resolvent formula. This guarantees that $\widetilde{D}_{\text{glob}, \Delta}(s)$ is a closed, self-adjoint operator on its domain.
 
 ### §1.2 The Coupling Vector as a Distributional Section
@@ -69,6 +76,7 @@ $$\xi_\Delta(n) = \underbrace{\sum_{p \le p_{\max}} \tilde{\tau}(p) \frac{\log p
 Because $\mathfrak{M}_\infty$ is non-compact (the dilation factor $\mathbb{R}_+^\times$ is unbounded), the standard Atiyah-Singer index theorem does not apply directly. Instead, we must use the **Atiyah-Patodi-Singer (APS) index theorem** for manifolds with boundary, treating the compactification of $\mathbb{R}_+^\times$ at $\{0, \infty\}$ as introducing two boundary components.
 
 **Definition 2.1** (Analytical Index). *The analytical index of the global operator is:*
+
 $$\mathrm{Ind}_a(\widetilde{D}_{\text{glob}, \Delta}(s)) := \dim \ker \widetilde{D}_{\text{glob}, \Delta}^+(s) - \dim \ker \widetilde{D}_{\text{glob}, \Delta}^-(s)$$
 
 *where $\widetilde{D}^{\pm}$ are the chiral components of the Dirac operator with respect to the $\mathbb{Z}/2$-grading induced by the $\mathrm{Pin}^+$ structure on $\mathbb{RP}^2$.*
@@ -92,18 +100,27 @@ $$\eta_{\infty, \Delta}(0) = \frac{1}{\pi} \arg \Gamma\!\left(\frac{1}{2} + it +
 The last term is the **spectral asymmetry contribution** from the non-compact end: it detects whether the operator is evaluated on or off the critical line.
 
 **Non-Archimedean $\eta$-invariants.** For each prime $p$, the Bruhat-Tits tree $\mathcal{T}_p$ is a locally finite tree of infinite volume, which implies that the spectrum of the local Dirac operator $D_{p, \Delta}(s)$ contains an absolutely continuous component supported on the Alon-Boppana band. Consequently, the naive discrete sum:
+
 $$\eta_{p, \Delta}(z) = \sum_{d=0}^\infty (p+1)p^{d-1} \sum_{\epsilon = \pm 1} \epsilon \, |\lambda_{p,d,\epsilon}|^{-z}$$
+
 over the deep boundary states is divergent in the infinite-volume limit. To rigorously define $\eta_{p, \Delta}(0)$, we employ Melrose's scattering theory on non-compact manifolds adapted to trees (see Stanton, *The Heat Equation on Trees*). The eta-invariant is defined via the regularized trace of the boundary scattering matrix $S_p(\lambda)$, which acts as a Fredholm determinant on the tree boundary:
+
 $$\eta_{p, \Delta}(0) := \frac{1}{\pi} \arg \det\!\left( \mathbb{I} - \Theta_p(s) \right)$$
+
 where $\mathbb{I} - \Theta_p(s)$ is the local Ihara-Selberg scattering operator.
 
 **Proposition 2.3.** *The regularized non-Archimedean $\eta$-invariant at $z = 0$ evaluates to the phase of the local Euler factor:*
+
 $$\eta_{p, \Delta}(0) = \frac{1}{\pi} \arg(1 - \alpha_p p^{-s})(1 - \beta_p p^{-s}) = \frac{1}{\pi} \arg L_p(s, \Delta)^{-1}$$
 
 *Proof.* By the scattering theory on the tree $\mathcal{T}_p$, the Fredholm determinant of the scattering operator factorizes via the Ihara determinant formula:
+
 $$\det( \mathbb{I} - \Theta_p(s) ) = \prod_{[\gamma]} (1 - \chi_\Delta(\gamma) \, p^{-s \ell(\gamma)})$$
+
 where $[\gamma]$ ranges over primitive geodesics of length $\ell(\gamma)$ in $\mathcal{T}_p$ and $\chi_\Delta(\gamma) = \alpha_p^{a(\gamma)} \beta_p^{b(\gamma)}$ is the Satake character. Evaluating the argument:
+
 $$\eta_{p, \Delta}(0) = \frac{1}{\pi} \mathrm{Im} \ln \det( \mathbb{I} - \Theta_p(s) ) = -\frac{1}{\pi} \mathrm{Im} \log L_p(s, \Delta)^{-1} = \frac{1}{\pi} \arg(1 - \tilde{\tau}(p)p^{-s} + p^{-2s})$$
+
 This completes the proof. $\square$
 
 > [!NOTE]
@@ -343,7 +360,9 @@ Specifically, the index identity must be understood as being defined on the punc
 > [!IMPORTANT]
 > **Main Result.** For the Automorphic Spectral Triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})$ with parameters $(\lambda, N, p_{\max})$:
 >
+
 > $$\mathrm{Ind}\!\left(\widetilde{D}_{\text{glob}, \Delta}\!\left(\tfrac{1}{2} + it\right)\right) = \underbrace{\int_{\mathfrak{M}_\infty} \widehat{A} \wedge \mathrm{ch}_{\text{reg}}(\mathcal{V}_\Delta)}_{\text{topological index}} \;-\; \underbrace{\frac{1}{2\pi}\arg\Lambda\!\left(\tfrac{1}{2} + it, \Delta\right)}_{\text{spectral phase}} \;-\; \underbrace{\frac{1}{4}\mathrm{sgn}\!\left(\sigma - \tfrac{1}{2}\right)}_{\text{APS boundary}}$$
+
 >
 > The operator is Fredholm only on the critical line $\sigma = 1/2$. Its zero-modes correspond bijectively to the non-trivial zeros of the completed $L$-function $\Lambda(s, \Delta)$.
 

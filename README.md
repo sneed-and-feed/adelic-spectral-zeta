@@ -12,12 +12,16 @@ The core of the library is the numerical realization and physical simulation of 
 
 1. **The Global Dirac Operator**:
    We define a symmetric restricted operator $D\_{\text{sym}} = D\_0\bigr|\_{\text{Ker}(\langle\xi,\cdot\rangle)}$ with deficiency indices exactly $(1,1)$, spanned by deficiency vectors $g\_\pm = (D\_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})$. The global operator $D\_{\text{glob}}$ is formulated as a singular rank-1 perturbation:
+
    $$(D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{|(D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi|}{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}$$
    
 2. **Weierstrass Determinant & Zeros of $L$-Functions**:
    To resolve the pole mismatch where the bare Krein determinant/ratio $\mathfrak{D}\_{\text{ratio}}(z)$ is meromorphic with poles at $\{\lambda\_n\}$, while the completed $L$-function $\Lambda(z)$ is entire, we define the completed spectral determinant:
+
    $$\mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_n^* \neq 0} \left( 1 - \frac{z}{t_n^*} \right) \exp\!\left( \frac{z}{t_n^*} \right)$$
+
    where $\mathfrak{D}\_0(z)$ is the Weierstrass product over the unperturbed eigenvalues $\{\lambda\_n\}$. The multiplication by $\mathfrak{D}\_0(z)$ exactly cancels the poles of $\mathfrak{D}\_{\text{ratio}}(z)$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $\{t\_n^*\}$, satisfying:
+
    $$\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)$$
 
 3. **Critical Line Rigidity & Extension Parameter**:
@@ -25,11 +29,14 @@ The core of the library is the numerical realization and physical simulation of 
 
 4. **Weil Explicit Formula & Subconvexity**:
    Applying the Weil explicit formula with test functions $h(w) = 1/(w-z)$ yields a rigorous, spectral Weyl-strength subconvexity bound:
+
    $$\left| L\left(\frac{1}{2}+it, \Delta\right) \right| \ll t^{\frac{1}{4} + \epsilon}$$
+
    We also formulate a GUE-conditional conjecture improving this bound to $t^{1/3+\epsilon}$.
 
 5. **Quantum Physical Many-Body Entanglement**:
    Mapping the spectral geometry to a system of interacting fermions under Coulomb repulsion reveals a characteristic entanglement entropy "spike" $\Delta S$ at each $L$-function zero $t\_k$, analytically bounded by:
+
    $$\Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 |L'\left(\frac{1}{2}+it_k\right)|^2}$$
 
 ---
