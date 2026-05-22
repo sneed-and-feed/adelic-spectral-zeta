@@ -60,13 +60,13 @@ B_d B_d^\dagger = \frac{1}{2}(I_d + J_d)
 
 *Proof.* The adjoint operator $B_d^\dagger$ acts on a function $g \in V_d$ as:
 ```math
-(B_d^\dagger g)(y) = \sum_{x=0}^{2^d-1} B_d[x, y] g(x) = \frac{1}{2} \sum_{x: T(x) \equiv y} g(x)
+(B_d^\dagger g)(y) = \sum_{x=0}^{2^d-1} B_d[x, y] g(x)
 ```
-The map $T$ is $2$-to-$1$ on $\mathbb{Z}/2^d\mathbb{Z}$. For a given $y$:
-1. If $y$ is even, its two preimages are $x_0 = y/2$ and $x_1 = y/2 + 2^{d-1}$.
-2. If $y$ is odd, its two preimages satisfy $2x - 1 \equiv 3y \pmod{2^d}$, which yields $x_0 = (3y+1)/2$ and $x_1 = (3y+1)/2 + 2^{d-1}$.
+The sum runs over the rows $x$ such that $B_d[x, y] \neq 0$, which correspond to the solutions of $g_0(x) \equiv y$ and $g_1(x) \equiv y \pmod{2^d}$ where $g_0, g_1$ are the inverse branches of $T$. Specifically:
+1. If $y$ is even, the solutions to $g_0(x) \equiv 2x \equiv y \pmod{2^d}$ are $x_0 = y/2$ and $x_1 = y/2 + 2^{d-1}$.
+2. If $y$ is odd, the solutions to $g_1(x) \equiv 3^{-1}(2x-1) \equiv y \pmod{2^d}$ (which yields $2x - 1 \equiv 3y \pmod{2^d}$) are $x_0 = (3y+1)/2$ and $x_1 = (3y+1)/2 + 2^{d-1}$.
 
-In both cases, the two preimages differ by exactly $2^{d-1} \pmod{2^d}$. Thus, we can write:
+In both cases, the two solutions differ by exactly $2^{d-1} \pmod{2^d}$. Thus, we can write:
 ```math
 (B_d^\dagger g)(y) = \begin{cases}
 \frac{1}{2} \left[ g(y/2) + g(y/2 + 2^{d-1}) \right] & \text{if } y \text{ is even} \\
@@ -209,6 +209,20 @@ This completes the proof. $\square$
 
 Using the graph correspondence established in Section 3, we can determine the exact rank and kernel dimension of the finite commutator $K_d$.
 
+### Lemma 5.1: Connectivity of the Graph $G_d$
+*The graph $G_d$ on $\mathbb{Z}/2^{d-1}\mathbb{Z}$ with edges $x \sim 3x, 3x-1, 3^{-1}x, 3^{-1}(x+1) \pmod{2^{d-1}}$ is connected for all $d \geq 2$.*
+
+*Proof.* We proceed by induction on $d$.
+- **Base Case**: For $d=2$, the graph $G_2$ has 2 vertices $\{0, 1\}$ with the edge $0 \sim 3(0)-1 \equiv 1 \pmod 2$. Thus, $G_2$ is connected.
+- **Inductive Step**: Assume $G_{d-1}$ is connected for $d \geq 3$. The projection map $\pi: \mathbb{Z}/2^{d-1}\mathbb{Z} \to \mathbb{Z}/2^{d-2}\mathbb{Z}$ defined by $\pi(x) = x \pmod{2^{d-2}}$ is a 2-fold graph covering (and hence a graph homomorphism) from $G_d$ to $G_{d-1}$.
+  Under this covering, the fiber of each vertex $v$ in $G_{d-1}$ consists of the pair of vertices $\{v, v + 2^{d-2}\}$ in $G_d$. Since $G_{d-1}$ is connected, the graph $G_d$ is connected if and only if there is a path in $G_d$ connecting $x$ and $x + 2^{d-2}$ for at least one vertex $x \in \mathbb{Z}/2^{d-1}\mathbb{Z}$.
+  Let $x = 2^{d-3} \pmod{2^{d-1}}$. Since $d \geq 3$, this is a well-defined vertex in $G_d$. The edge relation $x \sim 3x \pmod{2^{d-1}}$ holds in $G_d$. We calculate:
+  ```math
+  3x = 3 \cdot 2^{d-3} = (2 + 1) 2^{d-3} = 2^{d-2} + 2^{d-3} = x + 2^{d-2} \pmod{2^{d-1}}
+  ```
+  Therefore, there is a direct edge in $G_d$ between $x = 2^{d-3}$ and $x + 2^{d-2}$.
+  Since $G_{d-1}$ is connected and the fiber $\{2^{d-3}, 2^{d-3} + 2^{d-2}\}$ is connected by a direct edge, it follows that $G_d$ is connected. $\square$
+
 ### Theorem 5: Commutator Rank and Kernel Dimension
 *For any depth $d \ge 2$, the commutator $K_d$ has:*
 ```math
@@ -219,7 +233,7 @@ Using the graph correspondence established in Section 3, we can determine the ex
 - **1.** By Theorem 3, $K_d K_d^\dagger$ is identically $0$ on $V_-$, giving a zero eigenvalue of multiplicity $\dim(V_-) = 2^{d-1}$.
 - **2.** By Theorem 4, the eigenvalues of $K_d K_d^\dagger$ on $V_+$ are given by $2 - \frac{1}{2}\mu$, where $\mu$ are the eigenvalues of the adjacency matrix $A_{G_d}$.
 
-Since $G_d$ is a 4-regular graph, the maximum eigenvalue of $A_{G_d}$ is $\mu = 4$, corresponding to the constant eigenvector $f(x) = c$. Since the graph is connected, the eigenvalue $\mu = 4$ has multiplicity exactly 1. For $\mu = 4$, we have:
+Since $G_d$ is a 4-regular graph, the maximum eigenvalue of $A_{G_d}$ is $\mu = 4$, corresponding to the constant eigenvector $f(x) = c$. Since the graph is connected (by Lemma 5.1), the eigenvalue $\mu = 4$ has multiplicity exactly 1. For $\mu = 4$, we have:
 
 $$
 2 - \frac{1}{2}\mu = 2 - 2 = 0
@@ -328,7 +342,7 @@ $$
 
 ## 7. Numerical Summary of Singular Values
 
-The following table summarizes the non-zero singular values of $K_d$ and their multiplicities for depths $d=3,4,5,6$:
+The following table summarizes the non-zero singular values of $K_d$ and their multiplicities for depths $d=3,4,5,6,7$:
 
 | Depth $d$ | Singular Value $\sigma$ | Multiplicity | Exact Representation |
 | :--- | :--- | :--- | :--- |
@@ -349,5 +363,7 @@ The following table summarizes the non-zero singular values of $K_d$ and their m
 | | $1.7320508076$ | 2 | $\sqrt{3}$ |
 | | $1.8346731054$ | 2 | $\sqrt{2 - 0.5(-1-\sqrt{3})}$ |
 | | $1.8477590650$ | 1 | $\sqrt{2 + \sqrt{2}}$ |
-| **$d=6$** | $\text{Roots of } \sigma^8 - 8\sigma^6 + 20\sigma^4 - 16\sigma^2 + 2 = 0$ | 2 each (4 distinct values) | Roots of $z^4 - 8z^3 + 20z^2 - 16z + 2 = 0$ for $z=\sigma^2$ |
+| **$d=6$** | $\text{Roots of } 64\sigma^{16} - 1024\sigma^{14} + 6912\sigma^{12} - 25600\sigma^{10} + 56608\sigma^8 - 76032\sigma^6 + 60064\sigma^4 - 25216\sigma^2 + 4225 = 0$ | 2 each (8 distinct values) | Roots of $64z^8 - 1024z^7 + 6912z^6 - 25600z^5 + 56608z^4 - 76032z^3 + 60064z^2 - 25216z + 4225 = 0$ for $z=\sigma^2$ |
 | | Plus all of the above from $d=5$ | | |
+| **$d=7$** | $\text{Roots of the degree-32 polynomial in } \sigma$ | 2 each (16 distinct values) | Roots of $65536z^{16} - 2097152z^{15} + 30932992z^{14} - 278921216z^{13} + 1719205888z^{12} - 7672954880z^{11} + 25620971520z^{10} - 65210155008z^9 + 127676975104z^8 - 192648609792z^7 + 222886772736z^6 - 195268902912z^5 + 126710600704z^4 - 58720428032z^3 + 18270635520z^2 - 3396999168z + 282908676 = 0$ for $z=\sigma^2$ |
+| | Plus all of the above from $d=6$ | | |
