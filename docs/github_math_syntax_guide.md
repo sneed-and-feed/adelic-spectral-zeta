@@ -33,26 +33,29 @@ $$
 *   Ensure there are blank lines before and after the `$$` block.
 *   Do not put spaces between the `$$` delimiters and the math if they are on the same line, e.g. `$$E = mc^2$$` is acceptable but `$$ E = mc^2 $$` is prone to parsing errors. Keeping them on separate lines is always preferred.
 
+### Prefer `$$` over ```` ```math ````
+While GitHub's parser officially supports both `$$` and ```` ```math ```` code fences, ```` ```math ```` is much more prone to rendering failures (especially when nested, indented, or parsed by third-party tools/IDE extensions). Always use `$$` for block math.
+
 ---
 
 ## 3. The List Item Rendering Conflict (Critical Edge Case)
 
 ### The Problem
-If a Markdown list item (ordered or unordered) contains **inline math** in its header, and contains a **nested/indented display math block** (either `$$` or ```` ```math ````), the display math will **fail to render**, showing up instead as a raw text block or code box.
+If a Markdown list item contains **inline math** in its header, and contains a **nested/indented display math block**, the display math will **fail to render**, showing up instead as a raw text block or code box.
 ```markdown
 *   **Example of what FAILS**:
-    1. For $B\omega$, since ... we have:
-       ```math
-       B\omega = \frac{1}{2} |1\rangle \langle 1|
-       ```
+    - For $B\omega$, since ... we have:
+      $$
+      B\omega = \frac{1}{2} |1\rangle \langle 1|
+      $$
 ```
-*Why this happens*: GFM parses the indentation as a standard code block first, preventing the math compiler from identifying and rendering the equation.
+*Why this happens*: GFM parses any indented block inside a list item as a code block first, preventing the math engine from identifying and rendering the equation.
 
-### The Solution: Bold Pseudo-Lists
-To display lists with equations:
-1.  Replace standard lists (`1.`, `2.`, etc.) with **bold pseudo-lists** (`- **1. ...**`).
-2.  Align the display math block (`$$`) at **Column 0** (unindented).
-3.  Add blank lines around the display block.
+### The Solution: Column 0 Alignment
+To display lists with display equations:
+1.  Align the display math block (`$$`) at **Column 0** (completely unindented).
+2.  Add blank lines before and after the display block.
+3.  Optionally use **bold pseudo-lists** (`- **1. ...**`) or standard bullet points.
 
 #### Correct Pattern:
 ```markdown
@@ -65,7 +68,7 @@ $$
 - **2. For $\omega B$, the adjoint action maps...**
 ```
 
-This formatting ensures the list header renders beautifully, and the math blocks are parsed at root level by the math engine without indentation conflicts.
+This formatting ensures the list header renders beautifully, and the math blocks are parsed at the root level by the math engine without indentation conflicts.
 
 ---
 
