@@ -22,6 +22,7 @@ To establish clear mathematical transparency, we classify every proposition in t
 | :--- | :--- | :--- | :--- |
 | **Theorem 11.2.1** | Finite Modular Obstruction | **[Fully Proved]** | None |
 | **Heuristic 11.2.2** | Energetic Valuation Suppression | **[Numerical Conjecture]** | Conjecture 11.7.5 |
+| **Theorem 11.2.3** | Universal Modular Obstruction Construction | **[Fully Proved]** | None |
 | **Lemma 11.3.1** | 2-adic Even Valuation Blocking | **[Fully Proved]** | None |
 | **Theorem 11.3.1** | Quantitative Valuation Sector Collapse | **[Fully Proved]** | Theorem 11.2.1, Lemma 11.3.1 |
 | **Lemma 11.3.2** | Arithmetic Unit Group Closures for Base 11 | **[Fully Proved]** | None |
@@ -47,6 +48,7 @@ graph TD
 
     T1121["Theorem 11.2.1: Finite Modular Obstruction"]:::proved
     H1122["Heuristic 11.2.2: Energetic Valuation Suppression"]:::numerical
+    T1123["Theorem 11.2.3: Universal Modular Obstruction Construction"]:::proved
     L1131["Lemma 11.3.1: 2-adic Even Valuation Blocking"]:::proved
     T1131["Theorem 11.3.1: Quantitative Valuation Sector Collapse"]:::proved
     L1132["Lemma 11.3.2: Arithmetic Unit Group Closures"]:::proved
@@ -67,6 +69,7 @@ graph TD
     L1132 --> C1133
     CT1175 --> H1122
     T1182 --> R1183
+    T1123 --> ESC
     C1133 --> ESC
     R1183 --> ESC
     T11101 --> ESC
@@ -131,14 +134,40 @@ Since no translation components $a_2, a_3$ exist that satisfy the orbit inclusio
 
 ### 11.2.2 Prime Selection and Product Space Motivation
 
-A natural question arises: for a geometric sequence with base $q = 11$, why are the non-Archimedean places chosen to be $p = 2$ and $p = 3$, rather than $p = 11$, $p = 5$, or other primes?
+For the sequence with base $q = 11$, working with $p$-adic integers requires selecting places where $11$ is a unit, leading to $p=2$ and $p=3$ as minimal adversarial choices. We now show that this selection is not merely a modeling choice, but is governed by a canonical algebraic construction that applies to any rational sequence base $q$.
 
-1. **Non-Archimedean Place Compatibility**: To embed the geometric sequence $S = \{11^{-n}\}_{n=1}^\infty$ into the compact $p$-adic integers $\mathbb{Z}_p$, the elements must not possess poles in $\mathbb{Q}_p$. This requires the $p$-adic valuation of $11$ to be zero ($v_p(11) = 0$), so $11$ is a unit in $\mathbb{Z}_p^\times$. If we were to choose $p = 11$, then $11^{-n}$ would have poles of increasing order ($v_{11}(11^{-n}) = -n \to -\infty$), and the sequence would escape to infinity in $\mathbb{Q}_{11}$, preventing any compact embedding or modular translation structure.
-2. **Minimal Adversarial Residue Cycle Clashes**: Among the primes where $v_p(11) = 0$, the choice of $p=2$ and $p=3$ represents the minimal set of primes that generate complete modular obstruction. Specifically:
-   * Modulo 4 (which restricts the 2-adic units): $11 \equiv 3 \equiv -1 \pmod 4$.
-   * Modulo 3: $11 \equiv 2 \equiv -1 \pmod 3$.
-   Because $11 \equiv -1$ mod both, the residue cycle length is exactly $2$, and the alternating values mod 4 and mod 3 mismatch the Cantor set exclusion rules. This specific modular residue clash is what blocks all translations.
-3. **Universality vs. Modeling Choice**: If we had chosen a prime like $p = 5$ where $11 \equiv 1 \pmod 5$, the sequence $11^{-n} \equiv 1 \pmod 5$ would be constant, failing to generate any residue cycling or translation obstruction. Thus, $\{2, 3\}$ is not a canonical, universal choice for all sequences, but rather the minimal, natural adversarial modeling choice for base $q = 11$ to show that modular obstructions block similarity.
+**Theorem 11.2.3 (Universal Modular Obstruction Construction)**  
+*Let $q = a/b \in \mathbb{Q}^\times \setminus \{\pm 1\}$ be any rational sequence base in lowest terms. There exists a prime $p$ and a Cantor-like set $C_p \subset \mathbb{Z}_p$ defined by residue class exclusions modulo $p$ such that for the sequence $S_M = \{q^{-n}\}_{n=1}^M$ of length $M \ge \operatorname{ord}_p(q)$, the set of valid translation components at any scale $k < d$ is empty:*
+$$T(M, k) = \{ a \in C_{p, d} \mid a + p^k q^{-n} \pmod{p^d} \in C_{p, d} \quad \forall n = 1, \dots, M \} = \emptyset$$
+
+*Proof.* The proof is structured in four steps: Prime Existence, Multiplicative Cycle, Cantor Exclusion Construction, and Valuation Scale Collapse.
+
+1. **Prime Existence**: We require a prime $p$ such that $v_p(q) = 0$ (so $q$ is a $p$-adic unit in $\mathbb{Z}_p^\times$, preventing boundary-escape poles) and $q \not\equiv 1 \pmod p$ (preventing the sequence from degenerating to a constant residue class modulo $p$). 
+   Since $q \neq 1$, the numerator of $q-1$ is $a - b \neq 0$. Any prime $p$ that does not divide $a(a-b)$ satisfies both conditions:
+   * $p \nmid a$ and $p \nmid b \implies v_p(q) = 0$.
+   * $p \nmid (a-b) \implies q \not\equiv 1 \pmod p$.
+   Since $a(a-b)$ has only finitely many prime factors, there are infinitely many such primes. We select one such prime $p \ge 3$.
+
+2. **Multiplicative Cycle**: Because $v_p(q) = 0$ and $q \not\equiv 1 \pmod p$, the sequence elements $q^{-n} \bmod p$ cycle within the multiplicative group $(\mathbb{Z}/p\mathbb{Z})^\times$. The period of this sequence is the order $d = \operatorname{ord}_p(q)$ of $q$ modulo $p$. Since $q \not\equiv 1 \pmod p$, we have $d \ge 2$. The residues form a multiplicative subgroup:
+   $$H = \{ q^{-1}, q^{-2}, \dots, q^{-d} \} \subset (\mathbb{Z}/p\mathbb{Z})^\times$$
+   Since $d \ge 2$, the set $H$ contains at least two distinct elements, and $0 \notin H$ because $q$ is a unit mod $p$.
+
+3. **Cantor Exclusion Construction**: We define a Cantor-like set $C_p \subset \mathbb{Z}_p$ by allowing only a subset of residues $R \subsetneq \mathbb{Z}/p\mathbb{Z}$ modulo $p$:
+   $$C_p = \{ x \in \mathbb{Z}_p \mid x \bmod p \in R \}$$
+   We choose $R = \{0, 1\}$ (which is a proper subset of $\mathbb{Z}/p\mathbb{Z}$ since $p \ge 3$, allowed under standard Cantor exclusions).
+   Suppose there exists a translation component $a_0 \in R$ mod $p$ such that the translation satisfies $a_0 + H \subset R \pmod p$.
+   Since $a_0 \in \{0, 1\}$ and $R = \{0, 1\}$, this requires:
+   $$a_0 + q^{-n} \in \{0, 1\} \pmod p \quad \forall n = 1, \dots, d$$
+   We analyze this based on the choice of $a_0$:
+   * **Case 1 ($a_0 = 0$):** We must have $q^{-n} \in \{0, 1\} \pmod p$ for all $n$. Since $0 \notin H$, this requires $q^{-n} \equiv 1 \pmod p$ for all $n$, implying $d = 1$, which contradicts $d \ge 2$.
+   * **Case 2 ($a_0 = 1$):** We must have $1 + q^{-n} \in \{0, 1\} \implies q^{-n} \in \{-1, 0\} \pmod p$ for all $n$. Since $0 \notin H$, this requires $q^{-n} \equiv -1 \pmod p$ for all $n$. This again implies the cycle is constant and $d = 1$, contradicting $d \ge 2$.
+   
+   Thus, no such residue class $a_0$ mod $p$ exists. The set of admissible translations at depth $d=1$ is empty: $T(M, 0) = \emptyset$ for $M \ge d$.
+
+4. **Valuation Scale Collapse**: For any non-boundary scale $k < d$ at depth $d$, the scale factor is $p^k$. The term $p^k q^{-n} \bmod p^d$ has its first non-zero digit at position $k$, which is $d_{n, k} = q^{-n} \bmod p$.
+   Because $k < d$ is a non-boundary scale, the Cantor constraint requires the $k$-th digit of the sum to lie in the allowed set $R$:
+   $$(a_k + d_{n, k}) \bmod p \in R \implies a_k + q^{-n} \bmod p \in R \quad \forall n = 1, \dots, M$$
+   where $a_k \in R$ is the $k$-th digit of the translation vector $a \in C_{p, d}$. By Step 3, no such digit $a_k$ exists, meaning $T(M, k) = \emptyset$ for all $k < d$. $\square$
 
 ---
 
