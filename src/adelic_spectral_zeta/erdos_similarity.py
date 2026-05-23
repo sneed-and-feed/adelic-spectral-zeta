@@ -401,8 +401,23 @@ def solve_schrodinger_spectrum(adelic_set, adelic_seq, grid_params, lmbda=1.0):
     if k_eigen <= 0:
         k_eigen = 1
         
-    eigenvalues, eigenvectors = eigsh(H, k=k_eigen, which='SA')
-    
+    if N_ideles <= 500:
+        import scipy.linalg as la
+        H_dense = H.toarray()
+        eigenvalues, eigenvectors = la.eigh(H_dense)
+        eigenvalues = eigenvalues[:k_eigen]
+        eigenvectors = eigenvectors[:, :k_eigen]
+    else:
+        from scipy.sparse.linalg import ArpackNoConvergence
+        try:
+            eigenvalues, eigenvectors = eigsh(H, k=k_eigen, which='SA')
+        except ArpackNoConvergence:
+            import scipy.linalg as la
+            H_dense = H.toarray()
+            eigenvalues, eigenvectors = la.eigh(H_dense)
+            eigenvalues = eigenvalues[:k_eigen]
+            eigenvectors = eigenvectors[:, :k_eigen]
+            
     return eigenvalues, eigenvectors, Psi
 
 def fit_confinement_scaling(primes, depths, base, M, grid_params, theta_vals=[0.2, 0.3, 0.4, 0.5], lmbda=100.0):
@@ -472,10 +487,11 @@ def fit_confinement_scaling(primes, depths, base, M, grid_params, theta_vals=[0.
     
     return float(beta_0), float(beta_1), float(r_squared)
 
-def predict_projective_limit(primes, base, M, grid_params, target_theta, sample_depths=[1, 2, 3], lmbda=100.0):
+def predict_projective_limit(primes, base, M, grid_params, target_theta, sample_depths=[1, 2, 3], gamma=0.5, lmbda=100.0):
     """
     Computes beta_0(d) and beta_1(d) for a range of small depths d,
-    extrapolates their values as d -> infinity, and predicts E0 for the target_theta.
+    extrapolates their values as d -> infinity using an exponential decay basis,
+    and predicts E0 for the target_theta.
     
     Returns:
         prediction: float, predicted ground-state energy E0 at d -> infinity
@@ -502,8 +518,8 @@ def predict_projective_limit(primes, base, M, grid_params, target_theta, sample_
         beta_0s.append(b0)
         beta_1s.append(b1)
         
-    # Extrapolate beta_0 and beta_1 against z = 1/d -> 0
-    z = 1.0 / np.array(sample_depths)
+    # Extrapolate beta_0 and beta_1 against z = exp(-gamma * d) -> 0
+    z = np.exp(-gamma * np.array(sample_depths))
     
     # Fit beta_0 = a_0 + b_0 * z
     mean_z = np.mean(z)

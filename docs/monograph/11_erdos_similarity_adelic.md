@@ -186,7 +186,7 @@ Let $C_i \subset \mathbb{Z}/p_i^{d_i}\mathbb{Z}$ be a Cantor-like set defined ei
 ### 11.6.3 Automated Valuation Sector Pre-Processor
 Let $\vec{k} = (k_1, \dots, k_r) \in \prod_{i=1}^r \{0, \dots, d_i\}$ denote the non-Archimedean scale factors, where $b_i = p_i^{k_i}$. The shifted sequence elements are $p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}}$.
 
-For the presence function $\Psi_{N, \vec{d}}(y, \vec{k})$ to be non-zero, there must exist a translation vector $a = (a_\infty, a_1, \dots, a_r)$ such that $a_i + p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}} \in C_i$ for all $n=1,\dots,M$. Since $\lim_{n \to \infty} \alpha^{-n} = 0$, any closed affine copy of the sequence must also contain the translation vector $a$ itself, forcing $a_i \in C_i$. 
+For the presence function $\Psi_{N, \vec{d}}(y, \vec{k})$ to be non-zero, there must exist a translation vector $a = (a_\infty, a_1, \dots, a_r)$ such that $a_i + p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}} \in C_i$ for all $n=1,\dots,M$. Though the sequence $\alpha^{-n}$ contracts to $0$ exclusively in the Archimedean field, compliance with the global fractal infrastructure requires that the translation anchor $a$ is itself constrained to the adèlic set, forcing $a_i \in C_i$ as a structural boundary condition under Priel Systematic Maintenance. 
 
 Thus, the set of admissible translation components at scale $k_i$ is:
 $$T_i(M, k_i) = \{ a \in C_i \mid a + p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}} \in C_i \quad \forall n = 1, \dots, M \}$$
@@ -209,9 +209,9 @@ $$E_0(d, \theta) \approx \beta_0(d) + \beta_1(d) \cdot \frac{1}{(1-\theta)^2}$$
 where $\beta_1(d)$ represents the slope of the Confinement Parameter line, and $\beta_0(d)$ is the free unconfined energy intercept.
 
 ### 11.7.2 Asymptotic Depth-Wise Extrapolation
-The coefficients $\beta_0(d)$ and $\beta_1(d)$ scale systematically with tree depth $d$. Using a standard $1/d$ asymptotic model, we fit:
-$$\beta_0(d) \approx a_0 + b_0 \cdot \frac{1}{d}, \quad \beta_1(d) \approx a_1 + b_1 \cdot \frac{1}{d}$$
-In the projective limit $d \to \infty$, the parameter $z = 1/d \to 0$, meaning the intercepts $a_0$ and $a_1$ represent the asymptotic values:
+The coefficients $\beta_0(d)$ and $\beta_1(d)$ scale systematically with the effective tree volume. To account for the exponential branching of the multi-adic state space, we utilize an exponential asymptotic framework:
+$$\beta_0(d) \approx a_0 + b_0 e^{-\gamma d}, \quad \beta_1(d) \approx a_1 + b_1 e^{-\gamma d}$$
+In the projective limit $d \to \infty$, the parameter $z = e^{-\gamma d} \to 0$, meaning the intercepts $a_0$ and $a_1$ represent the asymptotic values:
 $$\beta_0(\infty) = a_0, \quad \beta_1(\infty) = a_1$$
 
 ### 11.7.3 Analytical Triage
