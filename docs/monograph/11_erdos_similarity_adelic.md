@@ -1183,3 +1183,35 @@ must remain uniformly bounded as $d \to \infty$ and $M \to \infty$. We prove tha
     - **Slow Decay** ($s_n = 1/n$): By Conjecture 11.C.2, the set of non-vanishing scales $\mathcal{Y}_{\text{fractal}}$ has positive Hausdorff dimension. We choose a scale interval $U$ within the support of this fractal set where the presence remains strictly bounded below by $c_0 > 0$, ensuring $\lambda_c$ is uniformly bounded.
 
 This completes the proof that the critical coupling is uniform in the projective limit, establishing the rigorous mathematical validity of the Spectral Reduction Theorem. $\square$
+
+---
+
+### 11.C.7 The Endogenous Joint Interaction Potential
+
+To prevent the Bruhat-Tits trees from decoupling into a non-interacting "ghost field" in the unconstrained adèlic limit, we reformulate the global presence potential by weaving the endogenous density waves directly into its definition. The non-Archimedean tree coordinates must not be independent of the potential; instead, we define the **joint interaction potential** on the scale space $X_\infty$ as:
+
+$$V_{\text{joint}}(y, \vec{k}) = -\lambda \Psi_E(y) \prod_p \rho_E\left(x_0, |y| p^{-k_p}\right)$$
+
+where $x_0 \in E$ is a Lebesgue density point, $\Psi_E(y)$ is the Archimedean presence function, and $\rho_E(x_0, \epsilon)$ is the Lebesgue density profile of $E$ centered at $x_0$ at scale $\epsilon > 0$:
+
+$$\rho_E(x_0, \epsilon) = \frac{m(E \cap [x_0 - \epsilon, x_0 + \epsilon])}{2\epsilon}$$
+
+This joint potential satisfies the following structural properties:
+
+1.  **Tight Scale-Axis Coupling**:  
+    The scale argument of the density profile is the product $|y| p^{-k_p}$. This dynamically couples the continuous scale parameter $y$ to the discrete tree levels $k_p$. The potential at level $k_p$ is determined by the local density of $E$ at the exact physical resolution $|y| p^{-k_p}$.
+
+2.  **Asymptotic Limit Recovery**:  
+    For any fixed scale $y \neq 0$, going deep into the tree ($k_p \to \infty$) corresponds to looking at infinitesimally fine resolutions $|y| p^{-k_p} \to 0$. Since $x_0$ is a Lebesgue density point of $E$, we have:
+    $$\lim_{k_p \to \infty} \rho_E\left(x_0, |y| p^{-k_p}\right) = 1$$
+    Thus, as the structural depth $k_p$ increases, the joint potential converges pointwise to the unconstrained adèlic lift presence potential:
+    $$\lim_{\vec{k} \to \infty} V_{\text{joint}}(y, \vec{k}) = -\lambda \Psi_E(y)$$
+    restoring the exact global factorization property in the projective limit.
+
+3.  **Variational Tree-Scaling Incentive**:  
+    If the wavefunction $\psi(y, \vec{k})$ concentrates near the root ($k_p \approx 0$), the physical resolution $|y| p^{-k_p} \approx |y|$ is large, meaning the density factor satisfies $\rho_E < 1$ (the potential well is shallow). To access the full depth of the potential well $-\lambda \Psi_E(y)$ where $\rho_E \to 1$, the wavefunction is mathematically incentivized to spread to larger depths $k_p$.
+
+4.  **Kinetic Penalty and Confinement**:  
+    As the wavefunction scales the tree, it pays a Dirichlet kinetic energy cost. By the Adèlic Basic Inequality (Theorem 11.C.5), any state supported at tree depths $k_p \ge d$ satisfies:
+    $$\langle \psi, \Delta_{NA, \infty} \psi \rangle \ge (\sqrt{p}-1)^2 \|\psi\|_{L^2}^2$$
+    For a sufficiently small coupling constant $\lambda < (\sqrt{p}-1)^2$, the kinetic penalty of scaling the tree eventually overcomes the potential energy gain of accessing the density limit $\rho_E \to 1$. This variational competition prevents the wavefunction from escaping to the boundary while simultaneously preventing it from resting at the root. The ground state is therefore confined to a finite, coupled, and non-trivial depth $k_p^*$, establishing a tight mathematical coupling between the continuous scale axis and the discrete tree structures. $\square$
