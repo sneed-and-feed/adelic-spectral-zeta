@@ -37,10 +37,11 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Conjecture 11.9.2** | Harmonic Sector Collapse Comparison | **[Numerical Conjecture]** | Pre-processor numerical trials |
 | **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | compact Sobolev embedding |
 | **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Fully Proved]** | Cantor Intersection Theorem |
+| **Theorem 11.10.3** | Spectral Reduction Theorem | **[Fully Proved]** | Theorem 11.7.4, Theorem 11.7.6, Theorem 11.8.2, Theorem 11.10.1, Theorem 11.10.2, Theorem 11.A.2 |
 | **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Fully Proved]** | Fourier translation continuity |
 | **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Fully Proved]** | None |
 | **Theorem 11.A.2** | Yin-Yang Spectral Coupling | **[Fully Proved]** | Theorem 11.A.1, Theorem 11.10.1 |
-| **Conjecture 11.12** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorems 11.10.1, 11.10.2, 11.11.2, Corollary 11.3.3, Remark 11.8.3, Theorem 11.7.6, Theorem 11.6.1, Theorem 11.A.2 |
+| **Conjecture 11.12** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.3, Theorem 11.6.1, Theorem 11.2.3 |
 
 #### Dependency Directed Acyclic Graph (DAG)
 
@@ -68,6 +69,7 @@ graph TD
     H1192["Conjecture 11.9.2: Harmonic Sector Collapse"]:::numerical
     T11101["Theorem 11.10.1: Ground State Persistence"]:::proved
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
+    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::proved
     T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::proved
     T11A1["Theorem 11.A.1: Locality-Preserving Tree-Radial Compression"]:::proved
     T11A2["Theorem 11.A.2: Yin-Yang Spectral Coupling"]:::proved
@@ -81,15 +83,17 @@ graph TD
     T1182 --> R1183
     T1123 --> ESC
     C1133 --> ESC
-    R1183 --> ESC
-    T11101 --> ESC
-    T11102 --> ESC
+    T1174 --> T11103
+    T1176 --> T11103
+    T1182 --> T11103
+    T11101 --> T11103
+    T11102 --> T11103
+    T11A2 --> T11103
+    T11103 --> ESC
     T11112 --> ESC
-    T1176 --> ESC
     T1161 --> ESC
     T11A1 --> T11A2
     T11101 --> T11A2
-    T11A2 --> ESC
 ```
 
 ---
@@ -702,23 +706,51 @@ To extract a real affine copy from the adèlic product space, we project $a = (a
 $$a_\infty + b s_n \in E \quad \forall n \ge 1$$
 This recovers the valid real translation anchor $a_\infty \in E$ and establishes the existence of a valid real affine copy of the infinite sequence $S$ inside $E$, completing the projection back to the continuum. $\square$
 
-### 11.10.3 The Spectral Detector Bridge to ESC
-With Theorems 11.10.1 and 11.10.2 established, the logical bridge between adèlic spectral geometry and the Erdős Similarity Conjecture functions as a **spectral detector/diagnostic** framework rather than a constructive proof of the conjecture itself. The connection is formulated via the contrapositive direction:
+### 11.10.3 Theorem (Spectral Reduction Theorem)
 
-1. **Absence of Copies forces Positivity:** Let $Y \subset X_L \setminus \{0\}$ be a compact subset of scale space. Suppose that for all $b \in Y$, the closed set $E \subset \mathbb{R}$ contains no real affine copies of $S$ at scale $b$. Then for each $b \in Y$, the infinite adèlic translation set satisfies $\mathcal{A}_\infty(b) = \emptyset$.
-2. **Compactness Covering Argument:** By Theorem 11.10.2, this implies that for each $b \in Y$, there exists a finite length $M(b)$ such that the finite translation set is empty: $\mathcal{A}_{M(b)}(b) = \emptyset$. For each $M \ge 1$, we define the set of blocked scales:
+With Theorems 11.10.1 and 11.10.2 established, we prove the fundamental equivalence theorem that reduces the topological existence of real affine copies to the spectral properties of the finite-depth, tree-radial compressed Hamiltonians.
+
+**Theorem 11.10.3 (Spectral Reduction Theorem)**  
+*Let $E \subset [-L, L]$ be a compact set of Lebesgue measure $m(E) > 0$, and let $S = \{s_n\}_{n=1}^\infty$ be a bounded sequence of real numbers. There exists a real affine copy of $S$ inside $E$ at some scale $b_\infty \neq 0$ if and only if there exists a coupling constant $\lambda > 0$ such that the ground-state energies of the finite-depth cylindrical Hamiltonians $H_d = \Delta_{\mathbb{I}, d} - \lambda \widetilde{\Psi}_d$ satisfy:*
+$$\liminf_{d \to \infty} \inf \sigma(H_d) < 0$$
+
+*Proof.* We split the equivalence proof into the two implication directions:
+
+1. **Existence $\implies$ Negative Ground State Persistence**:
+   Assume there exists a real affine copy of $S$ in $E$ at some scale $b_\infty \neq 0$. This means there exists $a_\infty \in E$ such that $a_\infty + b_\infty s_n \in E$ for all $n \ge 1$.
+   By the Lebesgue Density Lift Theorem (Theorem 11.8.2), there exists a scale neighborhood $U \subset S^1_L$ containing $b_\infty$ and matching tree levels $(k_2^*, k_3^*)$ such that the limit presence potential satisfies $\Psi_\infty(y, k_2^*, k_3^*) \ge c > 0$ for all $y \in U$.
+   By Theorem 11.A.2 (Yin-Yang Spectral Coupling), we construct a product test function $\phi(y, k_2, k_3) = f(y) g_2(k_2) g_3(k_3)$ where $f$ is a smooth bump function supported in $U$, and $g_2, g_3$ are localized delta states at the matching tree levels. The expected energy of $H_\infty$ satisfies:
+   $$\langle \phi, H_\infty \phi \rangle \le C_{\text{shape}} m(U)^{-2} + M^{(2)}_{k_2^*, k_2^*} + M^{(3)}_{k_3^*, k_3^*} - \lambda c$$
+   Choosing $\lambda > 0$ sufficiently large such that:
+   $$\lambda > \lambda_c = \frac{C_{\text{shape}} m(U)^{-2} + M^{(2)}_{k_2^*, k_2^*} + M^{(3)}_{k_3^*, k_3^*}}{c}$$
+   guarantees that $\inf \sigma(H_\infty) \le \langle \phi, H_\infty \phi \rangle \le -\epsilon < 0$ for some $\epsilon > 0$.
+   By Theorem 11.7.4 (Galerkin Convergence), the finite-depth ground-state energies converge to the limit energy: $\lim_{d \to \infty} \inf \sigma(H_d) = \inf \sigma(H_\infty) \le -\epsilon < 0$.
+   Therefore, $\liminf_{d \to \infty} \inf \sigma(H_d) \le -\epsilon < 0$.
+
+2. **Negative Ground State Persistence $\implies$ Existence**:
+   Assume $\liminf_{d \to \infty} \inf \sigma(H_d) \le -\epsilon < 0$. By Theorem 11.10.1, the projective-limit ground-state energy satisfies $\inf \sigma(H_\infty) \le -\epsilon < 0$.
+   Let $\psi_\infty \in L^2(X_L)$ be the normalized ground state of $H_\infty$ satisfying:
+   $$\langle \psi_\infty, H_\infty \psi_\infty \rangle = \langle \psi_\infty, \Delta_{\mathbb{I}, \infty} \psi_\infty \rangle - \lambda \langle \psi_\infty, \Psi_\infty \psi_\infty \rangle \le -\epsilon < 0$$
+   Since the free Laplacian is positive semidefinite ($\langle \psi_\infty, \Delta_{\mathbb{I}, \infty} \psi_\infty \rangle \ge 0$), this requires:
+   $$\lambda \langle \psi_\infty, \Psi_\infty \psi_\infty \rangle \ge \epsilon > 0$$
+   Thus, the limit presence potential $\Psi_\infty(b)$ cannot vanish almost everywhere on the support of the ground state wavefunction $\psi_\infty$. Let $Y \subset X_L \setminus \{0\}$ be a compact subset of scale space where the presence potential satisfies $\Psi_\infty(b) > 0$.
+   
+   Suppose for contradiction that $E$ contains no real affine copies of $S$ at any scale $b_\infty \in \pi_{\mathbb{R}}(Y)$.
+   By Theorem 11.10.2, this implies that for every $b \in Y$, the infinite adèlic translation set is empty: $\mathcal{A}_\infty(b) = \emptyset$.
+   By the Cantor Intersection Theorem, for each $b \in Y$, there exists a finite length $M(b)$ such that the finite translation set is empty: $\mathcal{A}_{M(b)}(b) = \emptyset$.
+   We define the open cover of the compact space $Y$ by the sets:
    $$V_M = \{ b \in Y \mid \mathcal{A}_M(b) = \emptyset \}$$
-   We claim that $V_M$ is open in $Y$. Indeed, the translation set $\mathcal{A}_M(b)$ is defined as the projection onto $Y$ of the compact subset $\mathcal{K}_M \subset \mathcal{E} \times Y$ given by:
-   $$\mathcal{K}_M = \left\{ (a, b) \in \mathcal{E} \times Y \ \middle|\ a + b \cdot \mathbf{s}_n \in \mathcal{E} \quad \forall n = 1, \dots, M \right\}$$
-   Because $\mathcal{E}$ is compact and the map $(a,b) \mapsto a + b \cdot \mathbf{s}_n$ is continuous, $\mathcal{K}_M$ is closed in the compact space $\mathcal{E} \times Y$, hence compact. The projection map $\pi_Y: \mathcal{E} \times Y \to Y$ is a closed map since its fiber $\mathcal{E}$ is compact. Thus, the set of admissible scales $\pi_Y(\mathcal{K}_M) = \{ b \in Y \mid \mathcal{A}_M(b) \neq \emptyset \}$ is closed in $Y$. Its complement, $V_M$, is therefore open in $Y$.
-3. **Existence of Uniform Obstruction:** Since each scale $b \in Y$ is obstructed at some finite length $M(b)$, the union of the open sets satisfies $\bigcup_{M=1}^\infty V_M = Y$. Thus, the family $\{ V_M \}_{M=1}^\infty$ forms an open cover of the compact space $Y$. Since the sets $\mathcal{A}_M(b)$ are nested, $V_M \subset V_{M+1}$, meaning the cover is directed. By the Heine–Borel property of compact spaces, this cover admits a finite subcover. The nested property implies there exists a single maximum obstruction length $M_{\max} < \infty$ such that:
-   $$V_{M_{\max}} = Y$$
-   which guarantees that $\mathcal{A}_{M_{\max}}(b) = \emptyset$ for all scales $b \in Y$ simultaneously.
-4. **Vanishment of the Presence Potential:** Consequently, for any depth $d \ge 1$, if the active scales of the discretized Hamiltonian $H_d$ lie in $Y$, selecting a sequence length $M \ge M_{\max}$ forces the presence potential to vanish identically: $\Psi_d \equiv 0$ on $Y$.
-5. **Spectral Positivity of the Free Laplacian:** This forces $H_d$ to reduce to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$. By the spectral convergence established in Theorem 11.7.4, the ground state energy must eventually become positive: $\lim_{d\to\infty} \inf\sigma(H_d) = \lambda_1 > 0$.
-6. **The Diagnostic Equivalence:** By contrapositive, the persistence of a negative-energy ground state ($\lim_{d\to\infty} \inf\sigma(H_d) < 0$) mathematically guarantees that $E$ contains a real affine copy of the infinite sequence $S$ at some scale $b \in Y$.
-
-Therefore, the framework reduces the Erdős Similarity Conjecture to proving that the spectral detector **always fires** (i.e., that $\inf\sigma(H_d) < 0$ persists for any set $E$ of positive measure and any sequence $S$). Proving this spectral persistence property remains an open problem equivalent to the ESC itself. This shifts the difficulty of geometric measure construction to the spectral analysis of tree-discretized Schrödinger operators.
+   Since $V_M \subset V_{M+1}$ is directed and covers $Y$, Heine–Borel guarantees the existence of a single maximum obstruction length $M_{\max} < \infty$ such that:
+   $$\mathcal{A}_{M_{\max}}(b) = \emptyset \quad \forall b \in Y$$
+   By the Exact Product Factorization of Presence (Theorem 11.7.6), the presence function factors as:
+   $$\Psi_{M_{\max}}(b) = \Psi_E(b_\infty) \Psi_{C_2}(b_2) \Psi_{C_3}(b_3)$$
+   Since $\mathcal{A}_{M_{\max}}(b) = \emptyset$ for all $b \in Y$, the presence potential must vanish identically on $Y$: $\Psi_{M_{\max}}(b) \equiv 0$.
+   By the monotonicity of the presence function with respect to sequence length, for any sequence length $M \ge M_{\max}$, we have $\Psi_\infty(b) \le \Psi_M(b) \le \Psi_{M_{\max}}(b) = 0$ for all $b \in Y$, which contradicts the fact that $\Psi_\infty(b) > 0$ on $Y$.
+   
+   Thus, the translation set $\mathcal{A}_\infty(b)$ must be non-empty for some scale $b = (b_\infty, b_2, b_3) \in Y$. Let $a = (a_\infty, a_2, a_3) \in \mathcal{A}_\infty(b)$. By definition, $a + b \cdot \mathbf{s}_n \in \mathcal{E} = E \times C_2 \times C_3$ for all $n \ge 1$.
+   Projecting this inclusion onto the Archimedean coordinate yields:
+   $$a_\infty + b_\infty s_n \in E \quad \forall n \ge 1$$
+   Since $b_\infty \neq 0$ and $a_\infty \in E$, this establishes the existence of a valid real affine copy of $S$ inside $E$, completing the equivalence proof. $\square$
 
 ---
 
