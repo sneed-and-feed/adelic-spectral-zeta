@@ -40,7 +40,7 @@ where $b \cdot \mathbf{s}_n = (y s_{n, \infty} \bmod N, \, 2^{k_2} s_{n, 2} \bmo
 $$\Psi_{N,d,k}(y, 0, 0) = 0$$
 *for all Archimedean scales $y$ and all grid parameters $N$.*
 
-*Proof.* For the valuation coordinates $k_2 = 0$ and $k_3 = 0$, the $p$-adic scale factors act as identity $b_2 = 1, b_3 = 1$. For the presence function product to be non-zero, there must exist at least one translation vector $a = (a_\infty, a_2, a_3) \in X_{N,d,k}$ such that the translation $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n = 1, \dots, M$. In the non-Archimedean coordinates, this requires:
+*Proof.* For the valuation coordinates $k_2 = 0$ and $k_3 = 0$, the $p$-adic scale factors act as identity $b_2 = 1, b_3 = 1$. For the presence function product to be non-zero, there must exist at least one translation vector $a = (a_\infty, a_2, a_3) \in \mathcal{E}$ such that the translation $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n = 1, \dots, M$. In the non-Archimedean coordinates, this requires:
 1. $a_2 + 11^{-n} \bmod 2^d \in C_2$ for all $n = 1, \dots, M$, which implies $(a_2 + 11^{-n}) \bmod 4 \in \{0, 1\}$.
 2. $a_3 + 11^{-n} \bmod 3^k \in C_3$ for all $n = 1, \dots, M$, which implies $(a_3 + 11^{-n}) \bmod 3 \in \{0, 1\}$.
 
@@ -59,7 +59,7 @@ We analyze the translation requirements for $n$ odd and $n$ even:
   * For $n$ even ($11^{-n} \equiv 1 \pmod 3$): $a_3 + 1 \in \{0, 1\} \implies a_3 \in \{2, 0\} \bmod 3$.
   * The intersection of these three conditions is $\{1, 2\} \cap \{2, 0\} \cap \{0, 1\} = \{2\} \cap \{0, 1\} = \emptyset$, yielding no solution.
 
-Since no translation components $a_2, a_3$ exist that satisfy the orbit inclusions, the product in the presence function sum is identically zero for all translation vectors $a \in X_{N,d,k}$. Thus, $\Psi_{N,d,k}(y, 0, 0) = 0$. $\square$
+Since no translation components $a_2, a_3$ exist that satisfy the orbit inclusions, the product in the presence function sum is identically zero for all translation vectors $a \in \mathcal{E}$. Thus, $\Psi_{N,d,k}(y, 0, 0) = 0$. $\square$
 
 **Corollary (Energetic Valuation Suppression)**  
 *Because $\Psi_{N,d,k}(y,0,0) = 0$, the potential energy at the identity valuation is zero (relative to negative values elsewhere), making this region energetically unfavorable. Ground-state probability density is exponentially suppressed at $(y,0,0)$, but the operator $H_d = \Delta_{\mathbb{I}, d} - \lambda \Psi_d$ remains globally connected on the full grid through the off-diagonal kinetic coupling of $\Delta_2$ and $\Delta_3$.*
@@ -248,7 +248,7 @@ $$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) > 
 $$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) = \int_{\mathbb{R}} \chi_E(x) \prod_{n=1}^M \chi_E(x + y \cdot s_n) \, dx$$
 Define the integrand family:
 $$f_y(x) = \chi_E(x) \prod_{n=1}^M \chi_E(x + y \cdot s_n)$$
-Because translation is continuous in $L^1(\mathbb{R})$, we have for each $n = 1, \dots, M$:
+Because translation is continuous in $L^1$ on any compact set, we have for each $n = 1, \dots, M$:
 $$\lim_{y \to 0} \|\chi_E(\cdot + y \cdot s_n) - \chi_E(\cdot)\|_{L^1(K)} = 0$$
 Since $f_y(x)$ and $\chi_E(x)$ are bounded by $1$, we can bound the difference in the integral over $K$ using the union bound:
 $$\int_K |f_y(x) - \chi_E(x)| \, dx \le \sum_{n=1}^M \int_K |\chi_E(x + y \cdot s_n) - \chi_E(x)| \, dx \xrightarrow{y \to 0} 0$$
@@ -280,6 +280,6 @@ $$s_n \equiv (k_{\text{mult}}n + 1)^{-1} \pmod{p_i^{d_i}}$$
 This reduced cycle period (compared to the exponential period growth $L_i \approx p_i^{d_i}$ for geometric sequences) means that the digit constraints overlap much more rapidly at lower depths.
 
 ### 11.9.2 Sector Collapse Comparison
-Because the harmonic sequence cycles more slowly, its allowed translations are more restricted at low depths. The pre-processor predicts valuation sector collapse for the harmonic sequence at shallower tree depths than for geometric sequences with equivalent base values. This suggests that slower-scaling algebraic sequences are even more susceptible to multi-adic confinement, reinforcing the universality of the spectral gap diagnostic.
+Because the harmonic sequence has a reduced cycle period, its allowed translations are more restricted at low depths. The pre-processor predicts valuation sector collapse for the harmonic sequence at shallower tree depths than for geometric sequences with equivalent base values. This suggests that slower-scaling algebraic sequences are even more susceptible to multi-adic confinement, reinforcing the universality of the spectral gap diagnostic.
 
 
