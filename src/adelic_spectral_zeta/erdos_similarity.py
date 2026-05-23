@@ -56,11 +56,17 @@ def construct_adelic_sequence(sequence_type, M, d=None, k=None, primes=None, dep
     Returns:
         List of tuples (s_inf, s_p1, ..., s_pr) representing s_n for n = 1, ..., M.
     """
+    if M < 2:
+        raise ValueError("Sequence length M must be at least 2 for similarity analysis.")
+        
     if primes is None:
         if d is None or k is None:
             raise ValueError("Must provide either 'primes' and 'depths', or 'd' and 'k'.")
         primes = [2, 3]
         depths = [d, k]
+        
+    if len(primes) == 0:
+        raise ValueError("The set of prime places must not be empty.")
         
     if isinstance(base, (int, float)):
         base_frac = Fraction(base).limit_denominator(1000000)
@@ -225,7 +231,7 @@ def compute_correlation(adelic_set, adelic_seq, b_y, b_k2=None, b_k3=None, k_val
         
     return float(np.sum(prod))
 
-def analyze_valuation_sectors(primes, depths, base, M, cantor_sets):
+def analyze_valuation_sectors(primes, depths, base, M, cantor_sets, sequence_type="geometric"):
     """
     Performs algebraic cycle analysis for sequence base over prime places.
     Determines the set of admissible non-Archimedean scale factors (k_1, ..., k_r).
@@ -248,7 +254,15 @@ def analyze_valuation_sectors(primes, depths, base, M, cantor_sets):
     seq_mod = []
     for p, d in zip(primes, depths):
         p_pow = p**d
-        terms = [fraction_mod(Fraction(1, base_frac**n), p_pow) for n in range(1, M + 1)]
+        if sequence_type == "geometric":
+            terms = [fraction_mod(Fraction(1, base_frac**n), p_pow) for n in range(1, M + 1)]
+        elif sequence_type == "harmonic":
+            k_mult = 1
+            for prime in primes:
+                k_mult *= prime
+            terms = [fraction_mod(Fraction(1, k_mult*n + 1), p_pow) for n in range(1, M + 1)]
+        else:
+            raise ValueError(f"Unknown sequence type: {sequence_type}")
         seq_mod.append(terms)
         
     allowed_translations = []

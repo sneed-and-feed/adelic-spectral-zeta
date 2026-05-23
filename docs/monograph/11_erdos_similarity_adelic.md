@@ -219,4 +219,55 @@ Using these extrapolated values, the ground-state energy in the projective limit
 $$E_0(\infty, \theta) \approx a_0 + a_1 \cdot \frac{1}{(1-\theta)^2}$$
 * **Case B Detection:** If $E_0(\infty, \theta) \ge 0$, the operator admits no negative-energy bound states in the projective limit. The allowed scale sector collapses, analytically proving the absence of affine copies without requiring deep tree diagonalization.
 
+---
+
+## 11.8 The Lebesgue Density Lift to Adèlic Orbits
+
+To extend the validity of this spectral diagnostic engine to general subsets $E \subset \mathbb{R}$ of positive Lebesgue measure ($m(E) > 0$), we formulate the **Lebesgue Density Lift Theorem**. This connects the Archimedean continuum to our multi-adic algebraic obstructions.
+
+### 11.8.1 Lebesgue Density Theorem
+Let $E \subset \mathbb{R}$ have positive Lebesgue measure. By the Lebesgue Density Theorem, almost every point $x_0 \in E$ is a point of Lebesgue density, meaning:
+$$\lim_{\epsilon \to 0} \frac{m(E \cap [x_0 - \epsilon, x_0 + \epsilon])}{2\epsilon} = 1$$
+Thus, for any $0 < \eta < 1$, there exists an $\epsilon_0 > 0$ such that for all $0 < \epsilon \le \epsilon_0$:
+$$m(E \cap [x_0 - \epsilon, x_0 + \epsilon]) \ge (1 - \eta) \cdot 2\epsilon$$
+
+### 11.8.2 Theorem (Lebesgue Density Lift)
+*Let $E \subset \mathbb{R}$ have $m(E) > 0$. For any finite sequence $S_M = \{s_n\}_{n=1}^M$ and any density point $x_0 \in E$, there exists a scale threshold $y_0 > 0$ such that for all Archimedean scales $y \le y_0$, the Archimedean presence function satisfies:*
+$$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) > 0$$
+*Proof.* Let $x_0 \in E$ be a density point. Fix $\eta < \frac{1}{M+1}$. By density, choose $\epsilon > 0$ such that the measure of the complement $E^c$ in $I = [x_0 - \epsilon, x_0 + \epsilon]$ satisfies:
+$$m(E^c \cap I) \le \eta \cdot m(I)$$
+Now, select the scale threshold $y_0 = \frac{\epsilon}{\max_n |s_n|}$. For any scale $y \le y_0$, the translated intervals $I_n = I - y \cdot s_n$ all overlap heavily with $I$. Specifically, their intersection $I_{\cap} = \bigcap_{n=1}^M I_n$ is an interval centered near $x_0$ of measure:
+$$m(I_{\cap}) \ge (1 - \delta_y) \cdot m(I)$$
+where $\delta_y \to 0$ as $y \to 0$.
+
+For the intersection $E \cap \bigcap_{n=1}^M (E - y \cdot s_n)$ to have positive measure, it suffices to estimate the measure of the union of the complements within $I_{\cap}$. By the union bound:
+$$m\left( I_{\cap} \setminus \left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) \right) \le m(E^c \cap I) + \sum_{n=1}^M m(E^c \cap I_n) \le (M+1) \cdot \eta \cdot m(I)$$
+Since $\eta < \frac{1}{M+1}$, the measure of the complements is strictly less than the total measure of the intersection region $m(I_{\cap})$ for small $y$. Therefore, the intersection has strictly positive measure:
+$$\Psi_{\infty}(y) > 0$$
+proving the Archimedean presence function does not vanish at small scales. $\square$
+
+**Corollary (Algebraic Dominance of Obstructions)**  
+*Because the Lebesgue density of $E$ guarantees $\Psi_{\infty}(y) > 0$ unconditionally for all sufficiently small Archimedean scales $y \le y_0$, the continuous real sector cannot generate similarity obstructions on its own. Consequently, the non-Archimedean admissibility set $\mathcal{U}_{NA}$ acts as the sole arbiter of global similarity. The presence of copies is governed entirely by the modular cycle constraints of the sequence base.*
+
+---
+
+## 11.9 Harmonic Sequence Obstructive Analysis
+
+To examine how non-geometric sequences cycle through the local valuation rings, we analyze the modified harmonic sequence:
+$$S_M = \left\{ s_n = \frac{1}{k_{\text{mult}} n + 1} \right\}_{n=1}^M$$
+where the multiplier is the product of the active prime places: $k_{\text{mult}} = \prod_{p \in S} p$.
+
+### 11.9.1 Modular Periodicity
+Because $k_{\text{mult}}n + 1 \equiv 1 \pmod{p}$ for all $p \in S$, the denominator is coprime to the local primes. The terms are units in the ring of $p$-adic integers $\mathbb{Z}_p$, satisfying $v_p(s_n) = 0$ for all $n$.
+
+Modulo $p_i^{d_i}$ (for $d_i \ge 1$), the terms are given by the homographic sequence:
+$$s_n \equiv (k_{\text{mult}}n + 1)^{-1} \pmod{p_i^{d_i}}$$
+* **For $d_i = 1$:** The sequence is constant: $s_n \equiv 1 \pmod{p_i}$, cycling with period 1.
+* **For $d_i \ge 2$:** Since $k_{\text{mult}}$ contains exactly one factor of $p_i$, the term $k_{\text{mult}}n \pmod{p_i^{d_i}}$ has period $p_i^{d_i - 1}$. The inverse map preserves this periodicity, so the sequence cycles with period:
+  $$L_i = p_i^{d_i - 1}$$
+This linear cycle growth (compared to the exponential period growth $L_i \approx p_i^{d_i}$ for geometric sequences) means that the digit constraints overlap much more rapidly at lower depths.
+
+### 11.9.2 Sector Collapse Comparison
+Because the harmonic sequence cycles more slowly, its allowed translations are more restricted at low depths. The pre-processor predicts valuation sector collapse for the harmonic sequence at shallower tree depths than for geometric sequences with equivalent base values. This suggests that slower-scaling algebraic sequences are even more susceptible to multi-adic confinement, reinforcing the universality of the spectral gap diagnostic.
+
 

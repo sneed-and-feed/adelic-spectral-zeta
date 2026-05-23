@@ -219,3 +219,38 @@ def test_confinement_scaling_and_prediction():
     assert isinstance(a0, float)
     assert isinstance(a1, float)
     assert len(meta["beta_0s"]) == 2
+
+def test_safety_bounds_and_harmonic():
+    from adelic_spectral_zeta.erdos_similarity import (
+        construct_adelic_sequence,
+        analyze_valuation_sectors,
+        construct_generalized_cantor_set
+    )
+    
+    # M < 2 should raise ValueError
+    with pytest.raises(ValueError, match="Sequence length M must be at least 2"):
+        construct_adelic_sequence("geometric", 1, d=2, k=1)
+        
+    # empty primes should raise ValueError
+    with pytest.raises(ValueError, match="The set of prime places must not be empty"):
+        construct_adelic_sequence("geometric", 3, primes=[], depths=[])
+        
+    # Test harmonic sequence construction
+    primes = [2, 3]
+    depths = [2, 1]
+    seq = construct_adelic_sequence("harmonic", M=3, primes=primes, depths=depths)
+    assert len(seq) == 3
+    # First term should be s_1 = 1 / (6*1 + 1) = 1/7
+    # 1/7 mod 4 is 3
+    # 1/7 mod 3 is 1
+    assert seq[0][1] == 3
+    assert seq[0][2] == 1
+    
+    # Test harmonic sector collapse
+    cantor_sets = [
+        construct_generalized_cantor_set(2, 2), # keeps 0, 1 mod 4
+        construct_generalized_cantor_set(3, 1)  # keeps 0, 1 mod 3
+    ]
+    scales, collapsed = analyze_valuation_sectors(primes, depths, base=11, M=3, cantor_sets=cantor_sets, sequence_type="harmonic")
+    assert not collapsed
+    assert set(scales) == {(2, 0), (2, 1)}

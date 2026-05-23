@@ -212,6 +212,39 @@ def run_experiment():
     print(f"  Actual solved E_0(d=3, theta=0.4): {act_b0 + act_b1 * (1.0 / (1.0 - 0.4)**2):.4f}")
     print(f"  Absolute Prediction Error: {abs(pred_val - (act_b0 + act_b1 * (1.0 / (1.0 - 0.4)**2))):.4f}")
     
+    # 9. Harmonic Sequence Obstructive Comparison (The Algebraic Cycle Sweep)
+    print("\n" + "="*70)
+    print("DEMONSTRATING HARMONIC SEQUENCE OBSTRUCTIVE COMPARISON")
+    print("="*70)
+    
+    primes_harm = [2, 3]
+    depths_harm = [2, 1]
+    cantor_sets_harm = [
+        construct_generalized_cantor_set(2, 2), # keeps {0, 1} mod 4
+        construct_generalized_cantor_set(3, 1)  # keeps {0, 1} mod 3
+    ]
+    
+    print("Analyzing sector collapse for Modified Harmonic Sequence s_n = 1 / (6n + 1)...")
+    scales_harm_2, collapsed_harm_2 = analyze_valuation_sectors(
+        primes=primes_harm,
+        depths=depths_harm,
+        base=11,
+        M=2,
+        cantor_sets=cantor_sets_harm,
+        sequence_type="harmonic"
+    )
+    print(f"  M = 2: Admissible scales: {scales_harm_2} | Collapse predicted: {collapsed_harm_2}")
+    
+    scales_harm_3, collapsed_harm_3 = analyze_valuation_sectors(
+        primes=primes_harm,
+        depths=depths_harm,
+        base=11,
+        M=3,
+        cantor_sets=cantor_sets_harm,
+        sequence_type="harmonic"
+    )
+    print(f"  M = 3: Admissible scales: {scales_harm_3} | Collapse predicted: {collapsed_harm_3}")
+    
     print("="*70)
     print("Experiment completed successfully.")
 
