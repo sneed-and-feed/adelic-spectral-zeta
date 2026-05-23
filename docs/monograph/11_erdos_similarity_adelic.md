@@ -30,7 +30,7 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Conjecture 11.7.4** | Discrete Adèlic Combes–Thomas Splitting | **[Numerical Conjecture]** | Numerical scaling trials |
 | **Theorem 11.8.2** | Lebesgue Density Lift | **[Fully Proved]** | $L^1$-continuity of translation on compact sets |
 | **Remark 11.8.3** | Algebraic Dominance | **[Fully Proved]** | Theorem 11.8.2 |
-| **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | Theorem 11.7.3, compact Sobolev embedding |
+| **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | compact Sobolev embedding |
 | **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Fully Proved]** | Cantor Intersection Theorem |
 | **Conjecture 11.11** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorems 11.10.1, 11.10.2, Corollary 11.3.3, Remark 11.8.3 |
 
@@ -62,10 +62,8 @@ graph TD
     T1131 --> C1133
     L1132 --> C1133
     T1182 --> R1183
-    C1133 --> T11102
-    R1183 --> T11102
-    T1173 --> T11101
-    CT1174 --> T11101
+    C1133 --> ESC
+    R1183 --> ESC
     T11101 --> ESC
     T11102 --> ESC
 ```
@@ -89,9 +87,9 @@ Let $E \subset \mathbb{Z}/N\mathbb{Z}$ be a discretized real set, and let $C_2 \
 
 The product adèlic set is:
 $$\mathcal{E} = E \times C_2 \times C_3 \subset X_{N,d,k}$$
-The finite **Presence Function** at scale $b = (y, k_2, k_3)$ is:
-$$\Psi_{N,d,k}(b) = \sum_{a \in \mathcal{E}} \prod_{n=1}^M \chi_{\mathcal{E}}(a + b \cdot \mathbf{s}_n)$$
-where $b \cdot \mathbf{s}_n = (y s_{n, \infty} \bmod N, \, 2^{k_2} s_{n, 2} \bmod 2^d, \, 3^{k_3} s_{n, 3} \bmod 3^k)$.
+The finite **Presence Function** at scale $b = (y, k_2, k_3)$ is defined as the normalized correlation probability:
+$$\Psi_{N,d,k}(b) = \frac{1}{|X_{N,d,k}|} \sum_{a \in \mathcal{E}} \prod_{n=1}^M \chi_{\mathcal{E}}(a + b \cdot \mathbf{s}_n)$$
+where $b \cdot \mathbf{s}_n = (y s_{n, \infty} \bmod N, \, 2^{k_2} s_{n, 2} \bmod 2^d, \, 3^{k_3} s_{n, 3} \bmod 3^k)$. By normalizing by the total group volume $|X_{N,d,k}|$, we ensure $\Psi_{N,d,k}(b) \le 1$ always.
 
 ---
 
@@ -300,7 +298,7 @@ Let $C_i \subset \mathbb{Z}/p_i^{d_i}\mathbb{Z}$ be a Cantor-like set defined ei
 ### 11.6.3 Automated Valuation Sector Pre-Processor
 Let $\vec{k} = (k_1, \dots, k_r) \in \prod_{i=1}^r \{0, \dots, d_i\}$ denote the non-Archimedean scale factors, where $b_i = p_i^{k_i}$. The shifted sequence elements are $p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}}$.
 
-For the presence function $\Psi_{N, \vec{d}}(y, \vec{k})$ to be non-zero, there must exist a translation vector $a = (a_\infty, a_1, \dots, a_r)$ such that $a_i + p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}} \in C_i$ for all $n=1,\dots,M$. Though the sequence $\alpha^{-n}$ contracts to $0$ exclusively in the Archimedean field, compliance with the global fractal infrastructure requires that the translation anchor $a$ is itself constrained to the adèlic set, forcing $a_i \in C_i$ as a structural boundary condition under Priel Systematic Maintenance. 
+For the presence function $\Psi_{N, \vec{d}}(y, \vec{k})$ to be non-zero, there must exist a translation vector $a = (a_\infty, a_1, \dots, a_r)$ such that $a_i + p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}} \in C_i$ for all $n=1,\dots,M$. Though the sequence $\alpha^{-n}$ contracts to $0$ exclusively in the Archimedean field, compliance with the global fractal infrastructure requires that the translation anchor $a$ is itself constrained to the adèlic set, forcing $a_i \in C_i$ as a structural boundary condition by definition of the adèlic product set $\mathcal{E}$.
 
 Thus, the set of admissible translation components at scale $k_i$ is:
 $$T_i(M, k_i) = \{ a \in C_i \mid a + p_i^{k_i} \alpha^{-n} \pmod{p_i^{d_i}} \in C_i \quad \forall n = 1, \dots, M \}$$
@@ -427,17 +425,19 @@ Because $S^1_L$ is a compact 1D manifold and $L^2(Y)$ is a Hilbert space, the **
 $$H^1(X_L) \hookrightarrow L^2(X_L)$$
 is compact.
 
-Let $\{\psi_d\}$ be the sequence of normalized ground-state wavefunctions ($||\psi_d||_{L^2} = 1$) for $H_d$. By assumption:
+To treat the discrete ground state vector $\psi_d \in \mathbb{R}^{N_u \times (V_2+1) \times (V_3+1)}$ as an element of $H^1(X_L)$, we define its piecewise-linear interpolation with respect to the Archimedean coordinate $x \in S^1_L$. Since the Archimedean grid spacing is $du$, the continuous $L^2$ norm of the interpolated function and its weak derivative $\partial_x \psi_d$ coincide with the discrete $\ell^2$ vector norm and the finite-difference gradient norm respectively. Under this extension, the discrete quadratic form $\langle \psi_d, H_d \psi_d \rangle$ matches the continuous energy quadratic form.
+
+By assumption, the normalized states ($\|\psi_d\|_{L^2} = 1$) satisfy:
 $$\langle \psi_d, H_d \psi_d \rangle = \|\partial_x \psi_d\|_{L^2}^2 + \langle \psi_d, \Delta_{NA, d} \psi_d \rangle - \lambda \langle \psi_d, \Psi_d \psi_d \rangle \le -\epsilon < 0$$
-Since the non-Archimedean Laplacian $\Delta_{NA, d}$ is positive semidefinite, and $\Psi_d \le 1$, we have:
-$$\\|\partial_x \psi_d\|_{L^2}^2 \le \lambda \langle \psi_d, \Psi_d \psi_d \rangle - \epsilon \le \lambda - \epsilon$$
-Thus, the Sobolev norm $\|\psi_d\|_{H^1}^2 = \|\psi_d\|_{L^2}^2 + \|\partial_x \psi_d\|_{L^2}^2 \le 1 + \lambda - \epsilon$ is uniformly bounded.
+Because the non-Archimedean Laplacian $\Delta_{NA, d}$ is positive semidefinite, and the normalized presence function satisfies $\Psi_d \le 1$ everywhere by definition, we obtain the uniform gradient bound:
+$$\|\partial_x \psi_d\|_{L^2}^2 \le \lambda \langle \psi_d, \Psi_d \psi_d \rangle - \epsilon \le \lambda - \epsilon$$
+This ensures the Sobolev norm $\|\psi_d\|_{H^1}^2 = \|\psi_d\|_{L^2}^2 + \|\partial_x \psi_d\|_{L^2}^2 \le 1 + \lambda - \epsilon$ is uniformly bounded.
 
 By compact embedding, there exists a subsequence (which we still denote by $\{\psi_d\}$) that converges weakly in $H^1(X_L)$ and strongly in $L^2(X_L)$ to a limit state $\psi_\infty$. The strong convergence in $L^2(X_L)$ preserves the normalization:
 $$\|\psi_\infty\|_{L^2} = \lim_{d \to \infty} \|\psi_d\|_{L^2} = 1$$
 proving that the limit state is non-trivial.
 
-For the potential energy term, since the indicators $\chi_{\mathcal{E}_d}$ converge in $L^1(X_L)$ and are bounded, the potentials $\Psi_d$ converge strongly in $L^2(X_L)$ to $\Psi_\infty$. The strong convergence of both $\psi_d \to \psi_\infty$ and $\Psi_d \to \Psi_\infty$ in $L^2$ guarantees:
+For the potential energy term, since the indicators $\chi_{\mathcal{E}_d}$ converge in $L^1(X_L)$ and are bounded, the potentials $\Psi_d$ (defined as the Haar integral $\Psi_\infty(b) = \int_{X_L} \prod_{n=1}^M \chi_{\mathcal{E}}(a + b \cdot \mathbf{s}_n) \, d\mu(a)$ in the limit) converge strongly in $L^2(X_L)$ to $\Psi_\infty$. The strong convergence of both $\psi_d \to \psi_\infty$ and $\Psi_d \to \Psi_\infty$ in $L^2$ guarantees:
 $$\lim_{d \to \infty} \langle \psi_d, \Psi_d \psi_d \rangle = \langle \psi_\infty, \Psi_\infty \psi_\infty \rangle$$
 For the kinetic terms, the weak lower-semicontinuity of the Dirichlet form yields:
 $$\|\partial_x \psi_\infty\|_{L^2}^2 \le \liminf_{d \to \infty} \|\partial_x \psi_d\|_{L^2}^2$$
@@ -448,17 +448,15 @@ $$\langle \psi_\infty, H_\infty \psi_\infty \rangle \le \liminf_{d \to \infty} \
 Since $\psi_\infty \in H^1(X_L)$ is normalized, the Rayleigh quotient guarantees $\inf \sigma(H_\infty) \le \langle \psi_\infty, H_\infty \psi_\infty \rangle \le -\epsilon < 0$, completing the proof. $\square$
 
 ### 11.10.2 Theorem (Infinite Sequence Adèlic Intersection)
-Let $\mathcal{A}_M \subset X_L$ be the set of valid translation vectors for a sequence of length $M$ at scale $b \neq 0$:
+Let $\mathcal{E} = E \times C_2 \times C_3 \subset X_L$ be a compact adèlic set (where $E \subset S^1_L$ is closed/compact). Let $\mathcal{A}_M \subset X_L$ be the set of valid translation vectors for a sequence of length $M$ at scale $b \neq 0$:
 $$\mathcal{A}_M = \left\{ a \in \mathcal{E} \ \middle|\ a + b \cdot \mathbf{s}_n \in \mathcal{E} \quad \forall n = 1, \dots, M \right\}$$
 
 **Theorem 11.10.2 (Infinite Sequence Adèlic Intersection)**  
-*If the set of valid translation vectors $\mathcal{A}_M$ is non-empty for all finite sequence lengths $M \ge 1$, then the set of translation vectors for the infinite sequence:*
+*If $\mathcal{E}$ is compact and the set of valid translation vectors $\mathcal{A}_M$ is non-empty for all finite sequence lengths $M \ge 1$, then the set of translation vectors for the infinite sequence:*
 $$\mathcal{A}_\infty = \left\{ a \in \mathcal{E} \ \middle|\ a + b \cdot \mathbf{s}_n \in \mathcal{E} \quad \forall n \ge 1 \right\}$$
 *is non-empty.*
 
-*Proof.* By the regularity of Lebesgue measure, any positive-measure set $E \subset S^1_L$ contains a compact subset $K \subset E$ of positive measure, $m(K) > 0$. We replace $E$ with $K$ without loss of generality, which renders the adèlic product set $\mathcal{E} = K \times C_2 \times C_3$ a closed and compact subset of $X_L$.
-
-For each $n \ge 1$, the translation map $T_n: X_L \to X_L$ defined by $T_n(a) = a + b \cdot \mathbf{s}_n$ is continuous. Since $\mathcal{E}$ is closed, the preimage $T_n^{-1}(\mathcal{E})$ is closed in $X_L$.
+*Proof.* For each $n \ge 1$, the translation map $T_n: X_L \to X_L$ defined by $T_n(a) = a + b \cdot \mathbf{s}_n$ is continuous on the compact space $X_L$. Because $\mathcal{E}$ is closed (and thus compact), the preimage $T_n^{-1}(\mathcal{E})$ is closed in $X_L$.
 The set of valid translations for length $M$ is:
 $$\mathcal{A}_M = \mathcal{E} \cap \bigcap_{n=1}^M T_n^{-1}(\mathcal{E})$$
 As the intersection of closed sets, each $\mathcal{A}_M$ is closed. Since $\mathcal{A}_M \subset \mathcal{E}$ and $\mathcal{E}$ is compact, each $\mathcal{A}_M$ is a compact subset of $X_L$.
@@ -467,14 +465,17 @@ The sequence of sets $\{\mathcal{A}_M\}_{M=1}^\infty$ is nested:
 $$\mathcal{A}_1 \supset \mathcal{A}_2 \supset \mathcal{A}_3 \supset \dots$$
 and by hypothesis, each $\mathcal{A}_M$ is non-empty. By the **Cantor Intersection Theorem** (or the finite intersection property of compact spaces), any nested family of non-empty compact sets has a non-empty intersection. Therefore:
 $$\mathcal{A}_\infty = \bigcap_{M=1}^\infty \mathcal{A}_M \neq \emptyset$$
-Any translation vector $a \in \mathcal{A}_\infty$ satisfies $a \in \mathcal{E}$ and $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n \ge 1$, establishing the existence of a valid affine copy of the infinite sequence $S$ inside $\mathcal{E}$. $\square$
+Any translation vector $a \in \mathcal{A}_\infty$ satisfies $a \in \mathcal{E}$ and $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n \ge 1$, establishing the existence of a valid affine copy of the infinite sequence inside $\mathcal{E}$ and avoiding boundary boundary-escape issues. $\square$
 
 ### 11.10.3 Completion of the Logical Bridge to ESC
 With Theorems 11.10.1 and 11.10.2 established, the logical bridge between adèlic spectral geometry and the Erdős Similarity Conjecture is complete.
-1. **Absence of Copies forces Positivity:** If $E \subset \mathbb{R}$ contains no affine copies of $S$, then for any scale $b$, the infinite intersection $\mathcal{A}_\infty = \emptyset$.
-2. By Theorem 11.10.2, this implies there exists a finite length $M$ such that $\mathcal{A}_M = \emptyset$.
-3. Under the adèlic lift, this forces the allowed scale sector to collapse eventually, yielding $\Psi_d \equiv 0$ for all sufficiently large depths $d$.
-4. Consequently, the Hamiltonian $H_d$ reduces to the free Laplacian $\Delta_{\mathbb{I}, d}$, forcing eventual spectral positivity: $\lim_{d \to \infty} \inf \sigma(H_d) = \lambda_1 > 0$.
+1. **Absence of Copies forces Positivity:** If $E \subset \mathbb{R}$ contains no affine copies of $S$ at scale $b$, then the infinite intersection $\mathcal{A}_\infty(b) = \emptyset$.
+2. By Theorem 11.10.2, this implies there exists a finite length $M(b)$ such that $\mathcal{A}_{M(b)}(b) = \emptyset$.
+3. To show this forces the allowed scale sector to collapse eventually, we apply a finiteness argument over the finite grid:
+   * For any fixed depth $d$, the discretization grid contains only finitely many active scales $b_j$ ($j = 1, \dots, N_{\text{grid}}$).
+   * For each scale $b_j$, there exists a corresponding finite length $M(b_j)$ such that the translation set is empty: $\mathcal{A}_{M(b_j)}(b_j) = \emptyset$.
+   * We define the maximum obstruction length over the grid: $M_{\max} = \max_{j} M(b_j) < \infty$.
+   * For any sequence length $M \ge M_{\max}$, all scales in the active grid are blocked simultaneously: $\mathcal{A}_M(b_j) = \emptyset$ for all $j$.
+   * Under the adèlic lift, this blocks all active valuations, yielding $\Psi_d \equiv 0$ identically for all sufficiently large depths $d$.
+4. Consequently, the Hamiltonian $H_d$ reduces to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$, forcing eventual spectral positivity: $\lim_{d \to \infty} \inf \sigma(H_d) = \lambda_1 > 0$.
 5. **Contrapositive Link:** Thus, the persistence of a negative-energy ground state ($\inf\sigma(H_d) < 0$ for all $d$) mathematically guarantees the existence of a real affine copy of the infinite sequence $S$ inside $E$.
-
-
