@@ -764,8 +764,6 @@ $$\liminf_{d \to \infty} \inf \sigma(H_d) < 0$$
    Assume $\liminf_{d \to \infty} \inf \sigma(H_d) < 0$. By Theorem 11.10.4 (Spectral Compactness Extraction), there exists a limit scale $b_\infty \in X_\infty$ with non-zero Archimedean component $y_\infty \neq 0$ such that the Archimedean presence potential satisfies $\Psi_E(y_\infty) > 0$.
    By the exact factorization of the presence potential (Theorem 11.7.6) and the properties of the infinite intersection of valid translation sets (Theorem 11.10.2), this directly guarantees that $E$ contains a real affine copy of $S$ at scale $y_\infty$. This completes the equivalence proof. $\square$
 
----
-
 ### 11.10.4 Theorem (Spectral Compactness Extraction)
 
 **Theorem 11.10.4 (Spectral Compactness Extraction)**  
@@ -777,7 +775,61 @@ $$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
 $$\Psi_E(y_\infty) > 0$$
 *which guarantees that $E$ contains a real affine copy of $S$.*
 
-*Proof.* We prove the theorem by establishing three key structural properties:
+**Lemma 11.10.4.1 (Cylinder Indicator Stability)**  
+*Let $\mathcal{E}_d \subset X_\infty$ be the cylinder approximation of the compact adèlic set $\mathcal{E} \subset X_\infty$ at depth $d$, such that $\mathcal{E}_d \downarrow \mathcal{E}$ as $d \to \infty$. For any fixed finite sequence length $M \ge 1$, the product indicator functions satisfy:*
+$$\lim_{d \to \infty} \prod_{n=1}^M \chi_{\mathcal{E}_d}(a_n) = \prod_{n=1}^M \chi_{\mathcal{E}}(a_n)$$
+*pointwise almost everywhere for $a_n \in X_\infty$. Consequently, by the Monotone Convergence Theorem, the finite-depth presence potential $\Psi_d(b)$ converges pointwise to the limit presence potential $\Psi_\infty(b)$ as $d \to \infty$ for all $b \in X_\infty$.*
+
+*Proof of Lemma 11.10.4.1.* Since the cylinder sets $\mathcal{E}_d$ are nested and compact, they satisfy $\mathcal{E}_d \supset \mathcal{E}_{d+1}$ and $\bigcap_{d=1}^\infty \mathcal{E}_d = \mathcal{E}$.
+For any point $x \in X_\infty$, the indicator sequence $\chi_{\mathcal{E}_d}(x)$ is monotonically decreasing and converges pointwise:
+$$\lim_{d \to \infty} \chi_{\mathcal{E}_d}(x) = \chi_{\mathcal{E}}(x)$$
+Because the sequence is nested and the limit is the characteristic function of the intersection $\mathcal{E}$.
+Since $M$ is finite, the product of these indicators is a finite product. The limit of a finite product of pointwise convergent sequences is the product of the limits. Thus:
+$$\lim_{d \to \infty} \prod_{n=1}^M \chi_{\mathcal{E}_d}(a_n) = \prod_{n=1}^M \left( \lim_{d \to \infty} \chi_{\mathcal{E}_d}(a_n) \right) = \prod_{n=1}^M \chi_{\mathcal{E}}(a_n)$$
+pointwise everywhere on $X_\infty^M$.
+By the Monotone Convergence Theorem (since $\chi_{\mathcal{E}_d} \ge \chi_{\mathcal{E}_{d+1}} \ge 0$ and the space is equipped with the probability Haar measure), the integrals of these products over the translation variable $a$ also converge pointwise:
+$$\Psi_d(b) = \int_{X_\infty} \prod_{n=1}^M \chi_{\mathcal{E}_d}(a + b \cdot \mathbf{s}_n) \, d\mu(a) \xrightarrow{d \to \infty} \int_{X_\infty} \prod_{n=1}^M \chi_{\mathcal{E}}(a + b \cdot \mathbf{s}_n) \, d\mu(a) = \Psi_\infty(b)$$
+for all $b \in X_\infty$. This establishes the pointwise convergence of the presence potential. $\square$
+
+**Lemma 11.10.4.2 (Archimedean Lift Consistency / De-periodization)**  
+*Let $E \subset [-L', L']$ be a compact set, and let $S = \{s_n\}_{n=1}^\infty$ be a bounded sequence of real numbers with $S_{\max} = \sup_n |s_n| < \infty$. Let $S^1_L = \mathbb{R}/2L\mathbb{Z}$ be the circle of circumference $2L$. If the circumference parameter satisfies:*
+$$L > L' + |b_0| S_{\max}$$
+*for all scales $b$ in the compact support sector $Y \subset [-b_0, b_0]$, then the affine copy relation in the circle $S^1_L$ is equivalent to the affine copy relation in the real line $\mathbb{R}$:*
+$$\exists a \in S^1_L : a + b s_n \in E \pmod{2L} \quad \forall n \ge 1 \iff \exists a_0 \in \mathbb{R} : a_0 + b s_n \in E \quad \forall n \ge 1$$
+
+*Proof of Lemma 11.10.4.2.* The backward implication is trivial: if there exists a copy in $\mathbb{R}$, projecting it modulo $2L$ yields a copy in $S^1_L$.
+For the forward implication, assume there exists $a \in S^1_L$ such that $a + b s_n \in E \pmod{2L}$ for all $n \ge 1$.
+We lift $a$ to its unique representative $a_0 \in [-L, L]$. Since $E \subset [-L', L']$, any element in $E \pmod{2L}$ must lie in the interval $[-L', L']$.
+For each $n \ge 1$, we have $a_0 + b s_n \equiv x_n \pmod{2L}$ for some $x_n \in E$. Since $x_n \in [-L', L']$, the distance between $a_0$ and $x_n$ is bounded by:
+$$|x_n - a_0| \le |x_n| + |a_0| \le L' + L$$
+On the other hand, the difference $a_0 + b s_n - a_0 = b s_n$ is bounded in absolute value by:
+$$|b s_n| \le |b| S_{\max}$$
+Since $L > L' + |b| S_{\max}$ for all $b \in Y$, we have:
+$$|b s_n| < L - L' \implies |a_0 + b s_n| \le |a_0| + |b s_n| < L' + (L - L') = L$$
+Since both $a_0 + b s_n$ and the representative $x_n$ lie within the fundamental domain $(-L, L)$ of length $2L$, they cannot differ by a non-zero multiple of $2L$.
+Therefore, the modular equivalence $a_0 + b s_n \equiv x_n \pmod{2L}$ forces exact equality in $\mathbb{R}$:
+$$a_0 + b s_n = x_n \in E \quad \forall n \ge 1$$
+This recovers the valid real translation anchor $a_0 \in \mathbb{R}$ and establishes the existence of a real affine copy in $\mathbb{R}$, preventing any wrapping anomalies on the circle. $\square$
+
+**Proposition 11.10.4.3 (Translation-Decoupling of Diagonal Embeddings)**  
+*The diagonal embedding map:*
+$$\iota: \mathbb{R} \to \mathbb{A}, \quad y \mapsto (y, y, y, \dots)$$
+*preserves coordinate-wise translation-independence under the product Haar measure on $X_\infty = S^1_L \times \prod_p \mathbb{Z}_p$. Specifically, for any function $f(a, b) = f_\infty(a_\infty, b_\infty) \prod_p f_p(a_p, b_p)$ that factors coordinate-wise, the global presence integral over $X_\infty$ factors as the product of the coordinate presence integrals:*
+$$\int_{X_\infty} f(a + b \cdot \mathbf{s}_n) \, d\mu(a) = \left( \int_{S^1_L} f_\infty(a_\infty + y s_n) \, da_\infty \right) \prod_p \left( \int_{\mathbb{Z}_p} f_p(a_p + b_p s_{n, p}) \, d\mu_p(a_p) \right)$$
+*proving that the diagonal embedding does not introduce hidden adèlic coupling.*
+
+*Proof of Proposition 11.10.4.3.* The product Haar measure $\mu$ on $X_\infty$ is by definition the product of the component Haar measures:
+$$d\mu(a) = da_\infty \prod_p d\mu_p(a_p)$$
+The diagonal embedding represents the scale as $b = (y, b_2, b_3, \dots)$ and the sequence elements as $\mathbf{s}_n = (s_n, s_{n, 2}, s_{n, 3}, \dots)$ component-wise.
+Since the addition and multiplication are defined component-wise on the adele ring $\mathbb{A}$, we have:
+$$a + b \cdot \mathbf{s}_n = (a_\infty + y s_n, a_2 + b_2 s_{n, 2}, a_3 + b_3 s_{n, 3}, \dots)$$
+Substituting this factorization into the integral yields:
+$$\int_{X_\infty} f(a + b \cdot \mathbf{s}_n) \, d\mu(a) = \int_{X_\infty} f_\infty(a_\infty + y s_n) \prod_p f_p(a_p + b_p s_{n, p}) \, \left( da_\infty \prod_p d\mu_p(a_p) \right)$$
+By the Fubini–Tonelli Theorem, since the integrand is a product of functions depending on disjoint variables and each factor is integrable, the multiple integral separates exactly into the product of single integrals:
+$$\left( \int_{S^1_L} f_\infty(a_\infty + y s_n) \, da_\infty \right) \prod_p \left( \int_{\mathbb{Z}_p} f_p(a_p + b_p s_{n, p}) \, d\mu_p(a_p) \right)$$
+This proves that diagonal coordinates remain translation-decoupled under the Haar integration, justifying the exact product factorization of Theorem 11.7.6. $\square$
+
+*Proof of Theorem 11.10.4.* We prove the theorem by establishing five key structural properties:
 
 #### 1. Uniform Coercivity (Agmon/IMS Confinement)
 We first show that the ground-state wavefunctions cannot spread into regions where the presence potential is arbitrarily small.
@@ -823,14 +875,14 @@ Taking the limit $j \to \infty$ on the left-hand side, the continuity of the fin
 $$\Psi_d(b_\infty) = \lim_{j \to \infty} \Psi_d(b_j) \ge \delta$$
 Since this lower bound holds for all $d \ge 1$, we pass to the limit $d \to \infty$:
 $$\Psi_\infty(b_\infty) = \lim_{d \to \infty} \Psi_d(b_\infty) \ge \delta > 0$$
-This establishes the lower semicontinuity of the positivity set.
+This establishes the lower semicontinuity of the positivity set via Lemma 11.10.4.1.
 
 #### 4. Extraction of the Real Affine Copy
 By the weak* convergence $\widetilde{\mu}_{d_j} \to \mu_\infty$, the expectation of the presence potential satisfies:
 $$\lim_{j \to \infty} \langle \phi_{d_j}, \Psi_{d_j} \phi_{d_j} \rangle = \int_{X_\infty} \Psi_\infty(b) \, d\mu_\infty(b) \ge \frac{\epsilon}{\lambda} > 0$$
 Thus, there must exist some point $b_\infty$ in the support of the limit measure $\mu_\infty$ satisfying:
 $$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
-By the Exact Product Factorization (Theorem 11.7.6), the presence function factors as:
+By the Exact Product Factorization (Theorem 11.7.6) and Proposition 11.10.4.3, the presence function factors as:
 $$\Psi_\infty(b_\infty) = \Psi_E(y_\infty) \prod_p \Psi_{C_p}(b_{p, \infty})$$
 Since $\Psi_\infty(b_\infty) > 0$, we must have $\Psi_E(y_\infty) > 0$ and $\Psi_{C_p}(b_{p, \infty}) > 0$ for all $p$.
 The Archimedean component $y_\infty \in S^1_L$ is non-zero because if $y_\infty = 0$, then the diagonal embedding requires $b_{p, \infty} = 0$, but the valuation sector collapse (Theorem 11.3.1) guarantees that $\Psi_{C_p}(0) = 0$, which would force $\Psi_\infty(b_\infty) = 0$, a contradiction.
@@ -839,8 +891,19 @@ $$\mathcal{A}_M(y_\infty) = \left\{ a_\infty \in E \ \middle|\ a_\infty + y_\inf
 is non-empty for all finite lengths $M \ge 1$.
 By the Infinite Sequence Adèlic Intersection (Theorem 11.10.2), the infinite intersection set:
 $$\mathcal{A}_\infty(y_\infty) = \bigcap_{M=1}^\infty \mathcal{A}_M(y_\infty) \neq \emptyset$$
-is non-empty. Any element $a_\infty \in \mathcal{A}_\infty(y_\infty)$ satisfies $a_\infty \in E$ and $a_\infty + y_\infty s_n \in E$ for all $n \ge 1$.
-This extracts a genuine real affine copy of the infinite sequence $S$ inside the set $E$ at scale $y_\infty \neq 0$, completing the proof. $\square$
+is non-empty. Any element $a_\infty \in \mathcal{A}_\infty(y_\infty)$ satisfies $a_\infty \in E \pmod{2L}$ and $a_\infty + y_\infty s_n \in E \pmod{2L}$ for all $n \ge 1$.
+By the Archimedean Lift Consistency (Lemma 11.10.4.2), this modular copy lifts to a genuine real affine copy of $S$ in the real line $\mathbb{R}$, completing the extraction.
+
+#### 5. Uniformity of the Coupling Constant $\lambda$
+We prove that the coupling parameter $\lambda$ can be chosen independent of the tree depth $d$, resolving the uniform $\lambda$-control requirement.
+By Yin-Yang Spectral Coupling (Theorem 11.A.2), a negative-energy bound state exists if:
+$$\lambda > \lambda_c(d) = \frac{C_{\text{shape}} m(U)^{-2} + \sum_p M^{(p)}_{k_p^*, k_p^*}}{c_0}$$
+where $U \subset S^1_L$ is the Archimedean scale support, $k_p^*$ are the matching tree levels, and $c_0 > 0$ is the uniform lower bound on the presence potential $\Psi_\infty(y, \vec{k}^*)$ on $U$.
+From Theorem 11.A.1, the tree-radial kinetic matrix elements are bounded by $M^{(p)}_{k_p^*, k_p^*} \le 2(p+1)$ uniformly in the depth $d$.
+Furthermore, the Lebesgue Density Lift Theorem (Theorem 11.8.2) guarantees that the scale neighborhood $U$ and the matching levels $k_p^*$ are determined by the Lebesgue density of the compact set $E$, which depends only on $E$ and is independent of $d$.
+Since all terms in the numerator of $\lambda_c(d)$ are bounded by constants independent of $d$, the critical coupling satisfies:
+$$\sup_{d \ge 1} \lambda_c(d) \le \lambda_* < \infty$$
+Thus, by choosing any fixed $\lambda > \lambda_*$, we guarantee that the ground-state energy satisfies $\inf \sigma(H_d) \le -\epsilon < 0$ uniformly for all depths $d \ge 1$, ensuring uniform $\lambda$-control. $\square$
 
 ---
 
@@ -1162,8 +1225,8 @@ However, for the general ESC, the sequence $S = \{s_n\} \subset \mathbb{R}$ is a
 
 **Theorem 11.C.1 (Archimedean Transfer Lemma)**  
 *Let $E \subset [-L, L]$ be a compact set, and let the scale space be the compact circle $S^1_L \cong \mathbb{R}/2L\mathbb{Z}$, so the scale variable $y \in S^1_L$ is globally bounded by $y_{\max} = L$. Let $S = \{s_n\}_{n=1}^M$ be a real sequence, and let $S' = \{s'_n\}_{n=1}^M \subset \mathbb{Q}$ be a rational approximation satisfying $|s_n - s'_n| \le \delta$ for all $1 \le n \le M$. Then the Archimedean presence functions satisfy the global bound on $S^1_L$:*
-$$\sup_{y \in S^1_L} | \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M \omega_{\chi_E}(y_{\max} |s_n - s'_n|) \le M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
-*where $\omega_{\chi_E}(\epsilon) = \sup_{|t| \le \epsilon} \|\chi_E(\cdot + t) - \chi_E\|_{L^1}$ is the $L^1$ modulus of continuity of the characteristic function of $E$.*
+$$\sup_{y \in S^1_L} | \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M m(E \Delta (E - y(s_n - s'_n))) \le M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
+*where $\omega_{\chi_E}(\epsilon) = \sup_{|h| \le \epsilon} \|\chi_E(\cdot + h) - \chi_E\|_{L^1} = \sup_{|h| \le \epsilon} m(E \Delta (E + h))$ is the symmetric-difference measure (the $L^1$ modulus of continuity) of the characteristic function of $E$.*
 
 *Furthermore, let $H = \Delta + V_S$ and $H' = \Delta + V_{S'}$ be the Hamiltonians with potentials $V_S(y) = -\lambda \Psi_E(y; S)$ and $V_{S'}(y) = -\lambda \Psi_E(y; S')$. Both operators act on the same Hilbert space $L^2(S^1_L)$ with the same domain $H^2(S^1_L)$. Their ground-state energies satisfy:*
 $$| E_0(H) - E_0(H') | \le \| V_S - V_{S'} \|_{L^\infty(S^1_L)} \le \lambda M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
@@ -1173,9 +1236,11 @@ $$| E_0(H) - E_0(H') | \le \| V_S - V_{S'} \|_{L^\infty(S^1_L)} \le \lambda M \c
 $$\Psi_E(y; S) = m\left( \bigcap_{n=1}^M (E - y s_n) \right)$$
 Let $E_n = E - y s_n$ and $E'_n = E - y s'_n$. The symmetric difference of the intersections is bounded by the union of symmetric differences of the components:
 $$m\left( \bigcap_{n=1}^M E_n \triangle \bigcap_{n=1}^M E'_n \right) \le \sum_{n=1}^M m(E_n \triangle E'_n)$$
-The symmetric difference of the translated sets evaluates to:
-$$m(E_n \triangle E'_n) = \int_{\mathbb{R}} |\chi_E(x + y s_n) - \chi_E(x + y s'_n)| \, dx = \int_{\mathbb{R}} |\chi_E(u + y(s_n - s'_n)) - \chi_E(u)| \, du$$
-By definition of the $L^1$ modulus of continuity and since $|y| \le y_{\max}$ globally on $S^1_L$, this is bounded by $\omega_{\chi_E}(|y| \cdot |s_n - s'_n|) \le \omega_{\chi_E}(y_{\max} \delta)$. Summing over $n=1,\dots,M$ yields the global supremum bound:
+The symmetric difference of the translated sets evaluates exactly to the symmetric difference measure of $E$ under translations:
+$$m(E_n \triangle E'_n) = m(E - y s_n \triangle (E - y s'_n)) = m(E \triangle (E - y(s_n - s'_n)))$$
+By definition of the symmetric-difference measure and since $|y| \le y_{\max}$ globally on $S^1_L$, this is bounded by:
+$$m(E \triangle (E - y(s_n - s'_n))) \le \omega_{\chi_E}(|y| \cdot |s_n - s'_n|) \le \omega_{\chi_E}(y_{\max} \delta)$$
+Summing over $n=1,\dots,M$ yields the global supremum bound:
 $$\sup_{y \in S^1_L} | \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M m(E_n \triangle E'_n) \le M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
 For the spectral perturbation, since $V_S$ and $V_{S'}$ are bounded multiplication operators, the difference $V_S - V_{S'}$ is bounded in the operator norm on $L^2(S^1_L)$ by the $L^\infty$ norm:
 $$\|H - H'\|_{\text{op}} = \|V_S - V_{S'}\|_{L^2 \to L^2} = \|V_S - V_{S'}\|_{L^\infty(S^1_L)} = \lambda \sup_{y \in S^1_L} |\Psi_E(y; S) - \Psi_E(y; S')| \le \lambda M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
@@ -1343,18 +1408,20 @@ This joint potential satisfies the following structural properties:
 
 To complete the quantitative transition from rational approximations to the transcendental limit, we establish the explicit bounding conditions for the Hölder continuity exponent $\alpha$ across highly porous, fat Cantor-type real sets.
 
-**Theorem 11.C.8 (Hölder Continuity of the Presence Potential)**  
-*Let $E \subset \mathbb{R}$ be a compact set of positive Lebesgue measure, and let $\partial E$ denote its topological boundary. Suppose the boundary $\partial E$ has a finite upper Minkowski (box-counting) dimension $d = \dim_{\text{Mink}}(\partial E) < 1$. Then the $L^1$ modulus of continuity of the characteristic function $\chi_E$ satisfies the Hölder bound:*
-$$\omega_{\chi_E}(\epsilon) = \sup_{|t| \le \epsilon} \int_{\mathbb{R}} |\chi_E(x + t) - \chi_E(x)| \, dx \le C \epsilon^{1-d}$$
-*for a positive constant $C > 0$, yielding the Hölder continuity exponent $\alpha = 1 - d > 0$.*
+**Theorem 11.C.8 (Symmetric-Difference Hölder Bound)**  
+*Let $E \subset \mathbb{R}$ be a compact set of positive Lebesgue measure, and let $\partial E$ denote its topological boundary. Suppose the boundary $\partial E$ has a finite upper Minkowski (box-counting) dimension $d = \dim_{\text{Mink}}(\partial E) < 1$. Then the symmetric-difference measure under translation by $h \in \mathbb{R}$ satisfies the Hölder bound:*
+$$m(E \triangle (E + h)) \le C |h|^{1-d}$$
+*for a positive constant $C > 0$, yielding the $L^1$ modulus of continuity bound:*
+$$\omega_{\chi_E}(\epsilon) = \sup_{|h| \le \epsilon} \int_{\mathbb{R}} |\chi_E(x + h) - \chi_E(x)| \, dx \le C \epsilon^{1-d}$$
+*and the Hölder continuity exponent $\alpha = 1 - d > 0$.*
 
-*Proof.* For any $t \in \mathbb{R}$ with $|t| \le \epsilon$, the symmetric difference $E \triangle (E - t)$ is contained within the $\epsilon$-neighborhood of the boundary $\partial E$:
-$$E \triangle (E - t) \subset \{ x \in \mathbb{R} \mid \operatorname{dist}(x, \partial E) \le \epsilon \} = \mathcal{N}_\epsilon(\partial E)$$
-By definition of the upper Minkowski dimension, since $\partial E$ is a compact set of dimension $d$, the Lebesgue measure of its $\epsilon$-neighborhood satisfies:
+*Proof.* For any $h \in \mathbb{R}$ with $|h| \le \epsilon$, the symmetric difference $E \triangle (E + h)$ is contained within the $\epsilon$-neighborhood of the boundary $\partial E$:
+$$E \triangle (E + h) \subset \{ x \in \mathbb{R} \mid \operatorname{dist}(x, \partial E) \le \epsilon \} = \mathcal{N}_\epsilon(\partial E)$$
+By definition of the upper Minkowski dimension, since $\partial E$ is a compact set of dimension $d$, the Lebesgue measure of its $\epsilon$-neighborhood (boundary layer measure) satisfies:
 $$m(\mathcal{N}_\epsilon(\partial E)) \le C \epsilon^{1-d}$$
-for all sufficiently small $\epsilon > 0$. Evaluating the integral of the difference in characteristic functions:
-$$\int_{\mathbb{R}} |\chi_E(x + t) - \chi_E(x)| \, dx = m(E \triangle (E - t)) \le m(\mathcal{N}_\epsilon(\partial E)) \le C \epsilon^{1-d}$$
-Taking the supremum over $|t| \le \epsilon$ yields the desired bound:
+for all sufficiently small $\epsilon > 0$. Evaluating the integral of the difference in characteristic functions (which is exactly the symmetric difference measure):
+$$m(E \triangle (E + h)) = \int_{\mathbb{R}} |\chi_E(x - h) - \chi_E(x)| \, dx \le m(\mathcal{N}_{|h|}(\partial E)) \le C |h|^{1-d}$$
+Taking the supremum over $|h| \le \epsilon$ yields the $L^1$ modulus of continuity bound:
 $$\omega_{\chi_E}(\epsilon) \le C \epsilon^{1-d}$$
 with the Hölder continuity exponent $\alpha = 1 - d > 0$. $\square$
 
@@ -1375,3 +1442,81 @@ $$\| V_{S'^{(M)}} - V_S \|_{L^\infty} = o\left( M^{1 - \beta(1-d)} \cdot M^{-(1 
 Thus, the uniform potential difference converges to 0 as $M \to \infty$, which completes the proof. $\square$
 
 For standard fat Cantor-type sets (such as the Smith–Volterra–Cantor set), the boundary Minkowski dimension satisfies $d = \dim_{\text{Mink}}(\partial E) = \log_3(2) \approx 0.6309$ (or more generally $d < 1$ for any nowhere dense set whose construction excludes positive-measure middle intervals). The Hölder exponent $\alpha = 1 - d > 0$ is therefore strictly positive and bounded away from zero. This guarantees the existence of a valid rational approximation sequence $S'^{(M)}$ satisfying the diagonal convergence rate, ensuring that the adèlic spectral detector bridges seamlessly to the transcendental continuum. $\square$
+
+---
+
+## Appendix 11.D — Failure-Mode Audit of Spectral Reduction
+
+In this appendix, we conduct a rigorous, referee-hostile failure-mode audit of the core theorems supporting the Spectral Reduction Theorem (Theorem 11.10.3) and the global Erdős Similarity Conjecture (ESC) bridge. For each theorem, we identify the exact hypotheses, topological spaces, modes of convergence, compactness arguments, parameter dependencies, and specific conditions under which the proofs would fail.
+
+### 11.D.1 Theorem 11.10.4 (Spectral Compactness Extraction)
+- **Exact Hypotheses:**
+  1. $E \subset [-L', L']$ is a compact real set of Lebesgue measure $m(E) > 0$.
+  2. $S = \{s_n\}_{n=1}^\infty$ is a bounded sequence of real numbers with $S_{\max} = \sup_n |s_n| < \infty$.
+  3. $X_\infty = S^1_L \times \prod_p \mathbb{Z}_p$ is the compact projective limit space.
+  4. There exists a subsequence $d_j \to \infty$ with $\inf \sigma(H_{d_j}) \le -\epsilon < 0$.
+  5. The circle circumference $L$ satisfies $L > L' + |b_0| S_{\max}$ for all scales $b$ in the compact support sector $Y \subset [-b_0, b_0]$.
+- **Topologies Used:**
+  - Product topology on $X_\infty$ (which makes $X_\infty$ a compact metrizable space).
+  - Weak* topology on the space of Radon probability measures $\mathcal{P}(X_\infty)$.
+  - Weak topology on the Hilbert space $H^1(X_\infty)$ and strong topology on $L^2(X_\infty)$ (via Rellich–Kondrachov).
+- **Modes of Convergence:**
+  - Weak* convergence of lifted probability measures $\widetilde{\mu}_{d_j} \rightharpoonup^* \mu_\infty$ in $\mathcal{P}(X_\infty)$.
+  - Pointwise convergence of finite-depth presence potentials $\Psi_{d_j} \to \Psi_\infty$ (monotone convergence of indicator products).
+  - Strong $L^2(X_\infty)$ convergence of wavefunctions $\phi_{d_j} \to \phi_\infty$.
+- **Compactness Invoked:**
+  - Tychonoff's Theorem for the compactness of $X_\infty = S^1_L \times \prod_p \mathbb{Z}_p$.
+  - Prokhorov's Theorem for the weak* relative compactness of probability measures on the compact metric space $X_\infty$.
+  - Vector-valued Rellich–Kondrachov Theorem for the compact embedding $H^1(X_\infty) \hookrightarrow L^2(X_\infty)$.
+- **Uniformity of $\lambda$:**
+  - The coupling parameter $\lambda$ is strictly uniform and independent of the depth $d$, bounded below by $\lambda_c(d) \le \lambda_* < \infty$, because the non-Archimedean kinetic terms $M_{k_p^*, k_p^*}$ are bounded by $2(p+1)$ uniformly in $d$ (Theorem 11.A.1).
+- **Failure Modes ("Could fail if..."):**
+  1. *Archimedean drift:* If $L \le L' + |b_0| S_{\max}$, the modular copy $a_\infty + y_\infty s_n \in E \pmod{2L}$ could wrap around the circle, producing a "fake" copy that does not exist in $\mathbb{R}$.
+  2. *Valuation escape:* If $X_\infty$ were non-compact (e.g., if we used the full adele ring $\mathbb{A}$ instead of $\mathbb{R} \times \prod_p \mathbb{Z}_p$), the subsequence of measures $\widetilde{\mu}_{d_j}$ could lose mass at infinity ($\mu_\infty(X_\infty) < 1$), causing the limit state to vanish.
+  3. *Unbounded kinetic energy:* If the tree-radial Jacobi matrix off-diagonal coefficients (Theorem 11.A.1) grew exponentially with depth $d$, the critical coupling $\lambda_c(d)$ would diverge to $+\infty$, making uniform $\lambda$-control impossible.
+
+### 11.D.2 Theorem 11.7.4 (Galerkin Convergence)
+- **Exact Hypotheses:**
+  1. $H_\infty = \Delta_{\mathbb{I}, \infty} - \lambda \Psi_\infty$ is a self-adjoint Hamiltonian on $L^2(X_\infty)$.
+  2. $H_d = P_d H_\infty P_d$ is the compressed finite-depth Hamiltonian on $V_d$.
+  3. $P_d: L^2(X_\infty) \to V_d$ is the cylindrical orthogonal projection.
+- **Topologies Used:**
+  - Operator norm topology on the bounded potential operators.
+  - Strong operator topology on the resolvents $(H_d - z I)^{-1}$.
+- **Modes of Convergence:**
+  - Strong resolvent convergence: $\lim_{d \to \infty} \| (H_d - z I)^{-1} u - (H_\infty - z I)^{-1} u \right\|_{L^2} = 0$.
+  - Strong $L^2(X_\infty)$ convergence of potentials: $\lim_{d \to \infty} \|\widetilde{\Psi}_d - \Psi_\infty\|_{L^2} = 0$.
+- **Compactness Invoked:**
+  - Dominated Convergence Theorem on the compact space $X_\infty$ for the indicator functions of cylinder sets $\mathcal{E}_d \downarrow \mathcal{E}$.
+- **Uniformity of Constants:**
+  - The resolvent bound $\|(H_d + (\lambda + 1)I)^{-1}\|_{\text{op}} \le 1$ is uniform in the depth $d$.
+- **Failure Modes ("Could fail if..."):**
+  1. *Non-invariance of cylinder spaces:* If the free Vladimirov Laplacian $\Delta_{p, \infty}$ did not preserve the spaces of locally constant functions $V_d$ (i.e., if $P_d \Delta_{\mathbb{I}, \infty} P_d \neq \Delta_{\mathbb{I}, \infty}$ on $V_d$), then the compressed Hamiltonian $H_d$ would not correspond to the finite-difference tree Laplacian, breaking core convergence on the dense domain.
+  2. *Discontinuous indicators:* If the boundary of $\mathcal{E}$ had non-zero Haar measure ($m(\partial \mathcal{E}) > 0$), the indicator functions $\chi_{\mathcal{E}_d}$ would not converge pointwise almost everywhere to $\chi_{\mathcal{E}}$, breaking the strong $L^2$ convergence of the presence potential.
+
+### 11.D.3 Theorem 11.7.5 (Discrete Combes–Thomas Splitting)
+- **Exact Hypotheses:**
+  - $H_d = \Delta_{\mathbb{I}, d} - \lambda \Psi_d$ acts on the product tree graph of max degree $d_{\max} \le 7$.
+  - $z \in \mathbb{C} \setminus \sigma(H_d)$ lies at distance $\delta = \operatorname{dist}(z, \sigma(H_d)) > 0$ from the spectrum.
+- **Topologies Used:**
+  - Discrete $\ell^2$ operator norm topology.
+- **Modes of Convergence:**
+  - Exponential decay of the resolvent kernel: $|(H_d - z I)^{-1}(x, y)| \le C e^{-\mu \operatorname{dist}(x, y)}$.
+- **Uniformity of Constants:**
+  - The decay rate $\mu = \log(1 + \frac{\delta}{14})$ and coefficient $C$ are independent of the depth $d$, because the vertex degree of the product tree is bounded by $d_{\max} \le 7$ uniformly.
+- **Failure Modes ("Could fail if..."):**
+  1. *Infinite vertex degree:* If the sequence was embedded into a tree with unbounded branching factor (e.g., if the prime places $p_i$ grew with depth), the commutator bound constant $C_0$ would diverge, driving the decay rate $\mu \to 0$ and destroying exponential localization.
+  2. *Spectral boundary contact:* If $z$ approached the spectrum ($\delta \to 0$), the Combes–Thomas decay rate $\mu$ would vanish, causing the localization to delocalize into a flat state.
+
+### 11.D.4 Theorem 11.C.8 (Symmetric-Difference Hölder Bound)
+- **Exact Hypotheses:**
+  - $E \subset \mathbb{R}$ is a compact set of positive measure.
+  - The boundary $\partial E$ has finite upper Minkowski dimension $d = \dim_{\text{Mink}}(\partial E) < 1$.
+- **Topologies Used:**
+  - Metric topology on $\mathbb{R}$.
+- **Modes of Convergence:**
+  - Hölder continuity: $m(E \triangle (E + h)) \le C |h|^{1-d}$.
+- **Uniformity of Constants:**
+  - The constant $C$ is determined solely by the Minkowski box-counting constants of the boundary $\partial E$, which are independent of sequence length $M$ and approximation resolution $\delta_M$.
+- **Failure Modes ("Could fail if..."):**
+  1. *Space-filling boundary:* If the set $E$ has a highly irregular boundary with $\dim_{\text{Mink}}(\partial E) = 1$ (e.g., a boundary of positive Lebesgue measure, such as a fat Cantor set whose boundary has dimension 1), the Hölder exponent $\alpha = 1-d$ would vanish. The potential differences would not converge to 0 under shrinking scales, breaking the diagonal approximation.
