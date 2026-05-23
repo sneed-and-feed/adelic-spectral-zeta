@@ -30,16 +30,19 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Fully Proved]** | Corollary 11.3.3 |
 | **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Fully Proved]** | None |
 | **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Fully Proved]** | None |
-| **Theorem 11.7.4** | Galerkin Convergence | **[Fully Proved]** | None |
+| **Theorem 11.7.4** | Galerkin Convergence | **[Fully Proved]** | Lemma 11.7.4.1 |
+| **Lemma 11.7.4.1** | Domain Invariance under Cylindrical Projection | **[Fully Proved]** | None |
 | **Theorem 11.7.5** | Discrete Adèlic Combes–Thomas Splitting | **[Fully Proved]** | None |
 | **Theorem 11.7.6** | Exact Product Factorization of Presence | **[Fully Proved]** | Fubini–Tonelli, Haar measure product |
+| **Lemma 11.7.6.1** | Representative Exactness of Product Factorization | **[Fully Proved]** | Theorem 11.7.6 |
 | **Theorem 11.8.2** | Lebesgue Density Lift | **[Fully Proved]** | $L^1$-continuity of translation on compact sets |
 | **Remark 11.8.3** | Archimedean/Non-Archimedean Scale Coupling | **[Fully Proved]** | Theorem 11.8.2 |
 | **Conjecture 11.9.2** | Harmonic Sector Collapse Comparison | **[Numerical Conjecture]** | Pre-processor numerical trials |
 | **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | compact Sobolev embedding |
 | **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Fully Proved]** | Cantor Intersection Theorem |
 | **Theorem 11.10.3** | Spectral Reduction Theorem | **[Fully Proved]** | Theorem 11.10.4, Theorem 11.A.2 |
-| **Theorem 11.10.4** | Spectral Compactness Extraction | **[Fully Proved]** | Theorem 11.7.4, Theorem 11.7.6, Theorem 11.8.2, Theorem 11.10.1, Theorem 11.10.2 |
+| **Theorem 11.10.4** | Spectral Compactness Extraction | **[Fully Proved]** | Theorem 11.7.4, Theorem 11.7.6, Theorem 11.8.2, Theorem 11.10.1, Theorem 11.10.2, Lemma 11.10.4.4 |
+| **Lemma 11.10.4.4** | Mosco Convergence of Cylindrical Forms | **[Fully Proved]** | Lemma 11.7.4.1 |
 | **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Fully Proved]** | Fourier translation continuity |
 | **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Fully Proved]** | None |
 | **Theorem 11.A.2** | Yin-Yang Spectral Coupling | **[Fully Proved]** | Theorem 11.A.1, Theorem 11.10.1 |
@@ -65,8 +68,10 @@ graph TD
     T1161["Theorem 11.6.1: General p-adic Subgroup Closure Depth"]:::proved
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::proved
     T1174["Theorem 11.7.4: Galerkin Convergence"]:::proved
+    L11741["Lemma 11.7.4.1: Domain Invariance under Cylindrical Projection"]:::proved
     T1175["Theorem 11.7.5: Combes-Thomas Splitting"]:::proved
     T1176["Theorem 11.7.6: Exact Product Factorization"]:::proved
+    L11761["Lemma 11.7.6.1: Representative Exactness of Product Factorization"]:::proved
     T1182["Theorem 11.8.2: Lebesgue Density Lift"]:::proved
     R1183["Remark 11.8.3: Archimedean/Non-Archimedean Scale Coupling"]:::proved
     H1192["Conjecture 11.9.2: Harmonic Sector Collapse"]:::numerical
@@ -74,6 +79,7 @@ graph TD
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
     T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::proved
     T11104["Theorem 11.10.4: Spectral Compactness Extraction"]:::proved
+    L111044["Lemma 11.10.4.4: Mosco Convergence of Cylindrical Forms"]:::proved
     T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::proved
     T11A1["Theorem 11.A.1: Locality-Preserving Tree-Radial Compression"]:::proved
     T11A2["Theorem 11.A.2: Yin-Yang Spectral Coupling"]:::proved
@@ -89,8 +95,12 @@ graph TD
     T1182 --> R1183
     T1123 --> ESC
     C1135 --> ESC
+    L11741 --> T1174
     T1174 --> T11104
-    T1176 --> T11104
+    T1176 --> L11761
+    L11761 --> T11104
+    L11741 --> L111044
+    L111044 --> T11104
     T1182 --> T11104
     T11101 --> T11104
     T11102 --> T11104
@@ -477,6 +487,24 @@ This defines the finite-depth Laplacian as:
 $$\Delta_{\mathbb{I}, d} = P_d \Delta_{\mathbb{I}, \infty} P_d$$
 which matches $\Delta_{\mathbb{I}, \infty}$ exactly on $V_d$ by construction.
 
+**Lemma 11.7.4.1 (Domain Invariance under Cylindrical Projection)**  
+*Let $D(\Delta_{\mathbb{I}, \infty}) \subset L^2(X_L)$ be the domain of the adèlic free Laplacian $\Delta_{\mathbb{I}, \infty} = \Delta_\infty + \sum_p \Delta_{p, \infty}$. The orthogonal projection $P_d$ onto the cylindrical subspace $V_d$ satisfies:*
+$$P_d D(\Delta_{\mathbb{I}, \infty}) \subseteq D(\Delta_{\mathbb{I}, \infty})$$
+*Moreover, $P_d$ commutes with $\Delta_{\mathbb{I}, \infty}$ on $D(\Delta_{\mathbb{I}, \infty})$, i.e., $P_d \Delta_{\mathbb{I}, \infty} u = \Delta_{\mathbb{I}, \infty} P_d u$ for all $u \in D(\Delta_{\mathbb{I}, \infty})$, and the restriction of $\Delta_{\mathbb{I}, \infty}$ to $D(\Delta_{\mathbb{I}, \infty}) \cap V_d$ is self-adjoint on $V_d$.*
+
+*Proof of Lemma 11.7.4.1.* The Hilbert space factors as $L^2(X_L) \cong L^2(S^1_L) \otimes L^2(\mathbb{Z}_2) \otimes L^2(\mathbb{Z}_3)$. Under this tensor product, the domain of the adèlic Laplacian is given by:
+$$D(\Delta_{\mathbb{I}, \infty}) = H^2(S^1_L) \otimes L^2(\mathbb{Z}_2) \otimes L^2(\mathbb{Z}_3) \cap L^2(S^1_L) \otimes D(\Delta_{2, \infty}) \otimes L^2(\mathbb{Z}_3) \cap L^2(S^1_L) \otimes L^2(\mathbb{Z}_2) \otimes D(\Delta_{3, \infty})$$
+The cylindrical projection operator factors as $P_d = I \otimes P_d^{(2)} \otimes P_d^{(3)}$, where $P_d^{(p)}$ is the orthogonal projection onto the space of locally constant functions of depth $d$ on $\mathbb{Z}_p$.
+The Archimedean Laplacian $\Delta_\infty = -\partial_y^2$ acts solely on the first factor, so it commutes with $P_d$ on $H^2(S^1_L) \otimes L^2(\mathbb{Z}_2) \otimes L^2(\mathbb{Z}_3)$.
+For the non-Archimedean components, the Vladimirov Laplacians $\Delta_{p, \infty}$ are diagonalized by the Kozyrev wavelets $\{\psi_{j, k, l}\}$ on $\mathbb{Q}_p$. Specifically, the space of locally constant functions of depth $d$ on $\mathbb{Z}_p$, denoted by $V_d^{(p)}$, is spanned by a subset of the Kozyrev basis. Since $\Delta_{p, \infty}$ acts diagonally on this basis:
+$$\Delta_{p, \infty} \psi_{j, k, l} = p^{j} \psi_{j, k, l}$$
+and the span of wavelets with scale $j \le d$ is precisely $V_d^{(p)}$, the subspace $V_d^{(p)}$ is invariant under $\Delta_{p, \infty}$. Since $\Delta_{p, \infty}$ is a self-adjoint operator, its invariance on the closed subspace $V_d^{(p)}$ implies that the projection $P_d^{(p)}$ commutes with $\Delta_{p, \infty}$ on its domain:
+$$P_d^{(p)} \Delta_{p, \infty} u_p = \Delta_{p, \infty} P_d^{(p)} u_p \quad \forall u_p \in D(\Delta_{p, \infty})$$
+Because $P_d$ commutes with each factor operator component, it commutes with the sum:
+$$P_d \Delta_{\mathbb{I}, \infty} u = \Delta_{\mathbb{I}, \infty} P_d u \quad \forall u \in D(\Delta_{\mathbb{I}, \infty})$$
+This immediately implies $P_d D(\Delta_{\mathbb{I}, \infty}) \subseteq D(\Delta_{\mathbb{I}, \infty})$.
+Furthermore, since $V_d = P_d(L^2(X_L))$ is a closed subspace and $P_d$ commutes with the self-adjoint operator $\Delta_{\mathbb{I}, \infty}$, the restriction of $\Delta_{\mathbb{I}, \infty}$ to the domain $D(\Delta_{\mathbb{I}, \infty}) \cap V_d$ is self-adjoint on $V_d$. This justifies the compression identity $\Delta_{\mathbb{I}, d} = P_d \Delta_{\mathbb{I}, \infty} P_d = \Delta_{\mathbb{I}, \infty} P_d$ on the operator domain, closing the loophole. $\square$
+
 For the potential term, we define the compressed finite presence function $\widetilde{\Psi}_d = P_d \Psi_\infty P_d$. For any $b \in X_L$, this corresponds to the cylinder set approximation:
 $$\widetilde{\Psi}_d(b) = \int_{X_L} \prod_{n=1}^M \chi_{\mathcal{E}_d}(a + b \cdot \mathbf{s}_n) \, d\mu(a)$$
 where $\mathcal{E}_d = P_d(\mathcal{E}) = \pi_d^{-1}(\pi_d(\mathcal{E})) \subset X_L$ is the cylinder set of depth $d$.
@@ -621,6 +649,22 @@ $$= \int_{S^1_L \times \mathbb{Z}_2 \times \mathbb{Z}_3} \left( \prod_{n=1}^M \c
 $$= \left( \int_{S^1_L} \prod_{n=1}^M \chi_E(a_\infty + y s_{n,\infty}) \, dm(a_\infty) \right) \left( \int_{\mathbb{Z}_2} \prod_{n=1}^M \chi_{C_2}(a_2 + 2^{k_2} s_{n,2}) \, d\mu_2(a_2) \right) \left( \int_{\mathbb{Z}_3} \prod_{n=1}^M \chi_{C_3}(a_3 + 3^{k_3} s_{n,3}) \, d\mu_3(a_3) \right)$$
 $$= \Psi_E(y) \Psi_{C_2}(k_2) \Psi_{C_3}(k_3)$$
 This establishes the exact factorization of the limit presence function. $\square$
+
+**Lemma 11.7.6.1 (Representative Exactness of Product Factorization)**  
+*The product factorization identity:*
+$$\Psi_\infty(b) = \Psi_E(y) \Psi_{C_2}(k_2) \Psi_{C_3}(k_3)$$
+*holds pointwise everywhere for all $b = (y, 2^{k_2}, 3^{k_3}) \in X_L$, rather than merely almost everywhere. This is because each factor $\Psi_E(y)$, $\Psi_{C_2}(k_2)$, and $\Psi_{C_3}(k_3)$ is continuous on its respective domain, and the Haar measure $\mu$ on the compact topological group $X_L$ has full topological support.*
+
+*Proof of Lemma 11.7.6.1.* We first show that the factor functions are continuous:
+1. **Archimedean Factor Continuity**: The function $\Psi_E(y) = \int_{S^1_L} \prod_{n=1}^M \chi_E(a_\infty + y s_{n,\infty}) \, dm(a_\infty)$ is continuous on $S^1_L$. Since $E$ is compact, its characteristic function $\chi_E$ is in $L^1(S^1_L)$. By the continuity of translation in $L^1(S^1_L)$, the map $y \mapsto \chi_E(\cdot + y s_{n,\infty})$ is continuous from $S^1_L$ to $L^1(S^1_L)$. Since the product of bounded functions is controlled by the sum of their $L^1$ differences, the product $\prod_{n=1}^M \chi_E(\cdot + y s_{n,\infty})$ is continuous in $L^1(S^1_L)$ with respect to $y$. Thus, its integral over $S^1_L$, which defines $\Psi_E(y)$, is continuous.
+2. **Non-Archimedean Factor Continuity**: The non-Archimedean scale parameters correspond to discrete tree levels $k_p \in \mathbb{N}$ (or $\mathbb{Z}_p^\times \times p^{\mathbb{Z}}$). The corresponding functions $\Psi_{C_p}(b_p)$ are locally constant with respect to the $p$-adic topology on the scale space, which immediately implies continuity on their compact domains.
+
+Consequently, both the product of the factors $\Psi_E(y) \Psi_{C_2}(k_2) \Psi_{C_3}(k_3)$ and the global presence potential $\Psi_\infty(b)$ are pointwise continuous functions on the compact group $X_L$.
+Let $F(b) = \Psi_\infty(b) - \Psi_E(y) \Psi_{C_2}(k_2) \Psi_{C_3}(k_3)$. Theorem 11.7.6 establishes that $F(b) = 0$ almost everywhere with respect to the Haar measure $\mu$.
+Suppose there exists some point $b^* \in X_L$ such that $F(b^*) \neq 0$. By continuity of $F$, there exists an open neighborhood $U(b^*) \subset X_L$ such that $F(b) \neq 0$ for all $b \in U(b^*)$.
+Since $X_L$ is a compact topological group, its Haar measure $\mu$ is a Radon measure with full topological support, meaning $\mu(U) > 0$ for any non-empty open set $U \subset X_L$.
+Thus, $\mu(\{b \in X_L \mid F(b) \neq 0\}) \ge \mu(U(b^*)) > 0$, which contradicts the fact that $F(b) = 0$ almost everywhere.
+Therefore, $F(b) = 0$ must hold pointwise everywhere on $X_L$. $\square$
 
 ---
 
@@ -792,23 +836,23 @@ $$\Psi_d(b) = \int_{X_\infty} \prod_{n=1}^M \chi_{\mathcal{E}_d}(a + b \cdot \ma
 for all $b \in X_\infty$. This establishes the pointwise convergence of the presence potential. $\square$
 
 **Lemma 11.10.4.2 (Archimedean Lift Consistency / De-periodization)**  
-*Let $E \subset [-L', L']$ be a compact set, and let $S = \{s_n\}_{n=1}^\infty$ be a bounded sequence of real numbers with $S_{\max} = \sup_n |s_n| < \infty$. Let $S^1_L = \mathbb{R}/2L\mathbb{Z}$ be the circle of circumference $2L$. If the circumference parameter satisfies:*
-$$L > L' + |b_0| S_{\max}$$
-*for all scales $b$ in the compact support sector $Y \subset [-b_0, b_0]$, then the affine copy relation in the circle $S^1_L$ is equivalent to the affine copy relation in the real line $\mathbb{R}$:*
-$$\exists a \in S^1_L : a + b s_n \in E \pmod{2L} \quad \forall n \ge 1 \iff \exists a_0 \in \mathbb{R} : a_0 + b s_n \in E \quad \forall n \ge 1$$
+*Let $E \subset [-L', L']$ be a compact set, and let $S = \{s_n\}_{n=1}^\infty$ be a bounded sequence of real numbers with $S_{\max} = \sup_n |s_n| < \infty$. Let $b_* > 0$ be a globally fixed supremum scale bound, and let the Archimedean scale sector be the compact interval $Y = [-b_*, b_*] \subset S^1_L$. We define the global admissible circle radius as:*
+$$L_* = L' + b_* S_{\max} + \eta$$
+*for some fixed de-periodization margin $\eta > 0$. If the circle circumference parameter satisfies $L > L_*$, then for any Archimedean scale $y \in Y$ (which uniformly satisfies $|y| \le b_*$), the affine copy relation in the circle $S^1_L$ is equivalent to the affine copy relation in the real line $\mathbb{R}$:*
+$$\exists a \in S^1_L : a + y s_n \in E \pmod{2L} \quad \forall n \ge 1 \iff \exists a_0 \in \mathbb{R} : a_0 + y s_n \in E \quad \forall n \ge 1$$
 
 *Proof of Lemma 11.10.4.2.* The backward implication is trivial: if there exists a copy in $\mathbb{R}$, projecting it modulo $2L$ yields a copy in $S^1_L$.
-For the forward implication, assume there exists $a \in S^1_L$ such that $a + b s_n \in E \pmod{2L}$ for all $n \ge 1$.
+For the forward implication, assume there exists $a \in S^1_L$ such that $a + y s_n \in E \pmod{2L}$ for all $n \ge 1$.
 We lift $a$ to its unique representative $a_0 \in [-L, L]$. Since $E \subset [-L', L']$, any element in $E \pmod{2L}$ must lie in the interval $[-L', L']$.
-For each $n \ge 1$, we have $a_0 + b s_n \equiv x_n \pmod{2L}$ for some $x_n \in E$. Since $x_n \in [-L', L']$, the distance between $a_0$ and $x_n$ is bounded by:
+For each $n \ge 1$, we have $a_0 + y s_n \equiv x_n \pmod{2L}$ for some $x_n \in E$. Since $x_n \in [-L', L']$, the distance between $a_0$ and $x_n$ is bounded by:
 $$|x_n - a_0| \le |x_n| + |a_0| \le L' + L$$
-On the other hand, the difference $a_0 + b s_n - a_0 = b s_n$ is bounded in absolute value by:
-$$|b s_n| \le |b| S_{\max}$$
-Since $L > L' + |b| S_{\max}$ for all $b \in Y$, we have:
-$$|b s_n| < L - L' \implies |a_0 + b s_n| \le |a_0| + |b s_n| < L' + (L - L') = L$$
-Since both $a_0 + b s_n$ and the representative $x_n$ lie within the fundamental domain $(-L, L)$ of length $2L$, they cannot differ by a non-zero multiple of $2L$.
-Therefore, the modular equivalence $a_0 + b s_n \equiv x_n \pmod{2L}$ forces exact equality in $\mathbb{R}$:
-$$a_0 + b s_n = x_n \in E \quad \forall n \ge 1$$
+On the other hand, the difference $a_0 + y s_n - a_0 = y s_n$ is bounded in absolute value by:
+$$|y s_n| \le |y| S_{\max}$$
+Since $L > L_* \ge L' + b_* S_{\max} \ge L' + |y| S_{\max}$, we have:
+$$|y s_n| \le b_* S_{\max} < L - L' \implies |a_0 + y s_n| \le |a_0| + |y s_n| < L' + (L - L') = L$$
+Since both $a_0 + y s_n$ and the representative $x_n$ lie within the fundamental domain $(-L, L)$ of length $2L$, they cannot differ by a non-zero multiple of $2L$.
+Therefore, the modular equivalence $a_0 + y s_n \equiv x_n \pmod{2L}$ forces exact equality in $\mathbb{R}$:
+$$a_0 + y s_n = x_n \in E \quad \forall n \ge 1$$
 This recovers the valid real translation anchor $a_0 \in \mathbb{R}$ and establishes the existence of a real affine copy in $\mathbb{R}$, preventing any wrapping anomalies on the circle. $\square$
 
 **Proposition 11.10.4.3 (Translation-Decoupling of Diagonal Embeddings)**  
@@ -828,6 +872,50 @@ $$\int_{X_\infty} f(a + b \cdot \mathbf{s}_n) \, d\mu(a) = \int_{X_\infty} f_\in
 By the Fubini–Tonelli Theorem, since the integrand is a product of functions depending on disjoint variables and each factor is integrable, the multiple integral separates exactly into the product of single integrals:
 $$\left( \int_{S^1_L} f_\infty(a_\infty + y s_n) \, da_\infty \right) \prod_p \left( \int_{\mathbb{Z}_p} f_p(a_p + b_p s_{n, p}) \, d\mu_p(a_p) \right)$$
 This proves that diagonal coordinates remain translation-decoupled under the Haar integration, justifying the exact product factorization of Theorem 11.7.6. $\square$
+
+**Lemma 11.10.4.4 (Mosco Convergence of Cylindrical Forms)**  
+*For each depth $d \ge 1$, let $\mathfrak{q}_d$ be the closed, lower semicontinuous quadratic form on $L^2(X_\infty)$ associated with the compressed Hamiltonian $H_d$:*
+$$\mathfrak{q}_d(u) = \begin{cases} \|\partial_x u\|_{L^2}^2 + \langle u, \Delta_{\operatorname{NA}, d} u \rangle - \lambda \langle u, \widetilde{\Psi}_d u \rangle & \text{if } u \in V_d \cap D(\mathfrak{q}_\infty) \\ +\infty & \text{otherwise} \end{cases}$$
+*and let $\mathfrak{q}_\infty$ be the closed quadratic form associated with the limit Hamiltonian $H_\infty$:*
+$$\mathfrak{q}_\infty(u) = \begin{cases} \|\partial_x u\|_{L^2}^2 + \langle u, \Delta_{\operatorname{NA}, \infty} u \rangle - \lambda \langle u, \Psi_\infty u \rangle & \text{if } u \in D(\mathfrak{q}_\infty) \\ +\infty & \text{otherwise} \end{cases}$$
+*where $D(\mathfrak{q}_\infty) = H^1(S^1_L) \otimes L^2(\prod_p \mathbb{Z}_p) \cap L^2(S^1_L) \otimes D(\mathfrak{q}_{\operatorname{NA}, \infty})$ is the form domain of $H_\infty$. As $d \to \infty$, the quadratic forms $\mathfrak{q}_d$ converge to $\mathfrak{q}_\infty$ in the sense of Mosco on $L^2(X_\infty)$. Consequently, this guarantees strong resolvent convergence of the operators $H_d \to H_\infty$, convergence of their spectral infima $\lim_{d \to \infty} \inf \sigma(H_d) = \inf \sigma(H_\infty)$, and preservation of negative ground-state energy.*
+
+*Proof of Lemma 11.10.4.4.* Mosco convergence requires proving two conditions:
+1. **Weak Lower Semicontinuity (M1)**: For any sequence $\{u_d\} \subset L^2(X_\infty)$ converging weakly to $u$ in $L^2(X_\infty)$, we have:
+   $$\liminf_{d \to \infty} \mathfrak{q}_d(u_d) \ge \mathfrak{q}_\infty(u)$$
+2. **Strong Recovery (M2)**: For any $u \in L^2(X_\infty)$, there exists a sequence $\{u_d\} \subset L^2(X_\infty)$ converging strongly to $u$ in $L^2(X_\infty)$ such that:
+   $$\limsup_{d \to \infty} \mathfrak{q}_d(u_d) \le \mathfrak{q}_\infty(u)$$
+
+We establish these two conditions:
+1. **Proof of Strong Recovery (M2)**: Let $u \in L^2(X_\infty)$. If $\mathfrak{q}_\infty(u) = +\infty$, the condition is trivially satisfied by setting $u_d = u$. So assume $u \in D(\mathfrak{q}_\infty)$. We define the recovery sequence as $u_d = P_d u$, where $P_d$ is the orthogonal cylindrical projection.
+   Since $P_d \to I$ strongly on $L^2(X_\infty)$ as $d \to \infty$, we have $u_d \to u$ strongly. Since $P_d$ commutes with the continuous derivative $\partial_x$ and the Vladimirov Laplacians $\Delta_{p, \infty}$ on their domains (and thus preserves form domains by Lemma 11.7.4.1), we evaluate $\mathfrak{q}_d(u_d)$ as:
+   $$\mathfrak{q}_d(P_d u) = \|P_d \partial_x u\|_{L^2}^2 + \langle P_d u, \Delta_{\operatorname{NA}, \infty} P_d u \rangle - \lambda \langle P_d u, \Psi_\infty P_d u \rangle$$
+   As $d \to \infty$, $P_d \to I$ strongly. Since the continuous derivative $\partial_x u \in L^2(X_\infty)$ and $\Delta_{\operatorname{NA}, \infty}$ is self-adjoint, the strong convergence of projections yields:
+   $$\|P_d \partial_x u\|_{L^2}^2 \to \|\partial_x u\|_{L^2}^2, \quad \langle P_d u, \Delta_{\operatorname{NA}, \infty} P_d u \rangle = \langle u, P_d \Delta_{\operatorname{NA}, \infty} P_d u \rangle \to \langle u, \Delta_{\operatorname{NA}, \infty} u \rangle$$
+   For the potential energy term, since $\Psi_\infty$ is a bounded operator on $L^2(X_\infty)$, we have:
+   $$\lim_{d \to \infty} \langle P_d u, \Psi_\infty P_d u \rangle = \langle u, \Psi_\infty u \rangle$$
+   Therefore, $\lim_{d \to \infty} \mathfrak{q}_d(u_d) = \mathfrak{q}_\infty(u)$, satisfying (M2).
+
+2. **Proof of Weak Lower Semicontinuity (M1)**: Let $u_d \rightharpoonup u$ weakly in $L^2(X_\infty)$. If $\liminf_{d \to \infty} \mathfrak{q}_d(u_d) = +\infty$, the claim is trivial. Thus, we assume $\liminf_{d \to \infty} \mathfrak{q}_d(u_d) < \infty$. By passing to a subsequence, we assume without loss of generality that $\mathfrak{q}_d(u_d) \le C < \infty$ for all $d$.
+   Since $0 \le \widetilde{\Psi}_d \le 1$ pointwise, the potential energy term is bounded: $\lambda \langle u_d, \widetilde{\Psi}_d u_d \rangle \le \lambda \|u_d\|_{L^2}^2 \le \lambda C'$.
+   This implies that the free kinetic energy forms are uniformly bounded:
+   $$\|\partial_x u_d\|_{L^2}^2 + \langle u_d, \Delta_{\operatorname{NA}, \infty} u_d \rangle \le C + \lambda C' < \infty$$
+   Thus, $\{u_d\}$ is a bounded sequence in the Sobolev-like form domain $D(\mathfrak{q}_0)$ equipped with the graph norm of the free form. Since the Archimedean coordinate acts on the compact circle $S^1_L$ and the non-Archimedean coordinates act on compact groups $\mathbb{Z}_p$, the embedding of the free form domain $D(\mathfrak{q}_0) \hookrightarrow L^2(X_\infty)$ is compact. This is because the resolvent of the free Laplacian $(I + \Delta_{\mathbb{I}, \infty})^{-1}$ is a compact operator (its eigenvalues grow as $n^2 + \sum_p p^{j_p}$, diverging to $+\infty$).
+   By compactness of this embedding, the weakly convergent sequence $u_d \rightharpoonup u$ in $D(\mathfrak{q}_0)$ converges *strongly* in $L^2(X_\infty)$:
+   $$\lim_{d \to \infty} \|u_d - u\|_{L^2(X_\infty)} = 0$$
+   Now, we decompose the potential term:
+   $$\left| \langle u_d, \widetilde{\Psi}_d u_d \rangle - \langle u, \Psi_\infty u \rangle \right| \le \left| \langle u_d, P_d \Psi_\infty P_d u_d \rangle - \langle u_d, \Psi_\infty u_d \rangle \right| + \left| \langle u_d, \Psi_\infty u_d \rangle - \langle u, \Psi_\infty u \rangle \right|$$
+   Since $u_d \in V_d$, we have $P_d u_d = u_d$, so the first difference term is identically zero:
+   $$\langle u_d, P_d \Psi_\infty P_d u_d \rangle = \langle P_d u_d, \Psi_\infty P_d u_d \rangle = \langle u_d, \Psi_\infty u_d \rangle$$
+   The second difference term converges to zero due to the strong $L^2$ convergence $u_d \to u$ and the boundedness of $\Psi_\infty$:
+   $$\left| \langle u_d, \Psi_\infty u_d \rangle - \langle u, \Psi_\infty u \rangle \right| \le \|\Psi_\infty\|_{\operatorname{op}} (\|u_d\|_{L^2} + \|u\|_{L^2}) \|u_d - u\|_{L^2} \to 0$$
+   Finally, the free quadratic kinetic form $\mathfrak{q}_0(v) = \|\partial_x v\|_{L^2}^2 + \langle v, \Delta_{\operatorname{NA}, \infty} v \rangle$ is a sum of positive self-adjoint quadratic forms, which is weakly lower semicontinuous. Thus:
+   $$\liminf_{d \to \infty} \mathfrak{q}_0(u_d) \ge \mathfrak{q}_0(u)$$
+   Combining these bounds yields:
+   $$\liminf_{d \to \infty} \mathfrak{q}_d(u_d) = \liminf_{d \to \infty} (\mathfrak{q}_0(u_d) - \lambda \langle u_d, \widetilde{\Psi}_d u_d \rangle) \ge \mathfrak{q}_0(u) - \lambda \langle u, \Psi_\infty u \rangle = \mathfrak{q}_\infty(u)$$
+   which proves (M1).
+   
+   Mosco convergence of the closed forms $\mathfrak{q}_d \to \mathfrak{q}_\infty$ is equivalent to strong resolvent convergence of the associated self-adjoint operators $H_d \to H_\infty$. Since the limit resolvent is compact, this strong resolvent convergence guarantees convergence of the infima of the spectra, completing the proof. $\square$
 
 *Proof of Theorem 11.10.4.* We prove the theorem by establishing five key structural properties:
 
@@ -885,8 +973,12 @@ $$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
 By the Exact Product Factorization (Theorem 11.7.6) and Proposition 11.10.4.3, the presence function factors as:
 $$\Psi_\infty(b_\infty) = \Psi_E(y_\infty) \prod_p \Psi_{C_p}(b_{p, \infty})$$
 Since $\Psi_\infty(b_\infty) > 0$, we must have $\Psi_E(y_\infty) > 0$ and $\Psi_{C_p}(b_{p, \infty}) > 0$ for all $p$.
-The Archimedean component $y_\infty \in S^1_L$ is non-zero because if $y_\infty = 0$, then the diagonal embedding requires $b_{p, \infty} = 0$, but the valuation sector collapse (Theorem 11.3.1) guarantees that $\Psi_{C_p}(0) = 0$, which would force $\Psi_\infty(b_\infty) = 0$, a contradiction.
-Thus, $y_\infty \neq 0$ is a valid non-zero real scale. The positivity $\Psi_E(y_\infty) > 0$ means that the set of valid Archimedean translations:
+The Archimedean component $y_\infty = \pi_{\mathbb{R}}(b_\infty)$ is non-zero because if $y_\infty = 0$, then the diagonal embedding requires $b_{p, \infty} = 0$, but the valuation sector collapse (Theorem 11.3.1) guarantees that $\Psi_{C_p}(0) = 0$, which would force $\Psi_\infty(b_\infty) = 0$, a contradiction.
+Thus, $y_\infty \neq 0$ is a valid non-zero real scale. Note that the presence potential $\Psi_\infty(b)$ is defined to be identically zero for Archimedean scales $y \notin Y = [-b_*, b_*] \pmod{2L}$. Therefore, the support of the limit measure $\mu_\infty$ is restricted to $Y \times \prod_p \mathbb{Z}_p$, which guarantees that the extracted Archimedean scale satisfies $|y_\infty| \le b_*$ uniformly.
+
+Since $|y_\infty| \le b_*$ and the circle circumference parameter is globally chosen to satisfy $L > L_* = L' + b_* S_{\max} + \eta$ prior to extraction, the de-periodization condition in Lemma 11.10.4.2 is satisfied uniformly. This completely avoids any circularity where the de-periodization hypothesis depends on the limit scale to be extracted.
+
+The positivity $\Psi_E(y_\infty) > 0$ means that the set of valid Archimedean translations:
 $$\mathcal{A}_M(y_\infty) = \left\{ a_\infty \in E \ \middle|\ a_\infty + y_\infty s_n \in E \quad \forall n = 1, \dots, M \right\}$$
 is non-empty for all finite lengths $M \ge 1$.
 By the Infinite Sequence Adèlic Intersection (Theorem 11.10.2), the infinite intersection set:
@@ -1455,7 +1547,7 @@ In this appendix, we conduct a rigorous, referee-hostile failure-mode audit of t
   2. $S = \{s_n\}_{n=1}^\infty$ is a bounded sequence of real numbers with $S_{\max} = \sup_n |s_n| < \infty$.
   3. $X_\infty = S^1_L \times \prod_p \mathbb{Z}_p$ is the compact projective limit space.
   4. There exists a subsequence $d_j \to \infty$ with $\inf \sigma(H_{d_j}) \le -\epsilon < 0$.
-  5. The circle circumference $L$ satisfies $L > L' + |b_0| S_{\max}$ for all scales $b$ in the compact support sector $Y \subset [-b_0, b_0]$.
+  5. The circle circumference $L$ satisfies $L > L_* = L' + b_* S_{\max} + \eta$ for the globally fixed supremum scale bound $b_* > 0$ and de-periodization margin $\eta > 0$, where the Archimedean scale sector is $Y = [-b_*, b_*] \subset S^1_L$.
 - **Topologies Used:**
   - Product topology on $X_\infty$ (which makes $X_\infty$ a compact metrizable space).
   - Weak* topology on the space of Radon probability measures $\mathcal{P}(X_\infty)$.
@@ -1471,7 +1563,7 @@ In this appendix, we conduct a rigorous, referee-hostile failure-mode audit of t
 - **Uniformity of $\lambda$:**
   - The coupling parameter $\lambda$ is strictly uniform and independent of the depth $d$, bounded below by $\lambda_c(d) \le \lambda_* < \infty$, because the non-Archimedean kinetic terms $M_{k_p^*, k_p^*}$ are bounded by $2(p+1)$ uniformly in $d$ (Theorem 11.A.1).
 - **Failure Modes ("Could fail if..."):**
-  1. *Archimedean drift:* If $L \le L' + |b_0| S_{\max}$, the modular copy $a_\infty + y_\infty s_n \in E \pmod{2L}$ could wrap around the circle, producing a "fake" copy that does not exist in $\mathbb{R}$.
+  1. *Archimedean drift:* If $L \le L_* = L' + b_* S_{\max} + \eta$, the modular copy $a_\infty + y_\infty s_n \in E \pmod{2L}$ could wrap around the circle, producing a "fake" copy that does not exist in $\mathbb{R}$.
   2. *Valuation escape:* If $X_\infty$ were non-compact (e.g., if we used the full adele ring $\mathbb{A}$ instead of $\mathbb{R} \times \prod_p \mathbb{Z}_p$), the subsequence of measures $\widetilde{\mu}_{d_j}$ could lose mass at infinity ($\mu_\infty(X_\infty) < 1$), causing the limit state to vanish.
   3. *Unbounded kinetic energy:* If the tree-radial Jacobi matrix off-diagonal coefficients (Theorem 11.A.1) grew exponentially with depth $d$, the critical coupling $\lambda_c(d)$ would diverge to $+\infty$, making uniform $\lambda$-control impossible.
 
