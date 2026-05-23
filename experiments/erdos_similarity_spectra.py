@@ -4,7 +4,11 @@ import matplotlib.pyplot as plt
 from adelic_spectral_zeta.erdos_similarity import (
     construct_adelic_sequence,
     construct_adelic_set,
-    solve_schrodinger_spectrum
+    solve_schrodinger_spectrum,
+    analyze_valuation_sectors,
+    construct_generalized_cantor_set,
+    fit_confinement_scaling,
+    predict_projective_limit
 )
 
 def run_experiment():
@@ -66,11 +70,8 @@ def run_experiment():
     print(f"Ground-state energy shift (E0_B - E0_A): {shift:+.4f} (Case B pushed higher)")
     
     # Estimate clustering gap
-    # Case B should have eigenvalues corresponding to localized wells grouped together,
-    # then a gap to bulk states.
-    # Let's count how many eigenvalues are in the lowest cluster for Case B
     diffs_B = np.diff(eigs_B)
-    max_diff_idx = np.argmax(diffs_B[:4]) # Find the largest gap in the first few levels
+    max_diff_idx = np.argmax(diffs_B[:4])
     cluster_size = max_diff_idx + 1
     gap_val = diffs_B[max_diff_idx]
     print(f"Detected Case B cluster size: {cluster_size} states")
@@ -84,8 +85,6 @@ def run_experiment():
     u_vals = np.linspace(grid_params["u_min"], grid_params["u_max"], grid_params["N_u"])
     y_vals = np.exp(u_vals)
     
-    # We extract the 1D slice from psi where k2 = 0 and k3 = 0
-    # Flat index = i * (V2 + 1) * (V3 + 1) + j * (V3 + 1) + k
     V2, V3 = grid_params["V2"], grid_params["V3"]
     psi_slice_A = [psi_A[i * (V2 + 1) * (V3 + 1)] for i in range(grid_params["N_u"])]
     psi_slice_B = [psi_B[i * (V2 + 1) * (V3 + 1)] for i in range(grid_params["N_u"])]
@@ -104,7 +103,6 @@ def run_experiment():
     ax2.plot(indices, eigs_A, 'o--', color='#1f77b4', markersize=8, linewidth=2, label='Case A (Neighborhood)')
     ax2.plot(indices, eigs_B, 's-', color='#d62728', markersize=8, linewidth=2, label='Case B (Porous Cantor)')
     
-    # Highlight the gap in Case B
     gap_start = eigs_B[max_diff_idx]
     gap_end = eigs_B[max_diff_idx + 1]
     ax2.axhspan(gap_start, gap_end, color='#ff7f0e', alpha=0.15, label='Case B Confinement Gap')
@@ -118,13 +116,103 @@ def run_experiment():
     
     plt.tight_layout()
     
-    # Ensure directory exists and save
     os.makedirs("figures", exist_ok=True)
     fig_path = "figures/erdos_spectral_gap.png"
     plt.savefig(fig_path, dpi=300)
     print(f"Saved figure to {fig_path}")
     plt.close()
     
+    # 7. Run and demonstrate Algebraic Pre-Processor (Galois Extension)
+    print("\n" + "="*70)
+    print("DEMONSTRATING GALOIS EXTENSION & AUTOMATED CYCLE MATCHING PRE-PROCESSOR")
+    print("="*70)
+    
+    # Run pre-processor on base 11 against [2, 3] places
+    primes_11 = [2, 3]
+    depths_11 = [2, 1]
+    cantor_sets_11 = [
+        construct_generalized_cantor_set(2, 2), # keeps {0, 1} mod 4
+        construct_generalized_cantor_set(3, 1)  # keeps {0, 1} mod 3
+    ]
+    print(f"Checking Base = 11 mod 4 and mod 3, M = 3...")
+    scales_11, collapsed_11 = analyze_valuation_sectors(primes_11, depths_11, 11, 3, cantor_sets_11)
+    print(f"  Admissible scales: {scales_11}")
+    print(f"  Analytical Sector Collapse predicted: {collapsed_11}")
+    
+    # Run pre-processor on general rational base 7/5 against custom primes [3, 11]
+    primes_7_5 = [3, 11]
+    depths_7_5 = [2, 1]
+    cantor_sets_7_5 = [
+        construct_generalized_cantor_set(3, 2), # keeps all but last mod 9
+        construct_generalized_cantor_set(11, 1) # keeps all but last mod 11
+    ]
+    print(f"\nChecking general rational Base = 7/5 against primes [3, 11], M = 4...")
+    scales_7_5, collapsed_7_5 = analyze_valuation_sectors(primes_7_5, depths_7_5, "7/5", 4, cantor_sets_7_5)
+    print(f"  Admissible scales: {scales_7_5}")
+    print(f"  Analytical Sector Collapse predicted: {collapsed_7_5}")
+    
+    # Demonstrate another case that does NOT collapse immediately
+    primes_no_collapse = [3, 5]
+    depths_no_collapse = [1, 1]
+    cantor_sets_nc = [
+        construct_generalized_cantor_set(3, 1, allowed_residues=[0, 1]),
+        construct_generalized_cantor_set(5, 1, allowed_residues=[0, 1, 2, 3])
+    ]
+    print(f"\nChecking Base = 7 against primes [3, 5], M = 2...")
+    scales_nc, collapsed_nc = analyze_valuation_sectors(primes_no_collapse, depths_no_collapse, 7, 2, cantor_sets_nc)
+    print(f"  Admissible scales: {scales_nc}")
+    print(f"  Analytical Sector Collapse predicted: {collapsed_nc}")
+    
+    # 8. Run and demonstrate Confinement Scaling Extrapolation & Predictive Pruning
+    print("\n" + "="*70)
+    print("DEMONSTRATING WEAPONIZED SCALING LAW FOR PREDICTIVE PRUNING")
+    print("="*70)
+    
+    # We will use small depths [1, 2] to extrapolate the ground-state energy E0 for depth d=3, theta=0.4
+    # and compare the predicted E0 with the actual E0 computed at d=3
+    print("Extrapolating Confinement Scaling coefficients for Base = 11, primes = [2, 3]...")
+    pred_val, a0, a1, metadata = predict_projective_limit(
+        primes=[2, 3],
+        base=11,
+        M=3,
+        grid_params={
+            "N_inf": 32,
+            "N_u": 10,
+            "u_min": -2.0,
+            "u_max": 1.0,
+            "L": 1.0
+        },
+        target_theta=0.4,
+        sample_depths=[1, 2],
+        lmbda=50.0
+    )
+    
+    print(f"  Extrapolated beta_0 (intercept as d -> inf): {a0:.4f}")
+    print(f"  Extrapolated beta_1 (slope as d -> inf): {a1:.4f}")
+    print(f"  Predicted Ground-State Energy E_0(d -> inf, theta=0.4): {pred_val:.4f}")
+    
+    # Run a quick validation at d=3 to see how close our prediction is
+    print("\nValidating predictive extrapolation against actual solve at d=3...")
+    act_b0, act_b1, act_r2 = fit_confinement_scaling(
+        primes=[2, 3],
+        depths=[3, 3],
+        base=11,
+        M=3,
+        grid_params={
+            "N_inf": 32,
+            "N_u": 10,
+            "u_min": -2.0,
+            "u_max": 1.0,
+            "L": 1.0
+        },
+        theta_vals=[0.4],
+        lmbda=50.0
+    )
+    # The actual solved E0 at d=3, theta=0.4 is the result:
+    print(f"  Actual solved E_0(d=3, theta=0.4): {act_b0 + act_b1 * (1.0 / (1.0 - 0.4)**2):.4f}")
+    print(f"  Absolute Prediction Error: {abs(pred_val - (act_b0 + act_b1 * (1.0 / (1.0 - 0.4)**2))):.4f}")
+    
+    print("="*70)
     print("Experiment completed successfully.")
 
 if __name__ == "__main__":

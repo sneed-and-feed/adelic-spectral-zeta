@@ -92,3 +92,130 @@ def test_solver():
     assert len(eigs) > 0
     assert len(psi) == grid_params["N_u"] * (grid_params["V2"] + 1) * (grid_params["V3"] + 1)
     assert eigs[0] < eigs[-1] # Eigenvalues should be sorted
+
+def test_generalized_cantor_set():
+    from adelic_spectral_zeta.erdos_similarity import construct_generalized_cantor_set
+    # Test default
+    c2 = construct_generalized_cantor_set(2, 3)
+    assert len(c2) == 8
+    # Default 2-adic Cantor keeps residues {0, 1} mod 4
+    for x in range(8):
+        if x % 4 in [2, 3]:
+            assert not c2[x]
+        else:
+            assert c2[x]
+            
+    # Test allowed_digits
+    # Exclude 2 from ternary digits mod 9 (d=2)
+    c3_digits = construct_generalized_cantor_set(3, 2, allowed_digits={0: {0, 1}, 1: {0, 1}})
+    for x in range(9):
+        d0 = x % 3
+        d1 = (x // 3) % 3
+        if d0 == 2 or d1 == 2:
+            assert not c3_digits[x]
+        else:
+            assert c3_digits[x]
+
+def test_analyze_valuation_sectors():
+    from adelic_spectral_zeta.erdos_similarity import (
+        analyze_valuation_sectors,
+        construct_generalized_cantor_set
+    )
+    # Case B base 11 mod 4 and mod 3 should collapse:
+    primes = [2, 3]
+    depths = [2, 1]
+    cantor_sets = [
+        construct_generalized_cantor_set(2, 2), # keeps 0, 1 mod 4
+        construct_generalized_cantor_set(3, 1)  # keeps 0, 1 mod 3
+    ]
+    
+    scales, collapsed = analyze_valuation_sectors(primes, depths, base=11, M=3, cantor_sets=cantor_sets)
+    assert collapsed
+    # The only admissible scale is the boundary (2, 1)
+    assert scales == [(2, 1)]
+    
+    # Test non-coprime error
+    with pytest.raises(ValueError):
+        analyze_valuation_sectors(primes, depths, base=6, M=3, cantor_sets=cantor_sets)
+
+def test_generalized_laplacian():
+    from adelic_spectral_zeta.erdos_similarity import construct_idelic_laplacian
+    # Test new signature
+    Delta = construct_idelic_laplacian(10, du=0.5, V_list=[2, 1, 3])
+    expected_dim = 10 * (2 + 1) * (1 + 1) * (3 + 1)
+    assert Delta.shape == (expected_dim, expected_dim)
+    assert (Delta - Delta.T).nnz == 0
+
+def test_generalized_solver():
+    from adelic_spectral_zeta.erdos_similarity import (
+        construct_adelic_sequence,
+        construct_adelic_set,
+        solve_schrodinger_spectrum
+    )
+    # Setup for primes 3 and 5
+    primes = [3, 5]
+    depths = [1, 1]
+    seq = construct_adelic_sequence("geometric", 3, primes=primes, depths=depths, base=7)
+    set_a = construct_adelic_set("neighborhood", N_inf=20, primes=primes, depths=depths, density=0.5)
+    
+    grid_params = {
+        "N_u": 6,
+        "u_min": -1.0,
+        "u_max": 1.0,
+        "V_list": depths,
+        "primes": primes,
+        "L": 1.0
+    }
+    
+    eigs, evecs, psi = solve_schrodinger_spectrum(set_a, seq, grid_params, lmbda=2.0)
+    assert len(eigs) > 0
+    assert len(psi) == 6 * (1 + 1) * (1 + 1)
+    assert eigs[0] < eigs[-1]
+
+def test_confinement_scaling_and_prediction():
+    from adelic_spectral_zeta.erdos_similarity import (
+        fit_confinement_scaling,
+        predict_projective_limit
+    )
+    
+    primes = [2, 3]
+    depths = [1, 1]
+    
+    grid_params = {
+        "N_inf": 16,
+        "N_u": 6,
+        "u_min": -1.0,
+        "u_max": 1.0,
+        "L": 1.0
+    }
+    
+    # Test linear fit extraction
+    b0, b1, r2 = fit_confinement_scaling(
+        primes=primes,
+        depths=depths,
+        base=11,
+        M=2,
+        grid_params=grid_params,
+        theta_vals=[0.2, 0.3, 0.4],
+        lmbda=50.0
+    )
+    
+    assert isinstance(b0, float)
+    assert isinstance(b1, float)
+    assert 0.0 <= r2 <= 1.0
+    
+    # Test extrapolation projective limit prediction
+    pred, a0, a1, meta = predict_projective_limit(
+        primes=primes,
+        base=11,
+        M=2,
+        grid_params=grid_params,
+        target_theta=0.5,
+        sample_depths=[1, 2],
+        lmbda=50.0
+    )
+    
+    assert isinstance(pred, float)
+    assert isinstance(a0, float)
+    assert isinstance(a1, float)
+    assert len(meta["beta_0s"]) == 2
