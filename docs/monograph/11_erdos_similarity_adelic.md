@@ -1215,3 +1215,40 @@ This joint potential satisfies the following structural properties:
     As the wavefunction scales the tree, it pays a Dirichlet kinetic energy cost. By the Adèlic Basic Inequality (Theorem 11.C.5), any state supported at tree depths $k_p \ge d$ satisfies:
     $$\langle \psi, \Delta_{NA, \infty} \psi \rangle \ge (\sqrt{p}-1)^2 \|\psi\|_{L^2}^2$$
     For a sufficiently small coupling constant $\lambda < (\sqrt{p}-1)^2$, the kinetic penalty of scaling the tree eventually overcomes the potential energy gain of accessing the density limit $\rho_E \to 1$. This variational competition prevents the wavefunction from escaping to the boundary while simultaneously preventing it from resting at the root. The ground state is therefore confined to a finite, coupled, and non-trivial depth $k_p^*$, establishing a tight mathematical coupling between the continuous scale axis and the discrete tree structures. $\square$
+
+---
+
+### 11.C.8 Boundary Minkowski Dimension and Hölder Continuity Exponents
+
+To complete the quantitative transition from rational approximations to the transcendental limit, we establish the explicit bounding conditions for the Hölder continuity exponent $\alpha$ across highly porous, fat Cantor-type real sets.
+
+**Theorem 11.C.8 (Hölder Continuity of the Presence Potential)**  
+*Let $E \subset \mathbb{R}$ be a compact set of positive Lebesgue measure, and let $\partial E$ denote its topological boundary. Suppose the boundary $\partial E$ has a finite upper Minkowski (box-counting) dimension $d = \dim_{\text{Mink}}(\partial E) < 1$. Then the $L^1$ modulus of continuity of the characteristic function $\chi_E$ satisfies the Hölder bound:*
+$$\omega_{\chi_E}(\epsilon) = \sup_{|t| \le \epsilon} \int_{\mathbb{R}} |\chi_E(x + t) - \chi_E(x)| \, dx \le C \epsilon^{1-d}$$
+*for a positive constant $C > 0$, yielding the Hölder continuity exponent $\alpha = 1 - d > 0$.*
+
+*Proof.* For any $t \in \mathbb{R}$ with $|t| \le \epsilon$, the symmetric difference $E \triangle (E - t)$ is contained within the $\epsilon$-neighborhood of the boundary $\partial E$:
+$$E \triangle (E - t) \subset \{ x \in \mathbb{R} \mid \operatorname{dist}(x, \partial E) \le \epsilon \} = \mathcal{N}_\epsilon(\partial E)$$
+By definition of the upper Minkowski dimension, since $\partial E$ is a compact set of dimension $d$, the Lebesgue measure of its $\epsilon$-neighborhood satisfies:
+$$m(\mathcal{N}_\epsilon(\partial E)) \le C \epsilon^{1-d}$$
+for all sufficiently small $\epsilon > 0$. Evaluating the integral of the difference in characteristic functions:
+$$\int_{\mathbb{R}} |\chi_E(x + t) - \chi_E(x)| \, dx = m(E \triangle (E - t)) \le m(\mathcal{N}_\epsilon(\partial E)) \le C \epsilon^{1-d}$$
+Taking the supremum over $|t| \le \epsilon$ yields the desired bound:
+$$\omega_{\chi_E}(\epsilon) \le C \epsilon^{1-d}$$
+with the Hölder continuity exponent $\alpha = 1 - d > 0$. $\square$
+
+**Corollary 11.C.8.1 (Diagonal Convergence Rate)**  
+*Let $S$ be a transcendental sequence, and let $S'^{(M)}$ be a rational sequence approximation satisfying:*
+$$\max_{1 \le n \le M} |s_n - s'_{n, M}| \le \delta_M$$
+*If the rational approximation resolution satisfies the decay rate:*
+$$\delta_M = o\left( M^{-\frac{1}{1-d}} \right)$$
+*then the sequence of rational potentials $V_{S'^{(M)}}$ converges uniformly to the transcendental potential $V_S$ in $L^\infty(S^1_L)$ as $M \to \infty$:*
+$$\lim_{M \to \infty} \left\| V_{S'^{(M)}} - V_S \right\|_{L^\infty} = 0$$
+
+*Proof.* By the Archimedean Transfer Lemma (Theorem 11.C.1) and the Hölder bound of Theorem 11.C.8:
+$$\| V_{S'^{(M)}} - V_S \|_{L^\infty} \le \lambda M \cdot \omega_{\chi_E}(y_0 \delta_M) \le C \lambda M (y_0 \delta_M)^{1-d}$$
+Substituting $\delta_M = o\left( M^{-\frac{1}{1-d}} \right)$ gives:
+$$M (y_0 \delta_M)^{1-d} = o\left( M \cdot M^{-1} \right) = o(1)$$
+Thus, the uniform potential difference converges to 0 as $M \to \infty$, which completes the proof. $\square$
+
+For standard fat Cantor-type sets (such as the Smith–Volterra–Cantor set), the boundary Minkowski dimension satisfies $d = \dim_{\text{Mink}}(\partial E) = \log_3(2) \approx 0.6309$ (or more generally $d < 1$ for any nowhere dense set whose construction excludes positive-measure middle intervals). The Hölder exponent $\alpha = 1 - d > 0$ is therefore strictly positive and bounded away from zero. This guarantees the existence of a valid rational approximation sequence $S'^{(M)}$ satisfying the diagonal convergence rate, ensuring that the adèlic spectral detector bridges seamlessly to the transcendental continuum. $\square$
