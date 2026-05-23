@@ -1053,12 +1053,12 @@ where $\Psi_E(y)$ is the Archimedean presence function. This dissolves the artif
 However, for the general ESC, the sequence $S = \{s_n\} \subset \mathbb{R}$ is arbitrary (e.g., $s_n = \pi^{-n}$ or $s_n = 1/\sqrt{n}$) and has no canonical $p$-adic component, making the adèlic diagonal embedding undefined. To bridge general real sequences to the adèlic machinery, we establish a **Transfer Lemma**:
 
 **Theorem 11.C.1 (Archimedean Transfer Lemma)**  
-*Let $E \subset \mathbb{R}$ be a compact set, and let $y \in [-y_0, y_0]$ be a scale parameter. Let $S = \{s_n\}_{n=1}^M$ be a real sequence, and let $S' = \{s'_n\}_{n=1}^M \subset \mathbb{Q}$ be a rational approximation satisfying $|s_n - s'_n| \le \delta$ for all $1 \le n \le M$. Then the Archimedean presence functions satisfy:*
-$$| \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M \omega_{\chi_E}(|y| \cdot |s_n - s'_n|) \le M \cdot \omega_{\chi_E}(y_0 \delta)$$
-*where $\omega_{\chi_E}(\epsilon) = \sup_{|t| \le \epsilon} \|\chi_E(\cdot + t) - \chi_E\|_{L^1}$ is the $L^1$ modulus of continuity of the characteristic function of $E$. Since $\chi_E \in L^1(\mathbb{R})$, we have $\lim_{\epsilon \to 0} \omega_{\chi_E}(\epsilon) = 0$, ensuring uniform convergence as $\delta \to 0$.*
+*Let $E \subset [-L, L]$ be a compact set, and let the scale space be the compact circle $S^1_L \cong \mathbb{R}/2L\mathbb{Z}$, so the scale variable $y \in S^1_L$ is globally bounded by $y_{\max} = L$. Let $S = \{s_n\}_{n=1}^M$ be a real sequence, and let $S' = \{s'_n\}_{n=1}^M \subset \mathbb{Q}$ be a rational approximation satisfying $|s_n - s'_n| \le \delta$ for all $1 \le n \le M$. Then the Archimedean presence functions satisfy the global bound on $S^1_L$:*
+$$\sup_{y \in S^1_L} | \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M \omega_{\chi_E}(y_{\max} |s_n - s'_n|) \le M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
+*where $\omega_{\chi_E}(\epsilon) = \sup_{|t| \le \epsilon} \|\chi_E(\cdot + t) - \chi_E\|_{L^1}$ is the $L^1$ modulus of continuity of the characteristic function of $E$.*
 
-*Furthermore, let $H = \Delta + V_S$ and $H' = \Delta + V_{S'}$ be the Hamiltonians with potentials $V_S(y) = -\lambda \Psi_E(y; S)$ and $V_{S'}(y) = -\lambda \Psi_E(y; S')$. The ground-state energies $E_0(H)$ and $E_0(H')$ satisfy:*
-$$| E_0(H) - E_0(H') | \le \lambda M \cdot \omega_{\chi_E}(y_0 \delta)$$
+*Furthermore, let $H = \Delta + V_S$ and $H' = \Delta + V_{S'}$ be the Hamiltonians with potentials $V_S(y) = -\lambda \Psi_E(y; S)$ and $V_{S'}(y) = -\lambda \Psi_E(y; S')$. Both operators act on the same Hilbert space $L^2(S^1_L)$ with the same domain $H^2(S^1_L)$. Their ground-state energies satisfy:*
+$$| E_0(H) - E_0(H') | \le \| V_S - V_{S'} \|_{L^\infty(S^1_L)} \le \lambda M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
 *Consequently, negative ground-state energy is preserved under sufficiently close rational sequence perturbations.*
 
 *Proof.* The Archimedean presence function of $E$ for a sequence $S$ is the Lebesgue measure of the intersection:
@@ -1067,13 +1067,13 @@ Let $E_n = E - y s_n$ and $E'_n = E - y s'_n$. The symmetric difference of the i
 $$m\left( \bigcap_{n=1}^M E_n \triangle \bigcap_{n=1}^M E'_n \right) \le \sum_{n=1}^M m(E_n \triangle E'_n)$$
 The symmetric difference of the translated sets evaluates to:
 $$m(E_n \triangle E'_n) = \int_{\mathbb{R}} |\chi_E(x + y s_n) - \chi_E(x + y s'_n)| \, dx = \int_{\mathbb{R}} |\chi_E(u + y(s_n - s'_n)) - \chi_E(u)| \, du$$
-By definition of the $L^1$ modulus of continuity, this is bounded by $\omega_{\chi_E}(|y| \cdot |s_n - s'_n|) \le \omega_{\chi_E}(y_0 \delta)$. Summing over $n=1,\dots,M$ yields the first inequality:
-$$| \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M m(E_n \triangle E'_n) \le M \cdot \omega_{\chi_E}(y_0 \delta)$$
-For the spectral perturbation, the potential difference is bounded in the $L^\infty$ norm:
-$$\|V_S - V_{S'}\|_{L^\infty} = \lambda \sup_{y} |\Psi_E(y; S) - \Psi_E(y; S')| \le \lambda M \cdot \omega_{\chi_E}(y_0 \delta)$$
-Since $H - H' = V_S - V_{S'}$, the operator norm of the perturbation is bounded: $\|H - H'\|_{\text{op}} \le \lambda M \cdot \omega_{\chi_E}(y_0 \delta)$. By Weyl's perturbation theorem for self-adjoint operators, the ground-state energies satisfy:
-$$| E_0(H) - E_0(H') | \le \|H - H'\|_{\text{op}} \le \lambda M \cdot \omega_{\chi_E}(y_0 \delta)$$
-This completes the proof. Since any real sequence can be approximated by a rational sequence to arbitrary precision, the Transfer Lemma rigorously extends the adèlic obstruction framework to general ESC instances. $\square$
+By definition of the $L^1$ modulus of continuity and since $|y| \le y_{\max}$ globally on $S^1_L$, this is bounded by $\omega_{\chi_E}(|y| \cdot |s_n - s'_n|) \le \omega_{\chi_E}(y_{\max} \delta)$. Summing over $n=1,\dots,M$ yields the global supremum bound:
+$$\sup_{y \in S^1_L} | \Psi_E(y; S) - \Psi_E(y; S') | \le \sum_{n=1}^M m(E_n \triangle E'_n) \le M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
+For the spectral perturbation, since $V_S$ and $V_{S'}$ are bounded multiplication operators, the difference $V_S - V_{S'}$ is bounded in the operator norm on $L^2(S^1_L)$ by the $L^\infty$ norm:
+$$\|H - H'\|_{\text{op}} = \|V_S - V_{S'}\|_{L^2 \to L^2} = \|V_S - V_{S'}\|_{L^\infty(S^1_L)} = \lambda \sup_{y \in S^1_L} |\Psi_E(y; S) - \Psi_E(y; S')| \le \lambda M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
+Since $H$ and $H'$ are self-adjoint operators defined on the same domain $H^2(S^1_L) \subset L^2(S^1_L)$, we apply Weyl's perturbation theorem:
+$$| E_0(H) - E_0(H') | \le \|H - H'\|_{\text{op}} \le \lambda M \cdot \omega_{\chi_E}(y_{\max} \delta)$$
+This completes the proof. Since any real sequence can be approximated by a rational sequence to arbitrary precision, the Transfer Lemma extends the adèlic obstruction framework to general ESC instances. $\square$
 
 ---
 
@@ -1114,9 +1114,9 @@ Because $x_0 \in E$ is a Lebesgue density point, we have:
 $$\lim_{k \to \infty} \rho(x_0, p^{-k}) = 1$$
 This forces the endogenous potential to converge to a constant attractive floor at high tree depths:
 $$\lim_{k \to \infty} V_d(k) = -\lambda$$
-Because the potential is bounded below by $-\lambda$, any state $\psi$ supported at tree depths $k \ge d$ has energy bounded below by:
+Because the potential is bounded below by $-\lambda$, the expectation value of the Hamiltonian for any state $\psi$ supported entirely at tree depths $k \ge d$ satisfies:
 $$\langle \psi, H_{NA, \infty} \psi \rangle = \langle \psi, \Delta_{NA, \infty} \psi \rangle + \langle \psi, V_d \psi \rangle \ge \left( (\sqrt{p}-1)^2 - \lambda \right) \|\psi\|_{L^2}^2$$
-For coupling strengths satisfying $\lambda < (\sqrt{p}-1)^2$, the uniform spectral gap of the Dirichlet Laplacian on the subtree dominates the attractive potential, preventing bound state formation at fine scales and ensuring that any negative-energy states remain exponentially localized near the root. $\square$
+For coupling strengths satisfying $\lambda < (\sqrt{p}-1)^2$, the uniform spectral gap of the Dirichlet Laplacian on the subtree dominates the attractive potential. This implies $\langle \psi, H_{NA, \infty} \psi \rangle > 0$, thereby preventing the formation of negative-energy bound states supported at depths $k \ge d$. Any negative-energy eigenfunctions must therefore be supported in the finite region $k < d$, where the potential well structure determines localization near the root. $\square$
 
 ---
 
@@ -1188,13 +1188,26 @@ This completes the proof that the critical coupling is uniform in the projective
 
 ### 11.C.7 The Endogenous Joint Interaction Potential
 
-To prevent the Bruhat-Tits trees from decoupling into a non-interacting "ghost field" in the unconstrained adèlic limit, we reformulate the global presence potential by weaving the endogenous density waves directly into its definition. The non-Archimedean tree coordinates must not be independent of the potential; instead, we define the **joint interaction potential** on the scale space $X_\infty$ as:
+To prevent the Bruhat-Tits trees from decoupling into a non-interacting "ghost field" in the unconstrained adèlic limit, we reformulate the global presence potential by weaving the endogenous density waves directly into its definition. The non-Archimedean tree coordinates must not be independent of the potential; instead, we define the **joint interaction potential** on the scale space $X_\infty$ by evaluating the density profile at the shifted sequence points:
 
-$$V_{\text{joint}}(y, \vec{k}) = -\lambda \Psi_E(y) \prod_p \rho_E\left(x_0, |y| p^{-k_p}\right)$$
+$$V_{\text{joint}}(y, \vec{k}) = -\lambda \int_{\mathbb{R}} \prod_{n=1}^M \chi_E(x + y s_n) \prod_p \rho_E\left(x + y s_n, p^{-k_p}\right) \, dx$$
 
-where $x_0 \in E$ is a Lebesgue density point, $\Psi_E(y)$ is the Archimedean presence function, and $\rho_E(x_0, \epsilon)$ is the Lebesgue density profile of $E$ centered at $x_0$ at scale $\epsilon > 0$:
+where $\chi_E$ is the characteristic function of the compact set $E$, and $\rho_E(u, \epsilon)$ is the Lebesgue density profile centered at $u$ at scale $\epsilon > 0$:
 
-$$\rho_E(x_0, \epsilon) = \frac{m(E \cap [x_0 - \epsilon, x_0 + \epsilon])}{2\epsilon}$$
+$$\rho_E(u, \epsilon) = \frac{m(E \cap [u - \epsilon, u + \epsilon])}{2\epsilon}$$
+
+This joint potential satisfies the following theorem, establishing its equivalence to sequence containment:
+
+**Theorem 11.C.7 (Equivalence of Joint Potential and Sequence Containment)**  
+*Let $E \subset \mathbb{R}$ be a compact set, and let $S = \{s_n\}_{n=1}^M$ be a sequence. The joint interaction potential $V_{\text{joint}}(y, \vec{k})$ is strictly attractive ($V_{\text{joint}}(y, \vec{k}) \le -c < 0$) on a neighborhood of the coupled scale $(y, \vec{k})$ if and only if there exists a translation anchor $x_0 \in E$ such that $x_0 + y s_n \in E$ for all $1 \le n \le M$ (a translation copy).*
+
+*Proof.* 
+1. **Existence $\implies$ Attractive Potential**: Suppose there exists a translation copy of $S$ in $E$ at scale $y$. This means the intersection set $F_M = \bigcap_{n=1}^M (E - y s_n)$ has positive Lebesgue measure. Let $x_0 \in F_M$ be a Lebesgue density point of $F_M$. By definition of $F_M$, we have $x_0 + y s_n \in E$ for all $n$. Furthermore, because $F_M \subset E - y s_n$ for all $n$, the local density of $E$ centered at the shifted sequence elements $x_0 + y s_n$ is bounded below by the density of the intersection set:
+   $$\rho_E(x_0 + y s_n, p^{-k_p}) \ge \frac{m(F_M \cap [x_0 - p^{-k_p}, x_0 + p^{-k_p}])}{2 p^{-k_p}} = \rho_{F_M}(x_0, p^{-k_p})$$
+   Since $x_0$ is a Lebesgue density point of $F_M$, we have $\lim_{k_p \to \infty} \rho_{F_M}(x_0, p^{-k_p}) = 1$. Thus, for any $\epsilon > 0$, there exists a depth $D$ such that for all $k_p \ge D$, the density profile satisfies $\rho_E(x_0 + y s_n, p^{-k_p}) \ge 1 - \epsilon$. The integrand in the definition of $V_{\text{joint}}$ is therefore strictly positive on a neighborhood of $x_0$, ensuring that the integral is positive and the joint potential is strictly attractive.
+2. **Attractive Potential $\implies$ Existence**: Conversely, suppose $V_{\text{joint}}(y, \vec{k}) < 0$. This requires the integrand to be positive on a set of positive Lebesgue measure. Thus, there exists a point $x_0 \in \mathbb{R}$ such that:
+   $$\prod_{n=1}^M \chi_E(x_0 + y s_n) \prod_p \rho_E(x_0 + y s_n, p^{-k_p}) > 0$$
+   This implies that $\chi_E(x_0 + y s_n) = 1$ for all $1 \le n \le M$, which means $x_0 + y s_n \in E$ for all $n$. This directly yields a real copy of the sequence in $E$ at scale $y$, completing the proof. $\square$
 
 This joint potential satisfies the following structural properties:
 
@@ -1237,18 +1250,20 @@ Taking the supremum over $|t| \le \epsilon$ yields the desired bound:
 $$\omega_{\chi_E}(\epsilon) \le C \epsilon^{1-d}$$
 with the Hölder continuity exponent $\alpha = 1 - d > 0$. $\square$
 
-**Corollary 11.C.8.1 (Diagonal Convergence Rate)**  
-*Let $S$ be a transcendental sequence, and let $S'^{(M)}$ be a rational sequence approximation satisfying:*
+**Corollary 11.C.8.1 (Diagonal Convergence Rate under Shrinking Scales)**  
+*Let $S$ be a transcendental sequence, and let the effective scale threshold decay as $y_0(M) = \mathcal{O}(M^{-\beta})$ for some scale coupling exponent $\beta \ge 0$. Let $S'^{(M)}$ be a rational sequence approximation satisfying:*
 $$\max_{1 \le n \le M} |s_n - s'_{n, M}| \le \delta_M$$
 *If the rational approximation resolution satisfies the decay rate:*
-$$\delta_M = o\left( M^{-\frac{1}{1-d}} \right)$$
+$$\delta_M = o\left( M^{-\frac{1 - \beta(1-d)}{1-d}} \right)$$
 *then the sequence of rational potentials $V_{S'^{(M)}}$ converges uniformly to the transcendental potential $V_S$ in $L^\infty(S^1_L)$ as $M \to \infty$:*
 $$\lim_{M \to \infty} \left\| V_{S'^{(M)}} - V_S \right\|_{L^\infty} = 0$$
 
-*Proof.* By the Archimedean Transfer Lemma (Theorem 11.C.1) and the Hölder bound of Theorem 11.C.8:
-$$\| V_{S'^{(M)}} - V_S \|_{L^\infty} \le \lambda M \cdot \omega_{\chi_E}(y_0 \delta_M) \le C \lambda M (y_0 \delta_M)^{1-d}$$
-Substituting $\delta_M = o\left( M^{-\frac{1}{1-d}} \right)$ gives:
-$$M (y_0 \delta_M)^{1-d} = o\left( M \cdot M^{-1} \right) = o(1)$$
+*Proof.* By the Archimedean Transfer Lemma (Theorem 11.C.1) and the Hölder bound of Theorem 11.C.8, on the shrinking scale support interval $[-y_0(M), y_0(M)]$, we have:
+$$\| V_{S'^{(M)}} - V_S \|_{L^\infty} \le \lambda M \cdot \omega_{\chi_E}(y_0(M) \delta_M) \le C \lambda M (y_0(M) \delta_M)^{1-d}$$
+Substituting $y_0(M) \le C_1 M^{-\beta}$ yields:
+$$\| V_{S'^{(M)}} - V_S \|_{L^\infty} \le C_2 M^{1 - \beta(1-d)} \delta_M^{1-d}$$
+Substituting the condition $\delta_M = o\left( M^{-\frac{1 - \beta(1-d)}{1-d}} \right)$ gives:
+$$\| V_{S'^{(M)}} - V_S \|_{L^\infty} = o\left( M^{1 - \beta(1-d)} \cdot M^{-(1 - \beta(1-d))} \right) = o(1)$$
 Thus, the uniform potential difference converges to 0 as $M \to \infty$, which completes the proof. $\square$
 
 For standard fat Cantor-type sets (such as the Smith–Volterra–Cantor set), the boundary Minkowski dimension satisfies $d = \dim_{\text{Mink}}(\partial E) = \log_3(2) \approx 0.6309$ (or more generally $d < 1$ for any nowhere dense set whose construction excludes positive-measure middle intervals). The Hölder exponent $\alpha = 1 - d > 0$ is therefore strictly positive and bounded away from zero. This guarantees the existence of a valid rational approximation sequence $S'^{(M)}$ satisfying the diagonal convergence rate, ensuring that the adèlic spectral detector bridges seamlessly to the transcendental continuum. $\square$
