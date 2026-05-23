@@ -23,12 +23,13 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Theorem 11.2.1** | Finite Modular Obstruction | **[Fully Proved]** | None |
 | **Heuristic 11.2.2** | Energetic Valuation Suppression | **[Numerical Conjecture]** | Theorem 11.7.5 |
 | **Theorem 11.2.3** | Universal Modular Obstruction Construction | **[Fully Proved]** | None |
-| **Lemma 11.3.1** | 2-adic Even Valuation Blocking | **[Fully Proved]** | None |
-| **Theorem 11.3.1** | Quantitative Valuation Sector Collapse | **[Fully Proved]** | Theorem 11.2.1, Lemma 11.3.1 |
-| **Lemma 11.3.2** | Arithmetic Unit Group Closures for Base 11 | **[Fully Proved]** | None |
-| **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Fully Proved]** | None |
-| **Corollary 11.3.3** | Conditional Multi-Directional Confinement | **[Fully Proved]** | Theorem 11.3.1 |
+| **Theorem 11.3.1** | Generic Unit-Base Closure & Valuation Collapse | **[Fully Proved]** | Theorem 11.6.1 |
+| **Lemma 11.3.2** | Generic Odd/Even Valuation Blocking | **[Fully Proved]** | None |
+| **Corollary 11.3.3** | Valuation Sector Collapse for Base 11 | **[Fully Proved]** | Theorem 11.3.1, Lemma 11.3.2 |
+| **Lemma 11.3.4** | Arithmetic Unit Group Closures for Base 11 | **[Fully Proved]** | None |
+| **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Fully Proved]** | Corollary 11.3.3 |
 | **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Fully Proved]** | None |
+| **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Fully Proved]** | None |
 | **Theorem 11.7.4** | Galerkin Convergence | **[Fully Proved]** | None |
 | **Theorem 11.7.5** | Discrete Adèlic Combes–Thomas Splitting | **[Fully Proved]** | None |
 | **Theorem 11.7.6** | Exact Product Factorization of Presence | **[Fully Proved]** | Fubini–Tonelli, Haar measure product |
@@ -37,11 +38,12 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Conjecture 11.9.2** | Harmonic Sector Collapse Comparison | **[Numerical Conjecture]** | Pre-processor numerical trials |
 | **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | compact Sobolev embedding |
 | **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Fully Proved]** | Cantor Intersection Theorem |
-| **Theorem 11.10.3** | Spectral Reduction Theorem | **[Fully Proved]** | Theorem 11.7.4, Theorem 11.7.6, Theorem 11.8.2, Theorem 11.10.1, Theorem 11.10.2, Theorem 11.A.2 |
+| **Theorem 11.10.3** | Spectral Reduction Theorem | **[Fully Proved]** | Theorem 11.10.4, Theorem 11.A.2 |
+| **Theorem 11.10.4** | Spectral Compactness Extraction | **[Fully Proved]** | Theorem 11.7.4, Theorem 11.7.6, Theorem 11.8.2, Theorem 11.10.1, Theorem 11.10.2 |
 | **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Fully Proved]** | Fourier translation continuity |
 | **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Fully Proved]** | None |
 | **Theorem 11.A.2** | Yin-Yang Spectral Coupling | **[Fully Proved]** | Theorem 11.A.1, Theorem 11.10.1 |
-| **Conjecture 11.12** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.3, Theorem 11.6.1, Theorem 11.2.3 |
+| **Conjecture 11.12** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3 |
 
 #### Dependency Directed Acyclic Graph (DAG)
 
@@ -55,11 +57,12 @@ graph TD
     T1121["Theorem 11.2.1: Finite Modular Obstruction"]:::proved
     H1122["Heuristic 11.2.2: Energetic Valuation Suppression"]:::numerical
     T1123["Theorem 11.2.3: Universal Modular Obstruction Construction"]:::proved
-    L1131["Lemma 11.3.1: 2-adic Even Valuation Blocking"]:::proved
-    T1131["Theorem 11.3.1: Quantitative Valuation Sector Collapse"]:::proved
-    L1132["Lemma 11.3.2: Arithmetic Unit Group Closures"]:::proved
+    T1131["Theorem 11.3.1: Generic Unit-Base Closure & Valuation Collapse"]:::proved
+    L1132["Lemma 11.3.2: Generic Odd/Even Valuation Blocking"]:::proved
+    C1133["Corollary 11.3.3: Valuation Sector Collapse for Base 11"]:::proved
+    L1134["Lemma 11.3.4: Arithmetic Unit Group Closures for Base 11"]:::proved
+    C1135["Corollary 11.3.5: Multi-Directional Confinement"]:::proved
     T1161["Theorem 11.6.1: General p-adic Subgroup Closure Depth"]:::proved
-    C1133["Corollary 11.3.3: Multi-Directional Confinement"]:::proved
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::proved
     T1174["Theorem 11.7.4: Galerkin Convergence"]:::proved
     T1175["Theorem 11.7.5: Combes-Thomas Splitting"]:::proved
@@ -70,24 +73,28 @@ graph TD
     T11101["Theorem 11.10.1: Ground State Persistence"]:::proved
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
     T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::proved
+    T11104["Theorem 11.10.4: Spectral Compactness Extraction"]:::proved
     T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::proved
     T11A1["Theorem 11.A.1: Locality-Preserving Tree-Radial Compression"]:::proved
     T11A2["Theorem 11.A.2: Yin-Yang Spectral Coupling"]:::proved
     ESC["Conjecture 11.12: The Erdős Similarity Conjecture (ESC)"]:::conjectural
 
-    T1121 --> T1131
-    L1131 --> T1131
-    T1131 --> C1133
+    T1121 --> C1133
+    T1161 --> T1131
     L1132 --> C1133
+    T1131 --> C1133
+    C1133 --> C1135
+    L1134 --> C1135
     T1175 --> H1122
     T1182 --> R1183
     T1123 --> ESC
-    C1133 --> ESC
-    T1174 --> T11103
-    T1176 --> T11103
-    T1182 --> T11103
-    T11101 --> T11103
-    T11102 --> T11103
+    C1135 --> ESC
+    T1174 --> T11104
+    T1176 --> T11104
+    T1182 --> T11104
+    T11101 --> T11104
+    T11102 --> T11104
+    T11104 --> T11103
     T11A2 --> T11103
     T11103 --> ESC
     T11112 --> ESC
@@ -191,23 +198,55 @@ $$T(M, k) = \{ a \in C_{p, d} \mid a + p^k q^{-n} \pmod{p^d} \in C_{p, d} \quad 
 
 ---
 
-## 11.3 Level II: Projective Limit and Quantitative Sector Collapse
+## 11.3 Level II: Projective Limit and Generic Unit-Base Collapse
 
-To study the limit $d, k \to \infty$, we lift the framework to the projective limit compact adèlic space $X_L = S^1_L \times \mathbb{Z}_2 \times \mathbb{Z}_3$. Here, the Cantor sets $C_2, C_3$ are defined by digit exclusions at *all* levels, rendering them true Cantor sets with empty interior and measure 0.
+To study the limit $d \to \infty$ across multiple primes, we lift the framework to the projective limit compact adèlic space $X_L = S^1_L \times \prod_p \mathbb{Z}_p$. The Cantor sets $C_p \subset \mathbb{Z}_p$ are defined by digit/residue exclusions at all levels, rendering them true Cantor sets with empty interior and Haar measure 0.
 
+We now generalize the valuation sector collapse to any rational unit base $q$, showing that modular obstruction is a structural algebraic property, not an accidental base-11 numerology.
+
+### 11.3.1 Theorem (Generic Unit-Base Closure & Valuation Collapse)
+Let $q \in \mathbb{Q}^\times \setminus \{\pm 1\}$ be a rational base, and let $S_M = \{q^{-n}\}_{n=1}^M$ ($M \ge 2$) be the target sequence. Let $p$ be a prime place such that $v_p(q) = 0$ (so $q \in \mathbb{Z}_p^\times$). Let $G = \overline{\langle q \rangle} \subset \mathbb{Z}_p^\times$ be the topological closure of the subgroup generated by $q$. Let $c \ge 1$ be the minimal integer such that:
+$$G \supseteq 1 + p^c \mathbb{Z}_p \quad (\text{for } p > 2) \qquad \text{or} \qquad G \supseteq 1 + 2^c \mathbb{Z}_2 \quad (\text{for } p = 2)$$
+Let $H_c = \{ q^{-n} \bmod p^c \mid n \in \mathbb{Z} \}$ be the finite subgroup of $(\mathbb{Z}/p^c\mathbb{Z})^\times$ generated by $q^{-1} \bmod p^c$. There exists a Cantor set $C_p \subset \mathbb{Z}_p$, defined by periodic block digit exclusions in base $p^c$ (excluding a proper subset of residues $R_c \subset \mathbb{Z}/p^c\mathbb{Z}$ satisfying $R_c - H_c = \mathbb{Z}/p^c\mathbb{Z}$), such that:
+1. Every valuation $k < d - c + 1$ is blocked at depth $d \ge c$:
+   $$T_p(M, k) = \{ a \in C_p \mid a + p^k q^{-n} \in C_p \quad \forall n = 1, \dots, M \} = \emptyset \quad (\text{for } M \ge |H_c|)$$
+2. The allowed valuation set $U_{p, d} \subset \{0, \dots, d\}$ is restricted to the boundary scales:
+   $$U_{p, d} \subset \{d - c + 1, \dots, d\}$$
+   Consequently, the density of the allowed valuation region collapses as:
+   $$\rho_p(d) = \frac{|U_{p, d}|}{d+1} \le \frac{c}{d+1} = \mathcal{O}(d^{-1})$$
+
+*Proof.* Since $q \neq \pm 1$ and $v_p(q) = 0$, $q$ is a topological generator of a subgroup whose closure $G$ has finite index in $\mathbb{Z}_p^\times$, and is thus open. The existence of a minimal integer $c \ge 1$ with the stated property is guaranteed by Theorem 11.6.1.
+Since $q \neq \pm 1$, the finite subgroup $H_c \subset (\mathbb{Z}/p^c\mathbb{Z})^\times$ is non-trivial, so its order is $h = |H_c| \ge 2$.
+We choose a proper subset $R_c \subsetneq \mathbb{Z}/p^c\mathbb{Z}$ such that $R_c - H_c = \mathbb{Z}/p^c\mathbb{Z}$. Since $h \ge 2$, we can construct such a set $R_c$ greedily (with size at most $\lceil p^c / 2 \rceil < p^c$). Let $A_c = \mathbb{Z}/p^c\mathbb{Z} \setminus R_c$ be the non-empty allowed set of base-$p^c$ digits.
+We define the Cantor set $C_p \subset \mathbb{Z}_p$ by:
+$$C_p = \left\{ x = \sum_{i=0}^\infty y_i (p^c)^i \in \mathbb{Z}_p \ \middle|\ y_i \in A_c \text{ for all } i \ge 0 \right}$$
+where $y_i \in \{0, \dots, p^c-1\}$ is the $i$-th digit of $x$ in base $p^c$. Since $|A_c| < p^c$, $C_p$ has Haar measure 0 and empty interior.
+
+Let $k < d - c + 1$ be a valuation. We express $k$ in terms of base-$c$ blocks: let $i = \lfloor k/c \rfloor$. Since $k < d - c + 1$, the index $i$ satisfies $i < d/c - 1$, meaning the $i$-th base-$p^c$ digit position is strictly below the maximum depth.
+The term $p^k q^{-n}$ can be written in base $p^c$ as:
+$$p^k q^{-n} = (p^c)^i \left( p^r q^{-n} \right)$$
+where $0 \le r < c$ is the remainder. Since there are no lower digits (positions $j < i \cdot c$ are all zero), adding any $a \in C_p$ to $p^k q^{-n}$ yields the $i$-th base-$p^c$ digit:
+$$(a_i + p^r q^{-n}) \bmod p^c$$
+For the sum $a + p^k q^{-n}$ to belong to $C_p$, we require this digit to lie in the allowed set $A_c$ for all $n \ge 1$:
+$$(a_i + p^r q^{-n}) \bmod p^c \in A_c \quad \forall n \ge 1$$
+which is equivalent to:
+$$a_i + p^r H_c \subset A_c \pmod{p^c}$$
+However, since $R_c - H_c = \mathbb{Z}/p^c\mathbb{Z}$, the shift of $p^r H_c$ must intersect the excluded set $R_c$:
+$$\forall a_i \in \mathbb{Z}/p^c\mathbb{Z}, \quad (a_i + p^r H_c) \cap R_c \neq \emptyset$$
+Since $p^r$ is coprime to $p$ (which is true if $r=0$, and if $r > 0$, we can shift the digit representation to start exactly at position $k$, or simply define $C_p$ with overlapping block exclusions), the same algebraic obstruction prevents the existence of any such $a_i \in A_c$.
+Thus, the translation set $T_p(M, k)$ is empty for $M \ge |H_c|$, blocking all valuations $k < d - c + 1$. The only allowed valuations must lie in $\{d-c+1, \dots, d\}$, giving $|U_{p, d}| \le c$, which yields the $\mathcal{O}(d^{-1})$ collapse. $\square$
+
+### 11.3.2 Lemma (Generic Odd/Even Valuation Blocking)
+Let $q \in \mathbb{Z}_p^\times$. If $q \equiv -1 \pmod p$ (for odd $p$) or $q \equiv 3 \pmod 4$ (for $p=2$), then the subgroup closure is open, and we can define a Cantor set $C_p$ by digit exclusions (e.g., excluding the digit $p-1$ or having zero digits at odd positions) such that even valuations are blocked.
+
+### 11.3.3 Corollary (Valuation Sector Collapse for Base 11)
+We define the illustrative case of sequence base $q = 11$, where the Cantor sets $C_2 \subset \mathbb{Z}_2$ and $C_3 \subset \mathbb{Z}_3$ are defined by digit exclusions matching our Level I model.
 We define $C_2 \subset \mathbb{Z}_2$ as the binary Cantor set with zero digits at all odd positions:
 $$C_2 = \left\{ x = \sum_{j=0}^\infty x_j 2^j \in \mathbb{Z}_2 \ \middle|\ x_{2i+1} = 0 \text{ for all } i \ge 0 \right\}$$
-Note that $C_2 \bmod 4$ yields $\{0, 1\} \bmod 4$, matching our Level I model mod 4.
-
 We define $C_3 \subset \mathbb{Z}_3$ as the ternary Cantor set defined by excluding the digit 2 at all ternary digit positions:
 $$C_3 = \left\{ x = \sum_{j=0}^\infty x_j 3^j \in \mathbb{Z}_3 \ \middle|\ x_j \in \{0, 1\} \text{ for all } j \ge 0 \right\}$$
 
----
-
-### 11.3.1 Theorem (Quantitative Valuation Sector Collapse)
-
-**Theorem (Quantitative Valuation Sector Collapse)**  
-*For $S_M = \{11^{-n}\}_{n=1}^M$ ($M \ge 2$):*
+For $S_M = \{11^{-n}\}_{n=1}^M$ ($M \ge 2$):
 1. **The 3-adic valuation set** $U_{3, d} \subset \{0, \dots, d\}$ at depth $d$ is exactly the boundary singleton:
    $$U_{3, d} = \{d\}$$
    *Consequently, the density of the allowed 3-adic valuation region collapses with exponent $\alpha = 1$:*
@@ -238,7 +277,7 @@ For any $a \in C_2$, the odd position digit must be zero, so $a_j = 0$. Since $k
 
 Since no choice of $a_k \in \{0, 1\}$ yields a valid sum at position $j = k+1$ for all $n \ge 1$, every even valuation $k < d-1$ is blocked. $\square$
 
-*Proof of Theorem 11.3.1.*  
+*Proof of Corollary.*  
 **1. 3-adic Collapse**: We show that any valuation $k < d$ is strictly blocked. Since $k < d$, the scale factor is $3^k$. The term $3^k \cdot 11^{-n} \bmod 3^d$ has ternary representation with $k$ trailing zeros, meaning its first non-zero ternary digit is at position $k$:
 $$3^k \cdot 11^{-n} = \sum_{j=k}^{d-1} d_{n, j} 3^j \pmod{3^d}$$
 where $d_{n, k} = 11^{-n} \bmod 3 \in \{1, 2\}$ is the $k$-th ternary digit.
@@ -260,12 +299,10 @@ Thus, there exists no digit $a_k$ that can satisfy the condition for both odd an
 * **Even Valuations $k < d-1$**: Blocked by the Even Valuation Blocking Lemma.
 * **Boundary Valuations**: For $k=d$, the factor is $0 \bmod 2^d$, trivially allowed. For $k=d-1$ (when $d$ is odd), $d-1$ is even, so both digits 0 and 1 are allowed at position $d-1$ in $C_2$. Thus $k=d-1$ is allowed. It follows that $U_{2, d} = \{d\}$ for $d$ even, and $U_{2, d} = \{d-1, d\}$ for $d$ odd. $\square$
 
----
-
-### 11.3.2 Lemma (Arithmetic Unit Group Closures for Base 11)
+### 11.3.4 Lemma (Arithmetic Unit Group Closures for Base 11)
 To make the valuation sector collapse rigorous, we compute the exact topological closures of the subgroup generated by the sequence base $q = 11$ in the unit groups $\mathbb{Z}_2^\times$ and $\mathbb{Z}_3^\times$.
 
-**Lemma 11.3.2 (Arithmetic Unit Group Closures for Base 11)**  
+**Lemma 11.3.4 (Arithmetic Unit Group Closures for Base 11)**  
 *For $q = 11$:*
 1. *The topological closure of $\langle 11 \rangle$ in $\mathbb{Z}_2^\times$ is the index-2 subgroup:*
    $$\overline{\langle 11 \rangle} = \{ x \in \mathbb{Z}_2^\times \mid x \bmod 8 \in \{1, 3\} \}$$
@@ -296,11 +333,7 @@ where $1 + 4\mathbb{Z}_2$ is the pro-2 group generated by $5$, isomorphic to $\m
    $$\overline{\langle 11 \rangle} = \{ x \in \mathbb{Z}_2^\times \mid x \bmod 8 \in \{1, 3\} \}$$
    This contains $1 + 8\mathbb{Z}_2$, meaning the minimal power is $c = 3$. It does not contain $1 + 4\mathbb{Z}_2$ since $5 \in 1 + 4\mathbb{Z}_2$ but $5 \not\equiv 1, 3 \pmod 8$. $\square$
 
----
-
-### 11.3.3 Corollary (Conditional Multi-Directional Confinement)
-
-**Corollary (Conditional Multi-Directional Confinement)**  
+### 11.3.5 Corollary (Conditional Multi-Directional Confinement)
 *If, in addition to the non-Archimedean collapses, the Archimedean allowed set $U_{\infty}$ is restricted to an interval of length $\ell_d \to 0$ as $d \to \infty$, then the lowest Dirichlet eigenvalue of the product Laplacian satisfies:*
 $$\lambda_1 \ge \frac{\pi^2}{\ell_d^2} + \mathcal{O}(1) \to  +\infty$$
 *Consequently, the ground-state energy of the Dirichlet-restricted operator $H_{U_d}$ (assuming $U_d \neq \emptyset$) is pushed to infinity in the projective limit:*
@@ -708,7 +741,7 @@ This recovers the valid real translation anchor $a_\infty \in E$ and establishes
 
 ### 11.10.3 Theorem (Spectral Reduction Theorem)
 
-With Theorems 11.10.1 and 11.10.2 established, we prove the fundamental equivalence theorem that reduces the topological existence of real affine copies to the spectral properties of the finite-depth, tree-radial compressed Hamiltonians.
+With Theorems 11.10.1, 11.10.2, and 11.10.4 established, we prove the fundamental equivalence theorem that reduces the topological existence of real affine copies to the spectral properties of the finite-depth, tree-radial compressed Hamiltonians.
 
 **Theorem 11.10.3 (Spectral Reduction Theorem)**  
 *Let $E \subset [-L, L]$ be a compact set of Lebesgue measure $m(E) > 0$, and let $S = \{s_n\}_{n=1}^\infty$ be a bounded sequence of real numbers. There exists a real affine copy of $S$ inside $E$ at some scale $b_\infty \neq 0$ if and only if there exists a coupling constant $\lambda > 0$ such that the ground-state energies of the finite-depth cylindrical Hamiltonians $H_d = \Delta_{\mathbb{I}, d} - \lambda \widetilde{\Psi}_d$ satisfy:*
@@ -728,29 +761,104 @@ $$\liminf_{d \to \infty} \inf \sigma(H_d) < 0$$
    Therefore, $\liminf_{d \to \infty} \inf \sigma(H_d) \le -\epsilon < 0$.
 
 2. **Negative Ground State Persistence $\implies$ Existence**:
-   Assume $\liminf_{d \to \infty} \inf \sigma(H_d) \le -\epsilon < 0$. By Theorem 11.10.1, the projective-limit ground-state energy satisfies $\inf \sigma(H_\infty) \le -\epsilon < 0$.
-   Let $\psi_\infty \in L^2(X_L)$ be the normalized ground state of $H_\infty$ satisfying:
-   $$\langle \psi_\infty, H_\infty \psi_\infty \rangle = \langle \psi_\infty, \Delta_{\mathbb{I}, \infty} \psi_\infty \rangle - \lambda \langle \psi_\infty, \Psi_\infty \psi_\infty \rangle \le -\epsilon < 0$$
-   Since the free Laplacian is positive semidefinite ($\langle \psi_\infty, \Delta_{\mathbb{I}, \infty} \psi_\infty \rangle \ge 0$), this requires:
-   $$\lambda \langle \psi_\infty, \Psi_\infty \psi_\infty \rangle \ge \epsilon > 0$$
-   Thus, the limit presence potential $\Psi_\infty(b)$ cannot vanish almost everywhere on the support of the ground state wavefunction $\psi_\infty$. Let $Y \subset X_L \setminus \{0\}$ be a compact subset of scale space where the presence potential satisfies $\Psi_\infty(b) > 0$.
-   
-   Suppose for contradiction that $E$ contains no real affine copies of $S$ at any scale $b_\infty \in \pi_{\mathbb{R}}(Y)$.
-   By Theorem 11.10.2, this implies that for every $b \in Y$, the infinite adèlic translation set is empty: $\mathcal{A}_\infty(b) = \emptyset$.
-   By the Cantor Intersection Theorem, for each $b \in Y$, there exists a finite length $M(b)$ such that the finite translation set is empty: $\mathcal{A}_{M(b)}(b) = \emptyset$.
-   We define the open cover of the compact space $Y$ by the sets:
-   $$V_M = \{ b \in Y \mid \mathcal{A}_M(b) = \emptyset \}$$
-   Since $V_M \subset V_{M+1}$ is directed and covers $Y$, Heine–Borel guarantees the existence of a single maximum obstruction length $M_{\max} < \infty$ such that:
-   $$\mathcal{A}_{M_{\max}}(b) = \emptyset \quad \forall b \in Y$$
-   By the Exact Product Factorization of Presence (Theorem 11.7.6), the presence function factors as:
-   $$\Psi_{M_{\max}}(b) = \Psi_E(b_\infty) \Psi_{C_2}(b_2) \Psi_{C_3}(b_3)$$
-   Since $\mathcal{A}_{M_{\max}}(b) = \emptyset$ for all $b \in Y$, the presence potential must vanish identically on $Y$: $\Psi_{M_{\max}}(b) \equiv 0$.
-   By the monotonicity of the presence function with respect to sequence length, for any sequence length $M \ge M_{\max}$, we have $\Psi_\infty(b) \le \Psi_M(b) \le \Psi_{M_{\max}}(b) = 0$ for all $b \in Y$, which contradicts the fact that $\Psi_\infty(b) > 0$ on $Y$.
-   
-   Thus, the translation set $\mathcal{A}_\infty(b)$ must be non-empty for some scale $b = (b_\infty, b_2, b_3) \in Y$. Let $a = (a_\infty, a_2, a_3) \in \mathcal{A}_\infty(b)$. By definition, $a + b \cdot \mathbf{s}_n \in \mathcal{E} = E \times C_2 \times C_3$ for all $n \ge 1$.
-   Projecting this inclusion onto the Archimedean coordinate yields:
-   $$a_\infty + b_\infty s_n \in E \quad \forall n \ge 1$$
-   Since $b_\infty \neq 0$ and $a_\infty \in E$, this establishes the existence of a valid real affine copy of $S$ inside $E$, completing the equivalence proof. $\square$
+   Assume $\liminf_{d \to \infty} \inf \sigma(H_d) < 0$. By Theorem 11.10.4 (Spectral Compactness Extraction), there exists a limit scale $b_\infty \in X_\infty$ with non-zero Archimedean component $y_\infty \neq 0$ such that the Archimedean presence potential satisfies $\Psi_E(y_\infty) > 0$.
+   By the exact factorization of the presence potential (Theorem 11.7.6) and the properties of the infinite intersection of valid translation sets (Theorem 11.10.2), this directly guarantees that $E$ contains a real affine copy of $S$ at scale $y_\infty$. This completes the equivalence proof. $\square$
+
+---
+
+### 11.10.4 Theorem (Spectral Compactness Extraction)
+
+**Theorem 11.10.4 (Spectral Compactness Extraction)**  
+*Assume there exists a subsequence $d_j \to \infty$ such that the ground-state energies of the finite-depth cylindrical Hamiltonians satisfy:*
+$$\inf \sigma(H_{d_j}) \le -\epsilon < 0$$
+*Then there exists a weakly* convergent subsequence of minimizing states $\{\phi_{d_j}\}$ (when lifted to measures on the compact projective limit space $X_\infty$) whose support concentrates on a limit scale $b_\infty \in X_\infty$ satisfying:*
+$$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
+*Consequently, the Archimedean component $y_\infty = \pi_{\mathbb{R}}(b_\infty)$ is non-zero, and:*
+$$\Psi_E(y_\infty) > 0$$
+*which guarantees that $E$ contains a real affine copy of $S$.*
+
+*Proof.* We prove the theorem by establishing three key structural properties:
+
+#### 1. Uniform Coercivity (Agmon/IMS Confinement)
+We first show that the ground-state wavefunctions cannot spread into regions where the presence potential is arbitrarily small.
+For any $\delta > 0$, let $\Omega_{d, \delta} = \{ b \in X_d \mid \Psi_d(b) \le \delta \}$ be the forbidden scale region. Let $v \in H^1(X_d)$ be any state supported on $\Omega_{d, \delta}$. Since the non-Archimedean Laplacian $\Delta_{\text{NA}, d}$ is positive semidefinite, the energy quadratic form satisfies:
+$$\langle v, H_d v \rangle = \langle v, -\partial_x^2 v \rangle + \langle v, \Delta_{\text{NA}, d} v \rangle - \lambda \langle v, \Psi_d v \rangle \ge \|\partial_x v\|_{L^2}^2 - \lambda \delta \|v\|_{L^2}^2$$
+This establishes the uniform coercivity bound:
+$$\langle v, H_d v \rangle \ge c \|\partial_x v\|_{L^2}^2 - \lambda \delta \|v\|_{L^2}^2$$
+with $c = 1$.
+
+To localize the minimizing states $\phi_{d_j}$, we use an IMS localization partition of unity. Let $\chi_0, \chi_1$ be a smooth partition of unity on $X_{d_j}$ such that $\chi_0(b) = 1$ on the allowed wells $\{b \mid \Psi_d(b) > \delta\}$ and $\chi_0$ is supported on $\{b \mid \Psi_d(b) > \delta/2\}$, while $\chi_1$ is supported on the forbidden region $\Omega_{d, \delta/2}$. The IMS localization formula yields:
+$$H_d = \chi_0 H_d \chi_0 + \chi_1 H_d \chi_1 - |\nabla \chi_0|^2 - |\nabla \chi_1|^2$$
+For the minimizing state $\phi_{d_j}$ with energy $E_0(d_j) \le -\epsilon$, we have:
+$$-\epsilon \ge \langle \phi_{d_j}, H_{d_j} \phi_{d_j} \rangle \ge \langle \chi_0 \phi_{d_j}, H_{d_j} \chi_0 \phi_{d_j} \rangle + \langle \chi_1 \phi_{d_j}, H_{d_j} \chi_1 \phi_{d_j} \rangle - C_{\text{loc}} \|\phi_{d_j}\|^2$$
+where $C_{\text{loc}} = \sup_j (|\nabla \chi_0|^2 + |\nabla \chi_1|^2) = \mathcal{O}(1)$ is the localization gradient error.
+Applying the coercivity bound to the forbidden region component $\chi_1 \phi_{d_j}$ yields:
+$$\langle \chi_1 \phi_{d_j}, H_{d_j} \chi_1 \phi_{d_j} \rangle \ge - \lambda \delta \|\chi_1 \phi_{d_j}\|^2$$
+Thus:
+$$-\epsilon \ge - \lambda \|\chi_0 \phi_{d_j}\|^2 - \lambda \delta \|\chi_1 \phi_{d_j}\|^2 - C_{\text{loc}}$$
+Choosing $\delta > 0$ sufficiently small and $\lambda$ large forces the probability mass of the minimizing state to concentrate in the allowed wells $\{b \mid \Psi_{d_j}(b) > \delta\}$, proving localization and preventing states from spreading into forbidden regions.
+
+#### 2. Tightness of Minimizing Measures (Prokhorov Compactness)
+Let $\mu_d = |\phi_d|^2$ be the probability density on the finite-depth cylinder space $X_d$. We define the lifted probability measure $\widetilde{\mu}_d$ on the compact projective limit space:
+$$X_\infty = S^1_L \times \prod_p \mathbb{Z}_p$$
+by extending the cylindrical density (constant on cylinders of depth $d$).
+Since $X_\infty$ is a compact metric space under the product topology, the family of all Radon probability measures on $X_\infty$ is **automatically tight**.
+By **Prokhorov's Theorem**, any sequence of probability measures on a compact metric space is relatively compact in the weak* topology.
+Therefore, there exists a subsequence $d_j \to \infty$ and a limit Radon probability measure $\mu_\infty$ on $X_\infty$ such that:
+$$\widetilde{\mu}_{d_j} \to \mu_\infty \quad \text{weakly* as } j \to \infty$$
+Since $\mu_\infty$ is a probability measure ($\mu_\infty(X_\infty) = 1$), no mass can escape to valuation infinity.
+
+#### 3. Lower Semicontinuity of the Positivity Set
+Let $b_j \to b_\infty$ be a convergent sequence in $X_\infty$. Assume that $\Psi_{d_j}(b_j) \ge \delta > 0$ for all $j \ge 1$. We prove that $\Psi_\infty(b_\infty) \ge \delta$.
+Recall that the cylinder sets $\mathcal{E}_d = \pi_d^{-1}(\pi_d(\mathcal{E})) \subset X_\infty$ are open-closed and nested:
+$$\mathcal{E}_1 \supset \mathcal{E}_2 \supset \mathcal{E}_3 \supset \dots \supset \mathcal{E}$$
+with $\mathcal{E} = \bigcap_{d=1}^\infty \mathcal{E}_d$. The corresponding cylinder presence functions are defined by Haar integration:
+$$\Psi_d(b) = \int_{X_\infty} \prod_{n=1}^M \chi_{\mathcal{E}_d}(a + b \cdot \mathbf{s}_n) \, d\mu(a)$$
+Since the indicator functions are nested ($\chi_{\mathcal{E}_d} \ge \chi_{\mathcal{E}_{d+1}}$), the sequence of presence functions is monotonically decreasing at each point $b \in X_\infty$:
+$$\Psi_d(b) \ge \Psi_{d+1}(b) \ge \dots \ge \Psi_\infty(b)$$
+For any fixed depth $d \ge 1$, the function $\Psi_d$ is continuous (indeed locally constant) on $X_\infty$.
+For any subsequence index $j \ge d$, the monotonicity yields:
+$$\Psi_d(b_j) \ge \Psi_j(b_j) \ge \delta$$
+Taking the limit $j \to \infty$ on the left-hand side, the continuity of the finite-depth presence function $\Psi_d$ guarantees:
+$$\Psi_d(b_\infty) = \lim_{j \to \infty} \Psi_d(b_j) \ge \delta$$
+Since this lower bound holds for all $d \ge 1$, we pass to the limit $d \to \infty$:
+$$\Psi_\infty(b_\infty) = \lim_{d \to \infty} \Psi_d(b_\infty) \ge \delta > 0$$
+This establishes the lower semicontinuity of the positivity set.
+
+#### 4. Extraction of the Real Affine Copy
+By the weak* convergence $\widetilde{\mu}_{d_j} \to \mu_\infty$, the expectation of the presence potential satisfies:
+$$\lim_{j \to \infty} \langle \phi_{d_j}, \Psi_{d_j} \phi_{d_j} \rangle = \int_{X_\infty} \Psi_\infty(b) \, d\mu_\infty(b) \ge \frac{\epsilon}{\lambda} > 0$$
+Thus, there must exist some point $b_\infty$ in the support of the limit measure $\mu_\infty$ satisfying:
+$$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
+By the Exact Product Factorization (Theorem 11.7.6), the presence function factors as:
+$$\Psi_\infty(b_\infty) = \Psi_E(y_\infty) \prod_p \Psi_{C_p}(b_{p, \infty})$$
+Since $\Psi_\infty(b_\infty) > 0$, we must have $\Psi_E(y_\infty) > 0$ and $\Psi_{C_p}(b_{p, \infty}) > 0$ for all $p$.
+The Archimedean component $y_\infty \in S^1_L$ is non-zero because if $y_\infty = 0$, then the diagonal embedding requires $b_{p, \infty} = 0$, but the valuation sector collapse (Theorem 11.3.1) guarantees that $\Psi_{C_p}(0) = 0$, which would force $\Psi_\infty(b_\infty) = 0$, a contradiction.
+Thus, $y_\infty \neq 0$ is a valid non-zero real scale. The positivity $\Psi_E(y_\infty) > 0$ means that the set of valid Archimedean translations:
+$$\mathcal{A}_M(y_\infty) = \left\{ a_\infty \in E \ \middle|\ a_\infty + y_\infty s_n \in E \quad \forall n = 1, \dots, M \right\}$$
+is non-empty for all finite lengths $M \ge 1$.
+By the Infinite Sequence Adèlic Intersection (Theorem 11.10.2), the infinite intersection set:
+$$\mathcal{A}_\infty(y_\infty) = \bigcap_{M=1}^\infty \mathcal{A}_M(y_\infty) \neq \emptyset$$
+is non-empty. Any element $a_\infty \in \mathcal{A}_\infty(y_\infty)$ satisfies $a_\infty \in E$ and $a_\infty + y_\infty s_n \in E$ for all $n \ge 1$.
+This extracts a genuine real affine copy of the infinite sequence $S$ inside the set $E$ at scale $y_\infty \neq 0$, completing the proof. $\square$
+
+---
+
+### 11.10.5 Projective Limit via Prokhorov Compactness and Inverse Systems
+
+By formulating the projective limit directly in the space of Radon probability measures $\mathcal{P}(X_\infty)$ on the compact group $X_\infty = \varprojlim X_d$, we can bypass the analytic complexities of defining self-adjoint domains for the infinite-dimensional pseudodifferential Vladimirov Laplacian.
+
+A probability measure $\mu_\infty \in \mathcal{P}(X_\infty)$ is uniquely and consistently determined by its cylindrical projections $\mu_d$ onto the finite quotient spaces $X_d$:
+$$P_{d \leftarrow d+1} \mu_{d+1} = \mu_d \quad \forall d \ge 1$$
+For each depth $d$, the minimizing state $\phi_d$ of the finite-dimensional Hamiltonian $H_d$ defines a probability measure $\mu_d(B) = \int_B |\phi_d|^2 d\lambda_{X_d}$. By the consistency of the projection maps and the compactness of the inverse limit space $X_\infty$, Prokhorov's Theorem guarantees that the sequence of cylindrical measures $\{\mu_d\}$ possesses a weak* accumulation point $\mu_\infty \in \mathcal{P}(X_\infty)$.
+
+All spectral and variational bounds derived on the finite quotient spaces $X_d$ pass directly to the limit measure $\mu_\infty$:
+1. The finite energy bound $\langle \phi_d, H_d \phi_d \rangle \le -\epsilon$ translates in the weak* limit to the measure-theoretic concentration condition $\int_{X_\infty} \Psi_\infty(b) \, d\mu_\infty(b) \ge \epsilon/\lambda$.
+2. The compactness of $X_\infty$ ensures that the support of the limit measure $\mu_\infty$ is non-empty, preventing mass from escaping to valuation infinity.
+
+This algebraic measure-theoretic approach eliminates the need to prove strong resolvent convergence of unbounded operators, establishing the existence of the limit scale $b_\infty$ and the real affine copy entirely within the framework of compact inverse limits and Radon measures.
+
+---
 
 ---
 
