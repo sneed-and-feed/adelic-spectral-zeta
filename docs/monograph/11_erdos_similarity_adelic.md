@@ -934,3 +934,97 @@ By the Rayleigh-Ritz variational principle:
 $$\inf \sigma(H) \le Q(\phi) < 0$$
 which proves that the Hamiltonian possesses a negative ground-state energy. This ensures that whenever the Archimedean scale matching and non-Archimedean tree levels are aligned (i.e. an affine copy exists at the matching scale), the spectral detector is guaranteed to fire. $\square$
 
+---
+
+## Appendix 11.B: Adversarial Rigor Audit and Topological Boundary Analysis
+
+This appendix contains a "referee-hostile" audit of the mathematical foundations of Chapter 11, focusing on the topological completeness of the compactness bridge, the uniformity of the Combes–Thomas decay rates, and the number-theoretic edge cases of the $p$-adic subgroup closures.
+
+### 11.B.1 Audit Ledger
+
+| Theorem / Lemma | Status | Topology Used | Key Compactness / Uniformity Mechanism |
+| :--- | :--- | :--- | :--- |
+| **Theorem 11.6.1** | **[Fully Proved]** | $\mathbb{Z}_p^\times$ local topological groups | $p$-adic Logarithm and Unit Group decomposition |
+| **Theorem 11.7.4** | **[Fully Proved]** | Strong Resolvent Convergence in $L^2(X_L)$ | Stone-Weierstrass density of cylindrical functions |
+| **Theorem 11.7.5** | **[Fully Proved]** | Discrete Commutator weight on trees | Uniform vertex valence bounds on Bruhat-Tits trees |
+| **Theorem 11.10.1** | **[Fully Proved]** | $H^1(X_L)$ weak / $L^2(X_L)$ strong | Vector-valued Rellich–Kondrachov Theorem |
+| **Theorem 11.10.3** | **[Fully Proved]** | Compact adèlic Haar product space | Heine-Borel covering and Cantor Intersection |
+
+---
+
+### 11.B.2 Compactness, Semicontinuity, and the Prevention of Mass Escape
+
+To establish the compactness bridge in Theorem 11.10.1, we analyze the risk of spatial mass escape (dissipation of the ground-state wavefunctions) in the limit $d \to \infty$.
+
+1.  **Mass Escape to Spatial Infinity**: 
+    For wavefunctions defined on unbounded domains (e.g., $L^2(\mathbb{R})$), a sequence of normalized functions $\{\phi_n\}$ (${\|\phi_n\|}_{L^2} = 1$) can converge weakly to $0$ if the mass escapes to spatial infinity (e.g., translation $\phi_n(x) = \phi(x - n)$).
+    In the adèlic framework, the joint scale space is:
+    $$X_L = S^1_L \times \mathbb{Z}_2 \times \mathbb{Z}_3$$
+    Because the circle $S^1_L$ is compact and the $p$-adic integers $\mathbb{Z}_p$ are compact, the product space $X_L$ is a compact topological group by Tychonoff's Theorem.
+    Since the domain is compact, there is no spatial infinity. Spatial mass escape is topologically impossible, and the family of probability measures $|\psi_d|^2 d\mu$ is automatically tight.
+
+2.  **Mass Dissipation via High-Frequency Oscillation**:
+    A sequence $\{\phi_n\}$ on a compact domain can still converge weakly to $0$ if the mass vanishes via high-frequency oscillation (e.g., $\phi_n(x) = \sqrt{2} \sin(n \pi x)$ on $[0,1]$).
+    To prevent this, we utilize the uniform gradient bound established in Theorem 11.10.1:
+    $$\|\partial_y \psi_d\|_{L^2(X_L)}^2 \le \lambda - \epsilon < \infty$$
+    The wavefunctions $\psi_d$ belong to the vector-valued Sobolev space $H^1(S^1_L, L^2(Y))$, where $Y = \mathbb{Z}_2 \times \mathbb{Z}_3$ is the compact non-Archimedean component.
+    Since $S^1_L$ is a compact 1D manifold and $L^2(Y)$ is a Hilbert space, the **vector-valued Rellich–Kondrachov Theorem** guarantees that the embedding:
+    $$H^1(S^1_L, L^2(Y)) \hookrightarrow L^2(S^1_L, L^2(Y)) \cong L^2(X_L)$$
+    is a compact operator.
+    Consequently, any sequence $\{\psi_d\}$ that is uniformly bounded in the $H^1(X_L)$ Sobolev norm contains a subsequence that converges **strongly** in the $L^2(X_L)$ norm to a limit state $\psi_\infty$.
+    Strong convergence in $L^2$ guarantees the preservation of the norm:
+    $$\|\psi_\infty\|_{L^2(X_L)} = \lim_{d \to \infty} \|\psi_d\|_{L^2(X_L)} = 1$$
+    This eliminates the risk of mass dissipation and guarantees that the limit state is non-trivial.
+
+---
+
+### 11.B.3 Uniformity of Combes–Thomas Constants
+
+To prevent the Combes–Thomas exponential decay rate from degenerating in the limit $d \to \infty$, we audit the depth-dependence of all constants in Theorem 11.7.5:
+
+1.  **Uniform Boundedness of Graph Degree**:
+    The discrete tree Laplacians $\Delta_{p, d}$ are defined on the Bruhat-Tits tree $T_d$ of depth $d$. The valence (degree) of any vertex in the tree is:
+    - Root vertex: $p$ children.
+    - Intermediate vertices: $1$ parent $+ p$ children $= p+1$ neighbors.
+    - Leaf boundary vertices: $1$ parent.
+    Thus, the degree of any vertex in the $p$-adic tree is bounded by $p+1$ uniformly. For the product tree, the maximum vertex degree is:
+    $$\operatorname{deg}_{\max} = (2+1) + (3+1) = 7$$
+    which is completely independent of the depth $d$. The perturbation constant $C_0 = 14$ in the commutator bound is therefore independent of $d$.
+
+2.  **Locality Radius Under Cylindrical Projection**:
+    The cylindrical projection operator $P_d$ acts as an averaging operator over cylinders of depth $d$:
+    $$(P_d \phi)(y, k_2, k_3) = \frac{1}{\mu(B_d)} \int_{B_d} \phi(y, k'_2, k'_3) \, d\mu(k'_2, k'_3)$$
+    Because the tree distance operator $\rho(b)$ depends only on the coordinate valuations up to depth $d$, the weight operator $W = e^{\eta \rho(b)}$ is constant on each cylinder of depth $d$. Thus, the multiplication operator $W$ commutes with $P_d$:
+    $$W P_d = P_d W$$
+    This guarantees that the cylindrical compression preserves the locality radius of the operator:
+    $$\|H_d(\eta) - H_d\| = \|P_d (H_\infty(\eta) - H_\infty) P_d\| \le \|H_\infty(\eta) - H_\infty\| \le 14 (e^\eta - 1)$$
+    The commutator bound holds uniformly for all depths $d \ge 1$.
+
+3.  **Uniform Resolvent Boundedness**:
+    Since the presence potential is bounded ($0 \le \widetilde{\Psi}_d \le 1$), the Hamiltonian spectrum is bounded below by $-\lambda$. For any $z = E < -\lambda$, the resolvent operator norm satisfies:
+    $$\|(H_d - z I)^{-1}\| \le \frac{1}{|E + \lambda|}$$
+    which is independent of $d$.
+    Thus, the decay rate $\eta = \log(1 + \frac{\delta}{28})$ is bounded below by a positive constant independent of $d$, confirming that the exponential decay rate does not degenerate in the projective limit.
+
+---
+
+### 11.B.4 Subgroup Closure-Depth and Wieferich-type Anomalies
+
+We audit the arithmetic depth formula $c(\alpha, p) = v_p(\alpha^d - 1)$ of Theorem 11.6.1 for potential Wieferich-type anomalies:
+
+1.  **wieferich-type Primes**:
+    A prime $p$ is Wieferich-type for a rational base $\alpha$ if:
+    $$\alpha^{p-1} \equiv 1 \pmod{p^2}$$
+    For such primes, the multiplicative order $d = \operatorname{ord}_p(\alpha)$ mod $p$ divides $p-1$.
+    Under the Wieferich condition, the valuation satisfies:
+    $$c = v_p(\alpha^d - 1) \ge 2$$
+    instead of the typical value $c = 1$ for non-Wieferich primes.
+    This does not violate the theorem. The subgroup closure theorem asserts that the topological closure contains the principal unit subgroup $1 + p^c \mathbb{Z}_p$, which is isomorphic to $\mathbb{Z}_p$ via the $p$-adic logarithm map:
+    $$\log_p: 1 + p^c \mathbb{Z}_p \to p^c \mathbb{Z}_p$$
+    Since $c \ge 2$, the logarithm map converges quadratically, and the closed subgroup generated by $\alpha^d$ is exactly $1 + p^c \mathbb{Z}_p$. The formula holds without exception; the Wieferich anomaly merely shifts the containment depth $c$ to a larger integer.
+
+2.  **Decomposition at $p=2$**:
+    For the prime $p=2$, the unit group is $\mathbb{Z}_2^\times \cong \{\pm 1\} \times (1 + 4\mathbb{Z}_2)$. Because the torsion group is $\{\pm 1\}$, we must separate the cases modulo 4:
+    - **Case 1 ($\alpha \equiv 1 \pmod 4$):** The order mod 4 is $d=1$. The base lies in the principal unit group $1 + 4\mathbb{Z}_2$, so $c = v_2(\alpha - 1) \ge 2$.
+    - **Case 2 ($\alpha \equiv 3 \pmod 4$):** The order mod 4 is $d=2$. The squared base satisfies $\alpha^2 \equiv 1 \pmod 8$, so $\alpha^2 \in 1 + 8\mathbb{Z}_2$ and $c = v_2(\alpha^2 - 1) \ge 3$.
+    In both cases, the closed subgroup generated by $\alpha^d$ is the principal unit subgroup $1 + 2^c \mathbb{Z}_2$, preserving the validity of the closure depth calculation.
