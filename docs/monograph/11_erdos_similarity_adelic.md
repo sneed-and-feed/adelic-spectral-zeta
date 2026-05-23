@@ -14,10 +14,10 @@ Rather than attempting to prove the conjecture in full generality, this chapter 
 
 For numerical verification and finite approximations, we define the finite space:
 $$X_{N,d,k} = (\mathbb{Z}/N\mathbb{Z}) \times (\mathbb{Z}/2^d\mathbb{Z}) \times (\mathbb{Z}/3^k\mathbb{Z})$$
-equipped with the normalized counting measure. The geometric sequence $S_M = \{11^{-n}\}_{n=1}^M$ is diagonally embedded as:
+equipped with the normalized counting measure. Here, the Archimedean component is discretized over the circle $S^1_L = \mathbb{R}/L\mathbb{Z}$ of circumference/length $L$. The geometric sequence $S_M = \{11^{-n}\}_{n=1}^M$ is diagonally embedded as:
 $$\mathbf{s}_n = (s_{n, \infty}, \, s_{n, 2}, \, s_{n, 3}) \in X_{N,d,k}$$
 where:
-* $s_{n, \infty} = \lfloor 11^{-n} \cdot N/L \rfloor \bmod N$ is the discretized Archimedean place.
+* $s_{n, \infty} = \lfloor 11^{-n} \cdot N/L \rfloor \bmod N$ is the discretized Archimedean place, with $L$ representing the total circle length.
 * $s_{n, 2} = 11^{-n} \bmod 2^d$ is the 2-adic coordinate.
 * $s_{n, 3} = 11^{-n} \bmod 3^k$ is the 3-adic coordinate.
 
@@ -28,7 +28,7 @@ Let $E \subset \mathbb{Z}/N\mathbb{Z}$ be a discretized real set, and let $C_2 \
 The product adèlic set is:
 $$\mathcal{E} = E \times C_2 \times C_3 \subset X_{N,d,k}$$
 The finite **Presence Function** at scale $b = (y, k_2, k_3)$ is:
-$$\Psi_{N,d,k}(b) = \sum_{a \in X_{N,d,k}} \prod_{n=1}^M \chi_{\mathcal{E}}(a + b \cdot \mathbf{s}_n)$$
+$$\Psi_{N,d,k}(b) = \sum_{a \in \mathcal{E}} \prod_{n=1}^M \chi_{\mathcal{E}}(a + b \cdot \mathbf{s}_n)$$
 where $b \cdot \mathbf{s}_n = (y s_{n, \infty} \bmod N, \, 2^{k_2} s_{n, 2} \bmod 2^d, \, 3^{k_3} s_{n, 3} \bmod 3^k)$.
 
 ---
@@ -95,21 +95,30 @@ $$C_3 = \left\{ x = \sum_{j=0}^\infty x_j 3^j \in \mathbb{Z}_3 \ \middle|\ x_j \
 **Lemma (2-adic Even Valuation Blocking)**  
 *For $S_M = \{11^{-n}\}_{n=1}^M$ ($M \ge 2$) and $C_2$, every even valuation $k < d-1$ is blocked at depth $d \ge 2$.*
 
-*Proof of Even Valuation Blocking.* Let $k < d-1$ be an even valuation. Consider the odd binary digit position $j = k+1 < d$. The $j$-th binary digit of $2^k \cdot 11^{-n}$ corresponds to the 1st binary digit of $11^{-n}$ because multiplication by $2^k$ shifts the binary expansion left by $k$ positions. Since $11 \equiv 3 \equiv 11_2 \pmod 4$ and $11^{-1} \equiv 3 \equiv 11_2 \pmod 4$, we have:
-$$11^{-n} \equiv 3^n \pmod 4$$
-* For $n$ odd: $11^{-n} \equiv 3 \pmod 4$, which in binary is $11_2$ (having 1st digit $s_{n, j} = 1$).
-* For $n$ even: $11^{-n} \equiv 1 \pmod 4$, which in binary is $01_2$ (having 1st digit $s_{n, j} = 0$).
+*Proof of Even Valuation Blocking.* Let $k < d-1$ be an even valuation. Consider the odd binary digit position $j = k+1 < d$. The $j$-th binary digit of $2^k \cdot 11^{-n}$ corresponds to the 1st binary digit of $11^{-n}$ because multiplication by $2^k$ shifts the binary expansion left by $k$ positions. Since $11 \equiv 3 \equiv 11_2 \pmod 4$ and $11^{-1} \equiv 3 \equiv 11_2 \pmod 4$, we have $11^{-n} \equiv 3^n \pmod 4$. This means:
+* For $n$ odd: $11^{-n} \equiv 3 \pmod 4$, which in binary is $11_2$ (having $k$-th bit $s_{n, k} = 1$ and $j$-th bit $s_{n, j} = 1$).
+* For $n$ even: $11^{-n} \equiv 1 \pmod 4$, which in binary is $01_2$ (having $k$-th bit $s_{n, k} = 1$ and $j$-th bit $s_{n, j} = 0$).
 
-Since $j = k+1$ is odd, any $a \in C_2$ has $a_j = 0$. Therefore, for $n$ odd, the $j$-th digit of the sum $a + 2^k \cdot 11^{-n}$ is:
-$$a_j + s_{n, j} \equiv 0 + 1 = 1 \pmod 2$$
-However, the Cantor set $C_2$ requires a digit of 0 at all odd positions. This yields a contradiction, proving that all even valuations $k < d-1$ are blocked. $\square$
+For any $a \in C_2$, the odd position digit must be zero, so $a_j = 0$. Since $k$ is even, $a_k$ can be either $0$ or $1$. We analyze the addition $a + 2^k \cdot 11^{-n}$ at positions $k$ and $j = k+1$ by splitting into two cases for the choice of $a_k$:
+
+1. **Case 1 ($a_k = 0$):**
+   Since $s_{n, k} = 1$ for all $n$, the addition at position $k$ is $a_k + s_{n, k} = 0 + 1 = 1$, which does not generate a carry to position $j = k+1$ (the carry-in is $c_{in} = 0$). The sum at position $j$ is:
+   $$a_j + s_{n, j} + c_{in} = 0 + s_{n, j} + 0 = s_{n, j} \pmod 2$$
+   For $n$ odd, $s_{n, j} = 1$, forcing the $j$-th bit of the sum to be $1$. This violates the Cantor constraint $x_j = 0$ at the odd position $j$, blocking this case.
+
+2. **Case 2 ($a_k = 1$):**
+   The addition at position $k$ is $a_k + s_{n, k} = 1 + 1 = 2$, which generates a carry-out of $1$ to position $j = k+1$ (the carry-in is $c_{in} = 1$). The sum at position $j$ is:
+   $$a_j + s_{n, j} + c_{in} \equiv 0 + s_{n, j} + 1 \equiv s_{n, j} + 1 \pmod 2$$
+   For $n$ even, $s_{n, j} = 0$, forcing the $j$-th bit of the sum to be $0 + 1 = 1$. This violates the Cantor constraint $x_j = 0$ at the odd position $j$, blocking this case.
+
+Since no choice of $a_k \in \{0, 1\}$ yields a valid sum at position $j = k+1$ for all $n \ge 1$, every even valuation $k < d-1$ is blocked. $\square$
 
 *Proof of Theorem 11.3.1.*  
 **1. 3-adic Collapse**: We show that any valuation $k < d$ is strictly blocked. Since $k < d$, the scale factor is $3^k$. The term $3^k \cdot 11^{-n} \bmod 3^d$ has ternary representation with $k$ trailing zeros, meaning its first non-zero ternary digit is at position $k$:
 $$3^k \cdot 11^{-n} = \sum_{j=k}^{d-1} s_{n, j} 3^j \pmod{3^d}$$
 where $s_{n, k} = 11^{-n} \bmod 3 \in \{1, 2\}$ is the $k$-th ternary digit.
 
-Since the lower digits $j < k$ of $3^k \cdot 11^{-n}$ are all 0, there is no carry-in to position $k$ during the addition $a + 3^k \cdot 11^{-n}$ is exactly:
+Since the lower digits $j < k$ of $3^k \cdot 11^{-n}$ are all 0, there is no carry-in to position $k$ during the addition, so the $k$-th ternary digit of the sum $a + 3^k \cdot 11^{-n}$ is exactly:
 $$\left(a_k + (11^{-n} \bmod 3)\right) \bmod 3$$
 where $a_k$ is the $k$-th ternary digit of $a$.
 
@@ -154,6 +163,7 @@ $$\inf \sigma(H_d) < 0$$
 
 2. **Case B (Absence of Copies)**: *If $E$ contains no real affine copies of $S$, the allowed scale region is empty ($U_d = \emptyset$ for $d > V_p + c$). The presence function satisfies $\Psi_d \equiv 0$ identically, the operator reduces to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$, and it admits no negative-energy bound states. The ground state is strictly positive and is given by:*
 $$\inf \sigma(H_d) = \lambda_1 = \frac{4}{du^2} \sin^2\left(\frac{\pi}{2(N_u+1)}\right) > 0$$
+where $N_u$ is the Archimedean scale grid size and $du$ is the grid spacing in the Schrödinger eigenvalue formula.
 
 The transition from $E_0 < 0$ (copies exist) to $E_0 \ge 0$ (no copies exist) serves as the core spectral signature of sequence similarity.
 
@@ -234,19 +244,21 @@ $$m(E \cap [x_0 - \epsilon, x_0 + \epsilon]) \ge (1 - \eta) \cdot 2\epsilon$$
 ### 11.8.2 Theorem (Lebesgue Density Lift)
 *Let $E \subset \mathbb{R}$ have $m(E) > 0$. For any finite sequence $S_M = \{s_n\}_{n=1}^M$ and any density point $x_0 \in E$, there exists a scale threshold $y_0 > 0$ such that for all Archimedean scales $y \le y_0$, the Archimedean presence function satisfies:*
 $$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) > 0$$
-*Proof.* Let $x_0 \in E$ be a density point. Fix $\eta < \frac{1}{M+1}$. By density, choose $\epsilon > 0$ such that the measure of the complement $E^c$ in $I = [x_0 - \epsilon, x_0 + \epsilon]$ satisfies:
-$$m(E^c \cap I) \le \eta \cdot m(I)$$
-Now, select the scale threshold $y_0 = \frac{\epsilon}{\max_n |s_n|}$. For any scale $y \le y_0$, the translated intervals $I_n = I - y \cdot s_n$ all overlap heavily with $I$. Specifically, their intersection $I_{\cap} = \bigcap_{n=1}^M I_n$ is an interval centered near $x_0$ of measure:
-$$m(I_{\cap}) \ge (1 - \delta_y) \cdot m(I)$$
-where $\delta_y \to 0$ as $y \to 0$.
+*Proof.* Let $K \subset E$ be a compact subset of positive Lebesgue measure, $m(K) > 0$. For any scale $y \neq 0$, the presence function is defined by the measure of the intersection:
+$$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) = \int_{\mathbb{R}} \chi_E(x) \prod_{n=1}^M \chi_E(x + y \cdot s_n) \, dx$$
+Define the integrand family:
+$$f_y(x) = \chi_E(x) \prod_{n=1}^M \chi_E(x + y \cdot s_n)$$
+Because translation is continuous in $L^1(\mathbb{R})$, we have for each $n = 1, \dots, M$:
+$$\lim_{y \to 0} \|\chi_E(\cdot + y \cdot s_n) - \chi_E(\cdot)\|_{L^1(K)} = 0$$
+Since $f_y(x)$ and $\chi_E(x)$ are bounded by $1$, we can bound the difference in the integral over $K$ using the union bound:
+$$\int_K |f_y(x) - \chi_E(x)| \, dx \le \sum_{n=1}^M \int_K |\chi_E(x + y \cdot s_n) - \chi_E(x)| \, dx \xrightarrow{y \to 0} 0$$
+Therefore, the integral of $f_y$ converges to the measure of $K$:
+$$\lim_{y \to 0} \int_{\mathbb{R}} f_y(x) \, dx \ge \lim_{y \to 0} \int_K f_y(x) \, dx = \int_K \chi_E(x) \, dx = m(K) > 0$$
+This guarantees that there exists a threshold $y_0 > 0$ such that for all $y \le y_0$:
+$$\Psi_{\infty}(y) = \int_{\mathbb{R}} f_y(x) \, dx > 0$$
+proving the Theorem. $\square$
 
-For the intersection $E \cap \bigcap_{n=1}^M (E - y \cdot s_n)$ to have positive measure, it suffices to estimate the measure of the union of the complements within $I_{\cap}$. By the union bound:
-$$m\left( I_{\cap} \setminus \left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) \right) \le m(E^c \cap I) + \sum_{n=1}^M m(E^c \cap I_n) \le (M+1) \cdot \eta \cdot m(I)$$
-Since $\eta < \frac{1}{M+1}$, the measure of the complements is strictly less than the total measure of the intersection region $m(I_{\cap})$ for small $y$. Therefore, the intersection has strictly positive measure:
-$$\Psi_{\infty}(y) > 0$$
-proving the Archimedean presence function does not vanish at small scales. $\square$
-
-**Corollary (Algebraic Dominance of Obstructions)**  
+**Remark 11.8.3 (Algebraic Dominance)**  
 *Because the Lebesgue density of $E$ guarantees $\Psi_{\infty}(y) > 0$ unconditionally for all sufficiently small Archimedean scales $y \le y_0$, the continuous real sector cannot generate similarity obstructions on its own. Consequently, the non-Archimedean admissibility set $\mathcal{U}_{NA}$ acts as the sole arbiter of global similarity. The presence of copies is governed entirely by the modular cycle constraints of the sequence base.*
 
 ---
@@ -265,7 +277,7 @@ $$s_n \equiv (k_{\text{mult}}n + 1)^{-1} \pmod{p_i^{d_i}}$$
 * **For $d_i = 1$:** The sequence is constant: $s_n \equiv 1 \pmod{p_i}$, cycling with period 1.
 * **For $d_i \ge 2$:** Since $k_{\text{mult}}$ contains exactly one factor of $p_i$, the term $k_{\text{mult}}n \pmod{p_i^{d_i}}$ has period $p_i^{d_i - 1}$. The inverse map preserves this periodicity, so the sequence cycles with period:
   $$L_i = p_i^{d_i - 1}$$
-This linear cycle growth (compared to the exponential period growth $L_i \approx p_i^{d_i}$ for geometric sequences) means that the digit constraints overlap much more rapidly at lower depths.
+This reduced cycle period (compared to the exponential period growth $L_i \approx p_i^{d_i}$ for geometric sequences) means that the digit constraints overlap much more rapidly at lower depths.
 
 ### 11.9.2 Sector Collapse Comparison
 Because the harmonic sequence cycles more slowly, its allowed translations are more restricted at low depths. The pre-processor predicts valuation sector collapse for the harmonic sequence at shallower tree depths than for geometric sequences with equivalent base values. This suggests that slower-scaling algebraic sequences are even more susceptible to multi-adic confinement, reinforcing the universality of the spectral gap diagnostic.
