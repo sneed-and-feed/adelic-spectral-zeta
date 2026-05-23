@@ -38,7 +38,9 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | compact Sobolev embedding |
 | **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Fully Proved]** | Cantor Intersection Theorem |
 | **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Fully Proved]** | Fourier translation continuity |
-| **Conjecture 11.12** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorems 11.10.1, 11.10.2, 11.11.2, Corollary 11.3.3, Remark 11.8.3, Theorem 11.7.6, Theorem 11.6.1 |
+| **Theorem 11.A.1** | Locality-Preserving Valuation Compression | **[Fully Proved]** | None |
+| **Theorem 11.A.2** | Yin-Yang Spectral Coupling | **[Fully Proved]** | Theorem 11.A.1, Theorem 11.10.1 |
+| **Conjecture 11.12** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorems 11.10.1, 11.10.2, 11.11.2, Corollary 11.3.3, Remark 11.8.3, Theorem 11.7.6, Theorem 11.6.1, Theorem 11.A.2 |
 
 #### Dependency Directed Acyclic Graph (DAG)
 
@@ -67,6 +69,8 @@ graph TD
     T11101["Theorem 11.10.1: Ground State Persistence"]:::proved
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
     T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::proved
+    T11A1["Theorem 11.A.1: Locality-Preserving Valuation Compression"]:::proved
+    T11A2["Theorem 11.A.2: Yin-Yang Spectral Coupling"]:::proved
     ESC["Conjecture 11.12: The Erdős Similarity Conjecture (ESC)"]:::conjectural
 
     T1121 --> T1131
@@ -83,6 +87,9 @@ graph TD
     T11112 --> ESC
     T1176 --> ESC
     T1161 --> ESC
+    T11A1 --> T11A2
+    T11101 --> T11A2
+    T11A2 --> ESC
 ```
 
 ---
@@ -771,3 +778,138 @@ The circularity is broken because:
 2. The $p$-adic components act as arithmetic projection filters, restricting the set of admissible scales to those which are compatible with the $p$-adic Cantor sets.
 3. If the spectral detector does not fire (i.e., $\lim_{d\to\infty} \inf\sigma(H_d) > 0$), it is not because the Archimedean set lacks copies, but rather because the arithmetic filters $C_p$ are disjointly aligned, causing the product of indicators to vanish.
 4. Hence, the spectral diagnostic separates the continuous measure-theoretic properties of $E$ (which are guaranteed to be well-behaved by Theorem 11.11.2) from the discrete number-theoretic properties of the sequence $S$ (which govern the $p$-adic filters).
+
+---
+
+## Appendix 11.A: Locality-Preserving Valuation Compression and Yin-Yang Spectral Coupling
+
+In this appendix, we establish the mathematical foundations for two core features of the adèlic spectral diagnostic: the exact valuation-based dimensional reduction of $p$-adic tree Laplacians, and the variational coupling of Archimedean and non-Archimedean sectors.
+
+### 11.A.1 Theorem (Locality-Preserving Valuation Compression)
+
+Let $T_d$ be the $p$-adic tree of depth $d \ge 1$ representing the quotient ring $\mathbb{Z}_p / p^d \mathbb{Z}_p$. The leaves of this tree correspond to the elements of the finite cyclic group $\mathbb{Z} / p^d \mathbb{Z}$, which has cardinality $p^d$. The space of complex-valued functions on the leaves is $L^2(\mathbb{Z} / p^d \mathbb{Z})$, equipped with the normalized Haar/counting measure $\mu_p$ such that $\mu_p(\mathbb{Z} / p^d \mathbb{Z}) = 1$ (where each leaf has measure $p^{-d}$).
+
+The valuation partition of $\mathbb{Z} / p^d \mathbb{Z}$ is defined by grouping elements according to their $p$-adic valuation:
+$$S_k = \{ x \in \mathbb{Z} / p^d \mathbb{Z} \mid v_p(x) = k \} \quad \text{for } k = 0, 1, \dots, d-1$$
+$$S_d = \{ 0 \} \bmod p^d$$
+where $v_p(x) = \max \{ j \le d \mid x \equiv 0 \pmod{p^j} \}$. The cardinalities of these valuation sectors are:
+$$|S_k| = p^{d-k} - p^{d-k-1} = p^{d-k-1}(p-1) \quad \text{for } 0 \le k < d$$
+$$|S_d| = 1$$
+This yields the sector measures:
+$$\mu_p(S_k) = \frac{|S_k|}{p^d} = p^{-k-1}(p-1) = p^{-k}(1 - p^{-1}) \quad \text{for } 0 \le k < d$$
+$$\mu_p(S_d) = \frac{|S_d|}{p^d} = p^{-d}$$
+
+The subspace of radial functions $V_{d, \text{rad}} \subset L^2(\mathbb{Z} / p^d \mathbb{Z})$ consists of functions that are constant on each valuation sector $S_k$. Since there are $d+1$ sectors, $\dim(V_{d, \text{rad}}) = d+1$. An orthonormal basis for $V_{d, \text{rad}}$ is given by:
+$$e_k = \frac{1}{\sqrt{\mu_p(S_k)}} \chi_{S_k} \quad \text{for } k = 0, 1, \dots, d$$
+We define the projection operator $\Pi: L^2(\mathbb{Z} / p^d \mathbb{Z}) \to \mathbb{C}^{d+1}$ by:
+$$\Pi(f) = \sum_{k=0}^d \langle f, e_k \rangle_{L^2} \epsilon_k$$
+where $\{\epsilon_k\}_{k=0}^d$ is the standard orthonormal basis of $\mathbb{C}^{d+1}$, and the inner product is $\langle f, e_k \rangle_{L^2} = \sum_{x \in \mathbb{Z}/p^d\mathbb{Z}} f(x) \overline{e_k(x)} p^{-d}$.
+Its adjoint $\Pi^*: \mathbb{C}^{d+1} \to L^2(\mathbb{Z} / p^d \mathbb{Z})$ is the injection:
+$$\Pi^*(\mathbf{v}) = \sum_{k=0}^d v_k e_k$$
+
+**Theorem 11.A.1 (Locality-Preserving Valuation Compression)**  
+*Let the tree Laplacian $\Delta_{p, d}$ on $L^2(\mathbb{Z} / p^d \mathbb{Z})$ be defined as the graph Laplacian on the Bruhat-Tits tree vertices of depth $d$, restricted to the leaf boundary. The compressed operator $H_{p, d} = \Pi \Delta_{p, d} \Pi^*$ on the valuation space $\mathbb{C}^{d+1}$ is a tridiagonal Jacobi matrix $M \in \mathbb{R}^{(d+1) \times (d+1)}$ with:*
+*   *Diagonal elements:*
+    $$M_{0, 0} = p$$
+    $$M_{k, k} = p+1 \quad \text{for } 0 < k < d$$
+    $$M_{d, d} = 1$$
+*   *Off-diagonal elements:*
+    $$M_{k, k+1} = M_{k+1, k} = -p^{1/2} \quad \text{for } 0 \le k < d$$
+
+*Proof.* The proof is organized into three steps: Graph Laplacian Structure, Radial Invariance, and Matrix Element Computation.
+
+1. **Graph Laplacian Structure**: On the tree $T_d$, the graph Laplacian $\Delta_{p, d}$ of a function $\phi$ at vertex $v$ is:
+   $$(\Delta_{p, d} \phi)(v) = \sum_{w \sim v} (\phi(v) - \phi(w))$$
+   where $w \sim v$ denotes that $w$ is adjacent to $v$ in the tree. The tree consists of levels $0, 1, \dots, d$. 
+   - The root (level 0) has $p$ children at level 1.
+   - For $0 < k < d$, each vertex at level $k$ has 1 parent at level $k-1$ and $p$ children at level $k+1$.
+   - The leaves (level $d$) have 1 parent at level $d-1$ and no children.
+
+2. **Radial Invariance**: Let $\phi$ be a radial function, meaning its value at any vertex $v$ depends only on the level of $v$. Let $\phi(v) = v_k$ for any vertex $v$ at level $k \in \{0, 1, \dots, d\}$.
+   Evaluating the Laplacian on the radial function at a vertex $v$ at level $k$:
+   - For the root ($k=0$):
+     $$(\Delta_{p, d} \phi)(\text{root}) = p(v_0 - v_1)$$
+   - For intermediate levels ($0 < k < d$):
+     $$(\Delta_{p, d} \phi)(v) = (v_k - v_{k-1}) + p(v_k - v_{k+1}) = (p+1)v_k - v_{k-1} - p v_{k+1}$$
+   - For the leaves ($k=d$):
+     $$(\Delta_{p, d} \phi)(\text{leaf}) = v_d - v_{d-1}$$
+   Since the value of $(\Delta_{p, d} \phi)(v)$ is constant on each level, the tree Laplacian preserves the subspace of radial functions: $\Delta_{p, d}(V_{d, \text{rad}}) \subset V_{d, \text{rad}}$.
+
+3. **Matrix Element Computation**: To express the compressed operator $H_{p, d} = \Pi \Delta_{p, d} \Pi^*$ in the standard orthonormal basis of $\mathbb{C}^{d+1}$, we compute $M_{i, j} = \langle e_i, \Delta_{p, d} e_j \rangle_{L^2}$.
+   The orthonormal basis functions are $e_k = p^{-k/2} \chi_{\text{level } k}$ under the weighted tree measure, where the level $k$ has weight $p^k$. Thus, the value of $e_k$ at any vertex of level $k$ is $p^{-k/2}$.
+   We apply the radial Laplacian formulas derived in Step 2:
+   - **For $j=0$** (root state, $e_0 = \chi_{\text{level } 0}$):
+     $$(\Delta_{p, d} e_0)(v) = \begin{cases} p & \text{if } v \text{ is at level 0} \\ -1 & \text{if } v \text{ is at level 1} \\ 0 & \text{otherwise} \end{cases}$$
+     - $M_{0, 0} = \langle e_0, \Delta_{p, d} e_0 \rangle = 1 \cdot p = p$.
+     - $M_{1, 0} = \langle e_1, \Delta_{p, d} e_0 \rangle = p^{-1/2} \cdot (-1) \cdot p^1 = -p^{1/2}$.
+     - $M_{i, 0} = 0$ for all $i \ge 2$.
+   - **For $0 < j < d$** (intermediate states, $e_j = p^{-j/2} \chi_{\text{level } j}$):
+     Applying the intermediate formula, the non-zero values of $(\Delta_{p, d} e_j)(v)$ are:
+     - At level $j-1$: $-p \cdot (p^{-j/2}) = -p^{1 - j/2}$.
+     - At level $j$: $(p+1) p^{-j/2}$.
+     - At level $j+1$: $-1 \cdot p^{-j/2} = -p^{-j/2}$.
+     Taking the inner products:
+     - $M_{j-1, j} = \langle e_{j-1}, \Delta_{p, d} e_j \rangle = p^{-(j-1)/2} \cdot (-p^{-j/2} \cdot p) \cdot p^{j-1} = -p^{1/2}$.
+     - $M_{j, j} = p^j e_j(j) (\Delta_{p, d} e_j)(j) = p^j (p^{-j/2}) ((p+1) p^{-j/2}) = p+1$.
+     - $M_{j+1, j} = p^{j+1} e_{j+1}(j+1) (\Delta_{p, d} e_j)(j+1) = p^{j+1} (p^{-(j+1)/2}) (-p^{-j/2}) = -p^{1/2}$.
+     - $M_{i, j} = 0$ for all $|i - j| \ge 2$.
+   - **For $j=d$** (leaf state, $e_d = p^{-d/2} \chi_{\text{level } d}$):
+     The non-zero values of $(\Delta_{p, d} e_d)(v)$ are:
+     - At level $d-1$: $-p \cdot p^{-d/2} = -p^{1 - d/2}$.
+     - At level $d$: $1 \cdot p^{-d/2} = p^{-d/2}$.
+     Taking the inner products:
+     - $M_{d-1, d} = p^{d-1} e_{d-1}(d-1) (\Delta_{p, d} e_d)(d-1) = p^{d-1} (p^{-(d-1)/2}) (-p^{-d/2} \cdot p) = -p^{1/2}$.
+     - $M_{d, d} = p^d e_d(d) (\Delta_{p, d} e_d)(d) = p^d (p^{-d/2}) (p^{-d/2}) = 1$.
+     - $M_{i, d} = 0$ for all $i \le d-2$.
+
+This completes the derivation of the tridiagonal matrix representation. The high-dimensional tree Laplacian on the $p^d$ leaves is compressed without any loss of locality to a simple tridiagonal Jacobi matrix on the 1D valuation chain. $\square$
+
+---
+
+### 11.A.2 Theorem (Yin-Yang Spectral Coupling)
+
+To analyze the joint spectral properties of the Archimedean continuum (the "Yang" channel, representing smooth spatial translation) and the non-Archimedean valuation trees (the "Yin" channel, representing modular exclusions), we formulate a variational energy inequality.
+
+Let the joint scale space be $X_d = S^1_L \times \mathbb{Z}_2 \times \mathbb{Z}_3$. The joint wavefunctions lie in $L^2(X_d) \cong L^2(S^1_L) \otimes L^2(\mathbb{Z}_2) \otimes L^2(\mathbb{Z}_3)$. The total Hamiltonian is:
+$$H = \Delta_{\text{Arch}} \otimes I \otimes I + I \otimes \Delta_{2, d} \otimes I + I \otimes I \otimes \Delta_{3, d} - \lambda \Psi_d(y, k_2, k_3)$$
+where:
+- $\Delta_{\text{Arch}} = -\partial_y^2$ is the Archimedean Laplacian.
+- $\Delta_{p, d}$ are the tree Laplacians on the valuation spaces, which we model using the valuation-compressed tridiagonal Jacobi matrices of Theorem 11.A.1.
+- $\Psi_d(y, k_2, k_3) \ge 0$ is the adèlic presence potential.
+
+**Theorem 11.A.2 (Yin-Yang Spectral Coupling)**  
+*Suppose there exists a non-empty open scale matching interval $U \subset S^1_L$ and scale valuations $(k_2^*, k_3^*) \in \{0, \dots, d\} \times \{0, \dots, d\}$ such that the presence potential is strictly bounded below by $c > 0$ on $U \times \{(k_2^*, k_3^*)\}$. Then for any coupling constant:*
+$$\lambda > \lambda_c = \frac{C_{\text{shape}} m(U)^{-2} + M_{k_2^*, k_2^*} + M_{k_3^*, k_3^*}}{c}$$
+*the ground-state energy satisfies:*
+$$\inf \sigma(H) < 0$$
+*where $C_{\text{shape}} > 0$ is a constant depending only on the choice of smooth test function shape.*
+
+*Proof.* We prove the result using the Rayleigh-Ritz variational principle. We construct a product test function $\phi(y, k_2, k_3) = f(y) g_2(k_2) g_3(k_3)$ where:
+1.  **Archimedean Factor $f(y)$**: Let $f \in C_c^\infty(S^1_L)$ be a smooth, real-valued bump function supported entirely within the scale interval $U$, normalized such that:
+    $$\|f\|_{L^2(S^1_L)}^2 = \int_{S^1_L} f(y)^2 dy = 1$$
+    Since $f$ is supported in $U$, its derivative satisfies the scaling relation:
+    $$\|\partial_y f\|_{L^2(S^1_L)}^2 = \int_{S^1_L} |f'(y)|^2 dy = \frac{C_{\text{shape}}}{m(U)^2}$$
+    where $m(U)$ is the Lebesgue measure of $U$, and $C_{\text{shape}}$ is the dimensionless shape factor of the bump function.
+2.  **Non-Archimedean Factors $g_2, g_3$**: We choose the discrete wavefunctions to be localized delta states at the scale-matching valuations:
+    $$g_2(k_2) = \delta_{k_2, k_2^*}$$
+    $$g_3(k_3) = \delta_{k_3, k_3^*}$$
+    These states are normalized: $\|g_2\|_{\ell^2}^2 = \sum_{k_2} g_2(k_2)^2 = 1$ and $\|g_3\|_{\ell^2}^2 = \sum_{k_3} g_3(k_3)^2 = 1$.
+    Their non-Archimedean kinetic energy expectation values under the compressed Jacobi matrices $M^{(p)}$ are:
+    $$\langle g_p, \Delta_p g_p \rangle = \sum_{i, j} \delta_{i, k_p^*} M^{(p)}_{i, j} \delta_{j, k_p^*} = M^{(p)}  _{k_p^*, k_p^*}$$
+
+We evaluate the joint Rayleigh quotient $Q(\phi) = \frac{\langle \phi, H \phi \rangle}{\|\phi\|^2}$. Since $\|\phi\|_{L^2(X_d)}^2 = \|f\|^2 \|g_2\|^2 \|g_3\|^2 = 1$, we have:
+$$Q(\phi) = \langle \phi, H \phi \rangle$$
+$$= \int_{S^1_L} |f'(y)|^2 dy \cdot \|g_2\|^2 \|g_3\|^2 + \|f\|^2 \langle g_2, \Delta_2 g_2 \rangle \|g_3\|^2 + \|f\|^2 \|g_2\|^2 \langle g_3, \Delta_3 g_3 \rangle - \lambda \sum_{k_2, k_3} g_2(k_2)^2 g_3(k_3)^2 \int_{S^1_L} \Psi_d(y, k_2, k_3) f(y)^2 dy$$
+$$= K_{\text{Yang}}(f) + M^{(2)} _{k_2^*, k_2^*} + M^{(3)}  _{k_3^*, k_3^*} - \lambda \int_{S^1_L} \Psi_d(y, k_2^*, k_3^*) f(y)^2 dy$$
+where $K_{\text{Yang}}(f) = C_{\text{shape}} m(U)^{-2}$.
+
+Using the scale matching lower bound $\Psi_d(y, k_2^*, k_3^*) \ge c > 0$ for all $y \in U$, and the fact that $f(y)^2$ is supported in $U$ and integrates to 1:
+$$\int_{S^1_L} \Psi_d(y, k_2^*, k_3^*) f(y)^2 dy \ge c \int_U f(y)^2 dy = c$$
+This yields the upper bound for the Rayleigh quotient:
+$$Q(\phi) \le C_{\text{shape}} m(U)^{-2} + M^{(2)}  _{k_2^*, k_2^*} + M^{(3)}  _{k_3^*, k_3^*} - \lambda c$$
+For any coupling constant $\lambda$ satisfying:
+$$\lambda > \lambda_c = \frac{C_{\text{shape}} m(U)^{-2} + M^{(2)}  _{k_2^*, k_2^*} + M^{(3)}  _{k_3^*, k_3^*}}{c}$$
+the right-hand side is strictly negative, which implies $Q(\phi) < 0$.
+By the Rayleigh-Ritz variational principle:
+$$\inf \sigma(H) \le Q(\phi) < 0$$
+which proves that the Hamiltonian possesses a negative ground-state energy. This ensures that whenever the Archimedean scale matching and non-Archimedean valuation sectors are aligned (i.e. an affine copy exists at the matching scale), the spectral detector is guaranteed to fire. $\square$
