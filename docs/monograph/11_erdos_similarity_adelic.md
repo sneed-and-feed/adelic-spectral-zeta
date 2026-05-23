@@ -21,15 +21,17 @@ To establish clear mathematical transparency, we classify every proposition in t
 | Proposition | Title | Status | Primary Dependencies |
 | :--- | :--- | :--- | :--- |
 | **Theorem 11.2.1** | Finite Modular Obstruction | **[Fully Proved]** | None |
+| **Heuristic 11.2.2** | Energetic Valuation Suppression | **[Numerical Conjecture]** | Conjecture 11.7.5 |
 | **Lemma 11.3.1** | 2-adic Even Valuation Blocking | **[Fully Proved]** | None |
 | **Theorem 11.3.1** | Quantitative Valuation Sector Collapse | **[Fully Proved]** | Theorem 11.2.1, Lemma 11.3.1 |
 | **Lemma 11.3.2** | Arithmetic Unit Group Closures for Base 11 | **[Fully Proved]** | None |
 | **Corollary 11.3.3** | Conditional Multi-Directional Confinement | **[Fully Proved]** | Theorem 11.3.1 |
 | **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Fully Proved]** | None |
-| **Theorem 11.7.3** | Conditional Galerkin Convergence | **[Conditional]** | Dense-core exactness, form consistency |
-| **Conjecture 11.7.4** | Discrete Adèlic Combes–Thomas Splitting | **[Numerical Conjecture]** | Numerical scaling trials |
+| **Theorem 11.7.4** | Conditional Galerkin Convergence | **[Conditional]** | Dense-core exactness, form consistency |
+| **Conjecture 11.7.5** | Discrete Adèlic Combes–Thomas Splitting | **[Numerical Conjecture]** | Numerical scaling trials |
 | **Theorem 11.8.2** | Lebesgue Density Lift | **[Fully Proved]** | $L^1$-continuity of translation on compact sets |
-| **Remark 11.8.3** | Algebraic Dominance | **[Fully Proved]** | Theorem 11.8.2 |
+| **Remark 11.8.3** | Archimedean/Non-Archimedean Scale Coupling | **[Fully Proved]** | Theorem 11.8.2 |
+| **Conjecture 11.9.2** | Harmonic Sector Collapse Comparison | **[Numerical Conjecture]** | Pre-processor numerical trials |
 | **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Fully Proved]** | compact Sobolev embedding |
 | **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Fully Proved]** | Cantor Intersection Theorem |
 | **Conjecture 11.11** | The Erdős Similarity Conjecture (ESC) | **[Programmatic Bridge]** | Theorems 11.10.1, 11.10.2, Corollary 11.3.3, Remark 11.8.3 |
@@ -44,15 +46,17 @@ graph TD
     classDef conjectural fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
 
     T1121["Theorem 11.2.1: Finite Modular Obstruction"]:::proved
+    H1122["Heuristic 11.2.2: Energetic Valuation Suppression"]:::numerical
     L1131["Lemma 11.3.1: 2-adic Even Valuation Blocking"]:::proved
     T1131["Theorem 11.3.1: Quantitative Valuation Sector Collapse"]:::proved
     L1132["Lemma 11.3.2: Arithmetic Unit Group Closures"]:::proved
     C1133["Corollary 11.3.3: Multi-Directional Confinement"]:::proved
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::proved
-    T1173["Theorem 11.7.3: Conditional Galerkin Convergence"]:::conditional
-    CT1174["Conjecture 11.7.4: Combes-Thomas Splitting"]:::numerical
+    T1174["Theorem 11.7.4: Conditional Galerkin Convergence"]:::conditional
+    CT1175["Conjecture 11.7.5: Combes-Thomas Splitting"]:::numerical
     T1182["Theorem 11.8.2: Lebesgue Density Lift"]:::proved
-    R1183["Remark 11.8.3: Algebraic Dominance"]:::proved
+    R1183["Remark 11.8.3: Archimedean/Non-Archimedean Scale Coupling"]:::proved
+    H1192["Conjecture 11.9.2: Harmonic Sector Collapse"]:::numerical
     T11101["Theorem 11.10.1: Ground State Persistence"]:::proved
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
     ESC["Conjecture 11.11: The Erdős Similarity Conjecture (ESC)"]:::conjectural
@@ -61,6 +65,7 @@ graph TD
     L1131 --> T1131
     T1131 --> C1133
     L1132 --> C1133
+    CT1175 --> H1122
     T1182 --> R1183
     C1133 --> ESC
     R1183 --> ESC
@@ -121,8 +126,19 @@ We analyze the translation requirements for $n$ odd and $n$ even:
 
 Since no translation components $a_2, a_3$ exist that satisfy the orbit inclusions, the product in the presence function sum is identically zero for all translation vectors $a \in \mathcal{E}$. Thus, $\Psi_{N,d,k}(y, 0, 0) = 0$. $\square$
 
-**Corollary (Energetic Valuation Suppression)**  
-*Because $\Psi_{N,d,k}(y,0,0) = 0$, the potential energy at the identity valuation is zero (relative to negative values elsewhere), making this region energetically unfavorable. Ground-state probability density is exponentially suppressed at $(y,0,0)$, but the operator $H_d = \Delta_{\mathbb{I}, d} - \lambda \Psi_d$ remains globally connected on the full grid through the off-diagonal kinetic coupling of $\Delta_2$ and $\Delta_3$.*
+**Heuristic 11.2.2 (Energetic Valuation Suppression)**  
+*Because $\Psi_{N,d,k}(y,0,0) = 0$, the potential energy at the identity valuation is zero (relative to negative values elsewhere), making this region energetically unfavorable. Under the Combes–Thomas splitting framework (Conjecture 11.7.5), this zero potential region acts as a high barrier, causing the ground-state probability density to be exponentially suppressed at $(y,0,0)$. However, the operator $H_d = \Delta_{\mathbb{I}, d} - \lambda \Psi_d$ remains globally connected on the full grid through the off-diagonal kinetic coupling of the multi-adic Laplacians.*
+
+### 11.2.2 Prime Selection and Product Space Motivation
+
+A natural question arises: for a geometric sequence with base $q = 11$, why are the non-Archimedean places chosen to be $p = 2$ and $p = 3$, rather than $p = 11$, $p = 5$, or other primes?
+
+1. **Non-Archimedean Place Compatibility**: To embed the geometric sequence $S = \{11^{-n}\}_{n=1}^\infty$ into the compact $p$-adic integers $\mathbb{Z}_p$, the elements must not possess poles in $\mathbb{Q}_p$. This requires the $p$-adic valuation of $11$ to be zero ($v_p(11) = 0$), so $11$ is a unit in $\mathbb{Z}_p^\times$. If we were to choose $p = 11$, then $11^{-n}$ would have poles of increasing order ($v_{11}(11^{-n}) = -n \to -\infty$), and the sequence would escape to infinity in $\mathbb{Q}_{11}$, preventing any compact embedding or modular translation structure.
+2. **Minimal Adversarial Residue Cycle Clashes**: Among the primes where $v_p(11) = 0$, the choice of $p=2$ and $p=3$ represents the minimal set of primes that generate complete modular obstruction. Specifically:
+   * Modulo 4 (which restricts the 2-adic units): $11 \equiv 3 \equiv -1 \pmod 4$.
+   * Modulo 3: $11 \equiv 2 \equiv -1 \pmod 3$.
+   Because $11 \equiv -1$ mod both, the residue cycle length is exactly $2$, and the alternating values mod 4 and mod 3 mismatch the Cantor set exclusion rules. This specific modular residue clash is what blocks all translations.
+3. **Universality vs. Modeling Choice**: If we had chosen a prime like $p = 5$ where $11 \equiv 1 \pmod 5$, the sequence $11^{-n} \equiv 1 \pmod 5$ would be constant, failing to generate any residue cycling or translation obstruction. Thus, $\{2, 3\}$ is not a canonical, universal choice for all sequences, but rather the minimal, natural adversarial modeling choice for base $q = 11$ to show that modular obstructions block similarity.
 
 ---
 
@@ -156,27 +172,27 @@ $$C_3 = \left\{ x = \sum_{j=0}^\infty x_j 3^j \in \mathbb{Z}_3 \ \middle|\ x_j \
 *For $S_M = \{11^{-n}\}_{n=1}^M$ ($M \ge 2$) and $C_2$, every even valuation $k < d-1$ is blocked at depth $d \ge 2$.*
 
 *Proof of Even Valuation Blocking.* Let $k < d-1$ be an even valuation. Consider the odd binary digit position $j = k+1 < d$. The $j$-th binary digit of $2^k \cdot 11^{-n}$ corresponds to the 1st binary digit of $11^{-n}$ because multiplication by $2^k$ shifts the binary expansion left by $k$ positions. Since $11 \equiv 3 \equiv 11_2 \pmod 4$ and $11^{-1} \equiv 3 \equiv 11_2 \pmod 4$, we have $11^{-n} \equiv 3^n \pmod 4$. This means:
-* For $n$ odd: $11^{-n} \equiv 3 \pmod 4$, which in binary is $11_2$ (having $k$-th bit $s_{n, k} = 1$ and $j$-th bit $s_{n, j} = 1$).
-* For $n$ even: $11^{-n} \equiv 1 \pmod 4$, which in binary is $01_2$ (having $k$-th bit $s_{n, k} = 1$ and $j$-th bit $s_{n, j} = 0$).
+* For $n$ odd: $11^{-n} \equiv 3 \pmod 4$, which in binary is $11_2$ (having $k$-th bit $d_{n, k} = 1$ and $j$-th bit $d_{n, j} = 1$).
+* For $n$ even: $11^{-n} \equiv 1 \pmod 4$, which in binary is $01_2$ (having $k$-th bit $d_{n, k} = 1$ and $j$-th bit $d_{n, j} = 0$).
 
 For any $a \in C_2$, the odd position digit must be zero, so $a_j = 0$. Since $k$ is even, $a_k$ can be either $0$ or $1$. We analyze the addition $a + 2^k \cdot 11^{-n}$ at positions $k$ and $j = k+1$ by splitting into two cases for the choice of $a_k$:
 
 1. **Case 1 ($a_k = 0$):**
-   Since $s_{n, k} = 1$ for all $n$, the addition at position $k$ is $a_k + s_{n, k} = 0 + 1 = 1$, which does not generate a carry to position $j = k+1$ (the carry-in is $c_{in} = 0$). The sum at position $j$ is:
-   $$a_j + s_{n, j} + c_{in} = 0 + s_{n, j} + 0 = s_{n, j} \pmod 2$$
-   For $n$ odd, $s_{n, j} = 1$, forcing the $j$-th bit of the sum to be $1$. This violates the Cantor constraint $x_j = 0$ at the odd position $j$, blocking this case.
+   Since $d_{n, k} = 1$ for all $n$, the addition at position $k$ is $a_k + d_{n, k} = 0 + 1 = 1$, which does not generate a carry to position $j = k+1$ (the carry-in is $c_{in} = 0$). The sum at position $j$ is:
+   $$a_j + d_{n, j} + c_{in} = 0 + d_{n, j} + 0 = d_{n, j} \pmod 2$$
+   For $n$ odd, $d_{n, j} = 1$, forcing the $j$-th bit of the sum to be $1$. This violates the Cantor constraint $x_j = 0$ at the odd position $j$, blocking this case.
 
 2. **Case 2 ($a_k = 1$):**
-   The addition at position $k$ is $a_k + s_{n, k} = 1 + 1 = 2$, which generates a carry-out of $1$ to position $j = k+1$ (the carry-in is $c_{in} = 1$). The sum at position $j$ is:
-   $$a_j + s_{n, j} + c_{in} \equiv 0 + s_{n, j} + 1 \equiv s_{n, j} + 1 \pmod 2$$
-   For $n$ even, $s_{n, j} = 0$, forcing the $j$-th bit of the sum to be $0 + 1 = 1$. This violates the Cantor constraint $x_j = 0$ at the odd position $j$, blocking this case.
+   The addition at position $k$ is $a_k + d_{n, k} = 1 + 1 = 2$, which generates a carry-out of $1$ to position $j = k+1$ (the carry-in is $c_{in} = 1$). The sum at position $j$ is:
+   $$a_j + d_{n, j} + c_{in} \equiv 0 + d_{n, j} + 1 \equiv d_{n, j} + 1 \pmod 2$$
+   For $n$ even, $d_{n, j} = 0$, forcing the $j$-th bit of the sum to be $0 + 1 = 1$. This violates the Cantor constraint $x_j = 0$ at the odd position $j$, blocking this case.
 
 Since no choice of $a_k \in \{0, 1\}$ yields a valid sum at position $j = k+1$ for all $n \ge 1$, every even valuation $k < d-1$ is blocked. $\square$
 
 *Proof of Theorem 11.3.1.*  
 **1. 3-adic Collapse**: We show that any valuation $k < d$ is strictly blocked. Since $k < d$, the scale factor is $3^k$. The term $3^k \cdot 11^{-n} \bmod 3^d$ has ternary representation with $k$ trailing zeros, meaning its first non-zero ternary digit is at position $k$:
-$$3^k \cdot 11^{-n} = \sum_{j=k}^{d-1} s_{n, j} 3^j \pmod{3^d}$$
-where $s_{n, k} = 11^{-n} \bmod 3 \in \{1, 2\}$ is the $k$-th ternary digit.
+$$3^k \cdot 11^{-n} = \sum_{j=k}^{d-1} d_{n, j} 3^j \pmod{3^d}$$
+where $d_{n, k} = 11^{-n} \bmod 3 \in \{1, 2\}$ is the $k$-th ternary digit.
 
 Since the lower digits $j < k$ of $3^k \cdot 11^{-n}$ are all 0, there is no carry-in to position $k$ during the addition, so the $k$-th ternary digit of the sum $a + 3^k \cdot 11^{-n}$ is exactly:
 $$\left(a_k + (11^{-n} \bmod 3)\right) \bmod 3$$
@@ -191,7 +207,7 @@ $$\{1, 2\} \cap \{2, 0\} \cap \{0, 1\} = \{2\} \cap \{0, 1\} = \emptyset$$
 Thus, there exists no digit $a_k$ that can satisfy the condition for both odd and even $n$, blocking all valuations $k < d$. For $k = d$, the scale factor is $3^d \equiv 0 \pmod{3^d}$, which trivially allows $k=d$. Thus, $U_{3, d} = \{d\}$.
 
 **2. 2-adic Collapse**: 
-* **Odd Valuations $k < d$**: Let $k < d$ be an odd valuation. The scale factor is $2^k$. The term $2^k \cdot 11^{-n}$ has its first non-zero binary digit at position $k$, which is $s_{n, k} = 1$ (since $11^{-n} \equiv 1 \pmod 2$). Because $k$ is odd and the lower digits $j < k$ are 0, the $k$-th binary digit of the sum $a + 2^k \cdot 11^{-n}$ is exactly $(a_k + 1) \bmod 2 = 1$ (since $a_k = 0$ for $a \in C_2$). This violates the Cantor constraint, blocking all odd valuations $k < d$.
+* **Odd Valuations $k < d$**: Let $k < d$ be an odd valuation. The scale factor is $2^k$. The term $2^k \cdot 11^{-n}$ has its first non-zero binary digit at position $k$, which is $d_{n, k} = 1$ (since $11^{-n} \equiv 1 \pmod 2$ for all $n \ge 1$). Because $k$ is odd and the lower digits $j < k$ are 0, the $k$-th binary digit of the sum $a + 2^k \cdot 11^{-n}$ is exactly $(a_k + d_{n, k}) \bmod 2 = (a_k + 1) \bmod 2 = 1$ for all $n \ge 1$ (since $a_k = 0$ is required for any $a \in C_2$ at odd positions $k$). Because the sum's $k$-th bit is $1$, this violates the Cantor constraint $x_k = 0$ at the odd position $k$ for all $n \ge 1$ (blocking even for $n=1$, which alone is sufficient to show no translation works). Thus, all odd valuations $k < d$ are blocked.
 * **Even Valuations $k < d-1$**: Blocked by the Even Valuation Blocking Lemma.
 * **Boundary Valuations**: For $k=d$, the factor is $0 \bmod 2^d$, trivially allowed. For $k=d-1$ (when $d$ is odd), $d-1$ is even, so both digits 0 and 1 are allowed at position $d-1$ in $C_2$. Thus $k=d-1$ is allowed. It follows that $U_{2, d} = \{d\}$ for $d$ even, and $U_{2, d} = \{d-1, d\}$ for $d$ odd. $\square$
 
@@ -213,7 +229,7 @@ To make the valuation sector collapse rigorous, we compute the exact topological
 1. **For $p = 2$:** Modulo 4, we have $11 \equiv 3 \equiv -1 \pmod 4$, meaning the projection of $11$ onto $\mu_2 = \{\pm 1\}$ is $-1$. The principal unit component is $-11 = 1 - 12 = 1 - 3 \cdot 2^2 \in 1 + 4\mathbb{Z}_2$. Squaring gives $11^2 = 121 = 1 + 120 = 1 + 15 \cdot 2^3$. Since the 2-adic valuation is $v_2(11^2 - 1) = v_2(120) = 3$, the closed subgroup generated by $11^2$ is exactly $1 + 8\mathbb{Z}_2$. The closure of $\langle 11 \rangle$ is therefore:
    $$\overline{\langle 11 \rangle} = (1 + 8\mathbb{Z}_2) \cup (11 \cdot (1 + 8\mathbb{Z}_2))$$
    Since $11 \equiv 3 \pmod 8$, the elements in the first component are $\equiv 1 \pmod 8$, and the elements in the second component are $\equiv 3 \pmod 8$. Thus, $\overline{\langle 11 \rangle} = \{ x \in \mathbb{Z}_2^\times \mid x \bmod 8 \in \{1, 3\} \}$, which contains $1 + 8\mathbb{Z}_2$ (so $c = 3$) but does not contain $1 + 4\mathbb{Z}_2$.
-2. **For $p = 3$:** Modulo 3, we have $11 \equiv 2 \equiv -1 \pmod 3$, so its projection onto $\mu_2$ is $-1$. The principal unit component is $-11 = 1 - 12 = 1 - 4 \cdot 3 \in 1 + 3\mathbb{Z}_3$. Squaring gives $11^2 = 121 = 1 + 120 = 1 + 40 \cdot 3^1$. Since $v_3(11^2 - 1) = v_3(120) = 1$, the closed subgroup generated by $11^2$ is the entire group of principal units $1 + 3\mathbb{Z}_3$. Since the projection onto $\mu_2$ is surjective, the closure is $\mu_2 \times (1 + 3\mathbb{Z}_3) = \mathbb{Z}_3^\times$. The minimal power is $c = 1$. $\square$
+2. **For $p = 3$:** Modulo 3, we have $11 \equiv 2 \equiv -1 \pmod 3$, so the projection of $11$ onto $\mu_2 = \{\pm 1\}$ is $-1$. Squaring gives $11^2 = 121 = 1 + 120 = 1 + 40 \cdot 3^1$. Since the 3-adic valuation of $11^2 - 1$ is $v_3(11^2 - 1) = v_3(120) = 1$, the closed subgroup generated by the principal unit $11^2$ is the entire group of principal units $1 + 3\mathbb{Z}_3$. Since the projection onto $\mu_2$ is surjective, the closure of the group generated by $11$ is $\mu_2 \times (1 + 3\mathbb{Z}_3) = \mathbb{Z}_3^\times$. The minimal power is $c = 1$. $\square$
 
 ---
 
@@ -241,7 +257,7 @@ $$\inf \sigma(H_d) < 0$$
    $$\frac{\langle \phi_0, H_d \phi_0 \rangle}{\|\phi_0\|^2} = \frac{\langle \phi_0, \Delta_{\mathbb{I}, d} \phi_0 \rangle - \lambda \langle \phi_0, \Psi_d \phi_0 \rangle}{\|\phi_0\|^2} \le \frac{\pi^2}{D_d^2} - \lambda \Psi_{\min}$$
    For a sufficiently large coupling constant $\lambda > \frac{\pi^2}{\Psi_{\min} D_d^2}$, the Rayleigh quotient is negative, which implies the ground-state energy is strictly negative: $\inf \sigma(H_d) < 0$. The kinetic localization cost shifts this energy closer to 0 for small $D_d$ but it remains negative.
 
-2. **Case B (Absence of Copies)**: *If $E$ contains no real affine copies of $S$, the allowed scale region is empty ($U_d = \emptyset$ for $d > V_p + c$). The presence function satisfies $\Psi_d \equiv 0$ identically, the operator reduces to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$, and it admits no negative-energy bound states. The ground state is strictly positive and is given by:*
+2. **Case B (Absence of Copies)**: *If $E$ contains no real affine copies of $S$, then under the conditional hypothesis that the allowed scale region $U_d$ collapses and becomes empty for sufficiently large tree depths ($U_d = \emptyset$ for $d > V_p + c$, where $V_p$ represents the valuation depth of sector collapse—i.e., the maximum depth where non-trivial intersections occur—and $c$ is the unit group closure power from Lemma 11.3.2), the presence function satisfies $\Psi_d \equiv 0$ identically. The operator then reduces to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$, admitting no negative-energy bound states. The ground state is strictly positive and is given by:*
 $$\inf \sigma(H_d) = \lambda_1 = \frac{4}{du^2} \sin^2\left(\frac{\pi}{2(N_u+1)}\right) > 0$$
 where $N_u$ is the Archimedean scale grid size and $du$ is the grid spacing in the Schrödinger eigenvalue formula.
 
@@ -331,10 +347,10 @@ Using these extrapolated values, the ground-state energy in the projective limit
 $$E_0(\infty, \theta) \approx a_0 + a_1 \cdot \frac{1}{(1-\theta)^2}$$
 * **Case B Detection:** If $E_0(\infty, \theta) \ge 0$, the operator admits no negative-energy bound states in the projective limit. The allowed scale sector collapses, analytically proving the absence of affine copies without requiring deep tree diagonalization.
 
-### 11.7.3 Theorem (Conditional Galerkin Convergence)
+### 11.7.4 Theorem (Conditional Galerkin Convergence)
 To establish that the finite-dimensional truncations $H_d$ converge in a suitable sense to the projective-limit Hamiltonian $H_\infty$ on the compact adèlic space $X_L$, we formulate the convergence criteria under the Galerkin approximation scheme.
 
-**Theorem 11.7.3 (Conditional Galerkin Convergence)**  
+**Theorem 11.7.4 (Conditional Galerkin Convergence)**  
 *Let $H_\infty = \Delta_{\mathbb{I}, \infty} - \lambda \Psi_\infty$ be the Hamiltonian on $L^2(X_L)$, and let $H_d$ be its finite-dimensional Galerkin projection at depth $d$. Assume:*
 1. **Coercivity**: *The family of quadratic forms $q_d(u) = \langle u, H_d u \rangle$ is uniformly bounded below, i.e., $q_d(u) \ge -M \|u\|^2$ for some $M > 0$.*
 2. **Form Consistency**: *The sesquilinear form associated with $H_d$ converges pointwise to the form of $H_\infty$ on a dense subspace of $L^2(X_L)$.*
@@ -342,12 +358,19 @@ To establish that the finite-dimensional truncations $H_d$ converge in a suitabl
 
 *Then, $H_d$ converges to $H_\infty$ in the strong resolvent sense as $d \to \infty$. By the Trotter–Kato Theorem, this implies that the spectral projections converge, so that:*
 $$\lim_{d \to \infty} \inf \sigma(H_d) = \inf \sigma(H_\infty)$$
+
 *Proof.* Under the dense-core exactness and form consistency assumptions, the operator-form differences vanish: $\lim_{d \to \infty} \|(H_d - z I)^{-1} P_d - P_d (H_\infty - z I)^{-1}\| = 0$ for $\text{Re}(z) < -M$. By standard Trotter–Kato strong resolvent convergence machinery (see Kato's *Perturbation Theory for Linear Operators*), strong resolvent convergence preserves the lower boundary of the spectrum, guaranteeing the projective limit. $\square$
 
-### 11.7.4 Conjecture (Discrete Adèlic Combes–Thomas Splitting)
+*Verification of Galerkin Conditions in Practice.*
+Verifying these conditions in practice involves:
+1. **Coercivity**: Establishing a uniform lower bound follows directly from the boundedness of the potential $\Psi_d$ (which satisfies $\|\Psi_d\|_\infty \le 1$ under the normalized Presence Function definition) and the positive-semidefiniteness of the Laplacians.
+2. **Form Consistency**: This is verified by expressing the presence functions $\Psi_d$ and $\Psi_\infty$ as integrals against Haar measure. Since the adèlic indicator functions converge in $L^1$, the potential forms $\langle u, \Psi_d v \rangle$ converge to $\langle u, \Psi_\infty v \rangle$ for all $u, v \in H^1(X_L)$.
+3. **Dense-Core Exactness**: Since $X_L$ is compact, the smooth cylindrical functions (functions that depend on only finitely many coordinates and are $C^\infty$ in the Archimedean coordinate) form a dense subalgebra of $C(X_L)$ by the Stone-Weierstrass Theorem. This subalgebra constitutes a core of self-adjointness for $H_\infty$, and the projections $P_d$ recover these cylindrical functions exactly once the depth $d$ exceeds the cylinder's coordination level.
+
+### 11.7.5 Conjecture (Discrete Adèlic Combes–Thomas Splitting)
 When the allowed scale region consists of disconnected components $U_i, U_j \subset U_d$, the tunneling interaction between these wells is governed by a splitting factor.
 
-**Conjecture 11.7.4 (Discrete Adèlic Combes–Thomas Splitting)**  
+**Conjecture 11.7.5 (Discrete Adèlic Combes–Thomas Splitting)**  
 *For a sufficiently large coupling constant $\lambda$, the off-diagonal matrix elements of the resolvent $(H_d - z I)^{-1}$ between states localized in disjoint scale components $U_i$ and $U_j$ satisfy:*
 $$\left| \langle \chi_{U_i}, (H_d - z I)^{-1} \chi_{U_j} \rangle \right| \le C e^{-\alpha(\lambda) \operatorname{dist}(U_i, U_j)}$$
 *where $\operatorname{dist}(U_i, U_j)$ is the tree-distance between the scale components, and the decay rate scales as $\alpha(\lambda) = \mathcal{O}(\log \lambda)$ as $\lambda \to \infty$.*
@@ -367,7 +390,7 @@ Thus, for any $0 < \eta < 1$, there exists an $\epsilon_0 > 0$ such that for all
 $$m(E \cap [x_0 - \epsilon, x_0 + \epsilon]) \ge (1 - \eta) \cdot 2\epsilon$$
 
 ### 11.8.2 Theorem (Lebesgue Density Lift)
-*Let $E \subset \mathbb{R}$ have $m(E) > 0$. For any finite sequence $S_M = \{s_n\}_{n=1}^M$ and any density point $x_0 \in E$, there exists a scale threshold $y_0 > 0$ such that for all Archimedean scales $y \le y_0$, the Archimedean presence function satisfies:*
+*Let $E \subset \mathbb{R}$ have $m(E) > 0$. For any finite sequence $S_M = \{s_n\}_{n=1}^M$ of length $M < \infty$ and any density point $x_0 \in E$, there exists a scale threshold $y_0(M) > 0$ depending on $M$ such that for all Archimedean scales $y \le y_0(M)$, the Archimedean presence function satisfies:*
 $$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) > 0$$
 *Proof.* Let $K \subset E$ be a compact subset of positive Lebesgue measure, $m(K) > 0$. For any scale $y \neq 0$, the presence function is defined by the measure of the intersection:
 $$\Psi_{\infty}(y) = m\left( E \cap \bigcap_{n=1}^M (E - y \cdot s_n) \right) = \int_{\mathbb{R}} \chi_E(x) \prod_{n=1}^M \chi_E(x + y \cdot s_n) \, dx$$
@@ -377,14 +400,14 @@ Because translation is continuous in $L^1$ on any compact set, we have for each 
 $$\lim_{y \to 0} \|\chi_E(\cdot + y \cdot s_n) - \chi_E(\cdot)\|_{L^1(K)} = 0$$
 Since $f_y(x)$ and $\chi_E(x)$ are bounded by $1$, we can bound the difference in the integral over $K$ using the union bound:
 $$\int_K |f_y(x) - \chi_E(x)| \, dx \le \sum_{n=1}^M \int_K |\chi_E(x + y \cdot s_n) - \chi_E(x)| \, dx \xrightarrow{y \to 0} 0$$
-Therefore, the integral of $f_y$ converges to the measure of $K$:
-$$\lim_{y \to 0} \int_{\mathbb{R}} f_y(x) \, dx \ge \lim_{y \to 0} \int_K f_y(x) \, dx = \int_K \chi_E(x) \, dx = m(K) > 0$$
-This guarantees that there exists a threshold $y_0 > 0$ such that for all $y \le y_0$:
-$$\Psi_{\infty}(y) = \int_{\mathbb{R}} f_y(x) \, dx > 0$$
-proving the Theorem. $\square$
+Because this upper bound depends on $M$ via the sum of $M$ terms, the rate of convergence depends on $M$. Thus, for any fixed $M$, there exists a threshold $y_0(M) > 0$ such that for all $y \le y_0(M)$:
+$$\int_K |f_y(x) - \chi_E(x)| \, dx \le \frac{1}{2} m(K)$$
+which guarantees that the integral of $f_y$ remains strictly positive:
+$$\Psi_{\infty}(y) \ge \int_K f_y(x) \, dx \ge \int_K \chi_E(x) \, dx - \int_K |f_y(x) - \chi_E(x)| \, dx \ge \frac{1}{2} m(K) > 0$$
+proving the Theorem. Note that as $M \to \infty$, the union bound sum grows, forcing $y_0(M) \to 0$, so a single scale $y > 0$ is not guaranteed to work for $M = \infty$ by this continuum argument alone. $\square$
 
-**Remark 11.8.3 (Algebraic Dominance)**  
-*Because the Lebesgue density of $E$ guarantees $\Psi_{\infty}(y) > 0$ unconditionally for all sufficiently small Archimedean scales $y \le y_0$, the continuous real sector cannot generate similarity obstructions on its own. Consequently, the non-Archimedean admissibility set $\mathcal{U}_{NA}$ acts as the sole arbiter of global similarity. The presence of copies is governed entirely by the modular cycle constraints of the sequence base.*
+**Remark 11.8.3 (Archimedean/Non-Archimedean Scale Coupling)**  
+*Because the Lebesgue threshold $y_0(M)$ depends on the sequence length $M$ and satisfies $y_0(M) \to 0$ as $M \to \infty$, the Archimedean and non-Archimedean sectors do not decouple in the infinite sequence limit ($M = \infty$). For any finite approximation $M$, the continuous real sector cannot generate similarity obstructions on its own because $\Psi_{\infty}(y) > 0$ for $y \le y_0(M)$; hence, the non-Archimedean sector acts as the primary arbiter of similarity at that scale. However, for the full infinite sequence, the Archimedean and non-Archimedean constraints interact precisely through the scale factor $y$, coupling the continuous and algebraic obstructions.*
 
 ---
 
@@ -404,8 +427,8 @@ $$s_n \equiv (k_{\text{mult}}n + 1)^{-1} \pmod{p_i^{d_i}}$$
   $$L_i = p_i^{d_i - 1}$$
 This reduced cycle period (compared to the exponential period growth $L_i \approx p_i^{d_i}$ for geometric sequences) means that the digit constraints overlap much more rapidly at lower depths.
 
-### 11.9.2 Sector Collapse Comparison
-Because the harmonic sequence has a reduced cycle period, its allowed translations are more restricted at low depths. The pre-processor predicts valuation sector collapse for the harmonic sequence at shallower tree depths than for geometric sequences with equivalent base values. This suggests that slower-scaling algebraic sequences are even more susceptible to multi-adic confinement, reinforcing the universality of the spectral gap diagnostic.
+### 11.9.2 Heuristic: Sector Collapse Comparison
+Because the harmonic sequence has a cycle period reduced from $p_i^{d_i}$ to $p_i^{d_i - 1}$, its allowed translations are more restricted at low depths. As a heuristic conjecture supported by pre-processor numerical trials, we expect the valuation sector for the harmonic sequence to collapse at shallower tree depths than for geometric sequences with equivalent base values. This suggests that slower-scaling algebraic sequences are even more susceptible to multi-adic confinement, reinforcing the conjectured universality of the spectral diagnostic framework.
 
 ---
 
@@ -465,17 +488,20 @@ The sequence of sets $\{\mathcal{A}_M\}_{M=1}^\infty$ is nested:
 $$\mathcal{A}_1 \supset \mathcal{A}_2 \supset \mathcal{A}_3 \supset \dots$$
 and by hypothesis, each $\mathcal{A}_M$ is non-empty. By the **Cantor Intersection Theorem** (or the finite intersection property of compact spaces), any nested family of non-empty compact sets has a non-empty intersection. Therefore:
 $$\mathcal{A}_\infty = \bigcap_{M=1}^\infty \mathcal{A}_M \neq \emptyset$$
-Any translation vector $a \in \mathcal{A}_\infty$ satisfies $a \in \mathcal{E}$ and $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n \ge 1$, establishing the existence of a valid affine copy of the infinite sequence inside $\mathcal{E}$ and avoiding boundary boundary-escape issues. $\square$
+Any translation vector $a \in \mathcal{A}_\infty$ satisfies $a \in \mathcal{E}$ and $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n \ge 1$. 
 
-### 11.10.3 Completion of the Logical Bridge to ESC
-With Theorems 11.10.1 and 11.10.2 established, the logical bridge between adèlic spectral geometry and the Erdős Similarity Conjecture is complete.
-1. **Absence of Copies forces Positivity:** If $E \subset \mathbb{R}$ contains no affine copies of $S$ at scale $b$, then the infinite intersection $\mathcal{A}_\infty(b) = \emptyset$.
-2. By Theorem 11.10.2, this implies there exists a finite length $M(b)$ such that $\mathcal{A}_{M(b)}(b) = \emptyset$.
-3. To show this forces the allowed scale sector to collapse eventually, we apply a finiteness argument over the finite grid:
-   * For any fixed depth $d$, the discretization grid contains only finitely many active scales $b_j$ ($j = 1, \dots, N_{\text{grid}}$).
-   * For each scale $b_j$, there exists a corresponding finite length $M(b_j)$ such that the translation set is empty: $\mathcal{A}_{M(b_j)}(b_j) = \emptyset$.
-   * We define the maximum obstruction length over the grid: $M_{\max} = \max_{j} M(b_j) < \infty$.
-   * For any sequence length $M \ge M_{\max}$, all scales in the active grid are blocked simultaneously: $\mathcal{A}_M(b_j) = \emptyset$ for all $j$.
-   * Under the adèlic lift, this blocks all active valuations, yielding $\Psi_d \equiv 0$ identically for all sufficiently large depths $d$.
-4. Consequently, the Hamiltonian $H_d$ reduces to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$, forcing eventual spectral positivity: $\lim_{d \to \infty} \inf \sigma(H_d) = \lambda_1 > 0$.
-5. **Contrapositive Link:** Thus, the persistence of a negative-energy ground state ($\inf\sigma(H_d) < 0$ for all $d$) mathematically guarantees the existence of a real affine copy of the infinite sequence $S$ inside $E$.
+To extract a real affine copy from the adèlic product space, we project $a = (a_\infty, a_2, a_3) \in \mathcal{E}$ onto the Archimedean factor, yielding the real translation anchor $a_\infty$. Since the adèlic set is defined as the product $\mathcal{E} = E \times C_2 \times C_3$, the inclusion $a \in \mathcal{E}$ implies $a_\infty \in E$. Furthermore, since $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n \ge 1$, projecting the component-wise addition onto the Archimedean sector gives:
+$$a_\infty + b s_n \in E \quad \forall n \ge 1$$
+This recovers the valid real translation anchor $a_\infty \in E$ and establishes the existence of a valid real affine copy of the infinite sequence $S$ inside $E$, completing the projection back to the continuum. $\square$
+
+### 11.10.3 The Spectral Detector Bridge to ESC
+With Theorems 11.10.1 and 11.10.2 established, the logical bridge between adèlic spectral geometry and the Erdős Similarity Conjecture functions as a **spectral detector/diagnostic** framework rather than a constructive proof of the conjecture itself. The connection is formulated via the contrapositive direction:
+
+1. **Absence of Copies forces Positivity:** If a closed set $E \subset \mathbb{R}$ contains no real affine copies of $S$ at scale $b \neq 0$, then the infinite adèlic translation set satisfies $\mathcal{A}_\infty(b) = \emptyset$.
+2. By Theorem 11.10.2, this implies there exists a finite length $M(b)$ such that the finite translation set is empty: $\mathcal{A}_{M(b)}(b) = \emptyset$.
+3. Over any finite discretization grid at depth $d$, there are only finitely many active scales $b_j$ ($j = 1, \dots, N_{\text{grid}}$).
+4. For each scale $b_j$, there is a corresponding finite obstruction length $M(b_j)$ such that $\mathcal{A}_{M(b_j)}(b_j) = \emptyset$. Taking $M \ge M_{\max} = \max_j M(b_j) < \infty$, all scales in the active grid are blocked simultaneously: $\mathcal{A}_M(b_j) = \emptyset$ for all $j$.
+5. Under the adèlic lift, this blocks all active valuations on the grid, yielding $\Psi_d \equiv 0$ identically for all sufficiently large depths $d$. The Hamiltonian $H_d$ then reduces to the free Laplacian $H_d = \Delta_{\mathbb{I}, d}$, forcing eventual spectral positivity: $\lim_{d \to \infty} \inf \sigma(H_d) = \lambda_1 > 0$.
+6. **The Diagnostic Equivalence:** By contrapositive, the persistence of a negative-energy ground state ($\inf\sigma(H_d) \le -\epsilon < 0$ for all $d$) mathematically guarantees the existence of a real affine copy of the infinite sequence $S$ inside $E$.
+
+Therefore, the framework reduces the Erdős Similarity Conjecture to proving that the spectral detector **always fires** (i.e., that $\inf\sigma(H_d) < 0$ persists for any set $E$ of positive measure and any sequence $S$). Proving this spectral persistence property remains an open problem equivalent to the ESC itself. This shifts the difficulty of geometric measure construction to the spectral analysis of tree-discretized Schrödinger operators.
