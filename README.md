@@ -75,7 +75,8 @@ Specifically:
 | [`src/adelic_spectral_zeta/determinant.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/determinant.py) | Weierstrass canonical product implementation, pole cancellation checks, and completed $L-function comparisons. |
 | [`src/adelic_spectral_zeta/universality.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/universality.py) | Singular perturbation operators, resolvent trace evaluations, and Hoffman-Wielandt perturbation bounds for rank-1 vs. rank-N projections. |
 | [`src/adelic_spectral_zeta/quantum.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/quantum.py) | Many-body Fock basis builder, interacting fermion Hamiltonians (Coulomb repulsion), and bipartite entanglement entropy calculators. |
-| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `theta_functional_equation.py` (rigidity scan), `collatz_dynamics.py` (2-adic Collatz conjugacy), `collatz_gauge_sweep.py` (curvature sweep), etc. |
+| [`src/adelic_spectral_zeta/erdos_similarity.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/erdos_similarity.py) | Adèlic sequence lifting, porous Cantor set construction, idelic Laplacians, and attractive Schrödinger eigensolvers for Erdős similarity. |
+| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `erdos_similarity_spectra.py`, `theta_functional_equation.py`, etc. |
 | [`docs/unified_monograph.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md) | The unified monograph detailing the rigorous mathematical proofs and physical mappings. |
 | [`docs/collatz_gauge_geometry.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/collatz_gauge_geometry.md) | Formal mathematical framework representing the Collatz map as a gauge-covariant connection on the 2-adic tree. |
 | [`docs/commutator_rank_kernel_note.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/commutator_rank_kernel_note.md) | Technical note resolving the exact commutator rank, kernel dimension, covering graph, and spectral recursion. |
@@ -207,6 +208,12 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   python experiments/collatz_gauge_sweep.py
   ```
   Measures the non-abelian gauge curvature scaling and spectral gap behavior across tree depths.
+
+* **Erdős Similarity Confinement & Clustering**:
+  ```bash
+  python experiments/erdos_similarity_spectra.py
+  ```
+  Simulates scaling correlations and Schrödinger eigenvalues to sweep confinement shifts and eigenvalue clustering under sequence absence.
 
 ---
 

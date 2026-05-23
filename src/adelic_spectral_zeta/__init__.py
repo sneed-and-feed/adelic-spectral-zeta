@@ -22,5 +22,13 @@ from .adelic_dirac import (
     construct_xi_and_P,
     sweep_eigenvalues,
 )
+from .erdos_similarity import (
+    v_p,
+    construct_adelic_sequence,
+    construct_adelic_set,
+    compute_correlation,
+    construct_idelic_laplacian,
+    solve_schrodinger_spectrum,
+)
 
 
