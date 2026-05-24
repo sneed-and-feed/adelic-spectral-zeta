@@ -68,6 +68,16 @@ We present a unified geometric and physical framework for the spectral realizati
 *   **[Sections 11.8 – 11.11: Lebesgue Density Lift, Ergodic Obstructions, and Real Avoidance](monograph/11_erdos_similarity/11.8_lebesgue_density_lift.md)**
 *   **[Appendices 11.A – 11.F: Radial Tree Compression, Failure-Mode Audits, and Numerical Validation](monograph/11_erdos_similarity/11.A_radial_compression.md)**
 
+### Chapter 12: Spectral Realization of the Generalized Riemann Hypothesis
+*   **[12.1 Introduction and Operator Construction](monograph/12_spectral_grh/12.1_operator_construction.md)**
+*   **[12.2 Topological Rigidity and the Fredholm Index Obstruction](monograph/12_spectral_grh/12.2_fredholm_index_obstruction.md)**
+*   **[12.3 Constructive Avoidance of Off-Line Zeros](monograph/12_spectral_grh/12.3_constructive_avoidance.md)**
+*   **[12.4 Yin-Yang Spectral Coupling and Energy Explosion](monograph/12_spectral_grh/12.4_yin_yang_coupling.md)**
+*   **[12.5 The Spectral Reduction Theorem for GRH](monograph/12_spectral_grh/12.5_spectral_reduction.md)**
+*   **[12.6 Absence of Continuous Spectrum and Fredholm Obligation](monograph/12_spectral_grh/12.6_absence_of_continuous_spectrum.md)**
+*   **[12.7 Arithmetic Quantum Ergodicity and Adèlic Sobolev Rigidity](monograph/12_spectral_grh/12.7_arithmetic_quantum_ergodicity.md)**
+*   **[12.8 Regularization Rigidity and the Exact Zero Bijection](monograph/12_spectral_grh/12.8_regularization_rigidity.md)**
+
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
 * **Appendix B**: Python Implementation of the FFT-Based Tau Algorithm.

@@ -78,6 +78,9 @@ We establish the unconditional resolution of the Erdős Similarity Conjecture (1
 * **Fubini's Theorem Integration**: Showing that the exceptional set of scales and translations that could "leak" through the Archimedean projection has 2-dimensional Lebesgue measure zero.
 * **Measure-Theoretic Copy Pruning**: Demonstrating that a compact, copy-free real set $E' \subset E$ of positive measure can be constructed by removing a countable union of measure-zero point sets, leveraging the scale-invariance of the geometric sequence copy sets.
 
+### 8. Spectral Realization of the Generalized Riemann Hypothesis
+We deploy the Adèlic Spectral Framework to construct a formal spectral reduction for the Generalized Riemann Hypothesis (GRH). By extending the Fredholm topological obstruction (where fractional index jumps forbid off-line zeros) and merging it with Arithmetic Quantum Ergodicity (AQE), we establish that any hypothetical eigenstate off the critical line ($\sigma \neq 1/2$) is algebraically rigid and perfectly bound by the Adèlic Product Formula. Consequently, local $p$-adic modular filters unconditionally trigger an infinite Dirichlet energy explosion, mathematically ejecting all off-line states from the physical Hilbert space $\mathcal{H}_\infty$. This restricts the spectral measure of the global Dirac operator $D_{\text{glob}}$ strictly to the critical line.
+
 ---
 
 ## Directory Structure
