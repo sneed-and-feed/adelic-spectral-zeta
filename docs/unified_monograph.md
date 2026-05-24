@@ -4,7 +4,7 @@
 ---
 
 ## Abstract
-We present a unified geometric and physical framework for the spectral realization of automorphic $L$-functions. Building upon Connes' non-commutative geometry and the Connes-Moscovici construct, we define a global adèlic spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ that regularizes the zeros of $L$-functions as eigenvalues of a self-adjoint Dirac operator. We verify that this geometry satisfies the full suite of spectral triple axioms (summability, regularity, first-order, and orientation). We extend the framework to $GL(3)$ automorphic forms, specifically the Symmetric Square lift of the Ramanujan $\Delta-function, demonstrating$ via numerical sweeps that a rank-1 prime-comb projection acting as a universal antenna is sufficient to match zeros. For icosahedral Artin $L$-functions of conductor 800, we show that attempting to sweep off the critical line breaks the self-adjointness of the Dirac operator, establishing that the critical line $\sigma = 1/2$ is the unique mathematically stable topological support. We map this geometry to a condensed matter Hamiltonian describing spinless fermions hopping on Bruhat-Tits trees coupled to a 1D Archimedean clock wire, showing that the Riemann zeros correspond to quantum critical points with distinct entanglement entropy spikes. Finally, we establish a rigorous Weyl-strength subconvexity bound of $O(t^{1/4+\epsilon}) using$ the Weil explicit formula, and show that GUE local spacing statistics conditionally yield a subconvexity bound of $O(t^{1/3+\epsilon})$ by expressing the Atiyah-Patodi-Singer $\eta-invariant$ via the Ramanujan expander properties of the non-Archimedean Bruhat-Tits graph quotients.
+We present a unified geometric and physical framework for the spectral realization of automorphic $L$-functions. Building upon Connes' non-commutative geometry and the Connes-Moscovici construct, we outline a global adèlic spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ that conditionally regularizes the zeros of $L$-functions as eigenvalues of a self-adjoint Dirac operator. We verify that this geometry satisfies the full suite of spectral triple axioms (summability, regularity, first-order, and orientation). We extend the framework to $GL(3)$ automorphic forms, specifically the Symmetric Square lift of the Ramanujan $\Delta$-function, demonstrating via numerical sweeps that a rank-1 prime-comb projection acting as a universal antenna is sufficient to match zeros. For icosahedral Artin $L$-functions of conductor 800, we analyze how attempting to sweep off the critical line breaks the self-adjointness of the Dirac operator, establishing a conditional reduction of the Generalized Riemann Hypothesis to the construction of a self-adjoint operator matching the trace formula identity (*). We map this geometry to a condensed matter Hamiltonian describing spinless fermions hopping on Bruhat-Tits trees coupled to a 1D Archimedean clock wire, showing that the Riemann zeros correspond to quantum critical points with distinct entanglement entropy spikes. Finally, we establish a rigorous Weyl-strength subconvexity bound of $O(t^{1/4+\epsilon})$ using the Weil explicit formula, and show that GUE local spacing statistics conditionally yield a subconvexity bound of $O(t^{1/3+\epsilon})$ by expressing the Atiyah-Patodi-Singer $\eta$-invariant via the Ramanujan expander properties of the non-Archimedean Bruhat-Tits graph quotients.
 
 ---
 
@@ -68,17 +68,15 @@ We present a unified geometric and physical framework for the spectral realizati
 *   **[Sections 11.8 – 11.11: Lebesgue Density Lift, Ergodic Obstructions, and Real Avoidance](monograph/11_erdos_similarity/11.8_lebesgue_density_lift.md)**
 *   **[Appendices 11.A – 11.F: Radial Tree Compression, Failure-Mode Audits, and Numerical Validation](monograph/11_erdos_similarity/11.A_radial_compression.md)**
 
-### [Chapter 12: Spectral Realization of the Generalized Riemann Hypothesis](monograph/12_spectral_realization_grh.md)
-* **Sections 12.1 – 12.2: Conditional Spectral Determinant Realization and Archimedean Isolation**
-* **Sections 12.3 – 12.4: Adèlic Synchronization, Dirichlet Energy Explosion, and Cuspidal Restriction**
-* **Sections 12.5 – 12.7: Adèlic Sobolev Rigidity, Regularization, and Conditional Reduction**
+### [Chapter 12: Conditional Spectral Realization of the Generalized Riemann Hypothesis](monograph/12_spectral_realization_grh.md)
+* **Section 12.1 – 12.2: Conditional Spectral Determinant Realization and the Self-Adjointness Obstruction**
+* **Section 12.3 – 12.4: Resolvent and Domain Considerations, and the Conditional GRH Reduction**
 
-### [Chapter 13: The Trace Identity (*) for GL(1) and the GL(2) Frontier](monograph/13_trace_identity_gl1.md)
-* Rigorous proof of the Trace Formula Identity (*) for the Riemann Zeta function.
-* Defining the adèlic domain via Schwartz-Bruhat idèle spaces.
-* Archimedean matching to the Gamma factor.
-* Non-Archimedean Poisson summation yielding the explicit prime-power sum.
-* Analysis of the GL(2) frontier: the Eichler-Selberg obstruction and unipotent/elliptic mismatch.
+### [Chapter 13: Analysis of the Trace Identity (*) and the Noncommutative Frontier](monograph/13_trace_identity_gl1.md)
+* Obstructions to commutative adèlic spectral realizations (Poisson summation limitations, continuous spectrum, and topological incompatibilities).
+* Alain Connes' noncommutative crossed-product framework and the Weil distribution.
+* Ralf Meyer's Fréchet representation and Lefschetz cohomological trace.
+* The GL(2) frontier and the Eichler-Selberg obstruction.
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
