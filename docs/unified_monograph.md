@@ -63,9 +63,10 @@ We present a unified geometric and physical framework for the spectral realizati
 * Summary of accomplishments and roadmap for interacting many-body simulations using Tensor Networks / DMRG.
 
 ### [Chapter 11: The Erdős Similarity Conjecture via Adèlic Spectra](monograph/11_erdos_similarity_adelic.md)
-* Lift of rational sequences and indicators to truncated adele spaces.
-* Quantum confinement ground-state energy shifts under sequence absence.
-* Multi-well eigenvalue clustering and confinement spectral gaps.
+*   **[Sections 11.1 – 11.3: Adèlic Avoidance & Subgroup Valuation Collapse](monograph/11_erdos_similarity/11.1_introduction.md)**
+*   **[Sections 11.4 – 11.7: Spectral Detector Principle, Galois Extensions, and Confinement Scaling](monograph/11_erdos_similarity/11.4_spectral_detector.md)**
+*   **[Sections 11.8 – 11.11: Lebesgue Density Lift, Ergodic Obstructions, and Real Avoidance](monograph/11_erdos_similarity/11.8_lebesgue_density_lift.md)**
+*   **[Appendices 11.A – 11.F: Radial Tree Compression, Failure-Mode Audits, and Numerical Validation](monograph/11_erdos_similarity/11.A_radial_compression.md)**
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
