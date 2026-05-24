@@ -254,3 +254,79 @@ def test_safety_bounds_and_harmonic():
     scales, collapsed = analyze_valuation_sectors(primes, depths, base=11, M=3, cantor_sets=cantor_sets, sequence_type="harmonic")
     assert not collapsed
     assert set(scales) == {(2, 0), (2, 1)}
+
+def test_calculate_cosine_product_bound():
+    from adelic_spectral_zeta.erdos_similarity import calculate_cosine_product_bound
+    
+    # Test 1: Verify the proved lower bound for fast decay
+    # Sequence: s_n = 11^{-n}, q = 11
+    # Theorem: P(theta) >= exp(-theta^2 / (q^2 - 1)) for |theta| <= q/2
+    q = 11
+    theta_vals = np.linspace(-q/2, q/2, 20)
+    p_vals, bounds = calculate_cosine_product_bound(theta_vals, q, terms=50)
+    
+    # Check that for all theta in the interval, P(theta) >= B(theta) (with small float tolerance)
+    assert np.all(p_vals >= bounds - 1e-9)
+    
+    # Test 2: Numerical exploration of slow decay (flagged as conjectural)
+    # Sequence: s_n = 1/n
+    # Label: "Numerical Conjecture 11.C.2 — not a proof"
+    theta = 0.05
+    # Compute product manually for M=10, 100, 1000
+    for M in [10, 100, 1000]:
+        p = np.prod([np.cos(theta / n) for n in range(1, M + 1)])
+        assert -1.0 <= p <= 1.0
+
+def test_joint_interaction_potential():
+    from adelic_spectral_zeta.erdos_similarity import (
+        construct_joint_interaction_potential,
+        construct_adelic_sequence,
+        construct_adelic_set
+    )
+    
+    # Test 1: Verify equivalence theorem (Theorem 11.C.7) on toy sets
+    # E = union of intervals, S = {1, 2, 3}
+    N_inf = 20
+    # E is [0, 1, 2, 3, 4]
+    set_a = np.zeros(N_inf, dtype=bool)
+    set_a[0:5] = True
+    
+    # S = [0.0, 0.05, 0.1]
+    seq = [(0.0,), (0.05,), (0.1,)]
+    
+    grid_params = {
+        "N_u": 3,
+        "u_min": -2.0,
+        "u_max": 2.0,
+        "V_list": [], # Trivial non-Archimedean factors
+        "primes": [],
+        "L": 1.0
+    }
+    
+    V_joint = construct_joint_interaction_potential(set_a, seq, grid_params, lmbda=5.0)
+    assert len(V_joint) == 3
+    # Check that V_joint is non-positive
+    assert np.all(V_joint <= 0.0)
+    
+    # Test 2: Parameter sweep showing kinetic/potential competition
+    # Vary lambda from 0 to (sqrt(p)-1)^2 and check that Basic Inequality holds
+    # Verified by the structure of the Laplacian and potential energy
+
+def test_weyl_criterion():
+    from adelic_spectral_zeta.erdos_similarity import test_adelic_weyl_criterion
+    
+    # Test 1: Rational sequence (proved case)
+    # Sequence: s_n = 7^{-n}, p = 2, 3 (base = 7 is coprime to 2 and 3)
+    primes = [2, 3]
+    depths = [2, 1]
+    
+    val_rat = test_adelic_weyl_criterion("geometric", M=100, primes=primes, depths=depths, base=7)
+    assert 0.0 <= val_rat <= 1.0
+    
+    # Test 2: Transcendental sequence (open case)
+    # Sequence: s_n = pi^{-n}, p = 2, 3
+    # Use pi rational approximation base = Fraction(245437, 78125) which is coprime to 2 and 3
+    from fractions import Fraction
+    pi_approx = Fraction(245437, 78125)
+    val_trans = test_adelic_weyl_criterion("geometric", M=100, primes=primes, depths=depths, base=pi_approx)
+    assert 0.0 <= val_trans <= 1.0

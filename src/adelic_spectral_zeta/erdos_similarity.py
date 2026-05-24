@@ -564,3 +564,148 @@ def predict_projective_limit(primes, base, M, grid_params, target_theta, sample_
     }
     
     return float(prediction), float(a_coef0), float(a_coef1), fits_metadata
+
+def calculate_cosine_product_bound(theta, q, terms=100):
+    r"""
+    Computes the infinite cosine product P(theta) = \prod_{n=1}^{terms} \cos(theta * q^{-n})
+    and the uniform lower bound B(theta) = \exp(-theta^2 / (q^2 - 1)).
+    """
+    theta = np.asarray(theta, dtype=float)
+    q = float(q)
+    
+    # Initialize product
+    p_val = np.ones_like(theta)
+    for n in range(1, terms + 1):
+        p_val *= np.cos(theta * (q**-n))
+        
+    # Calculate the bound
+    bound = np.exp(-(theta**2) / (q**2 - 1))
+    
+    return p_val, bound
+
+def construct_joint_interaction_potential(set_a, seq, grid_params, x_val=None, lmbda=1.0):
+    """
+    Computes the genuinely coupled joint interaction potential V_joint(y, \vec{k})
+    as defined in §11.C.7 of the monograph.
+    If x_val is provided, returns the integrand value at that coordinate.
+    Otherwise, returns the full potential over the idelic grid.
+    """
+    if set_a.ndim > 1:
+        slices = (slice(None),) + (0,) * (set_a.ndim - 1)
+        E_arr = set_a[slices]
+    else:
+        E_arr = set_a
+        
+    N_inf = len(E_arr)
+    L = grid_params.get("L", 1.0)
+    dx = L / N_inf
+    
+    N_u = grid_params["N_u"]
+    u_min = grid_params["u_min"]
+    u_max = grid_params["u_max"]
+    
+    if "V_list" in grid_params:
+        V_list = grid_params["V_list"]
+    else:
+        V_list = [grid_params["V2"], grid_params["V3"]]
+        
+    primes = grid_params.get("primes", [2, 3])
+    u_vals = np.linspace(u_min, u_max, N_u)
+    
+    # Check if V_list is empty to avoid strides computation error
+    if len(V_list) == 0:
+        N_ideles = N_u
+        V_joint = np.zeros(N_ideles)
+        for i, u in enumerate(u_vals):
+            b_y = np.exp(u)
+            integrand = np.ones(N_inf, dtype=float)
+            for s_tuple in seq:
+                s_inf = s_tuple[0]
+                shift = int(round(b_y * s_inf / dx)) % N_inf
+                chi_E = np.roll(E_arr, shift=-shift)
+                integrand *= chi_E
+            if x_val is not None:
+                idx_x = int(round(x_val / dx)) % N_inf
+                return -lmbda * integrand[idx_x]
+            V_joint[i] = -lmbda * np.sum(integrand) * dx
+        return V_joint
+
+    V_dims = [V + 1 for V in V_list]
+    strides = []
+    current_stride = 1
+    for dim in reversed(V_dims):
+        strides.append(current_stride)
+        current_stride *= dim
+    strides.reverse()
+    stride_inf = current_stride
+    
+    N_ideles = N_u * stride_inf
+    V_joint = np.zeros(N_ideles)
+    
+    import itertools
+    non_arch_coords = [list(range(dim)) for dim in V_dims]
+    
+    for i, u in enumerate(u_vals):
+        b_y = np.exp(u)
+        for k_tuple in itertools.product(*non_arch_coords):
+            idx = i * stride_inf + sum(k_m * s_m for k_m, s_m in zip(k_tuple, strides))
+            
+            # Evaluate integrand at each point
+            integrand = np.ones(N_inf, dtype=float)
+            for s_tuple in seq:
+                s_inf = s_tuple[0]
+                shift = int(round(b_y * s_inf / dx)) % N_inf
+                chi_E = np.roll(E_arr, shift=-shift)
+                integrand *= chi_E
+                
+                for p_idx, (p, k_val) in enumerate(zip(primes, k_tuple)):
+                    epsilon = p**(-k_val)
+                    w = int(round(epsilon / dx))
+                    
+                    density_profile = np.zeros(N_inf, dtype=float)
+                    for j in range(N_inf):
+                        if w <= 0:
+                            density_profile[j] = float(E_arr[j])
+                        else:
+                            indices = np.arange(j - w, j + w + 1) % N_inf
+                            density_profile[j] = float(np.mean(E_arr[indices]))
+                            
+                    rolled_density = np.roll(density_profile, shift=-shift)
+                    integrand *= rolled_density
+                    
+            if x_val is not None:
+                # If x_val is provided, return the integrand value at the index nearest to x_val
+                idx_x = int(round(x_val / dx)) % N_inf
+                return -lmbda * integrand[idx_x]
+                
+            # Otherwise, average over the circle (integral over S^1_L)
+            V_joint[idx] = -lmbda * np.sum(integrand) * dx
+            
+    return V_joint
+
+def test_adelic_weyl_criterion(sequence_type, M, primes, depths, base=11, r_vals=None):
+    r"""
+    Computes the character sum for a sequence of length M to test the Adèlic Weyl Criterion.
+    G_d = \prod_{p \in primes} Z/p^d Z.
+    r_vals: list of integers representing the dual characters a_p for each prime place.
+            The character at place p is represented by a_p / p^dp.
+    """
+    if r_vals is None:
+        # Default: non-trivial character with a_p = 1 for all places
+        r_vals = [1] * len(primes)
+        
+    # Construct sequence
+    seq = construct_adelic_sequence(sequence_type, M, primes=primes, depths=depths, base=base)
+    
+    char_sum = 0.0 + 0.0j
+    for s_tuple in seq:
+        coords = s_tuple[1:] # Skip s_inf
+        exponent = 0.0
+        for i, (s_p, dp) in enumerate(zip(coords, depths)):
+            p = primes[i]
+            # The character term is exp(2 * pi * i * (a_p * s_p) / p^dp)
+            exponent += (r_vals[i] * s_p) / (p**dp)
+            
+        char_sum += np.exp(2j * np.pi * exponent)
+        
+    return float(np.abs(char_sum) / M)
