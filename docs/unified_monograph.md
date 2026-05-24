@@ -82,6 +82,8 @@ We present a unified geometric and physical framework for the spectral realizati
 * **Section 14.1: The $GL(2)$ Bruhat-Tits Tree and Local Orbital Integrals**
 * **Section 14.2: Computational Validation of the Geometric-Arithmetic Matching**
 * **Section 14.3: The Remaining Global Obstruction: Adèlic Synchronization**
+* **Sections 14.4 – 14.5: The Eichler-Selberg Obstruction and the Elliptic Mismatch**
+* **Section 14.6: Conclusion: The Frontier of Spectral Realization**
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
