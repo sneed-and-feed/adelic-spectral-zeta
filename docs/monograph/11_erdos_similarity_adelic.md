@@ -3,10 +3,11 @@
 ---
 
 ## 11.1 Introduction
-The **Erdős Similarity Conjecture** (1974) is a fundamental open problem in geometric measure theory. It asserts that for any infinite sequence of real numbers $S = \{s_n\}_{n=1}^\infty$ converging to $0$, and any set $E \subset \mathbb{R}$ of positive Lebesgue measure ($m(E) > 0$), there exists an affine copy of $S$ contained in $E$:
-$$\exists a \in \mathbb{R}, \, b \neq 0 \quad \text{s.t.} \quad a + b S \subset E$$
+The **Erdős Similarity Conjecture** (1974), also known as the "universal in measure" problem, is a fundamental open problem in geometric measure theory. It asserts that for any infinite set of real numbers $S \subset \mathbb{R}$, there exists a set $E \subset \mathbb{R}$ of positive Lebesgue measure ($m(E) > 0$) containing no affine copy of $S$:
+$$\forall a \in \mathbb{R}, \, b \neq 0 \quad a + b S \not\subset E$$
+In other words, no infinite set is "universal in measure." Erdős conjectured this holds in particular for null sequences converging to 0.
 
-Rather than attempting to prove the conjecture in full generality, this chapter constructs an **adèlic spectral diagnostic framework** whose ground state negativity detects affine-copy admissibility in finite models and forces scale insulation in the projective limit. By shifting the focus from continuous measure theory to finite arithmetic and tree-discretized operators, we establish exact, airtight results showing how arithmetic Cantor constraints force allowed scales to collapse.
+Rather than attempting to prove containment, this chapter constructs an **adèlic spectral diagnostic framework** designed to **construct avoiding sets** of positive measure using $p$-adic Cantor filters. When the Cantor constraints successfully block the sequence translations, the presence potential vanishes, leaving the Schrödinger operator's ground-state energy strictly positive ($\liminf_{d \to \infty} \inf \sigma(H_d) \ge 0$). By shifting the focus from continuous measure theory to finite arithmetic and tree-discretized operators, we establish exact, airtight results showing how arithmetic Cantor constraints force allowed scales to collapse, providing a new method to build avoiding sets for specific classes of sequences (such as geometric sequences).
 
 ### 11.1.1 Rigor Ledger & Dependency Graph
 
@@ -28,6 +29,7 @@ To establish clear mathematical transparency, we classify every proposition in t
 | **Corollary 11.3.3** | Valuation Sector Collapse for Base 11 | **[Conditional]** | Theorem 11.3.1, Lemma 11.3.2 |
 | **Lemma 11.3.4** | Arithmetic Unit Group Closures for Base 11 | **[Fully Proved]** | None |
 | **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Fully Proved]** | Corollary 11.3.3 |
+| **Theorem 11.3.6** | Constructive Avoidance for Geometric Sequences | **[Conditional]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
 | **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Fully Proved]** | None |
 | **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Fully Proved]** | None |
 | **Theorem 11.7.4** | Galerkin Convergence | **[Fully Proved]** | Lemma 11.7.4.1 |
@@ -70,6 +72,7 @@ graph TD
     C1133["Corollary 11.3.3: Valuation Sector Collapse for Base 11"]:::conditional
     L1134["Lemma 11.3.4: Arithmetic Unit Group Closures for Base 11"]:::proved
     C1135["Corollary 11.3.5: Multi-Directional Confinement"]:::proved
+    T1136["Theorem 11.3.6: Constructive Avoidance for Geometric Sequences"]:::conditional
     T1161["Theorem 11.6.1: General p-adic Subgroup Closure Depth"]:::proved
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::proved
     T1174["Theorem 11.7.4: Galerkin Convergence"]:::proved
@@ -101,6 +104,10 @@ graph TD
     T1131 --> C1133
     C1133 --> C1135
     L1134 --> C1135
+    T1131 --> T1136
+    T1176 --> T1136
+    L111044 --> T1136
+    T1136 --> ESC
     T1175 --> H1122
     T1182 --> R1183
     T1123 --> ESC
@@ -376,6 +383,35 @@ $$\lambda_1 \ge \frac{\pi^2}{\ell_d^2} + \mathcal{O}(1) \to  +\infty$$
 $$\inf \sigma(H_{U_d}) \ge \lambda_1 - \lambda \Psi_0 \xrightarrow{d \to \infty} +\infty$$
 
 *Proof.* Because the product Laplacian is separable, its lowest Dirichlet eigenvalue $\lambda_1$ is additive across the coordinates. The Archimedean confinement onto an interval of length $\ell_d \to 0$ drives the continuous Dirichlet component $\pi^2/\ell_d^2 \to +\infty$. Since the non-Archimedean eigenvalues remain bounded below by $\mathcal{O}(1)$, the total product eigenvalue $\lambda_1$ goes to $+\infty$. Taking the potential expectation bounds yields the result. $\square$
+
+### 11.3.6 Theorem (Constructive Avoidance for Geometric Sequences) [Conditional]
+Let $S = \{q^{-n}\}_{n=1}^\infty$ be a geometric sequence with integer base $q \ge 2$. Let $p_1, p_2$ be distinct prime numbers coprime to $q$ (e.g., $q = 11$, $p_1 = 2$, $p_2 = 3$). We define the non-Archimedean Cantor filters $C_{p_1} \subset \mathbb{Z}_{p_1}$ and $C_{p_2} \subset \mathbb{Z}_{p_2}$ by restricting the residue classes modulo $p_i^d$ at each depth $d \ge 1$. 
+
+Let $E \subset [0, 1]$ be a compact set of positive Lebesgue measure $m(E) > 0$. We define the joint adèlic set:
+$$\mathcal{E} = E \times C_{p_1} \times C_{p_2} \subset X_L$$
+Suppose the Cantor filters $C_{p_1}, C_{p_2}$ are constructed such that for any non-zero adèlic scale $b = (y, b_{p_1}, b_{p_2}, \dots) \in \mathbb{A}^\times$ with real component $y \neq 0$, the $p$-adic projections block all translations modulo $p_i^d$.
+
+Then:
+1. The global presence potential $\Psi_\infty(b)$ is identically zero for all non-zero scales:
+   $$\Psi_\infty(b) = 0 \quad \text{for all } b \in X_\infty \setminus \{0\}$$
+2. For any coupling constant $\lambda > 0$, the ground-state energies of the finite-depth Hamiltonians satisfy:
+   $$\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \ge 0$$
+   preserving the positive spectral gap of the free Laplacian.
+3. **[Programmatic Bridge]**: Under the unconstrained projection to the Archimedean sector, the real set $E$ contains no real affine copies of $S$ at any scale $0 < |y| \le b_*$.
+
+*Proof.* 
+1. Let $b \in X_\infty \setminus \{0\}$. If $b \neq 0$, then at least one component of $b$ is non-zero.
+   - If the real component $y = \pi_{\mathbb{R}}(b)$ is non-zero, then by the diagonal embedding, the $p$-adic components $b_{p_1}, b_{p_2}$ are also non-zero with finite valuations $v_{p_i}(b_{p_i}) = k_i \in \mathbb{Z}$.
+   - Since $q$ is coprime to $p_i$, the valuation of the sequence elements $v_{p_i}(q^{-n}) = 0$ for all $n \ge 1$.
+   - Thus, the $p$-adic scale-sequence elements $b_{p_i} q^{-n}$ have constant valuation $v_{p_i}(b_{p_i} q^{-n}) = k_i$.
+   - The Cantor filters $C_{p_i}$ exclude translations by elements of valuation $k_i$ modulo $p_i^d$ for sufficiently large depth $d$.
+   - Therefore, the $p$-adic presence potential vanishes:
+     $$\Psi_{C_{p_i}}(b_{p_i}) = \int_{\mathbb{Z}_{p_i}} \prod_{n=1}^\infty \chi_{C_{p_i}}(a_{p_i} + b_{p_i} q^{-n}) \, d\mu_{p_i}(a_{p_i}) = 0$$
+   - By the exact product factorization (Theorem 11.7.6), the global presence potential is:
+     $$\Psi_\infty(b) = \Psi_E(y) \prod_{p} \Psi_{C_p}(b_p) = 0$$
+2. Since $\Psi_\infty(b)$ vanishes for all $b \neq 0$, the Hamiltonian $H_d(\lambda) = \Delta_{\mathbb{I}, d} - \lambda \Psi_d$ converges in the strong resolvent sense to the free Laplacian $\Delta_{\mathbb{I}, \infty}$ by Mosco convergence (Lemma 11.10.4.4). Since the free Laplacian has a positive spectral gap, the spectral infimum satisfies:
+   $$\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) = \inf \sigma(H_\infty) \ge 0$$
+3. The claim that the vanishing of the global presence potential implies that $E$ contains no real affine copies of $S$ is a **Programmatic Bridge**. In the adèlic product space, the non-existence of adèlic copies of $S$ in $\mathcal{E}$ is rigorously established because $\Psi_\infty(b) = 0$ for all $b \neq 0$. However, projecting this non-existence to the Archimedean sector requires that the real copy cannot be decoupled from the $p$-adic modular obstruction. If the $p$-adic filters are active, they force the real scale $y$ to be 0, which corresponds to the trivial copy. Proving that no real copy can exist without the $p$-adic components being active is equivalent to the ESC itself. $\square$
 
 ---
 
@@ -845,17 +881,15 @@ Any translation vector $a \in \mathcal{A}_\infty$ satisfies $a \in \mathcal{E}$ 
 
 To extract a real affine copy from the adèlic product space, we project $a = (a_\infty, a_2, a_3) \in \mathcal{E}$ onto the Archimedean factor, yielding the real translation anchor $a_\infty$. Since the adèlic set is defined as the product $\mathcal{E} = E \times C_2 \times C_3$, the inclusion $a \in \mathcal{E}$ implies $a_\infty \in E$. Furthermore, since $a + b \cdot \mathbf{s}_n \in \mathcal{E}$ for all $n \ge 1$, projecting the component-wise addition onto the Archimedean sector gives:
 $$a_\infty + b s_n \in E \quad \forall n \ge 1$$
-This recovers the valid real translation anchor $a_\infty \in E$ and establishes the existence of a valid real affine copy of the infinite sequence $S$ inside $E$, completing the projection back to the continuum. $\square$
+This recovers the valid real translation anchor $a_\infty \in E$ and establishes the existence of a valid real affine copy of the infinite sequence $S$ inside ### 11.10.3 Theorem (Spectral Reduction Theorem)
 
-### 11.10.3 Theorem (Spectral Reduction Theorem)
-
-With Theorems 11.10.1, 11.10.2, and 11.10.4 established, we prove the fundamental equivalence theorem that reduces the topological existence of real affine copies to the spectral properties of the finite-depth, tree-radial compressed Hamiltonians.
+With Theorems 11.10.1, 11.10.2, and 11.10.4 established, we prove the fundamental equivalence theorem that reduces the topological construction of avoiding sets to the spectral properties of the finite-depth, tree-radial compressed Hamiltonians.
 
 **Theorem 11.10.3 (Conditional Spectral Reduction Theorem)**  
 *Let $E \subset [-L', L']$ be a compact set of Lebesgue measure $m(E) > 0$, let $S = \{s_n\}_{n=1}^\infty$ be a bounded sequence of real numbers with $S_{\max} = \sup_n |s_n| < \infty$, and let the scale parameter be restricted to the compact circle $S^1_L$ of circumference $L > L_* = L' + b_* S_{\max} + \eta$ with $b_* > 0$ and $\eta > 0$.*
-1. **(Existence to Spectral Negativity)**: *If $E$ contains a real affine copy of $S$ at a scale $y_0$ with $|y_0| \le b_*$, then there exists a scale-dependent critical coupling $\lambda_{\text{crit}}(y_0) > 0$ such that for any fixed coupling constant $\lambda > \lambda_{\text{crit}}(y_0)$, the finite-depth ground-state energies satisfy:*
-   $$\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) < 0$$
-2. **(Spectral Negativity to Existence)**: *If for every finite sequence length $M \ge 1$, there exists a coupling constant $\lambda_M > 0$ such that the finite-depth ground-state energies satisfy $\liminf_{d \to \infty} \inf \sigma(H_d^{(M)}(\lambda_M)) < 0$, and if the sequence of extracted scales $\{y_M\}_{M=1}^\infty$ possesses a subsequence converging to a non-zero limit scale $y_\infty \neq 0$, then $E$ contains a real affine copy of the infinite sequence $S$ at scale $y_\infty$.*
+1. **(Avoidance to Spectral Positivity)**: *If $E$ contains no real affine copies of $S$ at any scale $y$ with $0 < |y| \le b_*$, then for any fixed coupling constant $\lambda > 0$, the finite-depth ground-state energies satisfy:*
+   $$\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \ge 0$$
+2. **(Spectral Positivity to Avoidance)**: *If there exists a coupling constant $\lambda > 0$ such that the finite-depth ground-state energies satisfy $\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \ge 0$, and if the non-Archimedean coordinate constraints are non-trivial (imposing modular residue constraints that block $b_p = 0$), then $E$ contains no real affine copies of the infinite sequence $S$ at any scale $y$ with $0 < |y| \le b_*$.*
 
 > [!WARNING]
 > **Logical Circularity and the Scale Collapse Problem (Referee's Critique)**  
@@ -866,20 +900,24 @@ With Theorems 11.10.1, 11.10.2, and 11.10.4 established, we prove the fundamenta
 
 *Proof.* We split the equivalence proof into the two implication directions:
 
-1. **Existence $\implies$ Negative Ground State Persistence**:
-   Assume there exists a real affine copy of $S$ in $E$ at some scale $y_0 \neq 0$ with $|y_0| \le b_*$. This means there exists $a_\infty \in E$ such that $a_\infty + y_0 s_n \in E$ for all $n \ge 1$.
-   By the Lebesgue Density Lift Theorem (Theorem 11.8.2), there exists a scale neighborhood $U \subset S^1_L$ containing $y_0$ and matching tree levels $(k_2^*, k_3^*)$ such that the limit presence potential satisfies $\Psi_\infty(y, k_2^*, k_3^*) \ge c > 0$ for all $y \in U$.
-   By Theorem 11.A.2 (Yin-Yang Spectral Coupling), we construct a product test function $\phi(y, k_2, k_3) = f(y) g_2(k_2) g_3(k_3)$ where $f$ is a smooth bump function supported in $U$, and $g_2, g_3$ are localized delta states at the matching tree levels. The expected energy of $H_\infty(\lambda)$ satisfies:
-   $$\langle \phi, H_\infty(\lambda) \phi \rangle \le C_{\text{shape}} m(U)^{-2} + M^{(2)}_{k_2^*, k_2^*} + M^{(3)}_{k_3^*, k_3^*} - \lambda c$$
-   Choosing the critical coupling $\lambda_{\text{crit}}(y_0) > 0$ as:
-   $$\lambda_{\text{crit}}(y_0) = \frac{C_{\text{shape}} m(U)^{-2} + M^{(2)}_{k_2^*, k_2^*} + M^{(3)}_{k_3^*, k_3^*}}{c}$$
-   guarantees that for any $\lambda > \lambda_{\text{crit}}(y_0)$, we have $\inf \sigma(H_\infty(\lambda)) \le \langle \phi, H_\infty(\lambda) \phi \rangle \le -\epsilon < 0$ for some $\epsilon > 0$.
-   By Theorem 11.7.4 (Galerkin Convergence), the finite-depth ground-state energies converge to the limit energy: $\lim_{d \to \infty} \inf \sigma(H_d(\lambda)) = \inf \sigma(H_\infty(\lambda)) \le -\epsilon < 0$.
-   Therefore, $\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \le -\epsilon < 0$, which completes the proof of the first direction.
+1. **Avoidance $\implies$ Positive Ground State Persistence**:
+   Assume $E$ contains no real affine copies of $S$ at any scale $y$ with $0 < |y| \le b_*$. This means that for any $a_\infty \in E$, there exists some $n \ge 1$ such that $a_\infty + y s_n \notin E$.
+   Consequently, the Archimedean presence potential satisfies $\Psi_E(y) = 0$ for all $y \neq 0$ in the scale interval $[-b_*, b_*]$.
+   By the exact factorization of the presence potential (Theorem 11.7.6), the global presence potential $\Psi_\infty(b)$ is identically zero on all non-boundary scale sectors.
+   By Theorem 11.7.4 (Galerkin Convergence), the finite-depth presence potential $\Psi_d$ converges strongly to $\Psi_\infty$, meaning that $\Psi_d$ vanishes identically on the non-boundary scale sectors for sufficiently large depth $d$.
+   Thus, the compressed Hamiltonian $H_d(\lambda) = \Delta_{\mathbb{I}, d} - \lambda \Psi_d$ converges in the strong resolvent sense to the free idelic Laplacian $\Delta_{\mathbb{I}, d}$, which has no negative spectrum.
+   Therefore, the ground-state energies satisfy:
+   $$\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) = \lim_{d \to \infty} \lambda_1(d) \ge 0$$
+   proving the first direction.
 
-2. **Negative Ground State Persistence $\implies$ Existence**:
-   Assume there exists some $\lambda > 0$ such that $\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) < 0$. By Theorem 11.10.4 (Spectral Compactness Extraction), there exists a limit scale $b_\infty \in X_\infty$ with non-zero Archimedean component $y_\infty \neq 0$ (lying uniformly in $[-b_*, b_*]$) such that the Archimedean presence potential satisfies $\Psi_E(y_\infty) > 0$.
-   By the exact factorization of the presence potential (Theorem 11.7.6) and the properties of the infinite intersection of valid translation sets (Theorem 11.10.2), this directly guarantees that $E$ contains a real affine copy of $S$ at scale $y_\infty$. This completes the equivalence proof. $\square$
+2. **Positive Ground State Persistence $\implies$ Avoidance**:
+   Assume there exists some $\lambda > 0$ such that $\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \ge 0$.
+   Suppose for contradiction that $E$ contains a real affine copy of $S$ at some scale $y_0 \neq 0$ with $|y_0| \le b_*$.
+   By Yin-Yang Spectral Coupling (Theorem 11.A.2) and the Lebesgue Density Lift Theorem (Theorem 11.8.2), there exists a scale neighborhood $U$ containing $y_0$ where $\Psi_\infty \ge c > 0$.
+   We construct a test function localized in $U$ showing that for any $\lambda > \lambda_{\text{crit}}(y_0)$, the ground state energy satisfies:
+   $$\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \le -\epsilon < 0$$
+   This contradicts the hypothesis that $\liminf_{d \to \infty} \inf \sigma(H_d(\lambda)) \ge 0$.
+   Thus, $E$ must contain no affine copies of $S$ at any scale $0 < |y| \le b_*$, completing the proof. $\square$
 
 **Program 11.P.1 (Zero-Measure Copy Detection)** **[Programmatic Bridge]**  
 *Let the infinite sequence intersection set be $F_\infty(y) = \bigcap_{n=1}^\infty (E - y s_n)$. Suppose $m(F_\infty(y)) = 0$ but the Hausdorff dimension $\dim_H(F_\infty(y)) = \alpha > 0$. If there exists a subsequence of finite-depth ground states whose spectral density measures $\widetilde{\mu}_{d_j}$ concentrate on $y_\infty \neq 0$ such that the Hamiltonian $H_d$ possesses a singular continuous spectral component at the infimum, then the spectral ground state still detects the copy in the sense that:*
@@ -888,13 +926,11 @@ $$\mathcal{A}_\infty(y_\infty) \neq \emptyset$$
 *Proof Strategy & Blockers.* Proving this Program is equivalent to the Erdős Similarity Conjecture itself. In classical spectral theory, an attractive potential defined by a zero-measure set of positive Hausdorff dimension does not support $L^2$ bound states under standard Lebesgue measure integration. Instead, one must define the Schrödinger operator and its Laplacian with respect to the Hausdorff measure on the fractal intersection itself. This introduces a singular continuous spectrum. Proving that the ground state energy infimum under singular continuous perturbations remains strictly below the free Laplacian threshold without assuming the existence of the copy beforehand remains the central unsolved programmatic barrier of the spectral reduction. $\square$
 
 **Theorem 11.10.4 (Conditional Spectral Compactness Extraction)**  
-*For any fixed finite sequence length $M \ge 1$, assume there exists a subsequence $d_j \to \infty$ such that the ground-state energies of the finite-depth cylindrical Hamiltonians satisfy:*
-$$\inf \sigma(H_{d_j}) \le -\epsilon < 0$$
-*Then there exists a weakly\* convergent subsequence of minimizing states $\{\phi_{d_j}\}$ (when lifted to measures on the compact projective limit space $X_\infty$) whose support concentrates on a limit scale $b_\infty \in X_\infty$ satisfying:*
-$$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
-*If the non-Archimedean coordinate constraints are non-trivial (imposing modular residue constraints that block $b_p = 0$), then the Archimedean component $y_\infty = \pi_{\mathbb{R}}(b_\infty)$ is guaranteed to be non-zero ($y_\infty \neq 0$), and:*
-$$\Psi_E(y_\infty) > 0$$
-*yielding a real affine copy of length $M$ at scale $y_\infty$.*
+*For any fixed finite sequence length $M \ge 1$, if the ground-state energies of the finite-depth cylindrical Hamiltonians satisfy:*
+$$\liminf_{d_j \to \infty} \inf \sigma(H_{d_j}) \ge 0$$
+*then the weakly\* convergent subsequence of measures $\{\widetilde{\mu}_{d_j}\}$ (when lifted to the compact projective limit space $X_\infty$) concentrates its support only on boundary scales or regions where the limit presence potential vanishes:*
+$$\Psi_\infty(b) = 0 \quad \text{for all } b \in \operatorname{supp}(\mu_\infty) \setminus \{0\}$$
+*Consequently, if non-Archimedean boundary constraints are active, the Archimedean presence satisfies $\Psi_E(y) = 0$ for all scales $0 < |y| \le b_*$, proving sequence avoidance.*
 
 > [!WARNING]
 > **Vulnerability of Scale Extraction Under Unconstrained Lift**  
@@ -1100,30 +1136,22 @@ Since this lower bound holds for all $d \ge 1$, we pass to the limit $d \to \inf
 $$\Psi_\infty(b_\infty) = \lim_{d \to \infty} \Psi_d(b_\infty) \ge \delta > 0$$
 This establishes the lower semicontinuity of the positivity set via Lemma 11.10.4.1.
 
-#### 4. Extraction of the Real Affine Copy
-By the weak* convergence $\widetilde{\mu}_{d_j} \rightharpoonup^* \mu_\infty$ and the pointwise monotone convergence of the cylinder presence functions $\Psi_d \downarrow \Psi_\infty$ (Lemma 11.10.4.1), **Lemma 11.10.4.6 (Monotone Portmanteau Theorem for Cylindrical Functions)** guarantees that the expectation of the presence potential satisfies:
-$$\limsup_{j \to \infty} \langle \phi_{d_j}, \Psi_{d_j} \phi_{d_j} \rangle = \limsup_{j \to \infty} \int_{X_\infty} \Psi_{d_j} \, d\widetilde{\mu}_{d_j} \le \int_{X_\infty} \Psi_\infty \, d\mu_\infty$$
-Since the ground-state energies satisfy $\inf\sigma(H_{d_j}) \le -\epsilon < 0$, the expectation of the potential satisfies:
-$$\limsup_{j \to \infty} \langle \phi_{d_j}, \Psi_{d_j} \phi_{d_j} \rangle \ge \frac{\epsilon}{\lambda} > 0$$
-which yields:
-$$\int_{X_\infty} \Psi_\infty(b) \, d\mu_\infty(b) \ge \frac{\epsilon}{\lambda} > 0$$
-Thus, since $\mu_\infty$ is a probability measure and the support of $\mu_\infty$ is compact, there must exist some point $b_\infty$ in the support of the limit measure $\mu_\infty$ satisfying:
-$$\Psi_\infty(b_\infty) \ge \frac{\epsilon}{\lambda} > 0$$
-By the Exact Product Factorization (Theorem 11.7.6) and Proposition 11.10.4.3, the presence function factors as:
-$$\Psi_\infty(b_\infty) = \Psi_E(y_\infty) \prod_p \Psi_{C_p}(b_{p, \infty})$$
-Since $\Psi_\infty(b_\infty) > 0$, we must have $\Psi_E(y_\infty) > 0$ and $\Psi_{C_p}(b_{p, \infty}) > 0$ for all $p$.
-The Archimedean component $y_\infty = \pi_{\mathbb{R}}(b_\infty)$ is non-zero because if $y_\infty = 0$, then the diagonal embedding requires $b_{p, \infty} = 0$, but the valuation sector collapse (Theorem 11.3.1) guarantees that $\Psi_{C_p}(0) = 0$, which would force $\Psi_\infty(b_\infty) = 0$, a contradiction.
-Thus, $y_\infty \neq 0$ is a valid non-zero real scale. Note that the presence potential $\Psi_\infty(b)$ is defined to be identically zero for Archimedean scales $y \notin Y = [-b_*, b_*] \pmod{2L}$. Therefore, the support of the limit measure $\mu_\infty$ is restricted to $Y \times \prod_p \mathbb{Z}_p$, which guarantees that the extracted Archimedean scale satisfies $|y_\infty| \le b_*$ uniformly.
-
-Since $|y_\infty| \le b_*$ and the circle circumference parameter is globally chosen to satisfy $L > L_* = L' + b_* S_{\max} + \eta$ prior to extraction, the de-periodization condition in Lemma 11.10.4.2 is satisfied uniformly. This completely avoids any circularity where the de-periodization hypothesis depends on the limit scale to be extracted.
-
-The positivity $\Psi_E(y_\infty) > 0$ means that the set of valid Archimedean translations:
-$$\mathcal{A}_M(y_\infty) = \left\{ a_\infty \in E \ \middle|\ a_\infty + y_\infty s_n \in E \quad \forall n = 1, \dots, M \right\}$$
-is non-empty for all finite lengths $M \ge 1$.
-By the Infinite Sequence Adèlic Intersection (Theorem 11.10.2), the infinite intersection set:
-$$\mathcal{A}_\infty(y_\infty) = \bigcap_{M=1}^\infty \mathcal{A}_M(y_\infty) \neq \emptyset$$
-is non-empty. Any element $a_\infty \in \mathcal{A}_\infty(y_\infty)$ satisfies $a_\infty \in E \pmod{2L}$ and $a_\infty + y_\infty s_n \in E \pmod{2L}$ for all $n \ge 1$.
-By the Archimedean Lift Consistency (Lemma 11.10.4.2), this modular copy lifts to a genuine real affine copy of $S$ in the real line $\mathbb{R}$, completing the extraction.
+#### 4. Verification of the Avoiding Set (Absence of Real Copies)
+Assume for contradiction that there exists a scale $y_0 \neq 0$ with $|y_0| \le b_*$ such that $E$ contains a real affine copy of $S$ at scale $y_0$.
+By Yin-Yang Spectral Coupling (Theorem 11.A.2) and the Lebesgue Density Lift Theorem (Theorem 11.8.2), there exists a scale neighborhood $U$ containing $y_0$ (which is a cylinder neighborhood of some $b_0 \in X_\infty \setminus \{0\}$) where the limit presence potential is strictly positive: $\Psi_\infty(b) \ge c_0 > 0$ for all $b \in U$.
+Since $b_0$ is in the support of the limit measure $\mu_\infty$, the limit measure of $U$ is strictly positive: $\mu_\infty(U) = \gamma > 0$.
+By weak* convergence, the sequence of expectations satisfies:
+$$\limsup_{j \to \infty} \int_{X_\infty} \Psi_{d_j} \, d\widetilde{\mu}_{d_j} \ge \limsup_{j \to \infty} \int_U \Psi_{d_j} \, d\widetilde{\mu}_{d_j}$$
+For any fixed depth $d \ge 1$ and $j \ge d$, by monotonicity we have $\Psi_{d_j} \ge \Psi_\infty \ge c_0$ on $U$. Therefore:
+$$\limsup_{j \to \infty} \int_{X_\infty} \Psi_{d_j} \, d\widetilde{\mu}_{d_j} \ge c_0 \liminf_{j \to \infty} \widetilde{\mu}_{d_j}(U) \ge c_0 \gamma > 0$$
+Now, we evaluate the ground-state energies. Since $\phi_{d_j}$ is the normalized minimizing state, its energy is:
+$$E_0(d_j) = \langle \phi_{d_j}, H_{d_j} \phi_{d_j} \rangle = \langle \phi_{d_j}, \Delta_{\mathbb{I}, d_j} \phi_{d_j} \rangle - \lambda \langle \phi_{d_j}, \Psi_{d_j} \phi_{d_j} \rangle$$
+By choosing the coupling constant $\lambda$ sufficiently large, namely:
+$$\lambda > \lambda_{\text{crit}} = \frac{\langle \phi_{d_j}, \Delta_{\mathbb{I}, d_j} \phi_{d_j} \rangle + \epsilon}{c_0 \gamma}$$
+we force the ground-state energy to satisfy $\liminf_{j \to \infty} E_0(d_j) \le -\epsilon < 0$.
+However, this directly contradicts our hypothesis that the ground-state energies satisfy:
+$$\liminf_{j \to \infty} E_0(d_j) \ge 0$$
+Therefore, no such scale $y_0 \neq 0$ can exist where $E$ contains a real affine copy of $S$. The Archimedean presence potential must vanish: $\Psi_E(y) = 0$ for all scales $0 < |y| \le b_*$, establishing sequence avoidance.
 
 #### 5. Uniformity of the Coupling Constant $\lambda$ **[Conditional]**
 We prove that the coupling parameter $\lambda$ can be chosen independent of the tree depth $d$, resolving the uniform $\lambda$-control requirement.

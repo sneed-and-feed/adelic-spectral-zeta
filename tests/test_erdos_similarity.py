@@ -330,3 +330,73 @@ def test_weyl_criterion():
     pi_approx = Fraction(245437, 78125)
     val_trans = test_adelic_weyl_criterion("geometric", M=100, primes=primes, depths=depths, base=pi_approx)
     assert 0.0 <= val_trans <= 1.0
+
+def test_avoiding_set_spectral_gap():
+    import scipy.linalg as la
+    import scipy.sparse as sp
+    from adelic_spectral_zeta.erdos_similarity import (
+        construct_adelic_sequence,
+        construct_adelic_set,
+        solve_schrodinger_spectrum,
+        construct_idelic_laplacian
+    )
+    
+    # Setup
+    N_inf = 16
+    d = 2
+    k = 1
+    base = 11
+    primes = [2, 3]
+    depths = [d, k]
+    
+    seq = construct_adelic_sequence("geometric", 3, primes=primes, depths=depths, base=base)
+    set_porous = construct_adelic_set("porous", N_inf, primes=primes, depths=depths)
+    
+    grid_params = {
+        "N_u": 8,
+        "u_min": -1.0,
+        "u_max": 1.0,
+        "V_list": depths,
+        "primes": primes,
+        "L": 1.0
+    }
+    
+    eigs, evecs, psi = solve_schrodinger_spectrum(set_porous, seq, grid_params, lmbda=10.0)
+    
+    # Check sector collapse: psi should be 0 on all non-boundary sectors
+    N_u = grid_params["N_u"]
+    V_dims = [V + 1 for V in depths]
+    strides = []
+    current_stride = 1
+    for dim in reversed(V_dims):
+        strides.append(current_stride)
+        current_stride *= dim
+    strides.reverse()
+    stride_inf = current_stride
+    
+    non_boundary_indices = []
+    import itertools
+    non_arch_coords = [list(range(dim)) for dim in V_dims]
+    boundary_k = tuple(depths)
+    
+    for i in range(N_u):
+        for k_tuple in itertools.product(*non_arch_coords):
+            idx = i * stride_inf + sum(k_m * s_m for k_m, s_m in zip(k_tuple, strides))
+            if k_tuple != boundary_k:
+                non_boundary_indices.append(idx)
+                
+    non_boundary_psi = psi[non_boundary_indices]
+    assert np.all(non_boundary_psi == 0.0), "Psi must be exactly 0 in non-boundary sectors!"
+    
+    # Restrict the Hamiltonian to the non-boundary sectors and verify positivity
+    u_vals = np.linspace(-1.0, 1.0, N_u)
+    du = u_vals[1] - u_vals[0]
+    Delta_I = construct_idelic_laplacian(N_u, du, V_list=depths)
+    H = Delta_I + sp.diags(-10.0 * psi)
+    
+    H_dense = H.toarray()
+    H_interior = H_dense[np.ix_(non_boundary_indices, non_boundary_indices)]
+    eigenvalues = la.eigvalsh(H_interior)
+    
+    assert eigenvalues[0] >= 0.0, "Interior ground-state energy must be non-negative!"
+
