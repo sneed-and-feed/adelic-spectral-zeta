@@ -19,6 +19,15 @@ The GFM parser processes standard Markdown rules (like italics via `_` and HTML 
     *   **Correct**: `$\langle 1_0, Bf \rangle$`
     *   **Incorrect**: `$<1_0, Bf>$`
 
+### The Backtick-Dollar Delimiters (`$` `...` `$`) for Underscore/Italics Shielding
+If a paragraph contains multiple inline math blocks with subscripts (underscores `_`), or if an inline math block containing subscripts/braces is nested inside an emphasized (italicized `*...*` or `_..._`) text block, GFM may pair up the underscores or asterisks, stripping them and inserting HTML tags (`<em>`/`<i>`) inside the math delimiters. This breaks KaTeX/MathJax rendering.
+
+To shield these characters:
+*   Wrap the math expression in backticks inside the dollar signs: `$` `S = \{\alpha q^{-n}\}_{n=1}^\infty` `$`.
+*   The backticks force the Markdown parser to treat the formula as a code span, preserving backslashes, braces, and subscripts exactly as written before passing them to the math rendering engine.
+*   **Correct (Renders successfully)**: `$` `S = \{\alpha q^{-n}\}_{n=1}^\infty` `$`
+*   **Incorrect (Mangled by Markdown parser)**: `$S = \{\alpha q^{-n}\}_{n=1}^\infty$`
+
 ---
 
 ## 2. Display Math Blocks (`$$ ... $$`)
