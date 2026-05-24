@@ -24,10 +24,9 @@ def compute_sobolev_energy(N_inf, d, sigma, lam=2.0):
     energies = [np.real(np.vdot(subspace_vecs[:,i], S @ subspace_vecs[:,i])) 
                 for i in range(subspace_vecs.shape[1])]
     
-    if np.abs(sigma - 0.5) < 1e-5:
-        return np.min(energies)
-    else:
-        return np.max(energies)
+    # Return the minimum Sobolev energy of the near-zero-mode subspace
+    # to evaluate whether any normalizable ground state exists.
+    return np.min(energies)
 
 def run_audit():
     N_infs = [10, 50, 100, 200, 400, 800]

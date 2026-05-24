@@ -73,20 +73,12 @@ We present a unified geometric and physical framework for the spectral realizati
 * **Sections 12.3 – 12.4: Adèlic Synchronization, Dirichlet Energy Explosion, and Cuspidal Restriction**
 * **Sections 12.5 – 12.7: Adèlic Sobolev Rigidity, Regularization, and Conditional Reduction**
 
-### [Chapter 13: The Trace Identity (*) for GL(1)](monograph/13_trace_identity_gl1.md)
-* **Sections 13.1 – 13.2: The Adèlic Space for GL(1) and the Test Function $f_z$**
-* **Sections 13.3 – 13.4: Poisson Summation on the Idèles and the Archimedean Gamma Factor**
-* **Section 13.5: Synthesis and Unconditional Spectral Realization of the Riemann Hypothesis**
-
-### [Chapter 14: The Trace Identity (*) for GL(2) and Higher Rank](monograph/14_trace_identity_gl2.md)
-* **Section 14.1: The $GL(2)$ Bruhat-Tits Tree and Local Orbital Integrals**
-* **Section 14.2: Computational Validation of the Geometric-Arithmetic Matching**
-* **Section 14.3: The Remaining Global Obstruction: Adèlic Synchronization**
-* **Sections 14.4 – 14.5: The Eichler-Selberg Obstruction and the Elliptic Mismatch**
-* **Section 14.6: The Discriminant Sieve and the Hasse Principle**
-* **Section 14.7: The Hecke Algebra Trade-off**
-* **Section 14.8: The Identity and Unipotent Obstructions**
-* **Section 14.9: Conclusion: The Frontier of Spectral Realization**
+### [Chapter 13: The Trace Identity (*) for GL(1) and the GL(2) Frontier](monograph/13_trace_identity_gl1.md)
+* Rigorous proof of the Trace Formula Identity (*) for the Riemann Zeta function.
+* Defining the adèlic domain via Schwartz-Bruhat idèle spaces.
+* Archimedean matching to the Gamma factor.
+* Non-Archimedean Poisson summation yielding the explicit prime-power sum.
+* Analysis of the GL(2) frontier: the Eichler-Selberg obstruction and unipotent/elliptic mismatch.
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
