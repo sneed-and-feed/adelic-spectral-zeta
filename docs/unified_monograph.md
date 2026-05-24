@@ -84,6 +84,7 @@ We present a unified geometric and physical framework for the spectral realizati
 * **Section 14.3: The Remaining Global Obstruction: Adèlic Synchronization**
 * **Sections 14.4 – 14.5: The Eichler-Selberg Obstruction and the Elliptic Mismatch**
 * **Section 14.6: Conclusion: The Frontier of Spectral Realization**
+* **Sections 14.7 – 14.8: The Discriminant Sieve and the Hecke Algebra Trade-off**
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
