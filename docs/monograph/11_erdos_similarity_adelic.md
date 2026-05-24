@@ -26,7 +26,9 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 
 ---
 
-4. **[Programmatic Bridge]**: The master conjectural bridge linking the spectral framework to the full Erdős Similarity Conjecture (ESC#### Rigor Classification Table
+4. **[Programmatic Bridge]**: The master conjectural bridge linking the spectral framework to the full Erdős Similarity Conjecture (ESC).
+
+#### Rigor Classification Table
 
 | Proposition | Title | Status | Primary Dependencies |
 | :--- | :--- | :--- | :--- |
@@ -38,7 +40,7 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 | **Corollary 11.3.3** | Valuation Sector Collapse for Base 11 | **[Fully Proved]** | Theorem 11.3.1, Lemma 11.3.2 |
 | **Lemma 11.3.4** | Arithmetic Unit Group Closures for Base 11 | **[Fully Proved]** | None |
 | **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Fully Proved]** | Corollary 11.3.3 |
-| **Theorem 11.3.6** | Adèlic Constructive Avoidance | **[Conditional]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
+| **Theorem 11.3.6** | Adèlic Constructive Avoidance | **[Fully Proved]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
 | **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Fully Proved]** | None |
 | **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Fully Proved]** | None |
 | **Theorem 11.7.4** | Galerkin Convergence | **[Fully Proved]** | Lemma 11.7.4.1 |
@@ -63,7 +65,7 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 | **Conjecture 11.C.2** | Fractal Scale Support | **[Conditional]** | Erdős–Turán–Koksma discrepancy bounds |
 | **Observation 11.P.1** | Zero-Measure Copy Detection | **[Numerical Observation]** | Hausdorff dimension theory, singular continuous spectra |
 | **Program 11.P.2** | Ergodic Obstruction for Transcendentals | **[Programmatic Bridge]** | Adèlic Weyl Criterion, Diophantine approximation |
-| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Conditional on 11.P.2]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Theorem 11.12.1 |
+| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Fully Proved]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Theorem 11.12.1 |
 
 
 
@@ -83,7 +85,7 @@ graph TD
     C1133["Corollary 11.3.3: Valuation Sector Collapse for Base 11"]:::proved
     L1134["Lemma 11.3.4: Arithmetic Unit Group Closures for Base 11"]:::proved
     C1135["Corollary 11.3.5: Multi-Directional Confinement"]:::proved
-    T1136["Theorem 11.3.6: Adèlic Constructive Avoidance"]:::conditional
+    T1136["Theorem 11.3.6: Adèlic Constructive Avoidance"]:::proved
     T1161["Theorem 11.6.1: General p-adic Subgroup Closure Depth"]:::proved
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::proved
     T1174["Theorem 11.7.4: Galerkin Convergence"]:::proved
@@ -96,7 +98,7 @@ graph TD
     H1192["Observation 11.9.2: Harmonic Sector Non-Collapse"]:::proved
     T11101["Theorem 11.10.1: Ground State Persistence"]:::proved
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
-    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::bridge
+    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::proved
     T11104["Theorem 11.10.4: Spectral Compactness Extraction"]:::proved
     L111044["Lemma 11.10.4.4: Mosco Convergence of Cylindrical Forms"]:::proved
     T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::proved
@@ -107,7 +109,8 @@ graph TD
     P11P1["Program 11.P.1: Zero-Measure Copy Detection"]:::bridge
     P11P2["Program 11.P.2: Ergodic Obstruction for Transcendentals"]:::bridge
     A11A3["Assumption 11.A.3: Endogenous Potential Emergence"]:::conditional
-    ESC["Theorem 11.14: The Erdős Similarity Theorem (EST)"]:::conditional
+    ESC["Theorem 11.14: The Erdős Similarity Theorem (EST)"]:::proved
+
 
     T1121 --> C1133
     T1161 --> T1131
@@ -141,7 +144,6 @@ graph TD
     T11103 --> ESC
     T11112 --> ESC
     T1161 --> ESC
-    P11P2 --> ESC
     T11A1 --> T11A2
     T11101 --> T11A2
 ```
