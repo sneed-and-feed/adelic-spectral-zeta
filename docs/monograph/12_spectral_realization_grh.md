@@ -161,13 +161,17 @@ We must mathematically defend the 1-to-1 exact bijection stated in Theorem 7.3.4
 
 **Proof.**
 Recall **Lemma 7.3.3½ (Regularization Rigidity Lemma)**. We proved that for any admissible determinant regularization $\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} e^{B z} \Lambda(z)$, the integration constant $B$ is completely determined by the reflection covariance shift $b$:
+
 $$
 B = \frac{1}{2}\text{Re}(b)
 $$
+
 Because our specific rank-1 projection is symmetrically balanced across the Archimedean and non-Archimedean places (the Yin-Yang coupling), it enforces $b = 0$. This mathematically locks $B = 0$, yielding:
+
 $$
 \mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \Lambda(z)
 $$
+
 Any alternate regularization that attempts to introduce a spurious zero would inherently break the reflection symmetry, introducing a non-zero shift $b$ and causing the completed spectral determinant to fail the functional equation.
 
 Since $L$-functions must satisfy their functional equation unconditionally, our rank-1 projection is the only physically and mathematically valid operator construction. Therefore, the spectrum of $D_{\text{glob}}$ contains no spurious artifacts. Every eigenvalue precisely corresponds to a true zero of the $L$-function, and via the arguments of Sections 12.6 and 12.7, these zeros are strictly confined to the critical line. $\blacksquare$
