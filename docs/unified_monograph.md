@@ -69,9 +69,14 @@ We present a unified geometric and physical framework for the spectral realizati
 *   **[Appendices 11.A – 11.F: Radial Tree Compression, Failure-Mode Audits, and Numerical Validation](monograph/11_erdos_similarity/11.A_radial_compression.md)**
 
 ### [Chapter 12: Spectral Realization of the Generalized Riemann Hypothesis](monograph/12_spectral_realization_grh.md)
-* **Sections 12.1 – 12.2: Operator Construction and the Fredholm Index Obstruction**
-* **Sections 12.3 – 12.5: Constructive Avoidance, Yin-Yang Coupling, and Spectral Reduction**
-* **Sections 12.6 – 12.8: Absence of Continuous Spectrum, Arithmetic Quantum Ergodicity, and Regularization Rigidity**
+* **Sections 12.1 – 12.2: Conditional Spectral Determinant Realization and Archimedean Isolation**
+* **Sections 12.3 – 12.4: Adèlic Synchronization, Dirichlet Energy Explosion, and Cuspidal Restriction**
+* **Sections 12.5 – 12.7: Adèlic Sobolev Rigidity, Regularization, and Conditional Reduction**
+
+### [Chapter 13: The Trace Identity (*) for GL(1)](monograph/13_trace_identity_gl1.md)
+* **Sections 13.1 – 13.2: The Adèlic Space for GL(1) and the Test Function $f_z$**
+* **Sections 13.3 – 13.4: Poisson Summation on the Idèles and the Archimedean Gamma Factor**
+* **Section 13.5: Synthesis and Unconditional Spectral Realization of the Riemann Hypothesis**
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
