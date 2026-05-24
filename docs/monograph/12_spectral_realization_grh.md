@@ -20,12 +20,25 @@ This establishes that any eigenstate of $D_{\text{glob}}$ is simultaneously a He
 *Assuming the open trace formula identity (*), the completed spectral determinant of $D_{\text{glob}}$ corresponds exactly to the completed $L$-function $\Lambda(z, \pi)$.*
 
 **Proof.** 
-1. The spectral zeta function $\zeta_D(s) = \text{Tr}(|D_{\text{glob}}|^{-s})$ is evaluated via the Selberg trace formula on the Bruhat-Tits quotients (assuming (*)).
-2. We define the spectral determinant via $\mathfrak{D}_{\text{glob}}(z) = \exp\left(-\frac{d}{ds} \zeta_{D-z}(s) \Big|_{s=0}\right)$, which factors as a Hadamard product over the eigenvalues of $D_{\text{glob}}$.
-3. The open lemma (*) is formulated as follows: The geometric side of the Selberg trace formula on the Bruhat-Tits quotients $\mathcal{T}_p / \Gamma_0(p)$, when summed adelically via the CRT diagonal, reproduces exactly the sum over primes in the explicit formula for $\Lambda(z, \pi)$:
-   $$ \sum_{\rho} h(\rho) = \hat{h}(0)\log N + \sum_{p} \sum_{k=1}^\infty \frac{\log p}{p^{k/2}} (\hat{h}(\log p^k) + \hat{h}(-\log p^k)) $$
-   Assuming this identity holds for the specific test function class induced by the $D_{\text{glob}}$ spectrum, we match the Hadamard product term-by-term with the explicit factorization of $\Lambda(z, \pi)$. (This assumes $\pi$ is cuspidal and satisfies the Ramanujan conjecture at all finite places).
-4. The matching identifies a non-zero scaling constant $\mathcal{C}$, yielding the conditional equivalence $\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z, \pi)$. $\blacksquare$
+We define the zeta-regularized spectral determinant of the global Dirac operator via the Ray-Singer formalism:
+$$ \mathfrak{D}_{\text{glob}}(z) = \exp\left(-\frac{\partial}{\partial w} \zeta_{D-z}(w) \Big|_{w=0}\right) $$
+By the standard analytic continuation of zeta determinants, the logarithmic derivative of the spectral determinant is formally equivalent to the trace of the resolvent operator:
+$$ \frac{d}{dz} \log \mathfrak{D}_{\text{glob}}(z) = \text{Tr}\left((D_{\text{glob}} - z\mathbb{I})^{-1}\right) $$
+
+To evaluate the resolvent trace, we invoke the Selberg trace formula. Over the finite Bruhat-Tits quotients $\mathcal{T}_p / \Gamma_0(p)$, the trace of a suitable test function operating on the discrete spectrum decomposes into a geometric side comprised of an identity term (volume) and a sum over hyperbolic conjugacy classes, which correspond precisely to the prime cycles of the graphs:
+$$ \text{Tr}\left((D_{\text{glob}} - z\mathbb{I})^{-1}\right) = I_{\text{vol}}(z) + \sum_{p} \sum_{[C]_p} \frac{l(C)}{1 - N(C)^{-1}} N(C)^{-z} $$
+
+Here, we introduce the conditional **Open Lemma (*)**. We hypothesize that when synchronized across the adèles, the geometric sum over prime cycles of the Bruhat-Tits quotients matches exactly the arithmetic sum over prime powers found in the Weil explicit formula for the completed automorphic $L$-function $\Lambda(z, \pi)$:
+$$ I_{\text{vol}}(z) + \sum_{p} \sum_{[C]_p} \frac{l(C)}{1 - N(C)^{-1}} N(C)^{-z} \quad \stackrel{(*)}{=} \quad \frac{d}{dz} \log \Lambda(z, \pi) $$
+Specifically, the lengths of the prime cycles $l(C)$ map bijectively to the ramification degrees, yielding the equivalent expansion:
+$$ \frac{d}{dz} \log \Lambda(z, \pi) = \text{Polar Terms} + \sum_{p} \sum_{k=1}^\infty \frac{\log p}{p^{k/2}} (\chi_p^k p^{-kz} + \chi_p^{-k} p^{-k(1-z)}) $$
+
+Assuming identity (*), we substitute the geometric side to establish an exact equality between logarithmic derivatives:
+$$ \frac{d}{dz} \log \mathfrak{D}_{\text{glob}}(z) = \frac{d}{dz} \log \Lambda(z, \pi) $$
+
+Integrating both sides with respect to the complex variable $z$ yields the equivalence:
+$$ \mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z, \pi) $$
+where $\mathcal{C} \neq 0$ is a non-vanishing scaling constant of integration. Because the determinants differ only by a non-zero multiplicative constant, their complex zero-sets are mathematically identical. $\blacksquare$
 
 Assuming (*), every non-trivial zero of $\Lambda(z, \pi)$ corresponds exactly to a zero-crossing of the spectral flow of the compressed operator $D_{\text{glob}}(\lambda)$. Hence:
 
