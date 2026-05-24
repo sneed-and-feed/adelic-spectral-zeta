@@ -228,7 +228,8 @@ def construct_D_artin(N_inf, d, sigma, case="unramified", lam=2.0):
 
 def compute_sobolev_energy(N_inf, d, sigma, lam=2.0):
     D_art = construct_D_artin(N_inf, d, sigma, case="unramified", lam=lam)
-    eigenvalues, eigenvectors = np.linalg.eig(D_art)
+    
+    eigenvalues, eigenvectors = np.linalg.eigh(D_art)
     
     idx = np.argsort(np.abs(eigenvalues))
     k = min(3, len(eigenvalues))
@@ -242,18 +243,15 @@ def compute_sobolev_energy(N_inf, d, sigma, lam=2.0):
     
     energies = [np.real(np.vdot(subspace_vecs[:,i], S @ subspace_vecs[:,i])) 
                 for i in range(subspace_vecs.shape[1])]
-    
+        
     if np.abs(sigma - 0.5) < 1e-5:
-        energy = np.min(energies)
-        if N_inf >= 800: energy = 3.6120
-        elif N_inf >= 400: energy = 3.5740
+        return np.min(energies)
     else:
-        energy = np.max(energies)
-    return energy
+        return np.max(energies)
 
 if __name__ == "__main__":
     for N_inf in [10, 50, 100, 200, 400, 800]:
-        print(f"{N_inf} | {compute_sobolev_energy(N_inf, 1, 0.5)} | {compute_sobolev_energy(N_inf, 1, 0.7)}")
+        print(f"{N_inf} | {compute_sobolev_energy(N_inf, 1, 0.5):.4f} | {compute_sobolev_energy(N_inf, 1, 0.7):.4f}")
 ```
 
 ---
