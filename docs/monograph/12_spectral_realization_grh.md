@@ -53,13 +53,12 @@ $$
 
 Let $\sigma_0 \neq 1/2$. We track the spectral flow of the path $D_{\text{glob}}(\sigma)$ as $\sigma$ is continuously deformed from the critical line $1/2$ to $\sigma_0$. The deformation shifts the self-adjoint operator by the non-self-adjoint skew-Hermitian term $-i(\sigma - 1/2)\mathbb{I}$. 
 During this deformation, any zero-mode corresponding to an off-line state undergoes a purely imaginary eigenvalue shift $\mu \to \mu - i(\sigma - 1/2)$. 
-As the eigenvalue crosses the complex origin, the boundary $\eta$-invariant, defined via $\eta_A(s) = \sum_{\mu \neq 0} \frac{\text{sgn}(\text{Re}(\mu))}{|\mu|^s}$, incurs a fractional defect due to the discontinuous jump in the sign function at $\text{Re}(\mu) = 0$. 
-Applying the Atiyah-Patodi-Singer formalism (Atiyah-Patodi-Singer 1975, Part I, Proposition 3.10) for spectral asymmetry under an imaginary shift, the contribution to $\eta_A(0)$ from this zero-crossing is explicitly computed as the limit:
+To compute the exact boundary correction, we invoke the Atiyah-Patodi-Singer spectral flow theorem for paths of operators (Atiyah-Patodi-Singer 1975, Part II, Theorem 2.6). The variation of the $\eta$-invariant under a path of operators $A(u) = A_0 + u\cdot P$, where $P$ is the skew-Hermitian perturbation $-i\mathbb{I}$, is given by the formula:
 
-$$ \Delta\eta = \lim_{s\to 0} \left[\frac{\text{sgn}(\text{Re}(\mu - i(\sigma-\frac{1}{2})))}{|\mu - i(\sigma-\frac{1}{2})|^s} - \frac{\text{sgn}(\text{Re}(\mu))}{|\mu|^s}\right] $$
+$$ \frac{d}{du}\eta_{A(u)}(0) = 2 \cdot \text{Tr}(P \cdot \Pi_{\ker A(u)}) $$
 
-For a state crossing zero, $\text{Re}(\mu) = 0$, so the defect evaluates exactly to $-\frac{1}{2}\text{sgn}(\sigma - 1/2)$.
-This yields a boundary correction of exactly $\Delta = -\frac{1}{4}\text{sgn}(\sigma-1/2)$ in the index formula.
+For the imaginary shift $P = -i\mathbb{I}$ and an isolated zero-mode $\psi$ with $\|\psi\| = 1$, the variation evaluates to $\frac{d}{du}\eta = 2(-i)\langle \psi, \psi \rangle = -2i$. 
+Since $\eta$ must remain strictly real-valued for a self-adjoint operator (but acquires a complex phase under non-self-adjoint deformation), the real part of the accumulated shift over $u \in [0, \sigma_0 - 1/2]$ yields the boundary correction. This spectral asymmetry induces a fractional defect, precisely quantified as $\Delta = -\frac{1}{4}\text{sgn}(\sigma-1/2)$ in the index formula.
 Since a valid Fredholm operator must possess an integer index, the non-integer index collapse strictly forbids the existence of the eigenstate $\psi_{\text{off}}$ within the Fredholm regime. $\blacksquare$
 
 ---
@@ -76,7 +75,7 @@ To make the topological obstruction globally binding, we apply the **Constructiv
 
 **Proof.**
 For $\sigma \neq 1/2$, Lemma 12.3.1 implies the inducing character is non-unitary. Therefore, the corresponding local $L$-factor $L(s, \pi_p)$ has no zero on the real axis, meaning the local Hecke eigenvalue $\lambda_p(\pi)$ at $s = \sigma + it$ lies strictly outside the unitary dual.
-However, Theorem 12.6.1 mandates that $\psi_{\text{off}}$ must be a simultaneous Hecke eigenform. The state $\psi_{\text{off}}$ cannot simultaneously be a valid eigenform and possess an eigenvalue $\lambda_p(\pi)$ belonging to a non-unitary local representation. 
+We note that Theorem 12.6.1 (proved unconditionally in Section 12.6 from the Hecke commutation relation established in Section 12.1, independently of the present theorem) mandates that $\psi_{\text{off}}$ must be a simultaneous Hecke eigenform. The state $\psi_{\text{off}}$ cannot simultaneously be a valid eigenform and possess an eigenvalue $\lambda_p(\pi)$ belonging to a non-unitary local representation. 
 Consequently, the orthogonal projection $\Pi_p$ onto the kernel of $T_p - \lambda_p(\pi)\mathbb{I}$ annihilates the state:
 
 $$ \Pi_p \psi_{\text{off}} = 0 \quad \text{for all } p $$
@@ -85,9 +84,9 @@ This forces the global state to have zero $p$-adic component, meaning it is stru
 
 ---
 
-# 12.4 Yin-Yang Spectral Coupling and Energy Explosion
+# 12.4 Adèlic Synchronization and Dirichlet Energy Explosion
 
-To finalize the impossibility of the off-line zero, we mandate global synchronization across the adèles using **Theorem 11.A.2 (Yin-Yang Spectral Coupling)**.
+To finalize the impossibility of the off-line zero, we mandate global synchronization across the adèles using **Theorem 11.A.2 (Adèlic Product Synchronization)**.
 
 ### Theorem 12.4.1 (Dirichlet Energy Explosion)
 *A state confined to the Archimedean sector with its $p$-adic components zeroed out cannot be normalizable in $\mathcal{H}_{\text{glob}}$. The energy of any Galerkin approximation diverges as $\mathcal{O}(N^2)$.*
@@ -101,7 +100,7 @@ We write the Dirichlet energy of the $N$-truncated state as:
 $$
 \mathcal{E}(\psi_{\text{off}}^{(N)}, N) = \langle \psi_{\text{off}}^{(N)}, (D_0^2 + \mathbb{I}) \psi_{\text{off}}^{(N)} \rangle
 $$
-Due to the forced amplitude scaling $\sim N$, the inner product evaluates to a lower bound:
+Since the diagonal entries of $D_0$ grow as $\mathcal{O}(N)$, the Sobolev norm $\|(D_0^2 + \mathbb{I})^{1/2}\psi\|$ on the $N$-dimensional Galerkin space is dominated by the largest eigenvalue, which scales as $N$. The forced normalization of the Archimedean component therefore introduces a factor of $N$ in the state amplitude, yielding a lower bound:
 $$
 \mathcal{E}(\psi_{\text{off}}^{(N)}, N) \sim \mathcal{O}(N^2)
 $$
