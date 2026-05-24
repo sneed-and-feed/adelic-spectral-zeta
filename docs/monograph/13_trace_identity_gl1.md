@@ -31,7 +31,7 @@ To achieve a discrete spectrum and compact resolvents, one might restrict the gl
 It is topologically impossible to define a non-trivial differential operator $-x^2 d^2/dx^2$ on a two-point space. Thus, compactness (needed for discrete spectrum) and continuous differential operators (needed to represent the gamma factor) are mutually exclusive on commutative adèlic quotients.
 
 ### 4. Non-Archimedean Spectral Issues
-At the finite places, the Bruhat-Tits tree for $GL(1, \mathbb{Q}_p)$ is a one-dimensional line lattice. The local shift operator $T_p$ on $\ell^2(\mathbb{Z})$ has a continuous spectrum on the unit circle. Its trace is ill-defined, and the von Mangoldt sum cannot be naturally obtained as a resolvent trace of a self-adjoint operator on this space.
+At the finite places, the Bruhat-Tits building for $GL(1, \mathbb{Q}_p)$ is simply a point. While the valuation filtration yields a copy of $\mathbb{Z}$ that represents the valuation sectors, there is no infinite tree structure. Attempting to define a local operator $T_p$ as a shift operator on the valuation lattices of $GL(1)$ results in a continuous spectrum on the unit circle in $\ell^2(\mathbb{Z})$ without a well-defined trace. The line-lattice or tree-based shift trace is a feature of $GL(2)$ and higher rank quotients, not $GL(1)$.
 
 ---
 
@@ -84,6 +84,11 @@ Furthermore:
 - Attempting to filter them out using local discriminant sieves forces the test functions to lie outside the spherical Hecke algebra, destroying the Satake transform and preventing the spectral side from matching the logarithmic derivative of the $L$-function.
 - Therefore, the trace formula identity `(*)` for $GL(2)$ remains conditional on a geometric mechanism to absorb or cancel the elliptic and unipotent terms against the continuous spectrum.
 
+### Concrete Example: The Ramanujan Delta Function
+To see this mismatch concretely, consider a holomorphic modular cusp form of weight 12, such as the Ramanujan discriminant function $\Delta(\tau) = q \prod_{n=1}^\infty (1-q^n)^{24}$ with $q = e^{2\pi i \tau}$. When evaluating the Eichler-Selberg trace formula for the Hecke operator $T(p)$, the geometric trace includes elliptic conjugacy class contributions of the form:
+$$ \sum_{d < 4p, d \equiv 0,1 \pmod 4} h(d) w(d) \frac{\lambda^{11} - \bar{\lambda}^{11}}{\lambda - \bar{\lambda}} $$
+where $h(d)$ is the class number of the imaginary quadratic order of discriminant $d$, and $\lambda, \bar{\lambda}$ are the roots of $x^2 - t x + p = 0$ with $t^2 - 4p = d$. These class-number terms are purely geometric invariants of imaginary quadratic fields. They have no corresponding terms in the completed $L$-function $\Lambda(s, \Delta)$, which is defined analytically only by the Satake parameters at $p$. Proving Conjecture `(*)` for $GL(2)$ requires showing that these elliptic terms strictly cancel out or are absorbed, which remains a major open question in the theory of automorphic forms.
+
 ---
 
 # 13.5 Conclusion
@@ -92,10 +97,19 @@ The adèlic spectral realization of automorphic $L$-functions is a powerful, hig
 
 | Rank | Mathematical Tool | Status of Trace Identity (*) | Status of Self-Adjointness / Positivity |
 | :--- | :--- | :--- | :--- |
-| **$GL(1)$** | Noncommutative crossed products / Fréchet Cohomology | **Proven** (Connes 1999 / Meyer 2005) | **Open** (Equivalent to the Riemann Hypothesis) |
+| **$GL(1)$** | Noncommutative crossed products / Fréchet Cohomology | **Partially Proven** (Connes 1999 / Meyer 2005) [1] | **Open** (Equivalent to the Riemann Hypothesis) |
 | **$GL(2)$** | Arthur-Selberg Trace Formula | **Open** (Blocked by Elliptic/Unipotent mismatch) | **Open** (Equivalent to GRH for GL(2)) |
 
+[1] *Note:* For $GL(1)$, the Weil explicit formula has been realized as a distributional trace (Connes 1999 / Meyer 2005), providing the conceptual foundation for `(*)`. However, the exact resolvent trace formulation for a self-adjoint operator with discrete spectrum remains conditional on the operator construction.
+
 The naive commutative adèlic quotient is mathematically insufficient to establish the spectral realization. To proceed towards a rigorous proof, the program must be formulated within the framework of noncommutative geometry and distributional traces, and the elliptic obstructions for $GL(2)$ must be resolved geometrically.
+
+---
+
+# 13.6 Bibliography
+
+- Connes, A. *Trace Formula in Noncommutative Geometry and the Zeros of the Riemann Zeta Function*, Selecta Mathematica 5 (1999), 29–106.
+- Meyer, R. *On a Representation of the Idele Class Group Related to Primes and Zeros of L-Functions*, Duke Math. J. 127 (2005), 519–595.
 
 ---
 

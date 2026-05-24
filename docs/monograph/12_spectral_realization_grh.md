@@ -38,15 +38,18 @@ $$ z_n = 1/2 + i\gamma_n $$
 Under a suitable spectral realization, the eigenvalues of $D_{\text{glob}}$ correspond to the parameters $\gamma_n$. 
 
 ### Theorem 12.2.1 (Spectral Reality and the Critical Line)
-*If $D_{\text{glob}}$ is a self-adjoint operator on $\mathcal{H}_{\text{glob}}$, and the Trace Formula Identity Conjecture (*) holds such that the eigenvalues of $D_{\text{glob}}$ are precisely the parameters $\gamma_n$, then GRH holds.*
+*If $D_{\text{glob}}$ is a self-adjoint operator on $\mathcal{H}_{\text{glob}}$, and the Trace Formula Identity Conjecture (*) holds such that the spectrum of $D_{\text{glob}}$ satisfies $\sigma(D_{\text{glob}}) = \{\gamma_n : \Lambda(1/2 + i\gamma_n, \pi) = 0\}$, then GRH holds.*
 
 **Proof.**
-Let $D_{\text{glob}}$ be a self-adjoint operator on a dense domain $\text{Dom}(D_{\text{glob}}) \subset \mathcal{H}_{\text{glob}}$. By the spectral theorem for self-adjoint operators, the spectrum $\sigma(D_{\text{glob}})$ is a subset of the real numbers:
+Let $D_{\text{glob}}$ be a self-adjoint operator on a dense domain $\text{Dom}(D_{\text{glob}}) \subset \mathcal{H}_{\text{glob}}$. By the spectral theorem, the spectrum of a self-adjoint operator is a subset of the real numbers:
 $$ \sigma(D_{\text{glob}}) \subset \mathbb{R} $$
-If Conjecture (*) holds, the eigenvalues $\lambda_n$ of $D_{\text{glob}}$ correspond to the parameters $\gamma_n$. Since $\lambda_n$ must be real, we have $\gamma_n \in \mathbb{R}$.
+By the spectral mapping established under Conjecture (*), the eigenvalues $\lambda_n$ of $D_{\text{glob}}$ are precisely the parameters $\gamma_n$. Since $\lambda_n \in \sigma(D_{\text{glob}}) \subset \mathbb{R}$, we have $\gamma_n \in \mathbb{R}$.
 Substituting this back into the parameterization of the zeros:
 $$ \text{Re}(z_n) = \text{Re}(1/2 + i\gamma_n) = 1/2 - \text{Im}(\gamma_n) = 1/2 $$
 Thus, all non-trivial zeros lie on the critical line $\text{Re}(z) = 1/2$. $\blacksquare$
+
+### Comparison with the Hilbert-Pólya Conjecture
+The classical Hilbert-Pólya conjecture posits the existence of a self-adjoint operator whose eigenvalues correspond directly to the imaginary parts of the zeros. Conversely, Alain Connes' noncommutative framework (Connes 1999) establishes the zeros as an *absorption spectrum* (or resonances) within a continuous spectral background. Our program attempts to bridge these two pictures: we construct a global adèlic operator whose geometric trace relates to the Weil Explicit Formula (mimicking Connes' dynamical system) but seek to regularize the boundary conditions such that the critical zeros emerge as discrete eigenvalues of a self-adjoint operator $D_{\text{glob}}$, recovering the discrete Hilbert-Pólya setting.
 
 The core challenge of the program is therefore reduced to two distinct, non-trivial problems:
 1. **The Algebraic-Geometric Problem:** Proving the Trace Formula Identity Conjecture (*).
@@ -70,12 +73,24 @@ To bypass these limitations, a valid spectral realization cannot rely on naive c
 We synthesize the conditional status of the spectral realization.
 
 ### Theorem 12.4.1 (Conditional GRH Reduction)
-*The Generalized Riemann Hypothesis for $\Lambda(s, \pi)$ is true conditional on:*
-1. *The existence of a self-adjoint operator $D_{\text{glob}}$ on a separable Hilbert space $\mathcal{H}_{\text{glob}}$.*
-2. *The validity of the Trace Formula Identity Conjecture (*), establishing a bijection between the eigenvalues of $D_{\text{glob}}$ and the imaginary parts $\gamma_n$ of the zeros of $\Lambda(s, \pi)$.*
+*The Generalized Riemann Hypothesis holds for $\Lambda(s, \pi)$ provided that the following two conditions are satisfied:*
+1. *There exists a self-adjoint operator $D_{\text{glob}}$ on a separable Hilbert space $\mathcal{H}_{\text{glob}}$.*
+2. *The Trace Formula Identity Conjecture (*) is valid, establishing the exact spectral bijection $\sigma(D_{\text{glob}}) = \{\gamma_n : \Lambda(1/2 + i\gamma_n, \pi) = 0\}$.*
 
 **Proof.**
 The proof follows immediately from the self-adjointness of $D_{\text{glob}}$ (Theorem 12.2.1) and the bijection established by Conjecture (*) (Theorem 12.1.1). $\blacksquare$
+
+### Conceptual Flow of the Program
+The logical dependency structure of the spectral reduction is summarized below:
+
+```mermaid
+graph TD
+    A["Connes' Noncommutative Space (A / Q*)"] -->|Distributional Trace| B["Weil Explicit Formula"]
+    B -->|Resolvent Analogue| C["Conjecture (*) (Resolvent Identity)"]
+    D["Self-Adjoint Operator D_glob"] -->|Combined with| C
+    C & D -->|Forces| E["Discrete Real Spectrum: σ(D_glob) ⊂ ℝ"]
+    E -->|Conclusion| F["Generalized Riemann Hypothesis (GRH)"]
+```
 
 ### Status of the Program
 - **GL(1):** The spectral interpretation is conditionally established via Alain Connes' noncommutative trace formula and Ralf Meyer's cohomological Fréchet representation. However, proving the positivity of the corresponding Weil distribution (which is equivalent to the self-adjointness of the underlying operator) remains an open problem.
