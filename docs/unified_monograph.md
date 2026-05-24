@@ -78,6 +78,11 @@ We present a unified geometric and physical framework for the spectral realizati
 * **Sections 13.3 – 13.4: Poisson Summation on the Idèles and the Archimedean Gamma Factor**
 * **Section 13.5: Synthesis and Unconditional Spectral Realization of the Riemann Hypothesis**
 
+### [Chapter 14: The Trace Identity (*) for GL(2) and Higher Rank](monograph/14_trace_identity_gl2.md)
+* **Section 14.1: The $GL(2)$ Bruhat-Tits Tree and Local Orbital Integrals**
+* **Section 14.2: Computational Validation of the Geometric-Arithmetic Matching**
+* **Section 14.3: The Remaining Global Obstruction: Adèlic Synchronization**
+
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
 * **Appendix B**: Python Implementation of the FFT-Based Tau Algorithm.
