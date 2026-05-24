@@ -35,11 +35,7 @@ $$
 In the standard basis, the matrix entries of $B_d$ are given by:
 
 $$
-B_d[x, y] = \begin{cases} 
-\frac{1}{2} & \text{if } y \equiv 2x \pmod{2^d} \\
-\frac{1}{2} & \text{if } y \equiv 3^{-1}(2x-1) \pmod{2^d} \\
-0 & \text{otherwise}
-\end{cases}
+B_d[x, y] = \begin{cases} \frac{1}{2} & \text{if } y \equiv 2x \pmod{2^d} \\ \frac{1}{2} & \text{if } y \equiv 3^{-1}(2x-1) \pmod{2^d} \\ 0 & \text{otherwise} \end{cases}
 $$
 
 ### The Commutator $K_d$
@@ -83,19 +79,13 @@ The sum runs over the rows $x$ such that $B_d[x, y] \neq 0$, which correspond to
 In both cases, the two solutions differ by exactly $2^{d-1} \pmod{2^d}$. Thus, we can write:
 
 $$
-(B_d^\dagger g)(y) = \begin{cases}
-\frac{1}{2} \left[ g(y/2) + g(y/2 + 2^{d-1}) \right] & \text{if } y \text{ is even} \\
-\frac{1}{2} \left[ g(\frac{3y+1}{2}) + g(\frac{3y+1}{2} + 2^{d-1}) \right] & \text{if } y \text{ is odd}
-\end{cases}
+(B_d^\dagger g)(y) = \begin{cases} \frac{1}{2} \left[ g(y/2) + g(y/2 + 2^{d-1}) \right] & \text{if } y \text{ is even} \\ \frac{1}{2} \left[ g(\frac{3y+1}{2}) + g(\frac{3y+1}{2} + 2^{d-1}) \right] & \text{if } y \text{ is odd} \end{cases}
 $$
 
 Using the involution $(J_d g)(x) = g(x + 2^{d-1})$, we can write the projection onto the periodic subspace $P_+ = \frac{1}{2}(I_d + J_d)$. Then:
 
 $$
-(B_d^\dagger g)(y) = \begin{cases}
-(P_+ g)(y/2) & \text{if } y \text{ is even} \\
-(P_+ g)(\frac{3y+1}{2}) & \text{if } y \text{ is odd}
-\end{cases}
+(B_d^\dagger g)(y) = \begin{cases} (P_+ g)(y/2) & \text{if } y \text{ is even} \\ (P_+ g)(\frac{3y+1}{2}) & \text{if } y \text{ is odd} \end{cases}
 $$
 
 Now, evaluating $B_d B_d^\dagger g$:
@@ -184,10 +174,7 @@ $$
 First, $(A_d^\dagger f)(z) = f(z+1)$. Since $A_d^\dagger f \in V_+$, applying $B_d^\dagger$ yields:
 
 $$
-(B_d^\dagger A_d^\dagger f)(y) = \begin{cases}
-(A_d^\dagger f)(y/2) = f(y/2+1) & \text{if } y \text{ is even} \\
-(A_d^\dagger f)(\frac{3y+1}{2}) = f(\frac{3y+1}{2}+1) & \text{if } y \text{ is odd}
-\end{cases}
+(B_d^\dagger A_d^\dagger f)(y) = \begin{cases} (A_d^\dagger f)(y/2) = f(y/2+1) & \text{if } y \text{ is even} \\ (A_d^\dagger f)(\frac{3y+1}{2}) = f(\frac{3y+1}{2}+1) & \text{if } y \text{ is odd} \end{cases}
 $$
 
 Applying the shift $A_d$ shifts the index by $-1$:
@@ -279,23 +266,63 @@ Using the graph correspondence established in Section 3, we can determine the ex
      
      We verify that $\tau$ commutes with each transition operator $T_i$ on $L^2(G_d)$:
      - **For $T_1$**: 
-       $$T_1(\tau f)(x) = (\tau f)(3x) = f(3x + 2^{d-2})$$
-       $$\tau(T_1 f)(x) = (T_1 f)(x + 2^{d-2}) = f(3(x + 2^{d-2})) = f(3x + 3 \cdot 2^{d-2}) = f(3x + 2^{d-2} + 2^{d-1}) \equiv f(3x + 2^{d-2}) \pmod{2^{d-1}}$$
+       
+
+$$
+T_1(\tau f)(x) = (\tau f)(3x) = f(3x + 2^{d-2})
+$$
+
+       
+
+$$
+\tau(T_1 f)(x) = (T_1 f)(x + 2^{d-2}) = f(3(x + 2^{d-2})) = f(3x + 3 \cdot 2^{d-2}) = f(3x + 2^{d-2} + 2^{d-1}) \equiv f(3x + 2^{d-2}) \pmod{2^{d-1}}
+$$
+
        Thus, $T_1 \tau = \tau T_1$.
      - **For $T_2$**:
-       $$T_2(\tau f)(x) = (\tau f)(3x-1) = f(3x - 1 + 2^{d-2})$$
-       $$\tau(T_2 f)(x) = (T_2 f)(x + 2^{d-2}) = f(3(x + 2^{d-2}) - 1) = f(3x - 1 + 3 \cdot 2^{d-2}) \equiv f(3x - 1 + 2^{d-2}) \pmod{2^{d-1}}$$
+       
+
+$$
+T_2(\tau f)(x) = (\tau f)(3x-1) = f(3x - 1 + 2^{d-2})
+$$
+
+       
+
+$$
+\tau(T_2 f)(x) = (T_2 f)(x + 2^{d-2}) = f(3(x + 2^{d-2}) - 1) = f(3x - 1 + 3 \cdot 2^{d-2}) \equiv f(3x - 1 + 2^{d-2}) \pmod{2^{d-1}}
+$$
+
        Thus, $T_2 \tau = \tau T_2$.
      - **For $T_3$**: Let $3^{-1} = 2k+1$ modulo $2^{d-1}$. Then $3^{-1} 2^{d-2} = (2k+1) 2^{d-2} = k 2^{d-1} + 2^{d-2} \equiv 2^{d-2} \pmod{2^{d-1}}$.
-       $$T_3(\tau f)(x) = (\tau f)(3^{-1}x) = f(3^{-1}x + 2^{d-2})$$
-       $$\tau(T_3 f)(x) = (T_3 f)(x + 2^{d-2}) = f(3^{-1}(x + 2^{d-2})) = f(3^{-1}x + 3^{-1} 2^{d-2}) \equiv f(3^{-1}x + 2^{d-2}) \pmod{2^{d-1}}$$
+       
+
+$$
+T_3(\tau f)(x) = (\tau f)(3^{-1}x) = f(3^{-1}x + 2^{d-2})
+$$
+
+       
+
+$$
+\tau(T_3 f)(x) = (T_3 f)(x + 2^{d-2}) = f(3^{-1}(x + 2^{d-2})) = f(3^{-1}x + 3^{-1} 2^{d-2}) \equiv f(3^{-1}x + 2^{d-2}) \pmod{2^{d-1}}
+$$
+
        Thus, $T_3 \tau = \tau T_3$.
      - **For $T_4$**:
-       $$T_4(\tau f)(x) = (\tau f)(3^{-1}(x+1)) = f(3^{-1}(x+1) + 2^{d-2})$$
-       $$\tau(T_4 f)(x) = (T_4 f)(x + 2^{d-2}) = f(3^{-1}(x + 2^{d-2} + 1)) = f(3^{-1}(x+1) + 3^{-1} 2^{d-2}) \equiv f(3^{-1}(x+1) + 2^{d-2}) \pmod{2^{d-1}}$$
+       
+
+$$
+T_4(\tau f)(x) = (\tau f)(3^{-1}(x+1)) = f(3^{-1}(x+1) + 2^{d-2})
+$$
+
+       
+
+$$
+\tau(T_4 f)(x) = (T_4 f)(x + 2^{d-2}) = f(3^{-1}(x + 2^{d-2} + 1)) = f(3^{-1}(x+1) + 3^{-1} 2^{d-2}) \equiv f(3^{-1}(x+1) + 2^{d-2}) \pmod{2^{d-1}}
+$$
+
        Thus, $T_4 \tau = \tau T_4$.
        
-     Since $\tau$ commutes with all $T_i$, it commutes with $A_{G_d}$. The group $\Gamma = \{id, \tau\}$ acts freely on $V(G_d)$ because $x + 2^{d-2} \equiv x \pmod{2^{d-1}}$ would imply $2^{d-2} \equiv 0 \pmod{2^{d-1}}$, which is impossible since $2^{d-1} > 2^{d-2}$ for all $d \geq 3$. Since $\Gamma$ acts freely and by graph automorphisms, and its orbits are precisely the fibers of $\pi$, the projection $\pi: G_d \to G_{d-1}$ is a regular 2-fold graph covering.
+     Since $\tau$ commutes with all $T_i$, it commutes with $A_{G_d}$. The group $\Gamma = \{id, \tau\}$ acts freely on $V(G_d)$ because $x + 2^{d-2} \equiv x \pmod{2^{d-1}}$ would imply $2^{d-2} \equiv 0 \pmod{2^{d-1}}$, which is impossible since $2^{d-1} \gt 2^{d-2}$ for all $d \geq 3$. Since $\Gamma$ acts freely and by graph automorphisms, and its orbits are precisely the fibers of $\pi$, the projection $\pi: G_d \to G_{d-1}$ is a regular 2-fold graph covering.
   2. **Local Neighborhood Isomorphism**: To verify that the covering projection $\pi$ is locally bijective on edges, we define $G_d$ as a 4-regular multigraph with labeled edges of types 1, 2, 3, and 4. For any vertex $x \in V_d$, the incident edges of types 1, 2, 3, and 4 connect $x$ to $3x$, $3x-1$, $3^{-1}x$, and $3^{-1}(x+1) \pmod{2^{d-1}}$. Under the projection $\pi$, these targets map to:
      - $\pi(3x) = 3\pi(x) \pmod{2^{d-2}}$
      - $\pi(3x-1) = 3\pi(x)-1 \pmod{2^{d-2}}$
@@ -303,9 +330,12 @@ Using the graph correspondence established in Section 3, we can determine the ex
      - $\pi(3^{-1}(x+1)) = 3^{-1}(\pi(x)+1) \pmod{2^{d-2}}$
      which are precisely the target vertices of the four labeled edges incident to $\pi(x)$ in $G_{d-1}$. This defines a bijection between the sets of directed edges incident to $x$ in $G_d$ and those incident to $\pi(x)$ in $G_{d-1}$.
   3. **Nontrivial Loop Lifting (Monodromy)**: In $G_{d-1}$, the vertex $y = 2^{d-3} \in \mathbb{Z}/2^{d-2}\mathbb{Z}$ has a loop (a self-connecting edge of type 1) because $3y = 3 \cdot 2^{d-3} = 2^{d-3} + 2^{d-2} \equiv 2^{d-3} \pmod{2^{d-2}}$. The fiber of $y$ in $G_d$ consists of $y_1 = 2^{d-3}$ and $y_2 = 2^{d-3} + 2^{d-2}$. In $G_d$, evaluating the type-1 edge at $x = y_1$ gives:
-     $$
-     3 y_1 = 3 \cdot 2^{d-3} = 2^{d-3} + 2^{d-2} = y_2 \pmod{2^{d-1}}
-     $$
+     
+
+$$
+3 y_1 = 3 \cdot 2^{d-3} = 2^{d-3} + 2^{d-2} = y_2 \pmod{2^{d-1}}
+$$
+
      Thus, the loop at $y$ in $G_{d-1}$ lifts to the vertical edge $\{2^{d-3}, 2^{d-3} + 2^{d-2}\}$ in $G_d$, which connects the two sheets of the covering.
   4. **Connectivity of the Cover**: Let $u, w \in V(G_d)$. Since $G_{d-1}$ is connected by the inductive hypothesis, there is a path $P$ in $G_{d-1}$ connecting $\pi(u)$ to $y = 2^{d-3}$. By the path-lifting property of graph coverings, $P$ lifts to a path in $G_d$ starting at $u$ and ending at either $y_1$ or $y_2$. Similarly, a path from $\pi(w)$ to $y$ in $G_{d-1}$ lifts to a path in $G_d$ starting at $w$ and ending at either $y_1$ or $y_2$. Since the vertical edge $\{y_1, y_2\}$ connects the two sheets, $u$ and $w$ are connected in $G_d$. Since $u, w$ were arbitrary, $G_d$ is connected. $\square$
 
@@ -326,7 +356,7 @@ $$
 2 - \frac{1}{2}\mu = 2 - 2 = 0
 $$
 
-which contributes exactly 1 zero eigenvalue. For any other eigenvalue $\mu < 4$, the eigenvalue of $K_d K_d^\dagger$ is $2 - \frac{1}{2}\mu > 0$.
+which contributes exactly 1 zero eigenvalue. For any other eigenvalue $\mu \lt 4$, the eigenvalue of $K_d K_d^\dagger$ is $2 - \frac{1}{2}\mu \gt 0$.
 Thus, the total number of zero eigenvalues of $K_d K_d^\dagger$ (counted with multiplicity) is exactly $2^{d-1} + 1$.
 Since $K_d$ is a square matrix, the dimension of its kernel is equal to the dimension of the kernel of $K_d K_d^\dagger$:
 
@@ -405,21 +435,29 @@ $$
 Hence, $\Phi_d \circ L = \sqrt{2} \, \Phi_{d-1}$. 
 
 To independently verify the norm consistency of this identity, we compute the $L^2$-norms of both sides. Because $\Phi_d$ and $\Phi_{d-1}$ are isometric embeddings, we have:
+
 $$
 \| \Phi_d(Lf) \|_{L^2(\mathbb{Z}_2)} = \| Lf \|_{V_d}
 $$
+
 and
+
 $$
 \| \sqrt{2} \, \Phi_{d-1}(f) \|_{L^2(\mathbb{Z}_2)} = \sqrt{2} \, \| \Phi_{d-1}(f) \|_{L^2(\mathbb{Z}_2)} = \sqrt{2} \, \| f \|_{V_{d-1}}
 $$
+
 We compute the norm of the trivial lift $Lf \in V_d$:
+
 $$
 \| Lf \|_{V_d}^2 = \sum_{x=0}^{2^d-1} |(Lf)(x)|^2 = \sum_{x=0}^{2^d-1} |f_{x \pmod{2^{d-1}}}|^2
 $$
+
 Since the index $x \pmod{2^{d-1}}$ covers each index $y \in \{0, \dots, 2^{d-1}-1\}$ exactly twice as $x$ ranges from $0$ to $2^d-1$:
+
 $$
 \| Lf \|_{V_d}^2 = 2 \sum_{y=0}^{2^{d-1}-1} |f_y|^2 = 2 \| f \|_{V_{d-1}}^2 \implies \| Lf \|_{V_d} = \sqrt{2} \, \| f \|_{V_{d-1}}
 $$
+
 Thus, the norm of the left-hand side $\| \Phi_d(Lf) \|_{L^2(\mathbb{Z}_2)}$ is exactly $\sqrt{2} \, \| f \|_{V_{d-1}}$, matching the right-hand side exactly and verifying the correctness of all normalization and nesting constants.
 
 This scaling compatibility preserves orthocomplements and yields the subspace inclusion:
@@ -454,11 +492,7 @@ $$
 Therefore:
 
 $$
-\begin{aligned}
-(Bg)(x) &= \frac{1}{2} \sqrt{2^d} f(\lfloor 2x \rfloor_d) + \frac{1}{2} \sqrt{2^d} f(\lfloor 3^{-1}(2x-1) \rfloor_d) \\
-&= \sqrt{2^d} \left( \frac{1}{2} f(2 \lfloor x \rfloor_d \pmod{2^d}) + \frac{1}{2} f(3^{-1}(2 \lfloor x \rfloor_d - 1) \pmod{2^d}) \right) \\
-&= \sqrt{2^d} (B_d f)(\lfloor x \rfloor_d) = \Phi_d(B_d f)(x)
-\end{aligned}
+\begin{aligned} (Bg)(x) &= \frac{1}{2} \sqrt{2^d} f(\lfloor 2x \rfloor_d) + \frac{1}{2} \sqrt{2^d} f(\lfloor 3^{-1}(2x-1) \rfloor_d) \\ &= \sqrt{2^d} \left( \frac{1}{2} f(2 \lfloor x \rfloor_d \pmod{2^d}) + \frac{1}{2} f(3^{-1}(2 \lfloor x \rfloor_d - 1) \pmod{2^d}) \right) \\ &= \sqrt{2^d} (B_d f)(\lfloor x \rfloor_d) = \Phi_d(B_d f)(x) \end{aligned}
 $$
 
 Thus, $B \circ \Phi_d = \Phi_d \circ B_d$. $\square$
@@ -585,12 +619,19 @@ Can the finite-dimensional graph covering structure be lifted to a bounded opera
 The product of the new singular values $\prod_{\text{new}} \sigma_i = \frac{P_d(16)}{4^{2^{d-4}}}$ provides a necessary compatibility condition at each finite depth $d$. 
 
 We propose a complete resolution to this problem by constructing compatible partial isometries $U_d$ purely on the periodic wavelet detail spaces $\mathcal{W}_d = \Phi_d(V_+)$ using the 2-fold graph covering projection. In this framework, the scale-crossing transitions are mediated by two orthogonal isometries $T_d = U_{d+1} L_d U_d^\dagger$ and $R_d = U_{d+1} U_d U_d^\dagger$ which decompose the detail space at the next scale:
-$$\mathcal{W}_{d+1} = T_d(\mathcal{W}_d) \oplus R_d(\mathcal{W}_d)$$
+
+$$
+\mathcal{W}_{d+1} = T_d(\mathcal{W}_d) \oplus R_d(\mathcal{W}_d)
+$$
+
 Under these transitions, the anti-symmetric eigenvectors of $G_d$ are aligned across successive scales via the recursive formula:
-$$w_{d+1, k} = \sum_{j} c_{k, j} T_d w_{d, j} + \sum_{j} d_{k, j} R_d w_{d, j}$$
+
+$$
+w_{d+1, k} = \sum_{j} c_{k, j} T_d w_{d, j} + \sum_{j} d_{k, j} R_d w_{d, j}
+$$
+
 where the weights $c_{k, j}$ and $d_{k, j}$ represent the sheet-mixing ratios.
 
 For a complete, referee-grade proof of the block-diagonalization, chiral symmetry ($J_{d-1} H_{d-1} + H_{d-1} J_{d-1} = 0$), and scale-crossing alignment, see the detailed note:
 [eigenvector_alignment_note.md](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/eigenvector_alignment_note.md).
-
 

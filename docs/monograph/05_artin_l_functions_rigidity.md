@@ -19,32 +19,32 @@ Once the trivial zero eigenvalue of the projection kernel is removed, the scan r
 
 ### 5.2 Operator-Theoretic Rigidity of the Critical Line
 
-Evaluating the spectral triple off the critical line $s = \sigma + it$ corresponds to a non-unitary deformation of the scale-invariant basis. Formally, this deforms the unperturbed Archimedean Dirac operator:
+Evaluating the spectral triple off the critical line $s = \sigma +$ it$corresponds$ to a non-unitary deformation of the scale-invariant basis. Formally, this deforms the unperturbed Archimedean Dirac operator:
 
-```math
+$$
 D_0 \to D_0(\sigma) = D_0 - i\left(\sigma - \frac{1}{2}\right)\mathbb{I}
-```
+$$
 
 For any $\sigma \neq 1/2$, the operator $D_0(\sigma)$ is no longer self-adjoint (nor is it symmetric), as its adjoint is:
 
-```math
+$$
 D_0(\sigma)^* = D_0 + i\left(\sigma - \frac{1}{2}\right)\mathbb{I}
-```
+$$
 
 We perform a rigorous analysis of the deficiency spaces and eigenvalue behavior of the deformed system.
 
 #### Theorem 5.2.1 (Deficiency-Index Bifurcation and Non-Self-Adjointness)
 *Let $D_{\text{sym}}(\sigma)$ be the symmetric restriction of the real part of $D_0(\sigma)$ to the domain:*
 
-```math
+$$
 \text{Dom}(D_{\text{sym}}(\sigma)) = \text{Dom}(D_0) \cap \text{Ker}(\langle \xi, \cdot \rangle)
-```
+$$
 
 *For any $\sigma \in (-1/2, 3/2)$, the deficiency indices of $D_{\text{sym}}(\sigma)$ are exactly $(1, 1)$, and the deficiency spaces $\mathcal{K}_\pm(\sigma) = \text{Ker}(D_{\text{sym}}(\sigma)^* \mp i\mathbb{I})$ are spanned by the deficiency vectors:*
 
-```math
+$$
 g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi
-```
+$$
 
 *where $z_\pm = \mp i - i(\sigma - 1/2)$. However, for any $\sigma \neq 1/2$, the imaginary shift $-i(\sigma - 1/2)\mathbb{I}$ prevents the existence of any self-adjoint extensions for the full operator $D_0(\sigma)\vert _{\text{Dom}(D_{\text{sym}}(\sigma))}$, and all eigenvalues are forced into the complex plane.*
 
@@ -52,48 +52,48 @@ g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi
 We calculate the deficiency spaces by identifying the solutions $u \in \text{Dom}(D_{\text{sym}}(\sigma)^*)$ to the adjoint eigenvalue equation $D_{\text{sym}}(\sigma)^* u = \pm i u$.
 Since $D_0(\sigma)^* = D_0 + i(\sigma - 1/2)\mathbb{I}$, the adjoint equation on the boundary-restricted domain is:
 
-```math
+$$
 (D_0 + i(\sigma - 1/2)\mathbb{I}) u = \pm i u \pmod{\text{span}\{\xi\}}
-```
+$$
 
 which is equivalent to:
 
-```math
+$$
 (D_0 - z_\mp) u = c \xi
-```
+$$
 
 where the poles are shifted to $z_\mp = \pm i - i(\sigma - 1/2) = -i(\sigma - 1/2 \mp 1)$.
 The deficiency vectors are given by $g_\pm(\sigma) = (D_0 - z_\pm)^{-1}\xi$, with components:
 
-```math
+$$
 g_{\pm, n}(\sigma) = \frac{\xi_n}{\lambda_n - z_\pm}
-```
+$$
 
 The norm of these vectors is:
 
-```math
-\Vert  g_\pm(\sigma) \Vert ^2 = \sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{\vert \lambda_n - z_\pm\vert ^2} = \sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{\lambda_n^2 + (\sigma - 1/2 \mp 1)^2}
-```
+$$
+\Vert g_\pm(\sigma) \Vert ^2 = \sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{\vert \lambda_n - z_\pm\vert ^2} = \sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{\lambda_n^2 + (\sigma - 1/2 \mp 1)^2}
+$$
 
-Since $\lambda_n \sim n$ and $\xi_n = \mathcal{O}(\ln\vert n\vert )$, the sum converges absolutely if and only if the denominator is non-vanishing for all $n$. The poles $z_\pm$ remain in the upper or lower half-planes for all $\sigma \in (-1/2, 3/2)$, so $\Vert  g_\pm(\sigma) \Vert  \lt  \infty$, establishing that the deficiency indices are $(1,1)$.
+Since $\lambda_n \sim n$ and $\xi_n = \mathcal{O}(\ln\vert n\vert )$, the sum converges absolutely if and only if the denominator is non-vanishing for all $n$. The poles $z_\pm$ remain in the upper or lower half-planes for all $\sigma \in (-1/2, 3/2)$, so $\Vert g_\pm(\sigma) \Vert \lt \infty$, establishing that the deficiency indices are $(1,1)$.
 
 However, the full operator is $D_{\text{glob}}(\sigma) = P_\xi^\perp D_0(\sigma) P_\xi^\perp$. Its eigenvalues $z \in \mathbb{C}$ are the roots of the Krein secular equation:
 
-```math
+$$
 d_{\theta, \sigma}(z) = 1 + \cot(\theta/2) + \sum_{n \in \mathbb{Z}} \vert \xi_n\vert ^2 \left( \frac{1}{\lambda_n - i(\sigma - 1/2) - z} - \frac{1}{\lambda_n - z_0} \right) = 0
-```
+$$
 
 Let us assume $D_{\text{glob}}(\sigma)$ has a real eigenvalue $z = E \in \mathbb{R}$. Then the imaginary part of $d_{\theta, \sigma}(E)$ must vanish:
 
-```math
+$$
 \mathrm{Im}\left( d_{\theta, \sigma}(E) \right) = \mathrm{Im}\left( \sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{\lambda_n - E - i(\sigma - 1/2)} \right) = (\sigma - 1/2) \sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} = 0
-```
+$$
 
-Since $\vert \xi_n\vert ^2 \ge c \gt  0$ for infinitely many $n$, the sum is strictly positive:
+Since $\vert \xi_n\vert ^2 \ge c \gt 0$ for infinitely many $n$, the sum is strictly positive:
 
-```math
-\sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} \gt  0
-```
+$$
+\sum_{n \in \mathbb{Z}} \frac{\vert \xi_n\vert ^2}{(\lambda_n - E)^2 + (\sigma - 1/2)^2} \gt 0
+$$
 
 Therefore, $\mathrm{Im}\left( d_{\theta, \sigma}(E) \right) = 0$ is possible if and only if $\sigma = 1/2$.
 For any $\sigma \neq 1/2$, the imaginary part is non-zero for all $E \in \mathbb{R}$, which proves that $D_{\text{glob}}(\sigma)$ cannot possess any real eigenvalues. Since a self-adjoint operator must have a real spectrum, $D_{\text{glob}}(\sigma)$ is non-self-adjoint for any $\sigma \neq 1/2$. $\blacksquare$
@@ -104,29 +104,29 @@ For any $\sigma \neq 1/2$, the imaginary part is non-zero for all $E \in \mathbb
 **Proof.**
 Let $\widetilde{D}$ be the Dirac operator on the cylinder $\mathfrak{M} = X \times [0, 1]$ equipped with Atiyah-Patodi-Singer (APS) boundary conditions. The APS index theorem states that the analytical index of $\widetilde{D}$ is:
 
-```math
+$$
 \mathrm{Ind}(\widetilde{D}) = \int_{\mathfrak{M}} \alpha(x) \, dx - \frac{\eta_A(0) + \dim \mathrm{Ker}(A)}{2}
-```
+$$
 
 where $A$ is the boundary Dirac operator, and $\eta_A(s) = \sum_{\mu \neq 0} \mathrm{sgn}(\mu) \vert \mu\vert ^{-s}$ is the eta invariant.
-Under the off-critical deformation $\sigma \neq 1/2$, the boundary operator is $A(\sigma) = A - i(\sigma - 1/2)\mathbb{I}$. Since $A(\sigma)$ is non-self-adjoint, its eigenvalues $\mu_n(\sigma) = \mu_n - i(\sigma - 1/2)$ are complex.
+Under the off-critical deformation $\sigma \neq 1/2$, the boundary operator is $A(\sigma) =$ A - i(\sigma - 1/2)\mathbb{I}$.$ Since $A(\sigma)$ is non-self-adjoint, its eigenvalues $\mu_n(\sigma) = \mu_n - i(\sigma - 1/2)$ are complex.
 The eta invariant for a non-self-adjoint operator must be regularized by considering the spectral asymmetry of the real parts of its eigenvalues:
 
-```math
+$$
 \eta_{A(\sigma)}(0) = \lim_{s \to 0} \sum_{\mu_n \neq 0} \mathrm{sgn}(\mathrm{Re}(\mu_n(\sigma))) \vert \mu_n(\sigma)\vert ^{-s}
-```
+$$
 
 As $\sigma$ varies across $1/2$, the eigenvalues cross the imaginary axis. Under the regularization of the singular boundary projection, this non-unitary deformation introduces a boundary index defect. Specifically, the boundary eta invariant undergoes a fractional jump:
 
-```math
+$$
 \Delta \eta_A(0) = \frac{1}{2} \mathrm{sgn}\left(\sigma - \frac{1}{2}\right)
-```
+$$
 
 which contributes a non-integer defect to the index formula:
 
-```math
+$$
 \Delta \mathrm{Ind} = -\frac{1}{2} \Delta \eta_A(0) = -\frac{1}{4} \mathrm{sgn}\left(\sigma - \frac{1}{2}\right)
-```
+$$
 
 Because the index of a Fredholm operator must be an integer, the occurrence of this non-integer defect indicates that the deformed operator is no longer Fredholm, and the underlying spectral triple axioms collapse. Thus, the critical line $\sigma = 1/2$ is topologically forced. $\blacksquare$
 
@@ -137,9 +137,9 @@ We implemented a pipeline in [lmfdb_trace_fetch.py](../experiments/lmfdb_trace_f
 
 Because the coefficients of these forms lie in number fields like $\mathbb{Q}(\sqrt{5})$ or cyclotomic extensions, the database stores the traces of the Hecke operators $T_p$ acting on the Galois orbit of the newform. In this framework, the completed $L$-function of the entire Galois orbit decomposes as a product of individual Galois conjugate $L$-functions:
 
-```math
+$$
 \Lambda(s, \text{Orbit}(\rho)) = \prod_{\sigma} \Lambda(s, \rho^\sigma)
-```
+$$
 
 The coefficients $a_p$ in the ad√®lic coupling vector $\xi_n$ are directly the integer traces of $T_p$ on the orbit subspace. For instance, for the level 800 form `800.1.bh.a` of dimension 8, the prime trace values are:
 * $a_2 = 0$
@@ -153,15 +153,15 @@ These systematic integer traces represent the exact projection of the global ad√
 
 To construct a unified physical framework for the Artin spectral triple, the 1D Archimedean wire is coupled to the $2$-adic boundary states. We define the compressed Artin Dirac operator $D_{\text{artin}}(\sigma)$ as:
 
-```math
+$$
 D_{\text{artin}}(\sigma) = (\mathbb{I} - P_\rho) D_{\text{cov}}(\sigma) (\mathbb{I} - P_\rho)
-```
+$$
 
 where $D_{\text{cov}}(\sigma) = D_0(\sigma) \otimes \mathbb{I}_{2^d} + \mathbb{I}_\infty \otimes \omega_2$, and $P_\rho = \vert \hat{\xi}_\rho\rangle \langle \hat{\xi}_\rho\vert$ is the projection operator onto the normalized joint coupling vector:
 
-```math
+$$
 \vert \xi_\rho\rangle = \vert \xi_{\infty}\rangle \otimes \vert \xi_2\rangle
-```
+$$
 
 Here, the Archimedean sector vector $\vert \xi_\infty\rangle$ is constant ($(\xi_\infty)_n = 1/\sqrt{N_{\infty}}$), and the non-Archimedean $2$-adic sector vector $\vert \xi_2\rangle$ depends on the ramification type at $p=2$:
 
@@ -200,40 +200,40 @@ This shielding property ensures that the local non-Archimedean cycle fluctuation
 #### Theorem 5.4.1 (Compressed Trace Invariant)
 *For any ramified or unramified boundary coupling vector, the trace of the compressed Artin Dirac operator $D_{\text{artin}}(\sigma)$ satisfies the strict relation:*
 
-```math
+$$
 \mathrm{Tr}(D_{\text{artin}}(\sigma)) = \mathrm{Tr}(D_{\text{cov}}(\sigma)) - \langle \hat{\xi}_\rho \vert D_{\text{cov}}(\sigma) \vert \hat{\xi}_\rho \rangle
-```
+$$
 
 **Proof.**
 The proof is obtained directly by expanding the trace of the compressed operator:
 
-```math
+$$
 \mathrm{Tr}(D_{\text{artin}}) = \mathrm{Tr}((\mathbb{I} - P_\rho) D_{\text{cov}} (\mathbb{I} - P_\rho))
-```
+$$
 
 Using the cyclicity of the trace and the idempotency of the projection operator $\mathbb{I} - P_\rho$:
 
-```math
+$$
 \mathrm{Tr}(D_{\text{artin}}) = \mathrm{Tr}((\mathbb{I} - P_\rho)^2 D_{\text{cov}}) = \mathrm{Tr}((\mathbb{I} - P_\rho) D_{\text{cov}})
-```
+$$
 
 Distributing the terms:
 
-```math
+$$
 \mathrm{Tr}(D_{\text{artin}}) = \mathrm{Tr}(D_{\text{cov}}) - \mathrm{Tr}(P_\rho D_{\text{cov}})
-```
+$$
 
 Since $P_\rho = \vert \hat{\xi}_\rho\rangle \langle \hat{\xi}_\rho\vert$ is a rank-1 projection onto a normalized vector:
 
-```math
+$$
 \mathrm{Tr}(P_\rho D_{\text{cov}}) = \langle \hat{\xi}_\rho \vert D_{\text{cov}} \vert \hat{\xi}_\rho \rangle
-```
+$$
 
 Substituting this back gives the trace invariant:
 
-```math
+$$
 \mathrm{Tr}(D_{\text{artin}}) = \mathrm{Tr}(D_{\text{cov}}) - \langle \hat{\xi}_\rho \vert D_{\text{cov}} \vert \hat{\xi}_\rho \rangle \quad \blacksquare
-```
+$$
 
 This trace invariant governs the regularized energy sum rules of the quantum simulator, ensuring that the sum of the physical energy levels is exactly equal to the total trace of the covariant system minus the expectation value of the coupling channel.
 

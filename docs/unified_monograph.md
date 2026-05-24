@@ -4,7 +4,7 @@
 ---
 
 ## Abstract
-We present a unified geometric and physical framework for the spectral realization of automorphic $L-functions. Building upon Connes' non-commutative geometry and the Connes-Moscovici construct, we define a global adèlic spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}}) that regularizes the zeros of $L-functions as eigenvalues of a self-adjoint Dirac operator. We verify that this geometry satisfies the full suite of spectral triple axioms (summability, regularity, first-order, and orientation). We extend the framework to $GL(3) automorphic forms, specifically the Symmetric Square lift of the Ramanujan $\Delta-function, demonstrating via numerical sweeps that a rank-1 prime-comb projection acting as a universal antenna is sufficient to match zeros. For icosahedral Artin $L-functions of conductor 800, we show that attempting to sweep off the critical line breaks the self-adjointness of the Dirac operator, establishing that the critical line $\sigma = 1/2 is the unique mathematically stable topological support. We map this geometry to a condensed matter Hamiltonian describing spinless fermions hopping on Bruhat-Tits trees coupled to a 1D Archimedean clock wire, showing that the Riemann zeros correspond to quantum critical points with distinct entanglement entropy spikes. Finally, we establish a rigorous Weyl-strength subconvexity bound of $O(t^{1/4+\epsilon}) using the Weil explicit formula, and show that GUE local spacing statistics conditionally yield a subconvexity bound of $O(t^{1/3+\epsilon}) by expressing the Atiyah-Patodi-Singer $\eta-invariant via the Ramanujan expander properties of the non-Archimedean Bruhat-Tits graph quotients.
+We present a unified geometric and physical framework for the spectral realization of automorphic $L$-functions. Building upon Connes' non-commutative geometry and the Connes-Moscovici construct, we define a global adèlic spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ that regularizes the zeros of $L$-functions as eigenvalues of a self-adjoint Dirac operator. We verify that this geometry satisfies the full suite of spectral triple axioms (summability, regularity, first-order, and orientation). We extend the framework to $GL(3)$ automorphic forms, specifically the Symmetric Square lift of the Ramanujan $\Delta-function, demonstrating$ via numerical sweeps that a rank-1 prime-comb projection acting as a universal antenna is sufficient to match zeros. For icosahedral Artin $L$-functions of conductor 800, we show that attempting to sweep off the critical line breaks the self-adjointness of the Dirac operator, establishing that the critical line $\sigma = 1/2$ is the unique mathematically stable topological support. We map this geometry to a condensed matter Hamiltonian describing spinless fermions hopping on Bruhat-Tits trees coupled to a 1D Archimedean clock wire, showing that the Riemann zeros correspond to quantum critical points with distinct entanglement entropy spikes. Finally, we establish a rigorous Weyl-strength subconvexity bound of $O(t^{1/4+\epsilon}) using$ the Weil explicit formula, and show that GUE local spacing statistics conditionally yield a subconvexity bound of $O(t^{1/3+\epsilon})$ by expressing the Atiyah-Patodi-Singer $\eta-invariant$ via the Ramanujan expander properties of the non-Archimedean Bruhat-Tits graph quotients.
 
 ---
 
@@ -21,15 +21,15 @@ We present a unified geometric and physical framework for the spectral realizati
 * Architectural design: synthesis of Archimedean place (continuous 1D clock wire) and non-Archimedean places (Bruhat-Tits trees) into a single cohesive system.
 
 ### [Chapter 2: The Adèlic Spectral Triple](monograph/02_adelic_spectral_triple.md)
-* Formal definition of the algebra $\mathcal{A}, the Hilbert space $\mathcal{H}_{\text{glob}}, and the global Dirac operator $D_{\text{glob}}.
+* Formal definition of the algebra $\mathcal{A},$ the Hilbert space $\mathcal{H}_{\text{glob}},$ and the global Dirac operator $D_{\text{glob}}.$
 * Mathematical representation of the rank-1 singular perturbation and boundary coupling vector.
 * Gauge-covariant connections and the global covariant Dirac operator.
 * Chinese Remainder Theorem (CRT) diagonal descent embedding.
 
 ### [Chapter 3: Proof of the Spectral Triple Axioms](monograph/03_proof_of_axioms.md)
 * Rigorous proofs verifying the full suite of Connes' spectral triple axioms:
-  * Metric dimension and $QC^\infty-regularity.
-  * $d-summability (compact resolvent, trace-class properties).
+  * Metric dimension and $QC^\infty-regularity.$
+  * $d-summability (compact$ resolvent, trace-class properties).
   * First-order commutator conditions and operator orientation.
 
 ### [Chapter 4: Higher Langlands Extensions & Rank-1 Universality (GL(3), GL(4), GL(5))](monograph/04_higher_langlands_extensions.md)
@@ -37,8 +37,8 @@ We present a unified geometric and physical framework for the spectral realizati
 * Universality of the rank-1 "universal antenna" coupling vector in higher-rank Satake parameter spaces.
 
 ### [Chapter 5: Artin L-Functions and Critical Line Rigidity](monograph/05_artin_l_functions_rigidity.md)
-* Generalization to Galois representations and icosahedral Artin $L-functions.
-* Mathematical proof of critical line rigidity: why sweeping off $\sigma = 1/2 breaks self-adjointness and violates Fredholm index integrality.
+* Generalization to Galois representations and icosahedral Artin $L$-functions.
+* Mathematical proof of critical line rigidity: why sweeping off $\sigma = 1/2$ breaks self-adjointness and violates Fredholm index integrality.
 * Topological shielding of local cycle fluctuations at ramified primes.
 * Exact trace invariant of the compressed Artin Dirac operator.
 
@@ -47,14 +47,14 @@ We present a unified geometric and physical framework for the spectral realizati
 * Quantum many-body entanglement spikes as stable topological zero detectors under Coulomb-like interactions.
 
 ### [Chapter 7: Arithmetic Statistics and Subconvexity Bounds](monograph/07_arithmetic_statistics_subconvexity.md)
-* Analytical derivations of $L-function subconvexity bounds:
-  * Rigorous Weyl-strength bound $O(t^{1/4+\epsilon}) via the Weil explicit formula.
-  * Conditional GUE spacing-statistics bound $O(t^{1/3+\epsilon}) using the Ramanujan graph properties of Bruhat-Tits quotients.
+* Analytical derivations of $L$-function subconvexity bounds:
+  * Rigorous Weyl-strength bound $O(t^{1/4+\epsilon})$ via the Weil explicit formula.
+  * Conditional GUE spacing-statistics bound $O(t^{1/3+\epsilon}) using$ the Ramanujan graph properties of Bruhat-Tits quotients.
   * Spectral flow, completed determinants, and the regularized index.
 
 ### [Chapter 8: Numerical Verification & Many-Body Simulations](monograph/08_numerical_verification_simulations.md)
 * Numerical verifications of expander graph regularized off-diagonal trace decay.
-* Quantitative correlation sweeps of the coupling trace vs. $L-derivative, and analytical slope closure.
+* Quantitative correlation sweeps of the coupling trace vs. $L-derivative,$ and analytical slope closure.
 * Robustness scans under expander parameter sweeps.
 * Ground-state entanglement sweeps under Coulomb repulsion for interacting fermions.
 * Simulations of spectral flow, gauge-twisted transfer gaps, and CRT diagonal descent.

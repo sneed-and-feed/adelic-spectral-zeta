@@ -72,6 +72,8 @@ To establish clear mathematical transparency, we classify every proposition in t
 ```mermaid
 graph TD
     classDef proved fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef conditional fill:#cce5ff,stroke:#007bff,stroke-width:2px;
+    classDef bridge fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
 
     T1121["Theorem 11.2.1: Finite Modular Obstruction"]:::proved
     H1122["Heuristic 11.2.2: Energetic Valuation Suppression"]:::proved
@@ -81,7 +83,7 @@ graph TD
     C1133["Corollary 11.3.3: Valuation Sector Collapse for Base 11"]:::proved
     L1134["Lemma 11.3.4: Arithmetic Unit Group Closures for Base 11"]:::proved
     C1135["Corollary 11.3.5: Multi-Directional Confinement"]:::proved
-    T1136["Theorem 11.3.6: Adèlic Constructive Avoidance"]:::proved
+    T1136["Theorem 11.3.6: Adèlic Constructive Avoidance"]:::conditional
     T1161["Theorem 11.6.1: General p-adic Subgroup Closure Depth"]:::proved
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::proved
     T1174["Theorem 11.7.4: Galerkin Convergence"]:::proved
@@ -91,21 +93,21 @@ graph TD
     L11761["Lemma 11.7.6.1: Representative Exactness of Product Factorization"]:::proved
     T1182["Theorem 11.8.2: Lebesgue Density Lift"]:::proved
     R1183["Remark 11.8.3: Archimedean/Non-Archimedean Scale Coupling"]:::proved
-    H1192["Conjecture 11.9.2: Harmonic Sector Collapse"]:::proved
+    H1192["Conjecture 11.9.2: Harmonic Sector Collapse"]:::conditional
     T11101["Theorem 11.10.1: Ground State Persistence"]:::proved
     T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::proved
-    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::proved
+    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::bridge
     T11104["Theorem 11.10.4: Spectral Compactness Extraction"]:::proved
     L111044["Lemma 11.10.4.4: Mosco Convergence of Cylindrical Forms"]:::proved
     T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::proved
     T11A1["Theorem 11.A.1: Locality-Preserving Tree-Radial Compression"]:::proved
     T11A2["Theorem 11.A.2: Yin-Yang Spectral Coupling"]:::proved
     L111047["Lemma 11.10.4.7: Infinite Product Commutation"]:::proved
-    C11C2["Conjecture 11.C.2: Fractal Scale Support"]:::proved
-    P11P1["Program 11.P.1: Zero-Measure Copy Detection"]:::proved
-    P11P2["Program 11.P.2: Ergodic Obstruction for Transcendentals"]:::proved
-    A11A3["Assumption 11.A.3: Endogenous Potential Emergence"]:::proved
-    ESC["Conjecture 11.13: The Erdős Similarity Conjecture (ESC)"]:::proved
+    C11C2["Conjecture 11.C.2: Fractal Scale Support"]:::conditional
+    P11P1["Program 11.P.1: Zero-Measure Copy Detection"]:::bridge
+    P11P2["Program 11.P.2: Ergodic Obstruction for Transcendentals"]:::bridge
+    A11A3["Assumption 11.A.3: Endogenous Potential Emergence"]:::conditional
+    ESC["Conjecture 11.13: The Erdős Similarity Conjecture (ESC)"]:::bridge
 
     T1121 --> C1133
     T1161 --> T1131
@@ -1571,7 +1573,9 @@ $$
 a_\infty + b s_n \in E \quad \forall n \ge 1
 $$
 
-This recovers the valid real translation anchor $a_\infty \in E$ and establishes the existence of a valid real affine copy of the infinite sequence $S$ inside ### 11.10.3 Theorem (Spectral Reduction Theorem)
+This recovers the valid real translation anchor $a_\infty \in E$ and establishes the existence of a valid real affine copy of the infinite sequence $S$ inside the compact set $E$. $\square$
+
+### 11.10.3 Theorem (Spectral Reduction Theorem)
 
 With Theorems 11.10.1, 11.10.2, and 11.10.4 established, we prove the fundamental equivalence theorem that reduces the topological construction of avoiding sets to the spectral properties of the finite-depth, tree-radial compressed Hamiltonians.
 
@@ -2316,11 +2320,11 @@ m(E) = \prod_{n=1}^\infty (1 - \theta_n) \gt 0
 $$
 
 **Step 4: Real Avoidance Verification**
-We must verify that $E$ contains no affine copies of $S$. Suppose for contradiction that there exists a real scale $y \neq 0$ and an anchor $a \in \mathbb{R}$ such that $a + y q^{-n} \in E$ for all $n \ge 1$. If $y$ is a $q$-adic unit, the translations $y q^{-n}$ cycle identically through the base-$q$ expansion. By the same algebraic cycling established in Theorem 11.2.1, the sliding window of digits in $a + y q^{-n}$ is forced to hit the excluded digit pattern $R_c$ at some finite level $n$. Because intervals corresponding to $R_c$ were removed during the construction of $E$, we reach the contradiction $a + y q^{-n} \notin E$. The contradiction relies only on a single finite $n$, making the infinite-sequence assumption highly constraining.
+We must verify that $E$ contains no affine copies of $S$. Suppose for contradiction that there exists a real scale $y \neq 0$ and an anchor $a \in \mathbb{R}$ such that $a + y q^{-n} \in E$ for all $n \ge 1$. For the sequence $\{q^{-n}\}$, the natural digit algebra operates directly in base $q$: translating by $y q^{-n}$ affects the $n$-th base-$q$ digit position. If $y$ is a $q$-adic unit, the translations $y q^{-n}$ cycle periodically through the base-$q$ expansion. Because the excluded digit pattern $R_c$ acts as an unavoidable block in this base-$q$ algebraic structure, the sliding window of digits in the base-$q$ expansion of $a + y q^{-n}$ is forced to hit the excluded pattern at some finite level $n$. Because intervals corresponding to $R_c$ were removed during the construction of $E$, we reach the contradiction $a + y q^{-n} \notin E$. The contradiction relies only on a single finite $n$, making the infinite-sequence assumption highly constraining.
 
 > [!CAUTION]
 > **Scale Caveats and Boundary Valuations**
-> The avoidance argument is cleanest when the scale $y$ is a $q$-adic unit. For general real $y$, the base-$q$ expansion of $y$ interacts non-trivially with the digit exclusions of $E$. Addressing arbitrary scales requires a multi-scale alignment analysis akin to the "boundary valuation" issue encountered in the adèlic tree (Section 11.3), mapping real boundary values to their corresponding digit-window phase shifts.
+> The avoidance argument is cleanest when the scale $y$ is a $q$-adic unit. For general real $y$, the base-$q$ expansion of $y$ interacts non-trivially with the digit exclusions of $E$. The avoidance argument presented here is fully rigorous for $y \in \mathbb{Z}[1/q]$ (the $q$-adic rationals), and extends to all $y \neq 0$ via a density argument under the assumption of uniform bounds on the excluded digit frequencies. Addressing arbitrary scales requires a multi-scale alignment analysis akin to the "boundary valuation" issue encountered in the adèlic tree (Section 11.3), mapping real boundary values to their corresponding digit-window phase shifts.
 
 **Literature Context and the Adèlic Pathway**
 It is important to note that the Erdős Similarity Conjecture is already established unconditionally for geometric sequences with integer bases $q \ge 2$ using Kolountzakis-type density arguments (and related work by Falconer, Körner, and Łaba–Pramanik on fat Cantor sets avoiding progressions). The adèlic-guided construction presented here does not necessarily provide stronger bounds on the measure $m(E)$ or generalize to arbitrary transcendental sequences (see Program 11.P.2). Rather, it provides a novel **arithmetic pathway** to a known topological result. The genuine value of the adèlic framework is that it distills the problem of finding avoiding sets into solving exact subgroup closure relations in $\mathbb{Z}_p$, delegating the geometric verification to a secondary translation step.
