@@ -2317,7 +2317,7 @@ $$
 |y|_\infty \prod_p |y|_p = 1
 $$
 
-*Consequently, the adèlic Hamiltonian $H_{\mathbb{A}} = \bigotimes_v H_v$ rigorously synchronizes local gaps. If a scale attempts to evade the non-Archimedean modular bounds by driving $|y|_p \to 0$ or $|y|_p \to \infty$ across prime places, the product formula strictly forces the Archimedean scale $|y|_\infty$ to either diverge to infinity (destroying sequence proximity) or collapse to zero (violating the non-zero scale condition). In both extreme limits, the Archimedean kinetic energy penalty $\langle \psi | -\Delta_\infty | \psi \rangle$ diverges, ensuring that $\inf \sigma(H_{\mathbb{A}}) > 0$.*
+*Consequently, the adèlic Hamiltonian $H_{\mathbb{A}} = \bigotimes_v H_v$ rigorously synchronizes local gaps. If a scale attempts to evade the non-Archimedean modular bounds by driving $|y|_p \to 0$ or $|y|_p \to \infty$ across prime places, the product formula strictly forces the Archimedean scale $|y|_\infty$ to either diverge to infinity (destroying sequence proximity) or collapse to zero (violating the non-zero scale condition). In both extreme limits, the Archimedean kinetic energy penalty $\langle \psi | -\Delta_\infty | \psi \rangle$ diverges, ensuring that $\inf \sigma(H_{\mathbb{A}}) \gt 0$.*
 
 *Proof Formulation.* By the Artin product formula, any adjustment to the prime valuations $v_p(y)$ to dodge the fixed $p$-adic Cantor exclusions directly shifts the Archimedean magnitude. Because the Archimedean Major Arc Positivity (Theorem 11.11.2) strictly bounds the available continuous scales, and the Two-Scale Homogenization limits the joint depth without collapsing the state, no global rational scale can simultaneously satisfy all local geometric constraints. The product formula acts as a rigid arithmetic lockdown, forbidding structural leakage between local fields. $\square$
 
@@ -2333,6 +2333,7 @@ To transition from $p$-adic algebraic exclusions to real geometric exclusions, w
 
 **Step 3: Fat Cantor Construction in $\mathbb{R}$**
 We construct the positive-measure set $E \subset [0, 1]$ iteratively. At each level $n$, we remove open intervals corresponding to the base-$q$ digit strings that map to the excluded pattern $R_c$. To ensure $E$ remains a "fat" Cantor set with positive Lebesgue measure, we do not remove fixed-proportion intervals (which would yield measure zero). Instead, at level $n$, we remove intervals of measure $\theta_n$, chosen such that the infinite sum converges: $\sum_{n=1}^\infty \theta_n \lt 1$. The Lebesgue measure of the resulting compact set is strictly positive:
+
 $$
 m(E) = \prod_{n=1}^\infty (1 - \theta_n) \gt 0
 $$
