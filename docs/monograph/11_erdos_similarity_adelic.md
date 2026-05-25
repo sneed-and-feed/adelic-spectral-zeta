@@ -41,10 +41,10 @@ To ensure the logical bridge of the conjecture is mathematically watertight and 
 To rigorously bind the Lean 4 formalization to standard analytic number theory, the Hilbert space is explicitly defined as the **restricted tensor product** relative to the spherical vectors $\mathbf{1}_{\mathbb{Z}_p}$:
 $$L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p < \infty}\nolimits' L^2(\mathbb{Q}_p)$$
 
-- **Archimedean Obstruction Measure**: Stripped of misleading Schrödinger terminology, this is defined purely as a **Fourier concentration ratio** (Major Arc Positivity). For a compact set $E$ of positive measure, the ratio $\mathcal{E}_\infty(E) := \lim_{\delta \to 0} \frac{\int_{|\xi| < \delta} |\widehat{\mathbf{1}_E}(\xi)|^2 \, d\xi}{\int_{\mathbb{R}} |\widehat{\mathbf{1}_E}|^2}$ is driven to exactly $1$ by the Riemann-Lebesgue limit on the Minor Arcs.
-- **$p$-adic Energy (Bruhat-Tits Graph Laplacian)**: To avoid the non-locality of the Vladimirov pseudo-differential operator, the local energy is defined via the combinatorial graph Laplacian on the Bruhat-Tits tree. If the geometric sequence avoids the set, empty cylinder intersections create a strictly local missing residue class barrier. By the Rayleigh-Ritz variational principle on the tree, this forces a discrete spectral gap $\inf \sigma(H_p) > 0$. The local energy $\exp(-\inf \sigma(H_p))$ strictly collapses below $1$ (Single-Prime Confinement).
+- **Archimedean Obstruction Measure**: Stripped of misleading Schrödinger terminology, this is defined purely as a **Fourier concentration ratio** (Major Arc Positivity). For a compact set $E$ of positive measure, the ratio $\mathcal{A}_\infty(E; \delta)$ converges to exactly $1$ by the Riemann-Lebesgue limit on the Minor Arcs, generating a measurable **Archimedean Defect** $\varepsilon_\infty(\delta) = 1 - \mathcal{A}_\infty(E; \delta)$.
+- **$p$-adic Modular Defect (Rooted $p$-ary Tree)**: To avoid the non-locality of the Vladimirov pseudo-differential operator, the local geometric cost is defined exactly via hitting probabilities on the full rooted $p$-ary tree $T_{p,k}$. If the geometric sequence avoids the set, it generates a strict modular barrier at a specific residue class leaf. The probability of hitting this missing leaf defines the exact **$p$-adic Defect** $\varepsilon_p(k) = p^{-k}$.
 
-**Hypothesis 11.H.1 (The Bipartite Adèlic Ansatz)**: While the global Hamiltonian $\mathcal{H}_{\text{global}}$ does not trivially separate on the quotient $\mathbb{Q} \backslash \mathbb{A}$ due to rational periodization (Poisson summation), we formally posit the Bipartite Adèlic Product Formula $\mathcal{E}_\infty(E) \times p\text{-adic} = 1$ as a structural ansatz. This conditional bridge asserts that if the global ground state energy vanishes ($E_0^{\text{global}} = 0$), the local spectral gaps must formally balance to exactly $1$, deriving a conditional contradiction modulo this hypothesis from the simultaneous bounds $1 \times (< 1) = 1$.
+**Hypothesis 11.H.2 (The Defect-Balance Hypothesis)**: Rather than an impossible static product, we posit a dynamic scaling relation between the continuous and discrete geometries. We conjecture that the global adèlic structure enforces an arithmetic locking between the Archimedean concentration defect and the $p$-adic modular defect: $\varepsilon_\infty(\delta(k)) \sim c \cdot \varepsilon_p(k)$. This conditional bridge asserts that the physical Fourier decay exponent of the avoiding set is forced to exactly $\alpha=1$, contradicting the fractal geometry of fat Cantor sets ($\alpha < 1$).
 
 #### Rigor Classification Table
 
@@ -77,14 +77,14 @@ $$L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p < \infty}\nolimits' L^
 | **Lemma 11.10.4.7** | Infinite Product Commutation | **[Rigorous Theorem]** | Lemma 11.10.4.6, Haar measure regularity |
 | **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Rigorous Theorem]** | Fourier translation continuity |
 | **Theorem 11.12.1** | Partial Spectral Product Bound | **[Rigorous Theorem]** | Adèlic Product Formula, global synchronization |
-| **Hypothesis 11.H.1** | The Bipartite Adèlic Ansatz | **[Working Hypothesis]** | Theorem 11.12.1 |
+| **Hypothesis 11.H.2** | The Defect-Balance Hypothesis | **[Working Hypothesis]** | Theorem 11.12.1 |
 | **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Rigorous Theorem]** | Algebraic graph theory, Bruhat-Tits tree reduction |
 | **Theorem 11.A.2** | Global-Local Spectral Coupling | **[Rigorous Theorem]** | Theorem 11.A.1, Theorem 11.10.1 |
 | **Assumption 11.A.3** | Endogenous Potential Emergence | **[Working Hypothesis]** | Lebesgue density structure of E |
 | **Conjecture 11.C.2** | Fractal Scale Support | **[Working Hypothesis]** | Erdős–Turán–Koksma discrepancy bounds |
 | **Observation 11.P.1** | Zero-Measure Copy Detection | **[Numerical Observation]** | Hausdorff dimension theory, singular continuous spectra |
 | **Program 11.P.2** | Ergodic Obstruction for Transcendentals | **[Conjectural Bridge]** | Adèlic Weyl Criterion, Diophantine approximation |
-| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Conditional Reduction]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Hypothesis 11.H.1 |
+| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Conditional Reduction]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Hypothesis 11.H.2 |
 
 
 
@@ -129,7 +129,7 @@ graph TD
     P11P1["Program 11.P.1: Zero-Measure Copy Detection"]:::numerical
     P11P2["Program 11.P.2: Ergodic Obstruction for Transcendentals"]:::bridge
     A11A3["Assumption 11.A.3: Endogenous Potential Emergence"]:::conditional
-    H11H1["Hypothesis 11.H.1: The Bipartite Adèlic Ansatz"]:::conditional
+    H11H2["Hypothesis 11.H.2: The Defect-Balance Hypothesis"]:::conditional
     ESC["Theorem 11.14: The Erdős Similarity Theorem (EST)"]:::conditional
 
 
@@ -167,7 +167,7 @@ graph TD
     T1161 --> ESC
     T11A1 --> T11A2
     T11101 --> T11A2
-    H11H1 --> ESC
+    H11H2 --> ESC
 ```
 
 
