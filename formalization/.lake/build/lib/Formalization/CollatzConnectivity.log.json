@@ -1,0 +1,20 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\CollatzConnectivity.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\CollatzConnectivity.olean -i .\\.\\.lake\\build\\lib\\Formalization\\CollatzConnectivity.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\CollatzConnectivity.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:35:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:74:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:122:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:173:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:213:8: declaration uses 'sorry'",
+   "level": "warning"}],
+ "depHash": "13658610860364191707"}
