@@ -17,6 +17,8 @@ Finally, we prove `conditional_grh_reduction`: if the Trace Identity Conjecture 
 and the spectrum is self-adjoint (real), then the Riemann Hypothesis is true.
 -/
 
+namespace SpectralGRH
+
 -- Define the completed L-function as a structure wrapping a complex-to-complex function
 structure CompletedLFunction where
   Λ : ℂ → ℂ
@@ -83,3 +85,5 @@ theorem conditional_grh_reduction (L : CompletedLFunction) (S : Set ℂ)
     ring
   rw [h_re_eq, h_real]
   ring
+
+end SpectralGRH
