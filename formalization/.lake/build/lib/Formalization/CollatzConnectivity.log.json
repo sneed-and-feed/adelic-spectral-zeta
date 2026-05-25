@@ -12,9 +12,12 @@
    ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:122:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:173:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:197:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:213:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:204:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:283:8: declaration uses 'sorry'",
    "level": "warning"}],
- "depHash": "13658610860364191707"}
+ "depHash": "5247148959102376970"}

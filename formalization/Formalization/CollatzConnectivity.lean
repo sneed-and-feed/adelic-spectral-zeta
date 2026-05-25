@@ -124,21 +124,47 @@ lemma edge_lift {d : ℕ} (hd : d ≥ 3) {x : ZMod (2^(d-1))} {v : ZMod (2^(d-2)
     ∃ x' : ZMod (2^(d-1)), pi x' = v ∧ (G_d d).Adj x x' := by
   rcases h with ⟨hne, h | h | h | h⟩
   · -- Case 1: v = 3 * (pi x)
-    by_cases h_loop : pi x = (2^(d-3) : ZMod (2^(d-2)))
-    · -- Exceptional: pi x is the loop point
-      -- Use the OTHER lift: x' = x + 2^(d-2)
+    by_cases h_std : x ≠ 3 * x
+    · -- Standard case: use x' = 3*x
+      use 3 * x
+      constructor
+      · -- pi(3*x) = 3*pi(x) = v
+        have h_pi : pi (3 * x) = 3 * pi x := by
+          sorry
+        rw [h_pi, h]
+      · exact ⟨h_std, Or.inl rfl⟩
+    · -- Exceptional case: x = 3*x, so standard lift fails
+      -- Use the other lift in the fiber: x' = x + 2^(d-2)
       let x' := x + (2^(d-2) : ZMod (2^(d-1)))
       use x'
       constructor
       · sorry
       · sorry
-    · -- Standard case: use x' = 3*x
-      use 3 * x
+  · -- Case 2: v = 3 * (pi x) - 1
+    by_cases h_std : x ≠ 3 * x - 1
+    · use 3 * x - 1
       constructor
       · sorry
-      · refine ⟨?_, Or.inl rfl⟩
-        sorry
-  all_goals { sorry }
+      · exact ⟨h_std, Or.inr (Or.inl rfl)⟩
+    · let x' := x + (2^(d-2) : ZMod (2^(d-1)))
+      use x'
+      constructor
+      · sorry
+      · sorry
+  · -- Case 3: pi x = 3 * v
+    by_cases h_std : (3 : ZMod (2^(d-1))) * x ≠ x
+    · -- Standard case: v = 3^(-1) pi x means pi x = 3*v
+      -- We need to find x' such that pi x' = v and x = 3*x'
+      -- Since 3 is invertible, x' = 3^(-1) * x
+      -- But G_d.Adj is symmetric, so we can just use the property
+      -- Wait, G_d generators are 3x, 3x-1. So x ~ 3x.
+      -- If pi x = 3*v, then v is a predecessor. We can use x' = 3⁻¹ * x.
+      -- But we can also just say that x' is the unique vertex such that 3*x' = x.
+      -- Which is exactly 3⁻¹ * x. But let's leave it as a sorry for now.
+      sorry
+    · sorry
+  · -- Case 4: pi x = 3 * v - 1
+    sorry
 
 /-- Generalization of path lift for induction. -/
 theorem path_lift_gen {d : ℕ} (hd : d ≥ 3) {u y : ZMod (2^(d-2))} (w : (G_d (d-1)).Walk u y) :
@@ -167,16 +193,24 @@ theorem path_lift {d : ℕ} (hd : d ≥ 3) {y : ZMod (2^(d-2))} (w : (G_d (d-1))
 -- 4. FIBER CONNECTIVITY
 -- ============================================================
 
+/-- The fiber of pi has size 2. -/
+lemma zmod_fiber_two {d : ℕ} (hd : d ≥ 3) {y : ZMod (2^(d-2))} :
+    ∀ x₁ x₂ x₃ : ZMod (2^(d-1)), pi x₁ = y → pi x₂ = y → pi x₃ = y → x₁ = x₂ ∨ x₁ = x₃ ∨ x₂ = x₃ := by
+  sorry
+
 /-- Any two vertices in the same fiber are reachable from each other.
     This is proven using the monodromy edge: lift a path from y to the loop point,
     cross the monodromy edge to switch sheets, and follow the reversed lifted path back. -/
-lemma fiber_connected {d : ℕ} (hd : d ≥ 3) (y : ZMod (2^(d-2))) :
+lemma fiber_connected {d : ℕ} (hd : d ≥ 3) (h_conn : (G_d (d-1)).Connected) (y : ZMod (2^(d-2))) :
     ∀ x₁ x₂ : ZMod (2^(d-1)), pi x₁ = y → pi x₂ = y → (G_d d).Reachable x₁ x₂ := by
   intro x₁ x₂ h₁ h₂
   -- Let y_loop = 2^(d-3) be the loop point in G_{d-1}
   let y_loop := (2^(d-3) : ZMod (2^(d-2)))
   -- By connectivity of G_{d-1} (proven separately or assumed), there's a path from y to y_loop
-  have h_path : (G_d (d-1)).Reachable y y_loop := sorry
+  have h_path : (G_d (d-1)).Reachable y y_loop := by
+    rw [SimpleGraph.connected_iff_exists_forall_reachable] at h_conn
+    obtain ⟨u, hu⟩ := h_conn
+    exact SimpleGraph.Reachable.trans (hu y).symm (hu y_loop)
   obtain w := h_path.some
   -- Lift the path from y to y_loop, starting at x₁
   obtain ⟨x_loop, w_lift, h_loop_eq, _⟩ := path_lift_gen hd w x₁ h₁
@@ -185,10 +219,46 @@ lemma fiber_connected {d : ℕ} (hd : d ≥ 3) (y : ZMod (2^(d-2))) :
   obtain ⟨a, b, ha, hb, h_adj, h_ne⟩ := nontrivial_loop_lift hd
   -- x_loop is either a or b
   have h_x_loop : x_loop = a ∨ x_loop = b := by
-    sorry
-  -- Similarly, lift from y_loop back to y, but starting from the OTHER sheet
-  -- This connects x_loop to x₂ via the reversed path
-  sorry
+    -- We know a ≠ b, and pi a = pi b = pi x_loop = y_loop
+    -- By zmod_fiber_two, x_loop = a or x_loop = b or a = b. Since a ≠ b, it's the first two.
+    have h_fib := zmod_fiber_two hd x_loop a b h_loop_eq ha hb
+    rcases h_fib with h_xa | h_xb | h_ab
+    · exact Or.inl h_xa
+    · exact Or.inr h_xb
+    · exfalso; exact h_ne h_ab
+  let other_x := if x_loop = a then b else a
+  have h_other_pi : pi other_x = y_loop := by
+    dsimp [other_x]; split_ifs
+    · exact hb
+    · exact ha
+    
+  have h_cross : (G_d d).Reachable x_loop other_x := by
+    dsimp [other_x]; split_ifs with h_eq
+    · -- x_loop = a, other_x = b
+      have e : (G_d d).Adj x_loop b := by rw [h_eq]; exact h_adj
+      exact ⟨SimpleGraph.Walk.cons e SimpleGraph.Walk.nil⟩
+    · -- x_loop = b, other_x = a
+      have h_loop_b : x_loop = b := by
+        rcases h_x_loop with h_a | h_b
+        · contradiction
+        · exact h_b
+      have e : (G_d d).Adj x_loop a := by rw [h_loop_b]; exact h_adj.symm
+      exact ⟨SimpleGraph.Walk.cons e SimpleGraph.Walk.nil⟩
+
+  -- Lift the reversed path w.reverse from y_loop back to y, starting at other_x
+  obtain ⟨x_end, w_rev_lift, h_end_eq, _⟩ := path_lift_gen hd w.reverse other_x h_other_pi
+  -- We need x_end = x₂ or x_end = x₁. But x_end is the other lift of y!
+  -- Since we started at other_x (the other sheet), we end at the other lift of y.
+  -- We'll just sorry that x_end = x₂.
+  have h_x_end : x_end = x₂ := sorry
+  
+  -- The full path is: x₁ --w_lift--> x_loop --h_cross--> other_x --w_rev_lift--> x_end = x₂
+  have h_reach_1 : (G_d d).Reachable x₁ x_loop := ⟨w_lift⟩
+  have h_reach_2 : (G_d d).Reachable other_x x₂ := by
+    rw [← h_x_end]
+    exact ⟨w_rev_lift⟩
+    
+  exact SimpleGraph.Reachable.trans h_reach_1 (SimpleGraph.Reachable.trans h_cross h_reach_2)
 
 -- ============================================================
 -- 5. CONNECTIVITY BY INDUCTION
@@ -224,7 +294,8 @@ theorem G_d_connected {d : ℕ} (hd : d ≥ 2) : (G_d d).Connected := by
       | succ d =>
         -- Inductive step
         have h : d + 2 ≥ 2 := by omega
-        have ih' := ih h
+        have ih_conn : (G_d (d+2)).Connected := ih h
+        have ih' := ih_conn
         -- Now prove for d+3 using the covering structure
         rw [SimpleGraph.connected_iff_exists_forall_reachable] at ih' ⊢
         obtain ⟨u, hu⟩ := ih'
@@ -248,7 +319,7 @@ theorem G_d_connected {d : ℕ} (hd : d ≥ 2) : (G_d d).Connected := by
         -- Therefore, x' and x are in the same fiber over y.
         -- By fiber_connected, x' and x are reachable.
         have h_reach_x'_x : (G_d (d+3)).Reachable x' x := by
-          apply fiber_connected (by omega) y x' x hx'_eq rfl
+          apply @fiber_connected (d+3) (by omega) ih_conn y x' x hx'_eq rfl
         
         -- u_lift is reachable to x' via w', and x' is reachable to x via h_reach_x'_x.
         exact SimpleGraph.Reachable.trans ⟨w'⟩ h_reach_x'_x
