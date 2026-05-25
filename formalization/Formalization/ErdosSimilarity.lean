@@ -38,16 +38,6 @@ structure AdelicFramework where
   product_formula_no_leakage : Prop
 
 /--
-The programmatic bridge linking the adèlic framework to the Erdős Similarity Conjecture.
--/
-axiom master_bridge (framework : AdelicFramework) :
-  framework.multi_directional_confinement →
-  framework.spectral_reduction →
-  framework.archimedean_positivity →
-  framework.product_formula_no_leakage →
-  ContainsAffineCopy E A
-
-/--
 Theorem 11.14: The Erdős Similarity Theorem (EST)
 If the adèlic framework holds (spectral reduction, confinement, and archimedean positivity),
 then any set E of positive Lebesgue measure contains an affine copy of the sequence A.
@@ -59,11 +49,11 @@ theorem erdos_similarity_theorem (framework : AdelicFramework)
     (h_prod : framework.product_formula_no_leakage) :
     ContainsAffineCopy E A := by
   /-
-  The formal proof uses the logical bridge axiom:
+  The formal proof is a placeholder for the logical bridge:
   1. `spectral_reduction` extracts the compact avoiding scales.
   2. `archimedean_positivity` ensures the Fourier transforms overlap constructively.
   3. `multi_directional_confinement` forces the avoiding set to be empty via p-adic valuation constraints.
   4. `product_formula_no_leakage` binds the local constraints globally.
   Together, they imply the avoiding condition is false, meaning an affine copy must exist.
   -/
-  exact master_bridge E A framework h_conf h_spec h_arch h_prod
+  sorry
