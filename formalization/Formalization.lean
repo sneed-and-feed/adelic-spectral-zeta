@@ -1,2 +1,4 @@
-import «Formalization».SpectralGRH
+import Formalization.SpectralGRH
 import Formalization.CollatzGalois
+import Formalization.CollatzConnectivity
+import Formalization.CollatzSpectral
