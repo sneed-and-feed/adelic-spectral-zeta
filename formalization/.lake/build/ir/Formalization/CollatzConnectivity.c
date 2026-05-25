@@ -18,15 +18,18 @@ lean_object* l_Ring_toAddGroupWithOne___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_G__d___boxed(lean_object*);
 lean_object* l_ZMod_commRing(lean_object*);
 LEAN_EXPORT lean_object* l_Nat_cast___at_pi___spec__4(lean_object*, lean_object*);
+lean_object* lean_sorry(uint8_t);
 LEAN_EXPORT lean_object* l_pi___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_ZMod_cast___at_pi___spec__2(lean_object*, lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_pi(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Int_cast___at_pi___spec__3___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Nat_cast___at_pi___spec__4___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_ZMod_castHom___at_pi___spec__1___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
+LEAN_EXPORT lean_object* l_inv3___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Int_cast___at_pi___spec__3(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_G__d(lean_object*);
 lean_object* lean_nat_pow(lean_object*, lean_object*);
+LEAN_EXPORT lean_object* l_inv3(lean_object*, lean_object*);
 uint8_t lean_nat_dec_eq(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_ZMod_cast___at_pi___spec__2___boxed(lean_object*, lean_object*, lean_object*);
 lean_object* lean_nat_sub(lean_object*, lean_object*);
@@ -178,6 +181,24 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_pi(x_1, x_2);
+lean_dec(x_1);
+return x_3;
+}
+}
+LEAN_EXPORT lean_object* l_inv3(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+uint8_t x_3; lean_object* x_4; 
+x_3 = 0;
+x_4 = lean_sorry(x_3);
+return x_4;
+}
+}
+LEAN_EXPORT lean_object* l_inv3___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_inv3(x_1, x_2);
 lean_dec(x_1);
 return x_3;
 }

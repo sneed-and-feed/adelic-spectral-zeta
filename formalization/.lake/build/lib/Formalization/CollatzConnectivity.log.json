@@ -3,21 +3,48 @@
    ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\CollatzConnectivity.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\CollatzConnectivity.olean -i .\\.\\.lake\\build\\lib\\Formalization\\CollatzConnectivity.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\CollatzConnectivity.c --json",
    "level": "trace"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:35:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:117:8: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:74:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:156:8: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:122:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:203:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:197:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:208:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:204:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:215:4: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:283:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:218:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:221:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:224:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:227:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:231:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:235:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:239:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:333:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:340:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:471:32: unused variable `hw'_len`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "5247148959102376970"}
+ "depHash": "16464296276559076140"}

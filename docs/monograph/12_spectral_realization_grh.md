@@ -98,4 +98,13 @@ graph TD
 
 ---
 
+# 12.5 The Spectral Support Barrier
+
+A critical nuance in phenomenological models of the spectral realization (such as Hamiltonian truncations and matrix models) is the distinction between a Cauchy interlacing barrier and what we term the **spectral support barrier**. 
+
+When utilizing the Krein resolvent formula to analyze singular rank-1 perturbations of the form $D_0 - \alpha |\varphi\rangle\langle\varphi|$, the first perturbed eigenvalue $z_1$ is strictly bounded from below by the first unperturbed eigenvalue $t_1$. It is mathematically impossible for a rank-1 perturbation to pull an eigenvalue into a spectral void (e.g., the interval $[0, 22.56]$ for the Riemann zeta function) out of nowhere. 
+
+Because the Weyl law distribution of zeros fails wildly for the first few Riemann zeros, the unperturbed density matrix $D_0$ fundamentally lacks support in this regime. This means that numerical or phenomenological models attempting to match the lowest-lying zeros via single perturbations will invariably encounter this "spectral support barrier." While this is a negative result for certain simplified phenomenological models, it enforces a strict topological constraint on the structure of any true global adèlic operator $D_{\text{glob}}$: the base, unperturbed spectral geometry must inherently possess the correct low-lying support before boundary regularizations or singular perturbations are applied.
+
+---
 [← Back to Master Monograph Table of Contents](../unified_monograph.md)
