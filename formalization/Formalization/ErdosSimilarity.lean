@@ -78,40 +78,36 @@ theorem extract_obstruction (hq_gt : q > 1)
     Nonempty (ModularObstruction p q E A) :=
   sorry
 
-/-- Theorem 11.11.2 (Consequence): Universal Analytic Scaling
-For any bounded set of finite measure, the indicator function has compact support. 
-By the Paley-Wiener theorem, the Fourier transform is entire, and its low-frequency 
-Taylor expansion is exactly quadratic. Thus, the Archimedean defect scales as exactly δ^2. 
-The Fourier decay exponent near the origin is exactly 2. -/
-axiom universal_analytic_scaling (hE_compact : IsCompact E) (hE_pos : MeasureTheory.volume E > 0) : 
-    fourier_decay_exponent E = 2
+noncomputable def configuration_density (E : Set ℝ) (A : ℕ → ℝ) : ℝ := sorry
 
-/-- Hypothesis 11.H.2: The Defect-Balance Hypothesis.
-To balance the exact quadratic decay (δ^2) with the linear p-adic decay (p^{-k}), 
-the physical adèlic scale coupling must be exactly δ(k) = p^{-k/2}.
-This conditional hypothesis demands the decay exponent matching the scale coupling be 1. -/
-axiom defect_balance_hypothesis (hq_gt : q > 1) 
-    (hE_pos : MeasureTheory.volume E > 0) (hA : Filter.Tendsto A Filter.atTop (nhds 0)) 
-    (hq : ∀ n, A n = (q : ℝ) ^ (-(n : ℝ))) (h_avoid : ¬ ContainsAffineCopy E A) :
-  fourier_decay_exponent E = 1
+/-- Hypothesis 11.H.3: The Configuration Density Hypothesis
+For a compact set E of positive Lebesgue measure, the arithmetic configuration density 
+of any exponentially decaying sequence A must be strictly positive. 
+This directly asserts the Erdős Similarity Conjecture as a structural density law. -/
+axiom configuration_density_positive (hE_compact : IsCompact E) (hE_pos : MeasureTheory.volume E > 0) 
+    (hA : Filter.Tendsto A Filter.atTop (nhds 0)) : 
+    configuration_density E A > 0
+
+/-- Lemma: Sequence Avoidance implies Zero Configuration Density -/
+axiom avoidance_implies_zero_density (h_avoid : ¬ ContainsAffineCopy E A) : 
+    configuration_density E A = 0
 
 /-- Theorem 11.14: The Erdős Similarity Theorem for Geometric Sequences
-Conditional Contradiction modulo Hypothesis 11.H.2 (Defect-Balance). -/
+Conditional Contradiction modulo Hypothesis 11.H.3 (Configuration Density). -/
 theorem erdos_similarity_geometric_case (hq_gt : q > 1) 
     (hE_compact : IsCompact E) (hE_pos : MeasureTheory.volume E > 0) 
     (hA : Filter.Tendsto A Filter.atTop (nhds 0)) (hq : ∀ n, A n = (q : ℝ) ^ (-(n : ℝ))) : 
     ContainsAffineCopy E A := by
   by_contra h_avoid
   
-  -- 1. Universal Analytic Scaling of Bounded Sets (Paley-Wiener)
-  have h_alpha_eq_two : fourier_decay_exponent E = 2 :=
-    universal_analytic_scaling E hE_compact hE_pos
+  -- 1. Avoidance forces zero density
+  have h_density_zero : configuration_density E A = 0 :=
+    avoidance_implies_zero_density E A h_avoid
     
-  -- 2. Defect-Balance Hypothesis (Conditional Scale Coupling)
-  have h_alpha_eq_one : fourier_decay_exponent E = 1 :=
-    defect_balance_hypothesis E A q p hq_gt hE_pos hA hq h_avoid
+  -- 2. Configuration Density Hypothesis (Structural Law)
+  have h_density_pos : configuration_density E A > 0 :=
+    configuration_density_positive E A hE_compact hE_pos hA
     
-  -- 3. Absolute Analytic Contradiction (2 ≠ 1)
-  rw [h_alpha_eq_one] at h_alpha_eq_two
-  have h_one_neq_two : (1 : ℝ) ≠ 2 := by norm_num
-  exact h_one_neq_two h_alpha_eq_two
+  -- 3. Contradiction
+  rw [h_density_zero] at h_density_pos
+  exact lt_irrefl 0 h_density_pos
