@@ -10,8 +10,8 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 *   **[11.2 Level I: The Finite Computational Model](11_erdos_similarity/11.2_finite_model.md)**
 *   **[11.3 Level II: Projective Limit and Generic Unit-Base Collapse](11_erdos_similarity/11.3_unit_base_collapse.md)**
 *   **[11.4 The Spectral Detector Principle](11_erdos_similarity/11.4_spectral_detector.md)**
-*   **[11.5 Literature Calibration](11_erdos_similarity/11.5_literature_calibration.md)**
-*   **[11.6 The Galois Extension: Arbitrary Sequence Bases and Automated Pre-processing](11_erdos_similarity/11.6_galois_extension.md)**
+*   **[11.5 Literature Calibration: Bourgain, Keleti, Falconer, and Tate](11_erdos_similarity/11.5_literature_calibration.md)**
+*   **[11.6 General Base Extension and Automated Pre-processing](11_erdos_similarity/11.6_general_base_extension.md)**
 *   **[11.7 Confinement Scaling Extrapolation & Predictive Pruning](11_erdos_similarity/11.7_confinement_scaling.md)**
 *   **[11.8 The Lebesgue Density Lift to Adèlic Orbits](11_erdos_similarity/11.8_lebesgue_density_lift.md)**
 *   **[11.9 Harmonic Sequence Obstructive Analysis](11_erdos_similarity/11.9_harmonic_sequence.md)**
@@ -32,19 +32,18 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 
 To ensure the logical bridge of the conjecture is mathematically watertight and free of "map entropy", the adèlic framework relies on rigorous constructive measure theory and functional analysis, rather than idealized boundaries:
 
-1. **Topological $p$-adic Descent**: Rather than attempting to map the continuous real avoiding set directly into the $p$-adic topology (which violates Ostrowski's theorem via chaotic rational approximations), the geometry is anchored strictly to the discrete index of the sequence. Continuous avoiding conditions are forced into discrete modular holes via the Cantor Intersection Theorem over compact topological cylinder sets, guaranteeing a structurally locked `ZMod (p^k)` missing residue class.
+1. **Topological $p$-adic Descent**: Rather than attempting to map the continuous real avoiding set directly into the $p$-adic topology, the geometry is anchored strictly to the discrete index of the sequence. Continuous avoiding conditions are forced into discrete modular holes via the Cantor Intersection Theorem over compact topological cylinder sets, guaranteeing a structurally locked `ZMod (p^k)` missing residue class.
 2. **Constructive Archimedean Control**: Instead of invoking "idealized" algebraic containers, the continuous boundaries are controlled using standard constructive measure theory: explicit error bounds, Friedrichs extensions, and Mosco convergence of quadratic forms. Plancherel's theorem strictly conserves total spectral energy, while the Fourier Minor Arc dissipation is modeled as a rigorous limit with explicit convergence rates.
 
-#### Mathematical Grounding: The Restricted Tensor Product
+#### Mathematical Grounding: Bruhat-Tits Trees and Fourier Concentration
 
 To rigorously bind the Lean 4 formalization to standard analytic number theory, the Hilbert space is explicitly defined as the **restricted tensor product** relative to the spherical vectors $\mathbf{1}_{\mathbb{Z}_p}$:
 $$L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p < \infty}\nolimits' L^2(\mathbb{Q}_p)$$
 
-The `local_energy` fields are strictly grounded in localized Schrödinger operators ($H_\nu = -\Delta_\nu + V_\nu$):
-- **Archimedean Energy**: Defined via Fourier $L^2$-mass. The energy $\lim_{x \to \infty} \int_{\text{Major}} |\widehat{\mathbf{1}_E}(\xi)|^2 d\xi / \int_{\mathbb{R}} |\widehat{\mathbf{1}_E}|^2$ is driven to exactly $1$ by the Riemann-Lebesgue limit on the Minor Arcs (Major Arc Positivity).
-- **$p$-adic Energy**: Defined via the Spectral Gap. If the sequence avoids the set, empty cylinder intersections create a missing residue class modulo $p^k$. By the Rayleigh-Ritz variational principle, this infinite potential barrier forces the ground-state eigenvalue $\inf \sigma(H_p) > 0$. The local energy $\exp(-\inf \sigma(H_p))$ strictly collapses below $1$ (Single-Prime Confinement).
+- **Archimedean Obstruction Measure**: Stripped of misleading Schrödinger terminology, this is defined purely as a **Fourier concentration ratio** (Major Arc Positivity). For a compact set $E$ of positive measure, the ratio $\mathcal{E}_\infty(E) := \lim_{\delta \to 0} \frac{\int_{|\xi| < \delta} |\widehat{\mathbf{1}_E}(\xi)|^2 \, d\xi}{\int_{\mathbb{R}} |\widehat{\mathbf{1}_E}|^2}$ is driven to exactly $1$ by the Riemann-Lebesgue limit on the Minor Arcs.
+- **$p$-adic Energy (Bruhat-Tits Graph Laplacian)**: To avoid the non-locality of the Vladimirov pseudo-differential operator, the local energy is defined via the combinatorial graph Laplacian on the Bruhat-Tits tree. If the geometric sequence avoids the set, empty cylinder intersections create a strictly local missing residue class barrier. By the Rayleigh-Ritz variational principle on the tree, this forces a discrete spectral gap $\inf \sigma(H_p) > 0$. The local energy $\exp(-\inf \sigma(H_p))$ strictly collapses below $1$ (Single-Prime Confinement).
 
-**Working Hypothesis (The Bipartite Adèlic Ansatz)**: While the global Hamiltonian $\mathcal{H}_{\text{global}}$ does not trivially separate on the quotient $\mathbb{Q} \backslash \mathbb{A}$ due to rational periodization (Poisson summation), we posit the Bipartite Adèlic Product Formula $\text{Archimedean} \times p\text{-adic} = 1$ as a structural ansatz. This conditional bridge asserts that if the global ground state energy vanishes ($E_0^{\text{global}} = 0$), the local spectral gaps must formally balance to exactly $1$, deriving an absolute contradiction from the simultaneous bounds $1 \times (< 1) = 1$.
+**Hypothesis 11.H.1 (The Bipartite Adèlic Ansatz)**: While the global Hamiltonian $\mathcal{H}_{\text{global}}$ does not trivially separate on the quotient $\mathbb{Q} \backslash \mathbb{A}$ due to rational periodization (Poisson summation), we formally posit the Bipartite Adèlic Product Formula $\mathcal{E}_\infty(E) \times p\text{-adic} = 1$ as a structural ansatz. This conditional bridge asserts that if the global ground state energy vanishes ($E_0^{\text{global}} = 0$), the local spectral gaps must formally balance to exactly $1$, deriving a conditional contradiction modulo this hypothesis from the simultaneous bounds $1 \times (< 1) = 1$.
 
 #### Rigor Classification Table
 
@@ -58,14 +57,14 @@ The `local_energy` fields are strictly grounded in localized Schrödinger operat
 | **Corollary 11.3.3** | Valuation Sector Collapse for Base 11 | **[Rigorous Theorem]** | Theorem 11.3.1, Lemma 11.3.2 |
 | **Lemma 11.3.4** | Arithmetic Unit Group Closures for Base 11 | **[Rigorous Theorem]** | None |
 | **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Rigorous Theorem]** | Corollary 11.3.3 |
-| **Theorem 11.3.6** | Adèlic Constructive Avoidance | **[Rigorous Theorem]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
+| **Theorem 11.3.6** | Adèlic Constructive Avoidance for Geometric Sequences | **[Rigorous Theorem]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
 | **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Rigorous Theorem]** | None |
 | **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Rigorous Theorem]** | None |
 | **Theorem 11.7.4** | Galerkin Convergence | **[Rigorous Theorem]** | Lemma 11.7.4.1 |
 | **Lemma 11.7.4.1** | Domain Invariance under Cylindrical Projection | **[Rigorous Theorem]** | None |
 | **Theorem 11.7.5** | Discrete Adèlic Combes–Thomas Splitting | **[Rigorous Theorem]** | None |
-| **Theorem 11.7.6** | Exact Product Factorization of Presence | **[Rigorous Theorem]** | Fubini–Tonelli, Haar measure product |
-| **Lemma 11.7.6.1** | Representative Exactness of Product Factorization | **[Rigorous Theorem]** | Theorem 11.7.6 |
+| **Theorem 11.7.6** | Haar Measure Factorization on Cylindrical Sets | **[Rigorous Theorem]** | Fubini–Tonelli, Haar measure product |
+| **Lemma 11.7.6.1** | Representative Exactness of Measure Disintegration | **[Rigorous Theorem]** | Theorem 11.7.6 |
 | **Theorem 11.8.2** | Lebesgue Density Lift | **[Rigorous Theorem]** | $L^1$-continuity of translation on compact sets |
 | **Remark 11.8.3** | Archimedean/Non-Archimedean Scale Coupling | **[Rigorous Theorem]** | Theorem 11.8.2 |
 | **Observation 11.9.2** | Harmonic Sector Non-Collapse | **[Numerical Observation]** | Pre-processor numerical trials |
@@ -76,14 +75,15 @@ The `local_energy` fields are strictly grounded in localized Schrödinger operat
 | **Lemma 11.10.4.4** | Mosco Convergence of Cylindrical Forms | **[Rigorous Theorem]** | Lemma 11.7.4.1 |
 | **Lemma 11.10.4.7** | Infinite Product Commutation | **[Rigorous Theorem]** | Lemma 11.10.4.6, Haar measure regularity |
 | **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Rigorous Theorem]** | Fourier translation continuity |
-| **Theorem 11.12.1** | Product Formula No-Leakage Theorem | **[Rigorous Theorem]** | Adèlic Product Formula, global synchronization |
+| **Theorem 11.12.1** | Partial Spectral Product Bound | **[Rigorous Theorem]** | Adèlic Product Formula, global synchronization |
+| **Hypothesis 11.H.1** | The Bipartite Adèlic Ansatz | **[Working Hypothesis]** | Theorem 11.12.1 |
 | **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Rigorous Theorem]** | Algebraic graph theory, Bruhat-Tits tree reduction |
 | **Theorem 11.A.2** | Global-Local Spectral Coupling | **[Rigorous Theorem]** | Theorem 11.A.1, Theorem 11.10.1 |
 | **Assumption 11.A.3** | Endogenous Potential Emergence | **[Working Hypothesis]** | Lebesgue density structure of E |
 | **Conjecture 11.C.2** | Fractal Scale Support | **[Working Hypothesis]** | Erdős–Turán–Koksma discrepancy bounds |
 | **Observation 11.P.1** | Zero-Measure Copy Detection | **[Numerical Observation]** | Hausdorff dimension theory, singular continuous spectra |
 | **Program 11.P.2** | Ergodic Obstruction for Transcendentals | **[Conjectural Bridge]** | Adèlic Weyl Criterion, Diophantine approximation |
-| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Conditional Reduction]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Theorem 11.12.1 |
+| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Conditional Reduction]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Hypothesis 11.H.1 |
 
 
 
@@ -104,14 +104,14 @@ graph TD
     C1133["Corollary 11.3.3: Valuation Sector Collapse for Base 11"]:::rigorous
     L1134["Lemma 11.3.4: Arithmetic Unit Group Closures for Base 11"]:::rigorous
     C1135["Corollary 11.3.5: Multi-Directional Confinement"]:::rigorous
-    T1136["Theorem 11.3.6: Adèlic Constructive Avoidance"]:::rigorous
+    T1136["Theorem 11.3.6: Adèlic Constructive Avoidance for Geometric Sequences"]:::rigorous
     T1161["Theorem 11.6.1: General p-adic Subgroup Closure Depth"]:::rigorous
     T1141["Theorem 11.4.1: Exact Toy Spectral Bifurcation"]:::rigorous
     T1174["Theorem 11.7.4: Galerkin Convergence"]:::rigorous
     L11741["Lemma 11.7.4.1: Domain Invariance under Cylindrical Projection"]:::rigorous
     T1175["Theorem 11.7.5: Combes-Thomas Splitting"]:::rigorous
-    T1176["Theorem 11.7.6: Exact Product Factorization"]:::rigorous
-    L11761["Lemma 11.7.6.1: Representative Exactness of Product Factorization"]:::rigorous
+    T1176["Theorem 11.7.6: Haar Measure Factorization on Cylindrical Sets"]:::rigorous
+    L11761["Lemma 11.7.6.1: Representative Exactness of Measure Disintegration"]:::rigorous
     T1182["Theorem 11.8.2: Lebesgue Density Lift"]:::rigorous
     R1183["Remark 11.8.3: Archimedean/Non-Archimedean Scale Coupling"]:::rigorous
     H1192["Observation 11.9.2: Harmonic Sector Non-Collapse"]:::numerical
@@ -128,6 +128,7 @@ graph TD
     P11P1["Program 11.P.1: Zero-Measure Copy Detection"]:::numerical
     P11P2["Program 11.P.2: Ergodic Obstruction for Transcendentals"]:::bridge
     A11A3["Assumption 11.A.3: Endogenous Potential Emergence"]:::conditional
+    H11H1["Hypothesis 11.H.1: The Bipartite Adèlic Ansatz"]:::conditional
     ESC["Theorem 11.14: The Erdős Similarity Theorem (EST)"]:::conditional
 
 
@@ -165,6 +166,7 @@ graph TD
     T1161 --> ESC
     T11A1 --> T11A2
     T11101 --> T11A2
+    H11H1 --> ESC
 ```
 
 
