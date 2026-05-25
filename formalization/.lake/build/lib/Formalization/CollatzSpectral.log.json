@@ -12,24 +12,27 @@
    ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:134:27: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:141:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:197:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:183:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:223:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:209:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:242:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice\nnote: this linter can be disabled with `set_option linter.unnecessarySeqFocus false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:228:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice\nnote: this linter can be disabled with `set_option linter.unnecessarySeqFocus false`",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:254:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:240:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:271:8: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:251:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:293:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:273:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:300:36: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:308:43: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "4327533276113528242"}
+ "depHash": "1800652715929058074"}
