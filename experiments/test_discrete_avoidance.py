@@ -43,9 +43,12 @@ def optimize_pattern_avoidance(N, pattern):
     solver.parameters.max_time_in_seconds = 15.0
     status = solver.Solve(model)
     
-    if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
-        return int(solver.ObjectiveValue())
-    return 0
+    if status == cp_model.OPTIMAL:
+        return int(solver.ObjectiveValue()), True
+    elif status == cp_model.FEASIBLE:
+        return int(solver.ObjectiveValue()), False
+    else:
+        return 0, False
 
 def plot_asymptotic_bounds(N_vals, r4_vals, r_nonAP_vals):
     N_arr = np.array(N_vals)
@@ -80,7 +83,7 @@ def plot_asymptotic_bounds(N_vals, r4_vals, r_nonAP_vals):
     
     plt.xscale('log')
     plt.yscale('log')
-    plt.title('Discrete Density Survey: 4-Point Pattern Avoidance')
+    plt.title('Discrete Density Survey: 4-Point Pattern Avoidance\n(Note: Asymptotic bounds are artificially rescaled for visual alignment at small N)')
     plt.xlabel('Grid Size N')
     plt.ylabel('Maximum Density $\delta(N) = r(N)/N$')
     plt.legend()
@@ -108,15 +111,20 @@ def main():
     print("-" * 55)
     
     for N in N_vals:
-        r4 = optimize_pattern_avoidance(N, pattern_4ap)
-        rP = optimize_pattern_avoidance(N, pattern_nonAP)
+        r4, r4_opt = optimize_pattern_avoidance(N, pattern_4ap)
+        rP, rP_opt = optimize_pattern_avoidance(N, pattern_nonAP)
         
         r4_vals.append(r4)
         r_nonAP_vals.append(rP)
         
         d4 = r4 / N
         dP = rP / N
-        print(f"{N:<5} | {r4:<5} (dens {d4:.3f})     | {rP:<5} (dens {dP:.3f})")
+        
+        s4 = " " if r4_opt else "*"
+        sP = " " if rP_opt else "*"
+        print(f"{N:<5} | {r4:<5} (dens {d4:.3f}) {s4}   | {rP:<5} (dens {dP:.3f}) {sP}")
+        
+    print("\n* indicates lower bound (optimality not proven within time limit)")
         
     plot_asymptotic_bounds(N_vals, r4_vals, r_nonAP_vals)
 
