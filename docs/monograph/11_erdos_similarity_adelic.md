@@ -23,6 +23,7 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 *   **[Appendix 11.D: Failure-Mode Audit of Spectral Reduction](11_erdos_similarity/11.D_failure_mode_audit.md)**
 *   **[Appendix 11.E: Minimal Logical Closure Audit](11_erdos_similarity/11.E_logical_closure_audit.md)**
 *   **[Appendix 11.F: Numerical Appendix & Publication Polish](11_erdos_similarity/11.F_numerical_appendix.md)**
+*   **[Appendix 11.G: Goal 11.G.1 - Analytical Bounds and Scale-Coupling](11_erdos_similarity/11.G_goal_analytical_bounds.md)**
 
 ---
 
