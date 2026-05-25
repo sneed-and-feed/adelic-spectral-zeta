@@ -78,7 +78,7 @@ def verify_decomposition(d):
     L_d = get_lift(d) # V_d x V_{d-1}
     U_d = get_modulation_isometry(d) # V_d x V_{d-1}
     
-    print(f"\n================ Verification for depth d = {d} ================")
+    print(f"\n================ Exploration for depth d = {d} ================")
     print("Is L_d^T @ L_d equal to Identity?", np.allclose(L_d.T @ L_d, np.eye(L_d.shape[1])))
     print("Is U_d^T @ U_d equal to Identity?", np.allclose(U_d.T @ U_d, np.eye(U_d.shape[1])))
     print("Is L_d^T @ U_d equal to Zero?", np.allclose(L_d.T @ U_d, 0))

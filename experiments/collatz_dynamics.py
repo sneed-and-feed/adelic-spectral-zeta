@@ -71,7 +71,7 @@ def build_transfer_operator(depth=4):
     return P
 
 def main():
-    print("--- Collatz 2-Adic Dynamics & Conjugacy Verification ---")
+    print("--- Collatz 2-Adic Dynamics & Conjugacy Exploration ---")
     bits = 32
     
     # Choose a test number
@@ -82,7 +82,7 @@ def main():
     phi_x = lagarias_conjugacy(test_x, n_steps=bits, bits=bits)
     print(f"Lagarias Conjugacy \Phi({test_x}) = {phi_x} (binary: {bin(phi_x)})")
     
-    # Verify the conjugacy relation: \Phi(T(x)) = \sigma(\Phi(x))
+    # Test the conjugacy relation: \Phi(T(x)) = \sigma(\Phi(x))
     # where \sigma is the 2-adic shift (division by 2 of the parity vector)
     tx = collatz_2adic_step(test_x, bits=bits)
     phi_tx = lagarias_conjugacy(tx, n_steps=bits-1, bits=bits)
@@ -93,7 +93,7 @@ def main():
     print(f"  \sigma(\Phi(x)) = {sigma_phi_x}")
     print(f"  Difference      = {phi_tx - sigma_phi_x} (Should be 0)")
     
-    # Verify bijectivity of \Phi on Z/2^N Z for a small depth
+    # Test bijectivity of \Phi on Z/2^N Z for a small depth
     depth = 8
     N = 1 << depth
     images = []

@@ -132,7 +132,7 @@ def bare_krein_determinant(z: complex, D0_eigs: np.ndarray,
 
 def verify_entireness(D0_eigs: np.ndarray, Dglob_eigs: np.ndarray,
                       n_test_points: int = 5) -> Dict[str, Any]:
-    """Verify that the completed spectral determinant has no poles near unperturbed eigenvalues.
+    """Test that the completed spectral determinant has no poles near unperturbed eigenvalues.
     
     Evaluates 𝔇_glob(z) = 𝔇_ratio(z) * 𝔇_0(z) at points z = λ_n + ε for small ε, checking that
     the ratio 𝔇_glob(λ_n + ε_1) / 𝔇_glob(λ_n + ε_2) remains close to 1 (poles are cancelled).
@@ -180,7 +180,7 @@ def verify_entireness(D0_eigs: np.ndarray, Dglob_eigs: np.ndarray,
 
 def compare_with_completed_L(t_arr: np.ndarray, D0_eigs: np.ndarray,
                               Dglob_eigs: np.ndarray) -> Dict[str, Any]:
-    """Compute 𝔇_glob(t)/Λ(1/2+it) at multiple real points t and verify the ratio is constant.
+    """Compute 𝔇_glob(t)/Λ(1/2+it) at multiple real points t and test the ratio is constant.
     
     𝔇_glob(t) = 𝔇_ratio(t) * 𝔇_0(t)
     Λ(s) = π^{-s/2} Γ(s/2) ζ(s)

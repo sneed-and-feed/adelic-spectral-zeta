@@ -56,7 +56,7 @@ def main():
     slope, intercept = np.polyfit(np.log(T_vals[fit_idx]), np.log(S_vals[fit_idx]), 1)
     print(f"Empirical growth exponent of the prime sum: b = {slope:.4f}")
     
-    # 2. Verify Phragmén-Lindelöf Interpolation
+    # 2. Test Phragmén-Lindelöf Interpolation
     # We interpolate between Re(s) = 1 (where L(s) is bounded) and Re(s) = 1/2 + \eta.
     # If the resolvent trace yields a bound of t^k on the shifted line Re(s) = 1/2 + \eta,
     # then convexity yields a bound of t^{(1-\sigma)/(1-\sigma_0) * k} = t^{k/2} on Re(s) = 1/2.

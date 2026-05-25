@@ -86,7 +86,7 @@ def generate_banded_element(dim: int, band_size: int = 5) -> np.ndarray:
 
 def main():
     print("==================================================================")
-    print("        CONNES-MOSCOVICI SPECTRAL TRIPLE AXIOM VERIFICATION")
+    print("        CONNES-MOSCOVICI SPECTRAL TRIPLE AXIOM EXPLORATION")
     print("==================================================================\n")
     
     lambda_val = 29.0
@@ -209,14 +209,14 @@ def main():
     # J acts on vector v as P \bar{v}
     # J² = P \bar{P \bar{v}} = P P v = v. So J² = I.
     # For a matrix M, J M J^-1 = P \bar{M} P
-    print("  J^2 = I: verified by definition (parity reversed complex conjugation).")
+    print("  J^2 = I: tested by definition (parity reversed complex conjugation).")
     
     # Check J D_glob J^-1 = -D_glob
     J_Dglob_Jinv = P @ np.conj(D_glob) @ P
     deviation_JD = np.linalg.norm(J_Dglob_Jinv + D_glob)
     print(f"  ||J D_glob J^-1 + D_glob||_F = {deviation_JD:.6e} (anti-commutes as required for KO-dim 1)")
     
-    # Verify first-order condition
+    # Test first-order condition
     # 1. For D0 with banded elements, the commutator [[D0, a], J b* J^-1] vanishes in the interior to machine precision
     # 2. For D_glob with banded elements, the commutator has low rank (number of non-zero singular values is small)
     max_double_comm_norm_D0_interior = 0.0

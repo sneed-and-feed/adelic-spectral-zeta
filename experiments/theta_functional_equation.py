@@ -100,7 +100,7 @@ def main():
     print(f"\nOptimal extension parameter theta_0 for sigma=0.5: {opt_theta:.6f} (approx pi = {np.pi:.6f})")
     print(f"Symmetry score at theta_0: {opt_score:.6e}")
     
-    # Verify that off the critical line, the score is bounded away from zero
+    # Test that off the critical line, the score is bounded away from zero
     min_score_03 = np.min(scores_03)
     min_score_07 = np.min(scores_07)
     print(f"Minimum symmetry score for sigma=0.3: {min_score_03:.6f}")

@@ -129,20 +129,20 @@ print(f"s-derivative of regularized log determinant (place p): {sp.simplify(d_lo
 euler_factor_log_deriv = sp.diff(sp.log((1 - p**(-s))**(-1)), s)
 print(f"Logarithmic derivative of Euler factor: {sp.simplify(euler_factor_log_deriv)}")
 
-# Verification statement (sum is 0 because of opposite sign convention)
+# Exploration statement (sum is 0 because of opposite sign convention)
 is_equal = sp.simplify(d_log_det_p_reg_ds + euler_factor_log_deriv) == 0
 print(f"Residue-subtracted derivative matches Euler factor derivative (up to sign convention)? {is_equal}")
 
-# SymPy verification of completed Riemann xi(s) relation
+# SymPy exploration of completed Riemann xi(s) relation
 # xi(s) = 0.5 * s * (s-1) * pi^(-s/2) * Gamma(s/2) * zeta(s)
 # Global regularized determinant log-derivative is sum of all local factors:
 # d/ds log det_reg(D_glob(s)) = d/ds [ log xi(s) ]
 print("Global regularization eliminates local C_p scaling constants because the s-derivative")
 print("of the regularized determinant depends only on the Euler factor derivatives, which contain no C_p.")
 
-# Write Phase 2 verification results to a report file
+# Write Phase 2 exploration results to a report file
 with open(os.path.join(data_dir, "phase2_regularization.txt"), "w") as f:
-    f.write("=== Phase 2 Verification Report ===\n")
+    f.write("=== Phase 2 Exploration Report ===\n")
     f.write(f"Local p-adic residue at z=1: {residue_p}\n")
     f.write(f"Regularized log determinant: {log_det_p_reg}\n")
     f.write(f"s-derivative: {d_log_det_p_reg_ds}\n")

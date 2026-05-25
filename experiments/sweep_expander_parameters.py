@@ -28,7 +28,7 @@ def main():
     a_p_orbit = traces_db["800.1.bh.a"]["traces"]
     
     # Pre-computed exact zeros and inverse derivatives for Buhler's form
-    # from zero_localisation_correlation.py (verified by AFE)
+    # from zero_localisation_correlation.py (tested by AFE)
     exact_zeros = np.array([5.128673, 5.646348, 6.115696, 6.685053, 7.101472])
     derivatives = np.array([26.786862, 9.087135, 2.567694, 0.922821, 0.791152])
     inv_derivatives = 1.0 / derivatives

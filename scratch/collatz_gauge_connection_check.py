@@ -68,7 +68,7 @@ def build_collatz_operator(depth):
     return B
 
 def main():
-    print("--- Verifying Noncommutative Connection 1-form ---")
+    print("--- Testing Noncommutative Connection 1-form ---")
     depth = 5
     N = 1 << depth
     
@@ -90,7 +90,7 @@ def main():
     norm_diff_omega = np.linalg.norm(diff_omega, ord='fro')
     print(f"Connection 1-form Frobenius Difference: {norm_diff_omega:.10e}")
     
-    # Now verify commutator [B, omega]
+    # Now test commutator [B, omega]
     comm = B @ omega - omega @ B
     
     # Rank-1 formula: [B, omega] = 0.5 * |u><v|

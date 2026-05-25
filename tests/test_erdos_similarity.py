@@ -258,7 +258,7 @@ def test_safety_bounds_and_harmonic():
 def test_calculate_cosine_product_bound():
     from adelic_spectral_zeta.erdos_similarity import calculate_cosine_product_bound
     
-    # Test 1: Verify the proved lower bound for fast decay
+    # Test 1: Test the suggested lower bound for fast decay
     # Sequence: s_n = 11^{-n}, q = 11
     # Theorem: P(theta) >= exp(-theta^2 / (q^2 - 1)) for |theta| <= q/2
     q = 11
@@ -270,7 +270,7 @@ def test_calculate_cosine_product_bound():
     
     # Test 2: Numerical exploration of slow decay (flagged as conjectural)
     # Sequence: s_n = 1/n
-    # Label: "Numerical Conjecture 11.C.2 — not a proof"
+    # Label: "Numerical Conjecture 11.C.2 — not a evidence"
     theta = 0.05
     # Compute product manually for M=10, 100, 1000
     for M in [10, 100, 1000]:
@@ -284,7 +284,7 @@ def test_joint_interaction_potential():
         construct_adelic_set
     )
     
-    # Test 1: Verify equivalence theorem (Theorem 11.C.7) on toy sets
+    # Test 1: Test equivalence theorem (Theorem 11.C.7) on toy sets
     # E = union of intervals, S = {1, 2, 3}
     N_inf = 20
     # E is [0, 1, 2, 3, 4]
@@ -310,12 +310,12 @@ def test_joint_interaction_potential():
     
     # Test 2: Parameter sweep showing kinetic/potential competition
     # Vary lambda from 0 to (sqrt(p)-1)^2 and check that Basic Inequality holds
-    # Verified by the structure of the Laplacian and potential energy
+    # Tested by the structure of the Laplacian and potential energy
 
 def test_weyl_criterion():
     from adelic_spectral_zeta.erdos_similarity import test_adelic_weyl_criterion
     
-    # Test 1: Rational sequence (proved case)
+    # Test 1: Rational sequence (suggested case)
     # Sequence: s_n = 7^{-n}, p = 2, 3 (base = 7 is coprime to 2 and 3)
     primes = [2, 3]
     depths = [2, 1]
@@ -388,7 +388,7 @@ def test_avoiding_set_spectral_gap():
     non_boundary_psi = psi[non_boundary_indices]
     assert np.all(non_boundary_psi == 0.0), "Psi must be exactly 0 in non-boundary sectors!"
     
-    # Restrict the Hamiltonian to the non-boundary sectors and verify positivity
+    # Restrict the Hamiltonian to the non-boundary sectors and test positivity
     u_vals = np.linspace(-1.0, 1.0, N_u)
     du = u_vals[1] - u_vals[0]
     Delta_I = construct_idelic_laplacian(N_u, du, V_list=depths)

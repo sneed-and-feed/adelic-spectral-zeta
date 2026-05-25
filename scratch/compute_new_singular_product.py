@@ -9,7 +9,7 @@ def compute_products():
     # mu_1, mu_2 = sqrt(4 + 2*sqrt(3)) = 1 + sqrt(3)  and -(1 + sqrt(3))
     # mu_3, mu_4 = sqrt(4 - 2*sqrt(3)) = sqrt(3) - 1 and -(sqrt(3) - 1)
     # Each has multiplicity 2.
-    # Let's verify these are indeed the eigenvalues of the new sector at d=5.
+    # Let's test these are indeed the eigenvalues of the new sector at d=5.
     
     # Let's write the values and compute the product of new singular values:
     # sigma_i = sqrt(2 - mu_i / 2)
@@ -53,7 +53,7 @@ def compute_products():
     # Since each has multiplicity 2, the product of (2 - mu_i/2) is (33/4)^2 = 1089/16 = 68.0625.
     # The product of sigmas is the square root of this:
     # prod_sigmas = sqrt(68.0625) = 8.25 (which is 33/4).
-    # Let's verify this!
+    # Let's test this!
     print(f"  Analytical product: {33.0 / 4.0}")
 
     # Let's do d=6:

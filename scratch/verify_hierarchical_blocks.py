@@ -38,7 +38,7 @@ def get_modulation_isometry(depth):
     return U
 
 def verify_blocks():
-    # Let's verify at depth d = 5 (N = 16)
+    # Let's test at depth d = 5 (N = 16)
     # V_5 decomposes into:
     # L^3(V_2) (dim 2)
     # L^2(W_3) (dim 2)
@@ -84,7 +84,7 @@ def verify_blocks():
     # Let's concatenate these to form a transformation matrix W of size 16x16:
     W = np.hstack([L_2_5, W_3_in_5, W_4_in_5, W_5_in_5])
     
-    # Verify that W is a unitary matrix: W^T @ W = I
+    # Test that W is a unitary matrix: W^T @ W = I
     is_unitary = np.allclose(W.T @ W, np.eye(16))
     print(f"Is the hierarchical wavelet transform W unitary? {is_unitary}")
     

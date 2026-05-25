@@ -4,7 +4,7 @@ import subprocess
 import pytest
 
 def test_traces_database_structure():
-    """Verify that the generated trace database is valid and contains expected keys."""
+    """Test that the generated trace database is valid and contains expected keys."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     traces_path = os.path.join(project_root, "data", "a5_hecke_traces.json")
@@ -28,14 +28,14 @@ def test_traces_database_structure():
     traces = buhler_data["traces"]
     assert isinstance(traces, dict), "Traces should be a dictionary mapped by prime strings."
     
-    # Verify specific traces for Buhler's form
+    # Test specific traces for Buhler's form
     assert traces.get("2") == 0, "Trace a_2 should be 0."
     assert traces.get("3") == 0, "Trace a_3 should be 0."
     assert traces.get("5") == -2, "Trace a_5 should be -2."
     assert traces.get("13") == 6, "Trace a_13 should be 6."
 
 def test_expander_correlation_execution():
-    """Verify that the expander correlation script runs successfully and outputs the plots."""
+    """Test that the expander correlation script runs successfully and outputs the plots."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     
@@ -54,16 +54,16 @@ def test_expander_correlation_execution():
     
     assert result.returncode == 0, f"Script failed with exit code {result.returncode}.\nStderr: {result.stderr}"
     
-    # Verify first plot
+    # Test first plot
     assert os.path.exists(figure_path1), "The decay analysis plot was not created."
     assert os.path.getsize(figure_path1) > 0, "The created decay analysis plot file is empty."
     
-    # Verify second plot
+    # Test second plot
     assert os.path.exists(figure_path2), "The zero-mode coupling plot was not created."
     assert os.path.getsize(figure_path2) > 0, "The created zero-mode coupling plot file is empty."
 
 def test_zero_localisation_correlation_execution():
-    """Verify that the zero-mode localisation correlation script runs successfully and outputs the plot."""
+    """Test that the zero-mode localisation correlation script runs successfully and outputs the plot."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     
@@ -82,7 +82,7 @@ def test_zero_localisation_correlation_execution():
     assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
 
 def test_sweep_expander_parameters_execution():
-    """Verify that the expander parameter sweep script runs successfully and outputs the plot and CSV."""
+    """Test that the expander parameter sweep script runs successfully and outputs the plot and CSV."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     
@@ -96,7 +96,7 @@ def test_sweep_expander_parameters_execution():
     assert os.path.exists(csv_path), "The expander parameter sweep CSV was not created."
 
 def test_interacting_artin_fermions_execution():
-    """Verify that the interacting Artin fermions sweep script runs successfully and outputs the plot."""
+    """Test that the interacting Artin fermions sweep script runs successfully and outputs the plot."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     
@@ -107,7 +107,7 @@ def test_interacting_artin_fermions_execution():
     assert os.path.getsize(figure_path) > 0, "The created plot file is empty."
 
 def test_analytic_slope_verification():
-    """Verify that the analytic slope derivation matches the numerical slope, with refinements under 5% and 4%."""
+    """Test that the analytic slope derivation matches the numerical slope, with refinements under 5% and 4%."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, ".."))
     script_path = os.path.join(project_root, "scratch", "check_analytic_slope.py")
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     test_interacting_artin_fermions_execution()
     print("[OK] test_interacting_artin_fermions_execution passed.")
     
-    print("Testing analytic slope verification...")
+    print("Testing analytic slope exploration...")
     test_analytic_slope_verification()
     print("[OK] test_analytic_slope_verification passed.")
     

@@ -115,7 +115,7 @@ def main():
     beta_fit, _ = np.polyfit(F_vals, np.real(G_off_vals), 1)
     
     print("=" * 60)
-    print("NUMERICAL VERIFICATION OF THE ANALYTIC SLOPE")
+    print("NUMERICAL EXPLORATION OF THE ANALYTIC SLOPE")
     print("=" * 60)
     
     mean_C_H = np.mean(C_mag_vals * H_vals)

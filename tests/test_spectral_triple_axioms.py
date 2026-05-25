@@ -25,7 +25,7 @@ class TestSpectralTripleAxioms:
         }
 
     def test_summability_transition_at_p1(self, setup_data):
-        """Verifies that the spectral triple is 1-summable: trace converges for p > 1."""
+        """Checks that the spectral triple is 1-summable: trace converges for p > 1."""
         D_glob = setup_data['D_glob']
         evs = la.eigvalsh(D_glob)
         evs_nonzero = evs[np.abs(evs) > 1e-6]
@@ -39,7 +39,7 @@ class TestSpectralTripleAxioms:
         assert tr_15 < 10.0
 
     def test_regularity_commutator_bounded(self, setup_data):
-        """Verifies that [D, S] is bounded."""
+        """Checks that [D, S] is bounded."""
         D_glob = setup_data['D_glob']
         dim = len(D_glob)
         
@@ -55,7 +55,7 @@ class TestSpectralTripleAxioms:
         assert norm_comm < 150.0
 
     def test_regularity_nested_derivations_bounded(self, setup_data):
-        """Verifies that iterates delta^k(S) are bounded for k=1..3."""
+        """Checks that iterates delta^k(S) are bounded for k=1..3."""
         D0_diag = setup_data['D0_diag']
         dim = len(D0_diag)
         abs_D = np.diag(np.abs(D0_diag))
@@ -64,7 +64,7 @@ class TestSpectralTripleAxioms:
         for i in range(dim - 1):
             S[i+1, i] = 1.0
             
-        # Verify delta^k(S) norm is small (grows very slowly)
+        # Test delta^k(S) norm is small (grows very slowly)
         T = S.copy()
         for k in range(1, 4):
             T = abs_D @ T - T @ abs_D
@@ -74,7 +74,7 @@ class TestSpectralTripleAxioms:
             assert norm_T < expected_bound + 1e-5
 
     def test_dimension_spectrum_residue_at_1(self, setup_data):
-        """Verifies that the spectral zeta function residue at z=1 is close to theoretical value."""
+        """Checks that the spectral zeta function residue at z=1 is close to theoretical value."""
         D_glob = setup_data['D_glob']
         lambda_val = setup_data['lambda_val']
         N_dim = setup_data['N_dim']
@@ -93,7 +93,7 @@ class TestSpectralTripleAxioms:
         assert abs(residue_est - theoretical_residue) / theoretical_residue < 0.30
 
     def test_first_order_J_properties(self, setup_data):
-        """Verifies real structure properties: J^2 = I and J D J^-1 = -D (or anti-commutes)."""
+        """Checks real structure properties: J^2 = I and J D J^-1 = -D (or anti-commutes)."""
         D_glob = setup_data['D_glob']
         dim = len(D_glob)
         
@@ -105,7 +105,7 @@ class TestSpectralTripleAxioms:
         assert np.linalg.norm(J_D_Jinv + D_glob) < 1e-10
 
     def test_first_order_double_commutator_vanishes(self, setup_data):
-        """Verifies that [[D0, a], J b* J^-1] vanishes in the interior and [[D_glob, a], J b* J^-1] is low-rank."""
+        """Checks that [[D0, a], J b* J^-1] vanishes in the interior and [[D_glob, a], J b* J^-1] is low-rank."""
         D0 = setup_data['D0']
         D_glob = setup_data['D_glob']
         dim = len(D_glob)
@@ -129,7 +129,7 @@ class TestSpectralTripleAxioms:
             assert np.sum(s > 1e-9) <= 20
 
     def test_orientation_cycle(self, setup_data):
-        """Verifies orientation cycle u^-1 [D, u] = (pi/ln lambda) I (exact for D0, low-rank correction for D_glob)."""
+        """Checks orientation cycle u^-1 [D, u] = (pi/ln lambda) I (exact for D0, low-rank correction for D_glob)."""
         D0 = setup_data['D0']
         D_glob = setup_data['D_glob']
         lambda_val = setup_data['lambda_val']

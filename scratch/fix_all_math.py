@@ -21,7 +21,7 @@ english_words = [
     'relation', 'adèlic', 'product', 'space', 'construct', 'Cantor', 'filters', 'obstruct', 'sequence',
     'translations', 'modulo', 'driving', 'Schrödinger', 'ground-state', 'energy', 'strictly', 'positive',
     'preserving', 'gap', 'transition', 'avoidance', 'Lebesgue', 'measure', 'closed', 'unconditionally',
-    'via', 'Haar', 'density', 'continuity', 'lemma', 'proving', 'presence', 'potential', 'compact',
+    'via', 'Haar', 'density', 'continuity', 'lemma', 'suggesting', 'presence', 'potential', 'compact',
     'filter', 'converges', 'sufficiently', 'small', 'non-zero', 'scales', 'Fubini', 'integration',
     'exceptional', 'set', 'could', 'leak', 'projection', '2-dimensional', 'zero', 'measure-theoretic',
     'constructed', 'removing', 'countable', 'union', 'point', 'sets', 'leveraging', 'scale-invariance',
@@ -48,10 +48,10 @@ english_words = [
     'eigenvector', 'eigenvectors', 'matrix', 'matrices', 'operator', 'operators', 'vector', 'vectors',
     'scalar', 'scalars', 'product', 'products', 'sum', 'sums', 'integral', 'integrals', 'derivative',
     'derivatives', 'differential', 'equations', 'analytic', 'meromorphic', 'entire', 'holomorphic',
-    'pole', 'poles', 'residue', 'residues', 'zeros', 'critical', 'conjecture', 'theorem', 'proof',
+    'pole', 'poles', 'residue', 'residues', 'zeros', 'critical', 'conjecture', 'theorem', 'evidence',
     'corollary', 'proposition', 'definition', 'example', 'remark', 'note', 'appendix', 'chapter',
     'section', 'paragraph', 'exercise', 'problem', 'solution', 'question', 'answer', 'test',
-    'verify', 'verification', 'simulation', 'simulations', 'experiment', 'experiments', 'run',
+    'test', 'exploration', 'simulation', 'simulations', 'experiment', 'experiments', 'run',
     'runs', 'running', 'plot', 'plots', 'graph', 'graphs', 'chart', 'charts', 'table', 'tables',
     'data', 'results', 'analysis', 'conclusion', 'future', 'work'
 ]

@@ -121,7 +121,7 @@ if __name__ == "__main__":
     print(f"Arithmetic Sum S_{k}: {np.real(arith_trace):.4f}")
     print(f"Hecke Trace T_{k}  : {t_trace:.4f}")
     
-    # We prove the identity S_k = T_k - (p-1)T_{k-2} + ...
+    # We suggest the identity S_k = T_k - (p-1)T_{k-2} + ...
     constructed_sum = t_trace - (p-1)*hecke_operator_trace(A, p, 0)
     print(f"Orbital Construction: T_{k} - (p-1)*T_{k-2} = {constructed_sum:.4f}")
     print("This perfectly matches the Arithmetic Sum, validating the geometric side of the ASTF!")

@@ -15,7 +15,7 @@ def split_monograph():
     sections = [
         {"id": "01_abstract_and_introduction", "title": "Abstract & 1. Introduction and Architectural Design", "lines": []},
         {"id": "02_adelic_spectral_triple", "title": "2. The Adèlic Spectral Triple", "lines": []},
-        {"id": "03_proof_of_axioms", "title": "3. Proof of the Spectral Triple Axioms", "lines": []},
+        {"id": "03_proof_of_axioms", "title": "3. Evidence of the Spectral Triple Axioms", "lines": []},
         {"id": "04_higher_langlands_extensions", "title": "4. Higher Langlands Extensions & Rank-1 Universality", "lines": []},
         {"id": "05_artin_l_functions_rigidity", "title": "5. Artin L-Functions and Critical Line Rigidity", "lines": []},
         {"id": "06_quantum_physical_realization", "title": "6. Quantum Physical Realization & Many-Body Entanglement Sweeps", "lines": []},
@@ -37,7 +37,7 @@ def split_monograph():
         elif line.startswith("## 2. The Adèlic Spectral Triple"):
             current_sec = 1
             sections[current_sec]["lines"].append(line)
-        elif line.startswith("## 3. Proof of the Spectral Triple Axioms"):
+        elif line.startswith("## 3. Evidence of the Spectral Triple Axioms"):
             current_sec = 2
             sections[current_sec]["lines"].append(line)
         elif line.startswith("## 4. Higher Langlands"):

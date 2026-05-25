@@ -54,7 +54,7 @@ def build_parity_projections(depth=8):
     return P0, P1
 
 def main():
-    print("--- Collatz Gauge-Covariant Relation Verification ---")
+    print("--- Collatz Gauge-Covariant Relation Exploration ---")
     depth = 8
     N = 1 << depth
     
@@ -75,7 +75,7 @@ def main():
     non_zero_rows, non_zero_cols = np.where(np.abs(diff) > 1e-9)
     print(f"Number of non-zero entries in the defect matrix: {len(non_zero_rows)}")
     
-    # Let's verify that these occur only at boundary states that wrap around
+    # Let's test that these occur only at boundary states that wrap around
     print("\nDefect details (first 10):")
     for r, c in zip(non_zero_rows[:10], non_zero_cols[:10]):
         # The preimage state c wraps around under translation by 2

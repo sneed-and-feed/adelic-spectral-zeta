@@ -20,7 +20,7 @@ english_words = [
     'relation', 'adèlic', 'product', 'space', 'construct', 'Cantor', 'filters', 'obstruct', 'sequence',
     'translations', 'modulo', 'driving', 'Schrödinger', 'ground-state', 'energy', 'strictly', 'positive',
     'preserving', 'gap', 'transition', 'avoidance', 'Lebesgue', 'measure', 'closed', 'unconditionally',
-    'via', 'Haar', 'density', 'continuity', 'lemma', 'proving', 'presence', 'potential', 'compact',
+    'via', 'Haar', 'density', 'continuity', 'lemma', 'suggesting', 'presence', 'potential', 'compact',
     'filter', 'converges', 'sufficiently', 'small', 'non-zero', 'scales', 'Fubini', 'integration',
     'exceptional', 'set', 'could', 'leak', 'projection', '2-dimensional', 'zero', 'measure-theoretic',
     'constructed', 'removing', 'countable', 'union', 'point', 'sets', 'leveraging', 'scale-invariance',

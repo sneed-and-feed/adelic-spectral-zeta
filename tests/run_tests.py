@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-print("=== Adélic Spectral Triple Verification Runner ===")
+print("=== Adélic Spectral Triple Exploration Runner ===")
 
 # Run the simulation script
 script_path = os.path.join("experiments", "simulation.py")
@@ -26,7 +26,7 @@ expected_files = [
     os.path.join("data", "phase3_telemetry.txt")
 ]
 
-print("\n--- Output Verification ---")
+print("\n--- Output Exploration ---")
 success = True
 for f in expected_files:
     full_path = os.path.join(output_dir, f)
@@ -37,7 +37,7 @@ for f in expected_files:
         success = False
 
 if success and result.returncode == 0:
-    print("\nALL PHASES COMPLETED AND VERIFIED SUCCESSFULLY!")
+    print("\nALL PHASES COMPLETED AND TESTED SUCCESSFULLY!")
 else:
     print("\nVERIFICATION FAILED. CHECK ERRORS ABOVE.")
 

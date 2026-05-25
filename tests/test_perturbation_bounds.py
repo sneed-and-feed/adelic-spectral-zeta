@@ -6,7 +6,7 @@ from adelic_spectral_zeta.universality import (
 )
 
 class TestPerturbationBounds:
-    """Verifies Hoffman-Wielandt perturbation bounds and subspace nesting for GL(3) and GL(4)."""
+    """Checks Hoffman-Wielandt perturbation bounds and subspace nesting for GL(3) and GL(4)."""
 
     def setup_operator_components(self, degree=4, lambda_val=29.0, N_dim=150, p_max=100):
         dim = 2 * N_dim + 1
@@ -75,7 +75,7 @@ class TestPerturbationBounds:
 
     @pytest.mark.parametrize("degree", [4, 5])
     def test_subspace_nesting(self, degree):
-        """Verifies that the rank-1 coupling vector lies in the span of the component vectors."""
+        """Checks that the rank-1 coupling vector lies in the span of the component vectors."""
         D0_diag, xi_r1, xi_rn = self.setup_operator_components(degree=degree)
         
         # Normalize xi_r1
@@ -92,7 +92,7 @@ class TestPerturbationBounds:
 
     @pytest.mark.parametrize("degree", [4, 5])
     def test_hoffman_wielandt_bound(self, degree):
-        """Verifies that the eigenvalue difference is bounded by the Hoffman-Wielandt bound."""
+        """Checks that the eigenvalue difference is bounded by the Hoffman-Wielandt bound."""
         D0_diag, xi_r1, xi_rn = self.setup_operator_components(degree=degree)
         
         dim = len(D0_diag)
@@ -122,13 +122,13 @@ class TestPerturbationBounds:
         assert sum_sq_diff <= frob_diff + 1e-9, f"Spectral diff {sum_sq_diff} exceeded operator diff {frob_diff}"
         assert frob_diff <= bound + 1e-9, f"Operator diff {frob_diff} exceeded theoretical bound {bound}"
         
-        # Verify Frobenius gap is bounded by sqrt(k) where k = degree - 1
+        # Test Frobenius gap is bounded by sqrt(k) where k = degree - 1
         k = degree - 1
         assert frob_projs <= np.sqrt(k) + 1e-9, f"Frobenius projection gap {frob_projs} exceeded sqrt(k)={np.sqrt(k)}"
 
     @pytest.mark.parametrize("degree", [4, 5])
     def test_mae_bound(self, degree):
-        """Verifies that Mean Absolute Error satisfies the MAE <= 2 * sqrt(k) * ||D0||_F / sqrt(N) bound."""
+        """Checks that Mean Absolute Error satisfies the MAE <= 2 * sqrt(k) * ||D0||_F / sqrt(N) bound."""
         D0_diag, xi_r1, xi_rn = self.setup_operator_components(degree=degree)
         
         dim = len(D0_diag)

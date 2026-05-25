@@ -37,8 +37,8 @@ def tau_tilde(p):
 
 primes_43 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43]
 
-# Verify tau values
-print("Verified tau coefficients:")
+# Test tau values
+print("Tested tau coefficients:")
 for p in primes_43[:6]:
     print(f"  tau({p}) = {int(tau[p])},  tau_tilde = {tau_tilde(p):.8f}")
 

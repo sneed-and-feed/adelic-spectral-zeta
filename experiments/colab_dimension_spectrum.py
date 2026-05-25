@@ -1,5 +1,5 @@
 """
-Task 1.2: Discrete Dimension Spectrum Verification
+Task 1.2: Discrete Dimension Spectrum Exploration
 ===================================================
 DESIGNED FOR EXECUTION ON GOOGLE COLAB (T4 / A100)
 
@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import time
 
 print("=" * 70)
-print("TASK 1.2: DISCRETE DIMENSION SPECTRUM VERIFICATION (COLAB)")
+print("TASK 1.2: DISCRETE DIMENSION SPECTRUM EXPLORATION (COLAB)")
 print("=" * 70)
 
 # ─── HIGH-RESOLUTION OPERATOR SETUP ────────────────────────────────────────

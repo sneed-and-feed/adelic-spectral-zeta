@@ -35,7 +35,7 @@ def split_monograph():
         elif line.startswith("## 2. The Adèlic Spectral Triple"):
             current_sec = 1
             sections[current_sec]["lines"].append(line)
-        elif line.startswith("## 3. Proof of the Spectral Triple Axioms"):
+        elif line.startswith("## 3. Evidence of the Spectral Triple Axioms"):
             current_sec = 2
             sections[current_sec]["lines"].append(line)
         elif line.startswith("## 4. Higher Langlands"):
@@ -50,10 +50,10 @@ def split_monograph():
         elif line.startswith("## 7. Arithmetic Statistics"):
             current_sec = 6
             sections[current_sec]["lines"].append(line)
-        elif line.startswith("### 7.4 Numerical Verification"):
+        elif line.startswith("### 7.4 Numerical Exploration"):
             # Split point: transition to Chapter 8
             current_sec = 7
-            sections[current_sec]["lines"].append("## 8. Numerical Verification & Many-Body Simulations")
+            sections[current_sec]["lines"].append("## 8. Numerical Exploration & Many-Body Simulations")
             sections[current_sec]["lines"].append("")
             sections[current_sec]["lines"].append(line)
         elif line.startswith("## 8. Conclusion"):

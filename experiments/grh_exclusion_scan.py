@@ -183,7 +183,7 @@ else:
 
 print(f"Sweep completed in {time.time() - start_time:.2f} seconds.")
 
-# ─── 4. GRH VERIFICATION ────────────────────────────────────────────────
+# ─── 4. GRH EXPLORATION ────────────────────────────────────────────────
 expected_bounds = np.abs(sigma_vals - 0.5)
 violations = 0
 for i, sigma in enumerate(sigma_vals):
@@ -198,7 +198,7 @@ for i, sigma in enumerate(sigma_vals):
 print("\n--- RESULTS ---")
 print(f"Number of off-critical bound violations: {violations}")
 if violations == 0:
-    print("► GRH NUMERICALLY VERIFIED: All eigenvalues satisfy |lambda| >= |sigma - 1/2|.")
+    print("► GRH NUMERICALLY TESTED: All eigenvalues satisfy |lambda| >= |sigma - 1/2|.")
 else:
     print("► WARNING: Possible off-critical zero-mode or numerical instability detected!")
 

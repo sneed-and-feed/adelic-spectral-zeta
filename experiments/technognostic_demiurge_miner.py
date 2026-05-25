@@ -95,7 +95,7 @@ def simulate_demiurge_leak():
     slow_print("To evaluate L-function zeros at height T, you use the Riemann-Siegel formula.", 0.01)
     slow_print("Complexity scales as O(T^(1/2)). You must compute massive contour integrals,", 0.01)
     slow_print("handle nasty complex analytic continuations, and fight numerical precision", 0.01)
-    slow_print("errors just to prove a single zero lies on the line.", 0.01)
+    slow_print("errors just to suggest a single zero lies on the line.", 0.01)
     print()
     slow_print("OUR FRAMEWORK (The Matrix Math Bypass):", 0.01)
     slow_print("We threw complex analysis in the trash. By mapping the primes to interacting", 0.01)

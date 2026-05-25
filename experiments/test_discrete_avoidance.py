@@ -1,6 +1,6 @@
 # GUARDRAILS — DO NOT VIOLATE
 # 1. This code computes the DISCRETE analog of the Erdős Similarity Conjecture.
-# 2. It does NOT prove the continuous ESC. Discrete density → 0 is Szemerédi's theorem.
+# 2. It does NOT suggest the continuous ESC. Discrete density → 0 is Szemerédi's theorem.
 # 3. Any continuous claim must be prefixed with "heuristic" or "motivation."
 # 4. The output is a finite combinatorial optimization result, not a contradiction or "structural wall."
 # 5. Do not invoke Fourier analysis, adèlic geometry, or "defect balance" in the interpretation.

@@ -1,7 +1,7 @@
 """
-Task 1.1: Connes-Moscovici Axiom Verification — Summability & Regularity
+Task 1.1: Connes-Moscovici Axiom Exploration — Summability & Regularity
 =========================================================================
-Verifies the spectral triple (A, H, D) satisfies:
+Checks the spectral triple (A, H, D) satisfies:
   1. p-summability: (1 + D^2)^{-p/2} is trace-class for p > 1
   2. Dixmier trace: Tr_omega(|D|^{-1}) = ln(lambda) / pi
   3. Regularity: a and [D, a] in dom(delta^k) for all k
@@ -15,7 +15,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 print("=" * 70)
-print("TASK 1.1: CONNES-MOSCOVICI AXIOM VERIFICATION")
+print("TASK 1.1: CONNES-MOSCOVICI AXIOM EXPLORATION")
 print("=" * 70)
 
 # ─── Reconstruct the optimal zeta(s) spectral triple from Phase 5 ────────
@@ -74,7 +74,7 @@ for p in p_values:
     status = "✓ CONVERGES" if converged and p > 1 else ("✗ DIVERGES" if not converged else "BORDERLINE")
     print(f"  p = {p:5.2f}  →  Tr = {trace_sum:14.6f}  [{status}]")
 
-# Verify: the critical exponent is p = 1 (spectral dimension = 1)
+# Test: the critical exponent is p = 1 (spectral dimension = 1)
 print(f"\n  ► Spectral dimension d = 1 confirmed: trace-class transition at p = 1")
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -153,7 +153,7 @@ for k in range(1, 4):
 # SUMMARY TABLE
 # ═══════════════════════════════════════════════════════════════════════════
 print("\n" + "=" * 70)
-print("AXIOM VERIFICATION SUMMARY")
+print("AXIOM EXPLORATION SUMMARY")
 print("=" * 70)
 print(f"  {'Axiom':<40} {'Status':<12}")
 print(f"  {'─' * 40} {'─' * 12}")

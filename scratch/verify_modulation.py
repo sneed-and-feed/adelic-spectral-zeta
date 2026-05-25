@@ -41,7 +41,7 @@ def verify_modulation_mapping():
     # Combined operator U = M @ L (16x8)
     U = M @ L
     
-    # Verify that U is an isometry: U^T @ U = I_8
+    # Test that U is an isometry: U^T @ U = I_8
     is_isometry = np.allclose(U.T @ U, np.eye(8))
     print(f"Is U = M @ L an isometry? {is_isometry}")
     

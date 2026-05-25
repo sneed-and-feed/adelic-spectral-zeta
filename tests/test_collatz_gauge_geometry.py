@@ -50,7 +50,7 @@ def build_operators(depth):
     return A, P0, P1, B_alg, B_num
 
 def test_operator_gauge_identity():
-    """Verifies Proposition 3: B_alg A^2 = A B_alg P0 + A^3 B_alg P1 holds with zero defect."""
+    """Checks Proposition 3: B_alg A^2 = A B_alg P0 + A^3 B_alg P1 holds with zero defect."""
     for depth in range(3, 8):
         A, P0, P1, B_alg, _ = build_operators(depth)
         lhs = B_alg @ (A @ A)
@@ -59,7 +59,7 @@ def test_operator_gauge_identity():
         assert norm(defect, 'fro') < 1e-12
 
 def test_numerical_representation_defect():
-    """Verifies that the numerical representation B_num has Frobenius norm defect exactly 2.0."""
+    """Checks that the numerical representation B_num has Frobenius norm defect exactly 2.0."""
     for depth in range(3, 8):
         A, P0, P1, _, B_num = build_operators(depth)
         lhs = B_num @ (A @ A)
@@ -69,7 +69,7 @@ def test_numerical_representation_defect():
         assert np.isclose(norm(defect, 'fro'), 2.0)
 
 def test_curvature_scaling_limit():
-    """Verifies that the normalized commutator norm is exactly C(d) = sqrt(1 - 2^(1-d))."""
+    """Checks that the normalized commutator norm is exactly C(d) = sqrt(1 - 2^(1-d))."""
     for depth in range(3, 8):
         N = 1 << depth
         A, _, _, B_alg, _ = build_operators(depth)
@@ -79,13 +79,13 @@ def test_curvature_scaling_limit():
         assert np.isclose(norm_comm, expected)
 
 def test_commutator_kernel_dimension():
-    """Verifies Theorem 5: rank(K_d) = 2^(d-1) - 1 and dim(ker(K_d)) = 2^(d-1) + 1."""
+    """Checks Theorem 5: rank(K_d) = 2^(d-1) - 1 and dim(ker(K_d)) = 2^(d-1) + 1."""
     for depth in range(3, 8):
         N = 1 << depth
         A, _, _, B_alg, _ = build_operators(depth)
         K_d = A @ B_alg - B_alg @ A
         
-        # SVD verification of rank
+        # SVD exploration of rank
         s = np.linalg.svdvals(K_d)
         rank = np.sum(s > 1e-10)
         kernel_dim = N - rank
@@ -97,7 +97,7 @@ def test_commutator_kernel_dimension():
         assert kernel_dim == expected_kernel
 
 def test_rank_1_commutator():
-    """Verifies that [B_alg, omega] = 1/2 |u><v| in finite dimensions."""
+    """Checks that [B_alg, omega] = 1/2 |u><v| in finite dimensions."""
     for depth in range(3, 8):
         N = 1 << depth
         _, P0, P1, B_alg, _ = build_operators(depth)
@@ -136,7 +136,7 @@ def test_rank_1_commutator():
 
 
 def test_exact_graph_correspondence():
-    """Verifies that (M_d + M_d^T) L = 1/2 L A_G_d holds on the periodic subspace."""
+    """Checks that (M_d + M_d^T) L = 1/2 L A_G_d holds on the periodic subspace."""
     for depth in range(2, 9):
         N = 1 << depth
         half_N = 1 << (depth - 1)

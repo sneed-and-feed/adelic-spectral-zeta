@@ -38,7 +38,7 @@ def get_modulation_isometry(depth):
     return U
 
 def test_wavelet_block_diagonalization():
-    r"""Verify that A_G_d is unitarily equivalent to A_G_2 \oplus H_2 \oplus ... \oplus H_{d-1}"""
+    r"""Test that A_G_d is unitarily equivalent to A_G_2 \oplus H_2 \oplus ... \oplus H_{d-1}"""
     for d in range(3, 8):
         N = 1 << (d - 1)
         A_d = build_adjacency(d)
@@ -62,7 +62,7 @@ def test_wavelet_block_diagonalization():
         # Transform A_d to the wavelet basis
         A_w = W.T @ A_d @ W
         
-        # Verify the block-diagonal structure
+        # Test the block-diagonal structure
         # Block dimensions: 2, 2, 4, 8, ..., 2^(d-2)
         block_dims = [2] + [1 << (k - 2) for k in range(3, d + 1)]
         
@@ -76,7 +76,7 @@ def test_wavelet_block_diagonalization():
         # Assert that all off-diagonal block entries are close to zero
         assert np.max(np.abs(A_w[mask])) < 1e-12
         
-        # Verify that the blocks match A_2 and H_{k-1}
+        # Test that the blocks match A_2 and H_{k-1}
         start = 0
         A_2 = build_adjacency(2)
         assert np.allclose(A_w[start:start+2, start:start+2], A_2, atol=1e-12)
@@ -92,7 +92,7 @@ def test_wavelet_block_diagonalization():
             start += dim
 
 def test_chiral_symmetry():
-    """Verify that H_{d-1} satisfies J H + H J = 0 in the split basis"""
+    """Test that H_{d-1} satisfies J H + H J = 0 in the split basis"""
     for d in range(4, 8):
         N = 1 << (d - 2)
         A_d = build_adjacency(d)
@@ -131,7 +131,7 @@ def test_chiral_symmetry():
         assert np.allclose(anti_comm, 0, atol=1e-12)
 
 def test_scale_crossing_isometries():
-    """Verify the isometric and orthogonal properties of T_d and R_d"""
+    """Test the isometric and orthogonal properties of T_d and R_d"""
     for d in range(3, 7):
         N_prev = 1 << (d - 2)
         N_curr = 1 << (d - 1)
@@ -151,14 +151,14 @@ def test_scale_crossing_isometries():
         T_d = U_d1 @ L_d # V_{d+1} x V_{d-1}
         R_d = U_d1 @ U_d # V_{d+1} x V_{d-1}
         
-        # Verify that T_d and R_d are isometries
+        # Test that T_d and R_d are isometries
         assert np.allclose(T_d.T @ T_d, np.eye(N_prev), atol=1e-12)
         assert np.allclose(R_d.T @ R_d, np.eye(N_prev), atol=1e-12)
         
-        # Verify that they have orthogonal ranges
+        # Test that they have orthogonal ranges
         assert np.allclose(T_d.T @ R_d, 0, atol=1e-12)
         
-        # Verify that their ranges span the detail space W_{d+1} (columns of U_{d+1})
+        # Test that their ranges span the detail space W_{d+1} (columns of U_{d+1})
         # i.e., T_d @ T_d^T + R_d @ R_d^T = U_{d+1} @ U_{d+1}^T
         P_T = T_d @ T_d.T
         P_R = R_d @ R_d.T
@@ -166,7 +166,7 @@ def test_scale_crossing_isometries():
         assert np.allclose(P_T + P_R, P_W, atol=1e-12)
 
 def test_eigenvector_alignment_recursion():
-    """Verify that the anti-symmetric eigenvectors at scale d+1 are reconstructed
+    """Test that the anti-symmetric eigenvectors at scale d+1 are reconstructed
     exactly from the anti-symmetric eigenvectors at scale d via T_d and R_d."""
     for d in range(3, 6):
         # Scale d detail eigenvectors
