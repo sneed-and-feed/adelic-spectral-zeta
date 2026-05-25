@@ -78,36 +78,4 @@ theorem extract_obstruction (hq_gt : q > 1)
     Nonempty (ModularObstruction p q E A) :=
   sorry
 
-noncomputable def configuration_density (E : Set ℝ) (A : ℕ → ℝ) : ℝ := sorry
 
-/-- Hypothesis 11.H.3: The Configuration Density Hypothesis
-For a compact set E of positive Lebesgue measure, the arithmetic configuration density 
-of any exponentially decaying sequence A must be strictly positive. 
-This directly asserts the Erdős Similarity Conjecture as a structural density law. -/
-axiom configuration_density_positive (hE_compact : IsCompact E) (hE_pos : MeasureTheory.volume E > 0) 
-    (hA : Filter.Tendsto A Filter.atTop (nhds 0)) : 
-    configuration_density E A > 0
-
-/-- Lemma: Sequence Avoidance implies Zero Configuration Density -/
-axiom avoidance_implies_zero_density (h_avoid : ¬ ContainsAffineCopy E A) : 
-    configuration_density E A = 0
-
-/-- Theorem 11.14: The Erdős Similarity Theorem for Geometric Sequences
-Conditional Contradiction modulo Hypothesis 11.H.3 (Configuration Density). -/
-theorem erdos_similarity_geometric_case (hq_gt : q > 1) 
-    (hE_compact : IsCompact E) (hE_pos : MeasureTheory.volume E > 0) 
-    (hA : Filter.Tendsto A Filter.atTop (nhds 0)) (hq : ∀ n, A n = (q : ℝ) ^ (-(n : ℝ))) : 
-    ContainsAffineCopy E A := by
-  by_contra h_avoid
-  
-  -- 1. Avoidance forces zero density
-  have h_density_zero : configuration_density E A = 0 :=
-    avoidance_implies_zero_density E A h_avoid
-    
-  -- 2. Configuration Density Hypothesis (Structural Law)
-  have h_density_pos : configuration_density E A > 0 :=
-    configuration_density_positive E A hE_compact hE_pos hA
-    
-  -- 3. Contradiction
-  rw [h_density_zero] at h_density_pos
-  exact lt_irrefl 0 h_density_pos

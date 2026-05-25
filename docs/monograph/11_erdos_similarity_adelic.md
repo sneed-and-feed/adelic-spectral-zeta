@@ -41,10 +41,10 @@ To ensure the logical bridge of the conjecture is mathematically watertight and 
 To rigorously bind the Lean 4 formalization to standard analytic number theory, the Hilbert space is explicitly defined as the **restricted tensor product** relative to the spherical vectors $\mathbf{1}_{\mathbb{Z}_p}$:
 $$L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p < \infty}\nolimits' L^2(\mathbb{Q}_p)$$
 
-- **Configuration Density**: To rigorously detect the geometric footprint of an avoiding set, we utilize a direct arithmetic observable: the density of similar copies of the geometric sequence. For an avoiding set, the density of specific geometric configurations $(x, x+q^{-n})$ must crash to exactly 0.
-- **The Structural Law Hypothesis**: We hypothesize that no fractal construction can indefinitely suppress the density of exponentially decaying geometric configurations while maintaining positive Lebesgue measure.
+- **Discrete Optimization Heuristic**: Because continuous Fourier bounds universally collapse to trivial limits (e.g., continuity of translation in $L^1$), we transition to a discrete combinatorial analog. We compute the maximum density of finite subsets $A \subseteq \{1,\dots,N\}$ avoiding specific 4-point patterns using Integer Linear Programming (ILP).
+- **Szemerédi's Theorem**: For integer arithmetic progressions, Szemerédi's theorem guarantees the maximum density $\delta(N) \to 0$. Our ILP optimization maps the finite-$N$ regime of this decay, explicitly bound between the Behrend-Rankin lower bounds and Gowers upper bounds.
 
-**Hypothesis 11.H.3 (The Configuration Density Hypothesis)**: For a compact set $E$ of positive measure, the arithmetic configuration density of an exponentially decaying sequence $A$ stabilizes to a strictly positive value $\sim |E|^L$ (where $L$ is the length of the finite configuration). This structural law asserts that sequences naturally embed into positive-measure sets, creating an absolute contradiction for any set claiming to strictly avoid them.
+**Crucial Note**: The discrete vanishing of density is *necessary but not sufficient* for the continuous ESC. This discrete density survey strictly provides a computational heuristic for the difficulty of 4-point pattern avoidance, and does not formally prove the continuous conjecture (which remains an open problem in Fourier analysis).
 
 #### Rigor Classification Table
 
