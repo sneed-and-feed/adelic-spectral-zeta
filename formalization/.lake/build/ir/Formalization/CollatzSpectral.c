@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: Formalization.CollatzSpectral
-// Imports: Init Mathlib.Data.Matrix.Basic Mathlib.Algebra.Module.Submodule.Basic Formalization.CollatzConnectivity
+// Imports: Init Mathlib.Data.Matrix.Basic Mathlib.Algebra.Module.Submodule.Basic Mathlib.LinearAlgebra.Matrix.Hermitian Mathlib.LinearAlgebra.Matrix.Spectrum Formalization.CollatzConnectivity
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -29,6 +29,7 @@ lean_object* l_Semifield_toDivisionSemiring___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit___elambda__2(lean_object*, lean_object*);
 static lean_object* l_CollatzSpectral_symSubspace___closed__4;
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__2___closed__1;
+lean_object* lean_sorry(uint8_t);
 static lean_object* l_CollatzSpectral_symSubspace___closed__1;
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__1___closed__1;
 LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit(lean_object*, lean_object*);
@@ -38,6 +39,7 @@ lean_object* l_pi(lean_object*, lean_object*);
 lean_object* l_Semifield_toCommGroupWithZero___rarg(lean_object*);
 lean_object* l_ZMod_instField(lean_object*, lean_object*);
 lean_object* l_AddMonoid_toAddZeroClass___rarg(lean_object*);
+LEAN_EXPORT lean_object* l_CollatzSpectral_sumProdEquiv___boxed(lean_object*);
 lean_object* lean_nat_pow(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_antisymSubspace___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit___elambda__2___boxed(lean_object*, lean_object*);
@@ -51,6 +53,7 @@ lean_object* l_Field_toSemifield___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_symSubspace(lean_object*, lean_object*);
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__1___closed__2;
 static lean_object* l_CollatzSpectral_symSubspace___closed__2;
+LEAN_EXPORT lean_object* l_CollatzSpectral_sumProdEquiv(lean_object*);
 lean_object* l_ZMod_val(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(lean_object* x_1, lean_object* x_2) {
 _start:
@@ -352,9 +355,29 @@ x_3 = l_CollatzSpectral_sheetSplit(x_1, lean_box(0));
 return x_3;
 }
 }
+LEAN_EXPORT lean_object* l_CollatzSpectral_sumProdEquiv(lean_object* x_1) {
+_start:
+{
+uint8_t x_2; lean_object* x_3; 
+x_2 = 0;
+x_3 = lean_sorry(x_2);
+return x_3;
+}
+}
+LEAN_EXPORT lean_object* l_CollatzSpectral_sumProdEquiv___boxed(lean_object* x_1) {
+_start:
+{
+lean_object* x_2; 
+x_2 = l_CollatzSpectral_sumProdEquiv(x_1);
+lean_dec(x_1);
+return x_2;
+}
+}
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Data_Matrix_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Algebra_Module_Submodule_Basic(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Hermitian(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Spectrum(uint8_t builtin, lean_object*);
 lean_object* initialize_Formalization_CollatzConnectivity(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_Formalization_CollatzSpectral(uint8_t builtin, lean_object* w) {
@@ -368,6 +391,12 @@ res = initialize_Mathlib_Data_Matrix_Basic(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_Algebra_Module_Submodule_Basic(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_Mathlib_LinearAlgebra_Matrix_Hermitian(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_Mathlib_LinearAlgebra_Matrix_Spectrum(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Formalization_CollatzConnectivity(builtin, lean_io_mk_world());

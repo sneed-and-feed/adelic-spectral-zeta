@@ -3,33 +3,36 @@
    ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\CollatzSpectral.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\CollatzSpectral.olean -i .\\.\\.lake\\build\\lib\\Formalization\\CollatzSpectral.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\CollatzSpectral.c --json",
    "level": "trace"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:20:4: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:22:4: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:20:4: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:22:4: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:134:27: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:136:27: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:302:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:304:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:321:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice\nnote: this linter can be disabled with `set_option linter.unnecessarySeqFocus false`",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:323:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice\nnote: this linter can be disabled with `set_option linter.unnecessarySeqFocus false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:333:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:335:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:344:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:346:8: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:366:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:379:4: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:373:28: unused variable `d`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:395:69: unused variable `h_inv2`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:381:35: unused variable `d`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:424:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:430:35: unused variable `d`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "6307755488323148138"}
+ "depHash": "14590053478654438312"}
