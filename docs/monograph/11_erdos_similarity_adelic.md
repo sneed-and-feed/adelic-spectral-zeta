@@ -28,7 +28,7 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 
 4. **[Programmatic Bridge]**: The master conjectural bridge linking the spectral framework to the full Erdős Similarity Conjecture (ESC).
 
-#### High-Poly Formalization Architecture
+#### Strict Topological Formalization Architecture
 
 To ensure the logical bridge of the conjecture is mathematically watertight and free of "map entropy" (unbounded edge cases and floating analytic inequalities), the adèlic framework is fortified using strict structural topologies:
 
