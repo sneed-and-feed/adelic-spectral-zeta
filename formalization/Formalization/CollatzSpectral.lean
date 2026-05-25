@@ -598,9 +598,12 @@ theorem collatz_spectral_decomposition {d : ℕ} (hd : d ≥ 3) :
 -- ============================================================================
 
 -- Characteristic polynomial factorization (axiomatized for now due to Mathlib missing charpoly_fromBlocks)
-axiom charpoly_block_diag {α : Type*} [CommRing α] {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+lemma charpoly_block_diag {α : Type*} [CommRing α] {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
     (A : Matrix n n α) (B : Matrix m m α) :
-    (Matrix.fromBlocks A 0 0 B).charpoly = A.charpoly * B.charpoly
+    (Matrix.fromBlocks A 0 0 B).charpoly = A.charpoly * B.charpoly := by
+  unfold Matrix.charpoly
+  rw [Matrix.charmatrix_fromBlocks]
+  simp [Matrix.det_fromBlocks_zero₂₁]
 
 axiom charpoly_similarity {α : Type*} [CommRing α] {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n α) (S : Matrix n n α) (S_inv : Matrix n n α)
@@ -610,10 +613,20 @@ axiom charpoly_similarity {α : Type*} [CommRing α] {n : Type*} [Fintype n] [De
 noncomputable def blockDiagMatrix {d : ℕ} (hd : d ≥ 3) : Matrix ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ℚ :=
   Matrix.fromBlocks (weightedMatrix hd) 0 0 (sheetDiffMatrix hd)
 
-def sumProdEquiv {d : ℕ} : (ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2))) ≃ ZMod (2^(d-2)) × ZMod 2 := sorry
+def sumProdEquiv {d : ℕ} : (ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2))) ≃ ZMod (2^(d-2)) × ZMod 2 where
+  toFun := fun x => match x with
+    | Sum.inl a => (a, 0)
+    | Sum.inr a => (a, 1)
+  invFun := fun p => match p.2 with
+    | 0 => Sum.inl p.1
+    | 1 => Sum.inr p.1
+  left_inv := by intro x; cases x <;> rfl
+  right_inv := by rintro ⟨v, b⟩; fin_cases b <;> rfl
 
-axiom A'_block_diag_target_eq_blockDiagMatrix {d : ℕ} (hd : d ≥ 3) :
-  A'_block_diag_target hd = Matrix.reindex sumProdEquiv sumProdEquiv (blockDiagMatrix hd)
+lemma A'_block_diag_target_eq_blockDiagMatrix {d : ℕ} (hd : d ≥ 3) :
+  A'_block_diag_target hd = Matrix.reindex sumProdEquiv sumProdEquiv (blockDiagMatrix hd) := by
+  ext ⟨v1, b1⟩ ⟨v2, b2⟩
+  fin_cases b1 <;> fin_cases b2 <;> simp [A'_block_diag_target, blockDiagMatrix, Matrix.fromBlocks, sumProdEquiv, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
 
 /-- The characteristic polynomial of G_d factors exactly into the characteristic polynomials
     of the symmetric block (weightedMatrix) and the antisymmetric block. -/
