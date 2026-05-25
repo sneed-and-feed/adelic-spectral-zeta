@@ -36,7 +36,6 @@ lean_object* l_tau(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_symSubspace___lambda__1___boxed(lean_object*);
 lean_object* l_pi(lean_object*, lean_object*);
 lean_object* l_Semifield_toCommGroupWithZero___rarg(lean_object*);
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__2(lean_object*, lean_object*);
 lean_object* l_ZMod_instField(lean_object*, lean_object*);
 lean_object* l_AddMonoid_toAddZeroClass___rarg(lean_object*);
 lean_object* lean_nat_pow(lean_object*, lean_object*);
@@ -44,19 +43,16 @@ LEAN_EXPORT lean_object* l_CollatzSpectral_antisymSubspace___boxed(lean_object*,
 LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit___elambda__2___boxed(lean_object*, lean_object*);
 uint8_t lean_nat_dec_lt(lean_object*, lean_object*);
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__1___closed__3;
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__1___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_canonicalLift___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_antisymSubspace(lean_object*, lean_object*);
 lean_object* lean_nat_sub(lean_object*, lean_object*);
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__1(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1___boxed(lean_object*, lean_object*);
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__2___boxed(lean_object*, lean_object*);
 lean_object* l_Field_toSemifield___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_symSubspace(lean_object*, lean_object*);
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__1___closed__2;
 static lean_object* l_CollatzSpectral_symSubspace___closed__2;
 lean_object* l_ZMod_val(lean_object*, lean_object*);
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__1(lean_object* x_1, lean_object* x_2) {
+LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(lean_object* x_1, lean_object* x_2) {
 _start:
 {
 lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
@@ -76,24 +72,37 @@ x_10 = lean_apply_1(x_9, x_2);
 return x_10;
 }
 }
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__2(lean_object* x_1, lean_object* x_2) {
+LEAN_EXPORT lean_object* l_CollatzSpectral_canonicalLift(lean_object* x_1, lean_object* x_2) {
 _start:
 {
-lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
-x_3 = lean_unsigned_to_nat(1u);
+lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; 
+x_3 = lean_unsigned_to_nat(2u);
 x_4 = lean_nat_sub(x_1, x_3);
-x_5 = lean_unsigned_to_nat(2u);
-x_6 = lean_nat_pow(x_5, x_4);
+x_5 = lean_nat_pow(x_3, x_4);
 lean_dec(x_4);
-x_7 = l_ZMod_commRing(x_6);
-x_8 = lean_ctor_get(x_7, 0);
-lean_inc(x_8);
-lean_dec(x_7);
-x_9 = lean_ctor_get(x_8, 2);
-lean_inc(x_9);
-lean_dec(x_8);
-x_10 = lean_apply_1(x_9, x_2);
-return x_10;
+x_6 = l_ZMod_val(x_5, x_2);
+lean_dec(x_2);
+lean_dec(x_5);
+x_7 = l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(x_1, x_6);
+return x_7;
+}
+}
+LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(x_1, x_2);
+lean_dec(x_1);
+return x_3;
+}
+}
+LEAN_EXPORT lean_object* l_CollatzSpectral_canonicalLift___boxed(lean_object* x_1, lean_object* x_2) {
+_start:
+{
+lean_object* x_3; 
+x_3 = l_CollatzSpectral_canonicalLift(x_1, x_2);
+lean_dec(x_1);
+return x_3;
 }
 }
 static lean_object* _init_l_CollatzSpectral_sheetSplit___elambda__1___closed__1() {
@@ -144,28 +153,16 @@ lean_dec(x_7);
 lean_dec(x_4);
 if (x_9 == 0)
 {
-lean_object* x_10; lean_object* x_11; lean_object* x_12; lean_object* x_13; lean_object* x_14; 
-x_10 = lean_nat_sub(x_1, x_8);
-x_11 = lean_nat_pow(x_8, x_10);
-lean_dec(x_10);
-x_12 = l_ZMod_val(x_11, x_3);
-lean_dec(x_3);
-lean_dec(x_11);
-x_13 = l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__1(x_1, x_12);
-x_14 = l_tau(x_1, x_13);
-return x_14;
+lean_object* x_10; lean_object* x_11; 
+x_10 = l_CollatzSpectral_canonicalLift(x_1, x_3);
+x_11 = l_tau(x_1, x_10);
+return x_11;
 }
 else
 {
-lean_object* x_15; lean_object* x_16; lean_object* x_17; lean_object* x_18; 
-x_15 = lean_nat_sub(x_1, x_8);
-x_16 = lean_nat_pow(x_8, x_15);
-lean_dec(x_15);
-x_17 = l_ZMod_val(x_16, x_3);
-lean_dec(x_3);
-lean_dec(x_16);
-x_18 = l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__2(x_1, x_17);
-return x_18;
+lean_object* x_12; 
+x_12 = l_CollatzSpectral_canonicalLift(x_1, x_3);
+return x_12;
 }
 }
 }
@@ -243,24 +240,6 @@ lean_ctor_set(x_5, 1, x_4);
 return x_5;
 }
 }
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__1___boxed(lean_object* x_1, lean_object* x_2) {
-_start:
-{
-lean_object* x_3; 
-x_3 = l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__1(x_1, x_2);
-lean_dec(x_1);
-return x_3;
-}
-}
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__2___boxed(lean_object* x_1, lean_object* x_2) {
-_start:
-{
-lean_object* x_3; 
-x_3 = l_Nat_cast___at_CollatzSpectral_sheetSplit___elambda__1___spec__2(x_1, x_2);
-lean_dec(x_1);
-return x_3;
-}
-}
 LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit___elambda__1___boxed(lean_object* x_1, lean_object* x_2) {
 _start:
 {
@@ -275,59 +254,6 @@ _start:
 {
 lean_object* x_3; 
 x_3 = l_CollatzSpectral_sheetSplit___elambda__2(x_1, x_2);
-lean_dec(x_1);
-return x_3;
-}
-}
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(lean_object* x_1, lean_object* x_2) {
-_start:
-{
-lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; lean_object* x_8; lean_object* x_9; lean_object* x_10; 
-x_3 = lean_unsigned_to_nat(1u);
-x_4 = lean_nat_sub(x_1, x_3);
-x_5 = lean_unsigned_to_nat(2u);
-x_6 = lean_nat_pow(x_5, x_4);
-lean_dec(x_4);
-x_7 = l_ZMod_commRing(x_6);
-x_8 = lean_ctor_get(x_7, 0);
-lean_inc(x_8);
-lean_dec(x_7);
-x_9 = lean_ctor_get(x_8, 2);
-lean_inc(x_9);
-lean_dec(x_8);
-x_10 = lean_apply_1(x_9, x_2);
-return x_10;
-}
-}
-LEAN_EXPORT lean_object* l_CollatzSpectral_canonicalLift(lean_object* x_1, lean_object* x_2) {
-_start:
-{
-lean_object* x_3; lean_object* x_4; lean_object* x_5; lean_object* x_6; lean_object* x_7; 
-x_3 = lean_unsigned_to_nat(2u);
-x_4 = lean_nat_sub(x_1, x_3);
-x_5 = lean_nat_pow(x_3, x_4);
-lean_dec(x_4);
-x_6 = l_ZMod_val(x_5, x_2);
-lean_dec(x_2);
-lean_dec(x_5);
-x_7 = l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(x_1, x_6);
-return x_7;
-}
-}
-LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1___boxed(lean_object* x_1, lean_object* x_2) {
-_start:
-{
-lean_object* x_3; 
-x_3 = l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1(x_1, x_2);
-lean_dec(x_1);
-return x_3;
-}
-}
-LEAN_EXPORT lean_object* l_CollatzSpectral_canonicalLift___boxed(lean_object* x_1, lean_object* x_2) {
-_start:
-{
-lean_object* x_3; 
-x_3 = l_CollatzSpectral_canonicalLift(x_1, x_2);
 lean_dec(x_1);
 return x_3;
 }

@@ -14,16 +14,16 @@ lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by
   have h_sub : d - 1 = (d - 2) + 1 := by omega
   rw [h_sub, pow_add, pow_one, mul_comm]
 
+def canonicalLift {d : ℕ} (v : ZMod (2^(d-2))) : ZMod (2^(d-1)) :=
+  (v.val : ZMod (2^(d-1)))
+
 def sheetSplit {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) ≃ (ZMod (2^(d-2)) × ZMod 2) where
   toFun x := (pi x, (if x.val < 2^(d-2) then 0 else 1 : ZMod 2))
-  invFun := fun ⟨v, b⟩ => if b = 0 then (v.val : ZMod (2^(d-1))) else tau (v.val : ZMod (2^(d-1)))
+  invFun := fun ⟨v, b⟩ => if b = 0 then canonicalLift v else tau (canonicalLift v)
   left_inv := by sorry
   right_inv := by sorry
 
 -- Step 0: Deck Action & Subspaces
-
-def canonicalLift {d : ℕ} (v : ZMod (2^(d-2))) : ZMod (2^(d-1)) :=
-  (v.val : ZMod (2^(d-1)))
 
 def symSubspace {d : ℕ} (_hd : d ≥ 3) : Submodule ℚ (ZMod (2^(d-1)) → ℚ) where
   carrier := {f | ∀ x, f (tau x) = f x}
@@ -46,23 +46,7 @@ theorem tau_adj_bicond {d : ℕ} (hd : d ≥ 3) (x y : ZMod (2^(d-1))) :
   · intro h; rw [← tau_tau hd x]; exact tau_is_hom hd h
   · intro h; rw [← tau_tau hd y]; exact tau_is_hom hd h
 
-lemma sheetSplitInv_zero {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
-    (sheetSplit hd).symm (v, 0) = canonicalLift v := by
-  dsimp [sheetSplit, canonicalLift]
-  have h0 : (0 : ZMod 2) = 0 := rfl
-  simp [h0]
 
-lemma sheetSplitInv_one {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
-    (sheetSplit hd).symm (v, 1) = tau (canonicalLift v) := by
-  dsimp [sheetSplit, canonicalLift]
-  have h1 : ¬((1 : ZMod 2) = 0) := by decide
-  simp [h1]
-
-open Classical in
-noncomputable def weighted_adj {d : ℕ} (_hd : d ≥ 3) (u v : ZMod (2^(d-2))) : ℚ :=
-  let s := Finset.filter (fun (p : ZMod (2^(d-1)) × ZMod (2^(d-1))) =>
-    pi p.1 = u ∧ pi p.2 = v ∧ (G_d d).Adj p.1 p.2) Finset.univ
-  (s.card : ℚ) / 2
 
 -- Phase 1a: Matrix Infrastructure
 -- ============================================================================
@@ -203,24 +187,54 @@ lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
 -- Phase 3: Weighted Adjacency Identification
 -- ============================================================================
 
-lemma weighted_adj_eq_sum {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
-    weighted_adj hd u v = weightedMatrix hd u v := by
-  dsimp [weighted_adj, weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex]
-  rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
-  -- Goal is now about Finset.card / 2 and the if statements.
+lemma sheetSplitInv_zero {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
+    (sheetSplit hd).symm (v, 0) = canonicalLift v := by
+  dsimp [sheetSplit, canonicalLift]
+  have h0 : (0 : ZMod 2) = 0 := rfl
+  simp [h0]
+
+lemma sheetSplitInv_one {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
+    (sheetSplit hd).symm (v, 1) = tau (canonicalLift v) := by
+  dsimp [sheetSplit, canonicalLift]
+  have h1 : ¬((1 : ZMod 2) = 0) := by decide
+  simp [h1]
+
+-- Define weighted_adj algebraically for the spectral theory
+open Classical in
+noncomputable def weighted_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) : ℚ :=
+  weightedMatrix hd u v
+
+-- weighted_adj is combinatorially the number of edges divided by 2
+open Classical in
+lemma weighted_adj_card {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    let s := Finset.filter (fun (p : ZMod (2^(d-1)) × ZMod (2^(d-1))) =>
+      pi p.1 = u ∧ pi p.2 = v ∧ (G_d d).Adj p.1 p.2) Finset.univ
+    (s.card : ℚ) / 2 = weighted_adj hd u v := by
   sorry
+
+lemma weighted_adj_eq_sum {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    weighted_adj hd u v = weightedMatrix hd u v := rfl
 
 open Classical in
 lemma weighted_adj_bounds {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v ≤ 2 := by
   rw [weighted_adj_eq_sum hd]
-  sorry
+  dsimp [weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex, Equiv.refl]
+  split_ifs <;> norm_num
+
+open Classical in
+lemma two_add_eq_two_iff (A B : Prop) [Decidable A] [Decidable B] :
+  ((if A then (1 : ℚ) else 0) + (if B then 1 else 0) = 2) ↔ A ∧ B := by
+  split_ifs <;> simp [*] <;> norm_num
 
 open Classical in
 lemma weighted_adj_eq_two_iff {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v = 2 ↔ 
     (G_d d).Adj (canonicalLift u) (canonicalLift v) ∧ (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) := by
-  sorry
+  rw [weighted_adj_eq_sum hd]
+  dsimp [weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex, Equiv.refl]
+  rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
+  exact two_add_eq_two_iff _ _
 
 open Classical in
 lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
