@@ -30,9 +30,6 @@
    ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:395:69: unused variable `h_inv2`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:424:8: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:430:35: unused variable `d`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:449:8: declaration uses 'sorry'",
    "level": "warning"}],
- "depHash": "14590053478654438312"}
+ "depHash": "2141351011361709704"}

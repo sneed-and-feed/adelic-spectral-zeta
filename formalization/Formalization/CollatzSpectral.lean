@@ -222,13 +222,13 @@ lemma A'_tau_sym_11_00 {d : ℕ} (hd : d ≥ 3) (s1 r1 : ZMod (2^(d-2))) :
 noncomputable def weightedMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℚ :=
   fun v u => A'_matrix hd (v, 0) (u, 0) + A'_matrix hd (v, 0) (u, 1)
 
-noncomputable def antisymMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℚ :=
+noncomputable def sheetDiffMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℚ :=
   fun v u => A'_matrix hd (v, 0) (u, 0) - A'_matrix hd (v, 0) (u, 1)
 
 noncomputable def A'_block_diag_target {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
   fun ⟨s1, s2⟩ ⟨r1, r2⟩ => if s2 = r2 then
                              if s2 = 0 then weightedMatrix hd s1 r1
-                             else antisymMatrix hd s1 r1
+                             else sheetDiffMatrix hd s1 r1
                            else 0
 
 -- The tensor product of identity and Hadamard inverse
@@ -263,28 +263,28 @@ lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
   -- Now fin_cases on s2 and r2
   fin_cases s2 <;> fin_cases r2
   · -- s2=0, r2=0: should equal weightedMatrix s1 r1 = P + Q
-    dsimp [A'_block_diag_target, weightedMatrix, antisymMatrix]
+    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
     simp only [sum_zmod_two]
     rw [hA10, hA11]
     simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
     norm_num
     ring
   · -- s2=0, r2=1: should equal 0 (off-diagonal block)
-    dsimp [A'_block_diag_target, weightedMatrix, antisymMatrix]
+    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
     simp only [sum_zmod_two]
     rw [hA10, hA11]
     simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
     norm_num
     ring
   · -- s2=1, r2=0: should equal 0 (off-diagonal block)  
-    dsimp [A'_block_diag_target, weightedMatrix, antisymMatrix]
+    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
     simp only [sum_zmod_two]
     rw [hA10, hA11]
     simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
     norm_num
     ring
-  · -- s2=1, r2=1: should equal antisymMatrix s1 r1 = P - Q
-    dsimp [A'_block_diag_target, weightedMatrix, antisymMatrix]
+  · -- s2=1, r2=1: should equal sheetDiffMatrix s1 r1 = P - Q
+    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
     simp only [sum_zmod_two]
     rw [hA10, hA11]
     simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
@@ -374,7 +374,7 @@ axiom charpoly_similarity {α : Type*} [CommRing α] {n : Type*} [Fintype n] [De
     (S_inv * A * S).charpoly = A.charpoly
 
 noncomputable def blockDiagMatrix {d : ℕ} (hd : d ≥ 3) : Matrix ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ℚ :=
-  Matrix.fromBlocks (weightedMatrix hd) 0 0 (antisymMatrix hd)
+  Matrix.fromBlocks (weightedMatrix hd) 0 0 (sheetDiffMatrix hd)
 
 def sumProdEquiv {d : ℕ} : (ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2))) ≃ ZMod (2^(d-2)) × ZMod 2 := sorry
 
@@ -385,7 +385,7 @@ axiom A'_block_diag_target_eq_blockDiagMatrix {d : ℕ} (hd : d ≥ 3) :
     of the symmetric block (weightedMatrix) and the antisymmetric block. -/
 lemma charpoly_adjacency_eq_mul {d : ℕ} (hd : d ≥ 3) :
     (@adjacencyMatrix d).charpoly = 
-    (weightedMatrix hd).charpoly * (antisymMatrix hd).charpoly := by
+    (weightedMatrix hd).charpoly * (sheetDiffMatrix hd).charpoly := by
   -- Step 1: charpoly A = charpoly A' (by reindexing invariance)
   have h1 : (@adjacencyMatrix d).charpoly = (A'_matrix hd).charpoly := by
     rw [A'_matrix, Matrix.charpoly_reindex]
@@ -405,10 +405,10 @@ lemma charpoly_adjacency_eq_mul {d : ℕ} (hd : d ≥ 3) :
   
   -- Step 3: charpoly (block diag) = charpoly (weighted) * charpoly (antisym)
   have h3 : (A'_block_diag_target hd).charpoly = 
-      (weightedMatrix hd).charpoly * (antisymMatrix hd).charpoly := by
+      (weightedMatrix hd).charpoly * (sheetDiffMatrix hd).charpoly := by
     rw [A'_block_diag_target_eq_blockDiagMatrix hd]
     rw [Matrix.charpoly_reindex]
-    exact charpoly_block_diag (weightedMatrix hd) (antisymMatrix hd)
+    exact charpoly_block_diag (weightedMatrix hd) (sheetDiffMatrix hd)
   
   rw [h1, h2, h3]
 
@@ -423,11 +423,33 @@ axiom realWeightedMatrix_isHermitian {d : ℕ} (hd : d ≥ 3) :
 axiom weightedMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
     ∀ i, Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) i ∈ Set.Icc (-4 : ℝ) 4
 
+-- The antisymmetric block eigenvalues are empirically bounded by 2 in magnitude
+noncomputable def realSheetDiffMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℝ :=
+  (sheetDiffMatrix hd).map (algebraMap ℚ ℝ)
+
+axiom realSheetDiffMatrix_isHermitian {d : ℕ} (hd : d ≥ 3) :
+  (realSheetDiffMatrix hd).IsHermitian
+
+axiom sheetDiffMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
+    ∀ i, Matrix.IsHermitian.eigenvalues (realSheetDiffMatrix_isHermitian hd) i ∈ Set.Icc (-2 : ℝ) 2
+
 /-- The spectral gap of G_d is bounded by the spectral gap of G_{d-1} and the top eigenvalue of the antisymmetric block.
     This implies the spectral gap of G_d is strictly positive uniformly in d. -/
 theorem spectral_gap_bound {d : ℕ} (hd : d ≥ 3) :
     ∀ i, Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) i ∈ Set.Icc (-4 : ℝ) 4 := by
   exact weightedMatrix_eigenvalue_bound hd
+
+-- The eigenvalues of the full adjacency matrix are bounded by 4
+noncomputable def realAdjacencyMatrix {d : ℕ} : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℝ :=
+  (@adjacencyMatrix d).map (algebraMap ℚ ℝ)
+
+axiom realAdjacencyMatrix_isHermitian {d : ℕ} :
+  (@realAdjacencyMatrix d).IsHermitian
+
+theorem adjacencyMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
+    ∀ i, Matrix.IsHermitian.eigenvalues (@realAdjacencyMatrix_isHermitian d) i ∈ Set.Icc (-4 : ℝ) 4 := by
+  -- Follows from charpoly_adjacency_eq_mul and the bounds on the two blocks
+  sorry
 
 -- For a connected graph, the largest eigenvalue is simple and the spectral gap is positive
 -- This requires Perron-Frobenius, which is not yet in Mathlib
@@ -435,9 +457,6 @@ axiom weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
     Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) 0 > 
     Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) 1
 
-/-- The mixing time T_{mix}(ε) for the random walk on G_d is bounded by O(d^2 + log(1/ε)).
-    This follows directly from the uniform spectral gap bound. -/
-axiom collatz_mixing_time_bound {d : ℕ} (hd : d ≥ 3) (ε : ℝ) (hε : ε > 0) :
-    ∃ C, C > 0 -- Placeholder for mixing time formulation: mixing_time G_d ε ≤ C * (d^2 + Real.log (1/ε))
+
 
 end CollatzSpectral
