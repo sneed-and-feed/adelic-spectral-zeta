@@ -14,10 +14,6 @@ lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by
   have h_sub : d - 1 = (d - 2) + 1 := by omega
   rw [h_sub, pow_add, pow_one, mul_comm]
 
-lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by
-  have h_sub : d - 1 = (d - 2) + 1 := by omega
-  rw [h_sub, pow_add, pow_one, mul_comm]
-
 def sheetSplit {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) ≃ (ZMod (2^(d-2)) × ZMod 2) where
   toFun x := (pi x, (if x.val < 2^(d-2) then 0 else 1 : ZMod 2))
   invFun := fun ⟨v, b⟩ => if b = 0 then (v.val : ZMod (2^(d-1))) else tau (v.val : ZMod (2^(d-1)))
@@ -50,11 +46,23 @@ theorem tau_adj_bicond {d : ℕ} (hd : d ≥ 3) (x y : ZMod (2^(d-1))) :
   · intro h; rw [← tau_tau hd x]; exact tau_is_hom hd h
   · intro h; rw [← tau_tau hd y]; exact tau_is_hom hd h
 
+lemma sheetSplitInv_zero {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
+    (sheetSplit hd).symm (v, 0) = canonicalLift v := by
+  dsimp [sheetSplit, canonicalLift]
+  have h0 : (0 : ZMod 2) = 0 := rfl
+  simp [h0]
+
+lemma sheetSplitInv_one {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
+    (sheetSplit hd).symm (v, 1) = tau (canonicalLift v) := by
+  dsimp [sheetSplit, canonicalLift]
+  have h1 : ¬((1 : ZMod 2) = 0) := by decide
+  simp [h1]
+
 open Classical in
 noncomputable def weighted_adj {d : ℕ} (_hd : d ≥ 3) (u v : ZMod (2^(d-2))) : ℚ :=
-  let s := Finset.filter (fun (x : ZMod (2^(d-1))) =>
-    pi x = u ∧ ∃ y, pi y = v ∧ (G_d d).Adj x y) Finset.univ
-  (s.card : ℚ)
+  let s := Finset.filter (fun (p : ZMod (2^(d-1)) × ZMod (2^(d-1))) =>
+    pi p.1 = u ∧ pi p.2 = v ∧ (G_d d).Adj p.1 p.2) Finset.univ
+  (s.card : ℚ) / 2
 
 -- Phase 1a: Matrix Infrastructure
 -- ============================================================================
@@ -190,6 +198,67 @@ noncomputable def conjBlock {d : ℕ} : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod 
 
 lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
     conjBlockInv * (A'_matrix hd) * conjBlock = A'_block_diag_target hd := by
+  sorry
+
+-- Phase 3: Weighted Adjacency Identification
+-- ============================================================================
+
+lemma weighted_adj_eq_sum {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    weighted_adj hd u v = weightedMatrix hd u v := by
+  dsimp [weighted_adj, weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex]
+  rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
+  -- Goal is now about Finset.card / 2 and the if statements.
+  sorry
+
+open Classical in
+lemma weighted_adj_bounds {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    weighted_adj hd u v ≤ 2 := by
+  rw [weighted_adj_eq_sum hd]
+  sorry
+
+open Classical in
+lemma weighted_adj_eq_two_iff {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    weighted_adj hd u v = 2 ↔ 
+    (G_d d).Adj (canonicalLift u) (canonicalLift v) ∧ (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) := by
+  sorry
+
+open Classical in
+lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    weighted_adj hd u v ≥ if (G_d (d-1)).Adj u v then 1 else 0 := by
+  sorry
+
+-- Phase 4: Spectral Decomposition & The Main Bound
+-- ============================================================================
+
+/-- The fundamental theorem of the Collatz Schreier graphs.
+    The adjacency operator of G_d decomposes completely into two orthogonal sectors:
+    1. A symmetric block identical to the weighted adjacency of G_{d-1}.
+    2. An antisymmetric block capturing the sheet-exchange dynamics. -/
+theorem collatz_spectral_decomposition {d : ℕ} (hd : d ≥ 3) :
+    ∃ (S : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ) (S_inv : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ),
+      S_inv * S = 1 ∧ S * S_inv = 1 ∧
+      S_inv * (@adjacencyMatrix d) * S = 
+        Matrix.reindex (sheetSplit hd).symm (sheetSplit hd).symm (A'_block_diag_target hd) := by
+  let e := sheetSplit hd
+  use Matrix.reindex e.symm e.symm conjBlock
+  use Matrix.reindex e.symm e.symm conjBlockInv
+  constructor
+  · -- S_inv * S = 1
+    sorry
+  · constructor
+    · -- S * S_inv = 1
+      sorry
+    · -- S_inv * A * S = block diag
+      sorry
+
+-- Phase 5: Spectral Gap Bounds
+-- ============================================================================
+
+/-- The characteristic polynomial of G_d factors exactly into the characteristic polynomials
+    of the symmetric block (weightedMatrix) and the antisymmetric block. -/
+lemma charpoly_adjacency_eq_mul {d : ℕ} (hd : d ≥ 3) :
+    (@adjacencyMatrix d).charpoly = 
+    (weightedMatrix hd).charpoly * (antisymMatrix hd).charpoly := by
   sorry
 
 end CollatzSpectral

@@ -1,29 +1,11 @@
-import Mathlib.Data.ZMod.Basic
+import Formalization.CollatzSpectral
 
-lemma diff_not_zero {d : ℕ} (hd : d ≥ 3) :
-    ((2^(d-2) : ℕ) : ZMod (2^(d-1))) ≠ 0 := by
-  intro h
-  have h3 : 2^(d-1) ∣ 2^(d-2) := by
-    exact (CharP.cast_eq_zero_iff (ZMod (2^(d-1))) (2^(d-1)) (2^(d-2))).mp h
-  have h4 : 2^(d-1) ≤ 2^(d-2) := Nat.le_of_dvd (by positivity) h3
-  have h5 : d - 2 < d - 1 := by omega
-  have h6 : 2^(d-2) < 2^(d-1) := Nat.pow_lt_pow_right (by decide) h5
-  linarith
+open Matrix
+open CollatzSpectral
+open Finset
 
-lemma eq_three {d : ℕ} (hd : d ≥ 3) :
-    (3 : ZMod (2^(d-1))) * (2^(d-3) : ℕ) = (2^(d-3) : ℕ) + (2^(d-2) : ℕ) := by
-  have h_pow : 2 * 2^(d-3) = 2^(d-2) := by
-    have hd_sub : d - 2 = d - 3 + 1 := by omega
-    rw [hd_sub, pow_add, pow_one, mul_comm]
-  have h3 : (3 : ZMod (2^(d-1))) = 2 + 1 := by norm_num
-  calc (3 : ZMod (2^(d-1))) * (2^(d-3) : ℕ)
-    _ = (2 + 1) * (2^(d-3) : ℕ) := by rw [h3]
-    _ = 2 * (2^(d-3) : ℕ) + 1 * (2^(d-3) : ℕ) := add_mul 2 1 _
-    _ = 2 * (2^(d-3) : ℕ) + (2^(d-3) : ℕ) := by rw [one_mul]
-    _ = (2 * 2^(d-3) : ℕ) + (2^(d-3) : ℕ) := by
-      have : 2 * ((2^(d-3) : ℕ) : ZMod (2^(d-1))) = ((2 * 2^(d-3) : ℕ) : ZMod (2^(d-1))) := by
-        push_cast
-        rfl
-      rw [this]
-    _ = (2^(d-2) : ℕ) + (2^(d-3) : ℕ) := by rw [h_pow]
-    _ = (2^(d-3) : ℕ) + (2^(d-2) : ℕ) := add_comm _ _
+lemma test_eq_sum {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    weighted_adj hd u v = weightedMatrix hd u v := by
+  dsimp [weighted_adj, weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex]
+  rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
+  sorry
