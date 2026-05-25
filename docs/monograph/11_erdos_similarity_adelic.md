@@ -17,6 +17,8 @@ This chapter constructs an **adèlic spectral diagnostic framework** designed to
 *   **[11.9 Harmonic Sequence Obstructive Analysis](11_erdos_similarity/11.9_harmonic_sequence.md)**
 *   **[11.10 Resolution of the Logical Bridge to the Erdős Similarity Conjecture](11_erdos_similarity/11.10_logical_bridge.md)**
 *   **[11.11 Fourier-Analytic Formulation of the Archimedean Detector](11_erdos_similarity/11.11_fourier_analytic.md)**
+*   **[11.14 The Discrete Spectral Oracle](11_erdos_similarity/11.14_discrete_spectral_oracle.md)**
+*   **[11.15 The Measure-Zero Collapse](11_erdos_similarity/11.15_measure_zero_collapse.md)**
 *   **[Appendix 11.A: Locality-Preserving Tree-Radial Compression and Global-Local Spectral Coupling](11_erdos_similarity/11.A_radial_compression.md)**
 *   **[Appendix 11.B: Adversarial Rigor Audit and Topological Boundary Analysis](11_erdos_similarity/11.B_rigor_audit.md)**
 *   **[Appendix 11.C: The Unconstrained Adèlic Lift and Endogenous Density Waves](11_erdos_similarity/11.C_unconstrained_lift.md)**
@@ -50,41 +52,41 @@ $$L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p < \infty}\nolimits' L^
 
 | Proposition | Title | Status | Primary Dependencies |
 | :--- | :--- | :--- | :--- |
-| **Theorem 11.2.1** | Finite Modular Obstruction | **[Rigorous Theorem]** | None |
+| **Theorem 11.2.1** | Finite Modular Obstruction | **[Heuristic / Disproved]** | None |
 | **Heuristic 11.2.2** | Energetic Valuation Suppression | **[Conjectural Bridge]** | Theorem 11.7.5 |
-| **Theorem 11.2.3** | Universal Modular Obstruction Construction | **[Rigorous Theorem]** | None |
-| **Theorem 11.3.1** | Generic Unit-Base Closure & Valuation Collapse | **[Rigorous Theorem]** | Theorem 11.6.1 |
-| **Lemma 11.3.2** | Generic Odd/Even Valuation Blocking | **[Rigorous Theorem]** | None |
-| **Corollary 11.3.3** | Valuation Sector Collapse for Base 11 | **[Rigorous Theorem]** | Theorem 11.3.1, Lemma 11.3.2 |
-| **Lemma 11.3.4** | Arithmetic Unit Group Closures for Base 11 | **[Rigorous Theorem]** | None |
-| **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Rigorous Theorem]** | Corollary 11.3.3 |
-| **Theorem 11.3.6** | Adèlic Constructive Avoidance for Geometric Sequences | **[Rigorous Theorem]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
-| **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Rigorous Theorem]** | None |
-| **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Rigorous Theorem]** | None |
-| **Theorem 11.7.4** | Galerkin Convergence | **[Rigorous Theorem]** | Lemma 11.7.4.1 |
-| **Lemma 11.7.4.1** | Domain Invariance under Cylindrical Projection | **[Rigorous Theorem]** | None |
-| **Theorem 11.7.5** | Discrete Adèlic Combes–Thomas Splitting | **[Rigorous Theorem]** | None |
-| **Theorem 11.7.6** | Haar Measure Factorization on Cylindrical Sets | **[Rigorous Theorem]** | Fubini–Tonelli, Haar measure product |
-| **Lemma 11.7.6.1** | Representative Exactness of Measure Disintegration | **[Rigorous Theorem]** | Theorem 11.7.6 |
-| **Theorem 11.8.2** | Lebesgue Density Lift | **[Rigorous Theorem]** | $L^1$-continuity of translation on compact sets |
-| **Remark 11.8.3** | Archimedean/Non-Archimedean Scale Coupling | **[Rigorous Theorem]** | Theorem 11.8.2 |
+| **Theorem 11.2.3** | Universal Modular Obstruction Construction | **[Heuristic / Disproved]** | None |
+| **Theorem 11.3.1** | Generic Unit-Base Closure & Valuation Collapse | **[Heuristic / Disproved]** | Theorem 11.6.1 |
+| **Lemma 11.3.2** | Generic Odd/Even Valuation Blocking | **[Heuristic / Disproved]** | None |
+| **Corollary 11.3.3** | Valuation Sector Collapse for Base 11 | **[Heuristic / Disproved]** | Theorem 11.3.1, Lemma 11.3.2 |
+| **Lemma 11.3.4** | Arithmetic Unit Group Closures for Base 11 | **[Heuristic / Disproved]** | None |
+| **Corollary 11.3.5** | Conditional Multi-Directional Confinement | **[Heuristic / Disproved]** | Corollary 11.3.3 |
+| **Theorem 11.3.6** | Adèlic Constructive Avoidance for Geometric Sequences | **[Heuristic / Disproved]** | Theorem 11.3.1, Theorem 11.7.6, Lemma 11.10.4.4 |
+| **Theorem 11.4.1** | Exact Toy Spectral Bifurcation | **[Heuristic / Disproved]** | None |
+| **Theorem 11.6.1** | General $p$-adic Subgroup Closure Depth | **[Heuristic / Disproved]** | None |
+| **Theorem 11.7.4** | Galerkin Convergence | **[Heuristic / Disproved]** | Lemma 11.7.4.1 |
+| **Lemma 11.7.4.1** | Domain Invariance under Cylindrical Projection | **[Heuristic / Disproved]** | None |
+| **Theorem 11.7.5** | Discrete Adèlic Combes–Thomas Splitting | **[Heuristic / Disproved]** | None |
+| **Theorem 11.7.6** | Haar Measure Factorization on Cylindrical Sets | **[Heuristic / Disproved]** | Fubini–Tonelli, Haar measure product |
+| **Lemma 11.7.6.1** | Representative Exactness of Measure Disintegration | **[Heuristic / Disproved]** | Theorem 11.7.6 |
+| **Theorem 11.8.2** | Lebesgue Density Lift | **[Heuristic / Disproved]** | $L^1$-continuity of translation on compact sets |
+| **Remark 11.8.3** | Archimedean/Non-Archimedean Scale Coupling | **[Heuristic / Disproved]** | Theorem 11.8.2 |
 | **Observation 11.9.2** | Harmonic Sector Non-Collapse | **[Numerical Observation]** | Pre-processor numerical trials |
-| **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Rigorous Theorem]** | compact Sobolev embedding |
-| **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Rigorous Theorem]** | Cantor Intersection Theorem |
-| **Theorem 11.10.3** | Spectral Reduction Theorem | **[Conditional Reduction]** | Theorem 11.10.4, Theorem 11.A.2, Assumption 11.A.3 |
-| **Theorem 11.10.4** | Spectral Compactness Extraction | **[Rigorous Theorem]** | Measure disintegration, Prokhorov's Theorem |
-| **Lemma 11.10.4.4** | Mosco Convergence of Cylindrical Forms | **[Rigorous Theorem]** | Lemma 11.7.4.1 |
-| **Lemma 11.10.4.7** | Infinite Product Commutation | **[Rigorous Theorem]** | Lemma 11.10.4.6, Haar measure regularity |
-| **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Rigorous Theorem]** | Fourier translation continuity |
-| **Theorem 11.12.1** | Partial Spectral Product Bound | **[Rigorous Theorem]** | Adèlic Product Formula, global synchronization |
+| **Theorem 11.10.1** | Ground State Semicontinuity and Persistence | **[Heuristic / Disproved]** | compact Sobolev embedding |
+| **Theorem 11.10.2** | Infinite Sequence Adèlic Intersection | **[Heuristic / Disproved]** | Cantor Intersection Theorem |
+| **Theorem 11.10.3** | Spectral Reduction Theorem | **[Heuristic / Disproved]** | Theorem 11.10.4, Theorem 11.A.2, Assumption 11.A.3 |
+| **Theorem 11.10.4** | Spectral Compactness Extraction | **[Heuristic / Disproved]** | Measure disintegration, Prokhorov's Theorem |
+| **Lemma 11.10.4.4** | Mosco Convergence of Cylindrical Forms | **[Heuristic / Disproved]** | Lemma 11.7.4.1 |
+| **Lemma 11.10.4.7** | Infinite Product Commutation | **[Heuristic / Disproved]** | Lemma 11.10.4.6, Haar measure regularity |
+| **Theorem 11.11.2** | Archimedean Major Arc Positivity | **[Heuristic / Disproved]** | Fourier translation continuity |
+| **Theorem 11.12.1** | Partial Spectral Product Bound | **[Heuristic / Disproved]** | Adèlic Product Formula, global synchronization |
 | **Hypothesis 11.H.2** | The Defect-Balance Hypothesis | **[Working Hypothesis]** | Theorem 11.12.1 |
-| **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Rigorous Theorem]** | Algebraic graph theory, Bruhat-Tits tree reduction |
-| **Theorem 11.A.2** | Global-Local Spectral Coupling | **[Rigorous Theorem]** | Theorem 11.A.1, Theorem 11.10.1 |
+| **Theorem 11.A.1** | Locality-Preserving Tree-Radial Compression | **[Heuristic / Disproved]** | Algebraic graph theory, Bruhat-Tits tree reduction |
+| **Theorem 11.A.2** | Global-Local Spectral Coupling | **[Heuristic / Disproved]** | Theorem 11.A.1, Theorem 11.10.1 |
 | **Assumption 11.A.3** | Endogenous Potential Emergence | **[Working Hypothesis]** | Lebesgue density structure of E |
 | **Conjecture 11.C.2** | Fractal Scale Support | **[Working Hypothesis]** | Erdős–Turán–Koksma discrepancy bounds |
 | **Observation 11.P.1** | Zero-Measure Copy Detection | **[Numerical Observation]** | Hausdorff dimension theory, singular continuous spectra |
 | **Program 11.P.2** | Ergodic Obstruction for Transcendentals | **[Conjectural Bridge]** | Adèlic Weyl Criterion, Diophantine approximation |
-| **Theorem 11.14** | The Erdős Similarity Theorem (EST) | **[Conditional Reduction]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Hypothesis 11.H.2 |
+| **Conjecture** | The Erdős Similarity Conjecture (ESC) | **[Unresolved / Open Problem]** | Theorem 11.10.3, Theorem 11.11.2, Corollary 11.3.5, Theorem 11.6.1, Theorem 11.2.3, Hypothesis 11.H.2 |
 
 
 
@@ -96,6 +98,8 @@ graph TD
     classDef conditional fill:#cce5ff,stroke:#007bff,stroke-width:2px;
     classDef bridge fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
     classDef numerical fill:#e2e3e5,stroke:#383d41,stroke-width:2px;
+    classDef open fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
+    classDef heuristic fill:#fff3cd,stroke:#ffc107,stroke-width:2px,stroke-dasharray: 5 5;
 
     T1121["Theorem 11.2.1: Finite Modular Obstruction"]:::rigorous
     H1122["Heuristic 11.2.2: Energetic Valuation Suppression"]:::bridge
@@ -116,21 +120,23 @@ graph TD
     T1182["Theorem 11.8.2: Lebesgue Density Lift"]:::rigorous
     R1183["Remark 11.8.3: Archimedean/Non-Archimedean Scale Coupling"]:::rigorous
     H1192["Observation 11.9.2: Harmonic Sector Non-Collapse"]:::numerical
-    T11101["Theorem 11.10.1: Ground State Persistence"]:::rigorous
-    T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::rigorous
-    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::conditional
-    T11104["Theorem 11.10.4: Spectral Compactness Extraction"]:::rigorous
-    L111044["Lemma 11.10.4.4: Mosco Convergence of Cylindrical Forms"]:::rigorous
-    T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::rigorous
-    T11A1["Theorem 11.A.1: Locality-Preserving Tree-Radial Compression"]:::rigorous
-    T11A2["Theorem 11.A.2: Global-Local Spectral Coupling"]:::rigorous
+    T11101["Theorem 11.10.1: Ground State Persistence"]:::heuristic
+    T11102["Theorem 11.10.2: Infinite Sequence Intersection"]:::heuristic
+    T11103["Theorem 11.10.3: Spectral Reduction Theorem"]:::heuristic
+    T11104["Theorem 11.10.4: Spectral Compactness Extraction"]:::heuristic
+    L111044["Lemma 11.10.4.4: Mosco Convergence of Cylindrical Forms"]:::heuristic
+    T11112["Theorem 11.11.2: Archimedean Major Arc Positivity"]:::heuristic
+    T11A1["Theorem 11.A.1: Locality-Preserving Tree-Radial Compression"]:::heuristic
+    T11A2["Theorem 11.A.2: Global-Local Spectral Coupling"]:::heuristic
     L111047["Lemma 11.10.4.7: Infinite Product Commutation"]:::rigorous
     C11C2["Conjecture 11.C.2: Fractal Scale Support"]:::conditional
     P11P1["Program 11.P.1: Zero-Measure Copy Detection"]:::numerical
     P11P2["Program 11.P.2: Ergodic Obstruction for Transcendentals"]:::bridge
     A11A3["Assumption 11.A.3: Endogenous Potential Emergence"]:::conditional
     H11H2["Hypothesis 11.H.2: The Defect-Balance Hypothesis"]:::conditional
-    ESC["Theorem 11.14: The Erdős Similarity Theorem (EST)"]:::conditional
+    ESC["Conjecture: The Erdős Similarity Conjecture (ESC)"]:::open
+    DSO["Section 11.14: The Discrete Spectral Oracle"]:::proved
+    MZC["Section 11.15: The Measure-Zero Collapse"]:::open
 
 
     T1121 --> C1133
@@ -165,6 +171,9 @@ graph TD
     T11103 --> ESC
     T11112 --> ESC
     T1161 --> ESC
+    T1136 --> DSO
+    T11103 --> MZC
+    ESC --> MZC
     T11A1 --> T11A2
     T11101 --> T11A2
     H11H2 --> ESC
