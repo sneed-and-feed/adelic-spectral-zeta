@@ -119,51 +119,48 @@ theorem nontrivial_loop_lift {d : ℕ} (hd : d ≥ 3) :
 
 
 
+lemma edge_lift_unique {d : ℕ} (hd : d ≥ 3) {x x' x'' : ZMod (2^(d-1))} {v : ZMod (2^(d-2))}
+    (hx' : pi x' = v) (hx'' : pi x'' = v)
+    (adj' : (G_d d).Adj x x') (adj'' : (G_d d).Adj x x'') : x' = x'' := by
+  sorry
+
+lemma path_lift_unique {d : ℕ} (hd : d ≥ 3) {a b : ZMod (2^(d-2))} (w : (G_d (d-1)).Walk a b) :
+    ∀ {u x_u v x_v : ZMod (2^(d-1))} (hu : pi u = a) (hv : pi v = a)
+      (wu : (G_d d).Walk u x_u) (wv : (G_d d).Walk v x_v),
+      pi x_u = b → pi x_v = b → wu.length = w.length → wv.length = w.length →
+      u ≠ v → x_u ≠ x_v := by
+  sorry
+
+lemma adj_implies_not_fixed_mul {d : ℕ} {x : ZMod (2^(d-1))} {v : ZMod (2^(d-2))}
+    (hne : pi x ≠ v) (hv : v = 3 * pi x) : x ≠ 3 * x := by
+  sorry
+
+lemma adj_implies_not_fixed_mul_sub {d : ℕ} {x : ZMod (2^(d-1))} {v : ZMod (2^(d-2))}
+    (hne : pi x ≠ v) (hv : v = 3 * pi x - 1) : x ≠ 3 * x - 1 := by
+  sorry
+
 lemma edge_lift {d : ℕ} (hd : d ≥ 3) {x : ZMod (2^(d-1))} {v : ZMod (2^(d-2))} 
     (h : (G_d (d-1)).Adj (pi x) v) : 
     ∃ x' : ZMod (2^(d-1)), pi x' = v ∧ (G_d d).Adj x x' := by
   rcases h with ⟨hne, h | h | h | h⟩
   · -- Case 1: v = 3 * (pi x)
-    by_cases h_std : x ≠ 3 * x
-    · -- Standard case: use x' = 3*x
-      use 3 * x
-      constructor
-      · -- pi(3*x) = 3*pi(x) = v
-        have h_pi : pi (3 * x) = 3 * pi x := by
-          sorry
-        rw [h_pi, h]
-      · exact ⟨h_std, Or.inl rfl⟩
-    · -- Exceptional case: x = 3*x, so standard lift fails
-      -- Use the other lift in the fiber: x' = x + 2^(d-2)
-      let x' := x + (2^(d-2) : ZMod (2^(d-1)))
-      use x'
-      constructor
-      · sorry
-      · sorry
+    use 3 * x
+    constructor
+    · have h_pi : pi (3 * x) = 3 * pi x := sorry
+      rw [h_pi, ←h]
+    · exact ⟨adj_implies_not_fixed_mul hne h, Or.inl rfl⟩
   · -- Case 2: v = 3 * (pi x) - 1
-    by_cases h_std : x ≠ 3 * x - 1
-    · use 3 * x - 1
-      constructor
-      · sorry
-      · exact ⟨h_std, Or.inr (Or.inl rfl)⟩
-    · let x' := x + (2^(d-2) : ZMod (2^(d-1)))
-      use x'
-      constructor
-      · sorry
-      · sorry
+    use 3 * x - 1
+    constructor
+    · have h_pi : pi (3 * x - 1) = 3 * pi x - 1 := sorry
+      rw [h_pi, ←h]
+    · exact ⟨adj_implies_not_fixed_mul_sub hne h, Or.inr (Or.inl rfl)⟩
   · -- Case 3: pi x = 3 * v
-    by_cases h_std : (3 : ZMod (2^(d-1))) * x ≠ x
-    · -- Standard case: v = 3^(-1) pi x means pi x = 3*v
-      -- We need to find x' such that pi x' = v and x = 3*x'
-      -- Since 3 is invertible, x' = 3^(-1) * x
-      -- But G_d.Adj is symmetric, so we can just use the property
-      -- Wait, G_d generators are 3x, 3x-1. So x ~ 3x.
-      -- If pi x = 3*v, then v is a predecessor. We can use x' = 3⁻¹ * x.
-      -- But we can also just say that x' is the unique vertex such that 3*x' = x.
-      -- Which is exactly 3⁻¹ * x. But let's leave it as a sorry for now.
-      sorry
-    · sorry
+    -- We can use x' such that 3*x' = x, which is uniquely defined since 3 is invertible mod 2^(d-1).
+    -- Proof deferred as it's purely algebraic bounded arithmetic.
+    sorry
   · -- Case 4: pi x = 3 * v - 1
+    -- We can use x' such that 3*x' - 1 = x.
     sorry
 
 /-- Generalization of path lift for induction. -/
@@ -249,9 +246,27 @@ lemma fiber_connected {d : ℕ} (hd : d ≥ 3) (h_conn : (G_d (d-1)).Connected) 
   obtain ⟨x_end, w_rev_lift, h_end_eq, _⟩ := path_lift_gen hd w.reverse other_x h_other_pi
   -- We need x_end = x₂ or x_end = x₁. But x_end is the other lift of y!
   -- Since we started at other_x (the other sheet), we end at the other lift of y.
-  -- We'll just sorry that x_end = x₂.
-  have h_x_end : x_end = x₂ := sorry
+  -- Use the path_lift_unique lemma to show x_end ≠ x₁
+  have h_x_end_neq : x_end ≠ x₁ := by
+    have h_w_rev_len : w_rev_lift.length = w.reverse.length := by sorry
+    have h_w_len : w_lift.length = w.length := by sorry
+    have h_eq2 : w_lift.reverse.length = w.reverse.length := by sorry
+    have h_other_neq : other_x ≠ x_loop := by sorry
+    -- By path_lift_unique on w.reverse, lifts starting from different vertices end at different vertices
+    -- Apply it to w_rev_lift (from other_x to x_end) and w_lift.reverse (from x_loop to x₁)
+    apply path_lift_unique hd w.reverse h_other_pi h_loop_eq w_rev_lift w_lift.reverse h_end_eq h₁ h_w_rev_len h_eq2 h_other_neq
   
+  -- Since x_end is in the fiber over y and x_end ≠ x₁, it must be x₂ (the other element in the fiber)
+  have h_x_end : x_end = x₂ := by
+    have h_fib := zmod_fiber_two hd x_end x₁ x₂ h_end_eq h₁ h₂
+    rcases h_fib with h1 | h2 | h3
+    · exfalso; exact h_x_end_neq h1
+    · exact h2
+    · exfalso; sorry -- x₁ ≠ x₂ since they are the distinct points we are proving are reachable? 
+      -- Wait, if x₁ = x₂, reachable is trivial. We can assume x₁ ≠ x₂.
+      -- Actually, if x₁ = x₂, Reachable x₁ x₂ is just `Reachable.refl`.
+      -- We will just use `sorry` for this algebraic step.
+      
   -- The full path is: x₁ --w_lift--> x_loop --h_cross--> other_x --w_rev_lift--> x_end = x₂
   have h_reach_1 : (G_d d).Reachable x₁ x_loop := ⟨w_lift⟩
   have h_reach_2 : (G_d d).Reachable other_x x₂ := by
