@@ -19,11 +19,94 @@ lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by
 def canonicalLift {d : ℕ} (v : ZMod (2^(d-2))) : ZMod (2^(d-1)) :=
   (v.val : ZMod (2^(d-1)))
 
+lemma pi_canonicalLift {d : ℕ} (w : ZMod (2^(d-2))) :
+    pi (canonicalLift w) = w := by
+  unfold canonicalLift
+  rw [pi_natCast, ZMod.natCast_zmod_val]
+
+lemma val_pi {d : ℕ} (hd : d ≥ 3) (x : ZMod (2^(d-1))) :
+    (pi x).val = x.val % 2^(d-2) := by
+  have h1 : x = (x.val : ZMod (2^(d-1))) := (ZMod.natCast_zmod_val x).symm
+  nth_rw 1 [h1]
+  rw [pi_natCast]
+  exact ZMod.val_natCast x.val
+
 def sheetSplit {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) ≃ (ZMod (2^(d-2)) × ZMod 2) where
   toFun x := (pi x, (if x.val < 2^(d-2) then 0 else 1 : ZMod 2))
-  invFun := fun ⟨v, b⟩ => if b = 0 then canonicalLift v else tau (canonicalLift v)
-  left_inv := by sorry
-  right_inv := by sorry
+  invFun := fun p => if p.2 = 0 then canonicalLift p.1 else tau (canonicalLift p.1)
+  left_inv := by
+    intro x
+    have h_pow : 2^(d-1) = 2^(d-2) + 2^(d-2) := by rw [pow_two_identity hd, two_mul]
+    have h_x_lt : x.val < 2^(d-1) := ZMod.val_lt x
+    by_cases h : x.val < 2^(d-2)
+    · have h_if : (if x.val < 2^(d-2) then (0:ZMod 2) else 1) = 0 := if_pos h
+      change (if (if x.val < 2^(d-2) then (0:ZMod 2) else 1) = 0 then canonicalLift (pi x) else tau (canonicalLift (pi x))) = x
+      rw [h_if, if_pos rfl]
+      apply ZMod.val_injective
+      change ((pi x).val : ZMod (2^(d-1))).val = x.val
+      have h1 : (pi x).val = x.val % 2^(d-2) := val_pi hd x
+      have h2 : x.val % 2^(d-2) = x.val := Nat.mod_eq_of_lt h
+      rw [h1, h2]
+      exact ZMod.val_natCast_of_lt (by omega)
+    · have h_ge : x.val ≥ 2^(d-2) := by omega
+      have h_if : (if x.val < 2^(d-2) then (0:ZMod 2) else 1) = 1 := if_neg h
+      change (if (if x.val < 2^(d-2) then (0:ZMod 2) else 1) = 0 then canonicalLift (pi x) else tau (canonicalLift (pi x))) = x
+      rw [h_if]
+      have h_one_ne_zero : ¬((1:ZMod 2) = 0) := by decide
+      rw [if_neg h_one_ne_zero]
+      apply ZMod.val_injective
+      change (tau (canonicalLift (pi x))).val = x.val
+      unfold tau canonicalLift
+      have h1 : (pi x).val = x.val - 2^(d-2) := by
+        rw [val_pi hd x]
+        have h_eq : x.val = (x.val - 2^(d-2)) + 2^(d-2) := by omega
+        nth_rw 1 [h_eq]
+        rw [Nat.add_mod_right]
+        apply Nat.mod_eq_of_lt
+        omega
+      have h2 : ((pi x).val : ZMod (2^(d-1))).val = (pi x).val := by
+        apply ZMod.val_natCast_of_lt
+        omega
+      have h3 : ((2^(d-2) : ℕ) : ZMod (2^(d-1))).val = 2^(d-2) := by
+        apply ZMod.val_natCast_of_lt
+        omega
+      rw [ZMod.val_add, h2, h3, h1]
+      have h4 : x.val - 2^(d-2) + 2^(d-2) = x.val := by omega
+      rw [h4]
+      exact Nat.mod_eq_of_lt (by omega)
+
+  right_inv := by
+    rintro ⟨v, b⟩
+    have h_pow : 2^(d-1) = 2^(d-2) + 2^(d-2) := by rw [pow_two_identity hd, two_mul]
+    have h_v_lt : v.val < 2^(d-2) := ZMod.val_lt v
+    fin_cases b
+    · change (pi (if (0:ZMod 2) = 0 then canonicalLift v else tau (canonicalLift v)),
+                if (if (0:ZMod 2) = 0 then canonicalLift v else tau (canonicalLift v)).val < 2^(d-2) then (0:ZMod 2) else 1) = (v, 0)
+      rw [if_pos rfl]
+      have h1 : (canonicalLift v).val = v.val := by
+        unfold canonicalLift
+        apply ZMod.val_natCast_of_lt
+        omega
+      have h2 : (canonicalLift v).val < 2^(d-2) := by omega
+      rw [if_pos h2, pi_canonicalLift]
+    · change (pi (if (1:ZMod 2) = 0 then canonicalLift v else tau (canonicalLift v)),
+                if (if (1:ZMod 2) = 0 then canonicalLift v else tau (canonicalLift v)).val < 2^(d-2) then (0:ZMod 2) else 1) = (v, 1)
+      have h_one_ne_zero : ¬((1:ZMod 2) = 0) := by decide
+      rw [if_neg h_one_ne_zero]
+      have h1 : (canonicalLift v).val = v.val := by
+        unfold canonicalLift
+        apply ZMod.val_natCast_of_lt
+        omega
+      have h2 : (tau (canonicalLift v)).val = v.val + 2^(d-2) := by
+        unfold tau
+        rw [ZMod.val_add]
+        have h3 : ((2^(d-2) : ℕ) : ZMod (2^(d-1))).val = 2^(d-2) := by
+          apply ZMod.val_natCast_of_lt
+          omega
+        rw [h1, h3, Nat.mod_eq_of_lt]
+        omega
+      have h3 : ¬((tau (canonicalLift v)).val < 2^(d-2)) := by omega
+      rw [if_neg h3, tau_pi hd, pi_canonicalLift]
 
 -- Step 0: Deck Action & Subspaces
 
@@ -300,10 +383,7 @@ noncomputable def weighted_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
   weightedMatrix hd u v
 
 -- weighted_adj is combinatorially the number of edges divided by 2
-lemma pi_canonicalLift {d : ℕ} (w : ZMod (2^(d-2))) :
-    pi (canonicalLift w) = w := by
-  unfold canonicalLift
-  rw [pi_natCast, ZMod.natCast_zmod_val]
+
 
 lemma pi_eq_iff {d : ℕ} (hd : d ≥ 3) (z : ZMod (2^(d-1))) (w : ZMod (2^(d-2))) :
     pi z = w ↔ z = canonicalLift w ∨ z = tau (canonicalLift w) := by
