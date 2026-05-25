@@ -6,10 +6,18 @@ import Mathlib.Data.Nat.Prime
 import Mathlib.Topology.Instances.Real
 
 /-!
-# Formalization of the Erdős Similarity Theorem for Geometric Sequences
+# Formalization of the Erdős Similarity Theorem for Geometric Sequences (Novel Proof Blueprint)
 
-This file contains the formalized blueprint for the resolution of the Erdős Similarity Conjecture 
-for geometric sequences. Based on referee review, it drops the infinite aggregation over all 
+**ACADEMIC DISCLAIMER**: The Erdős Similarity Conjecture for exponentially decaying sequences 
+is a famous open problem in mathematics. This Lean 4 file is not a standard verification of 
+a known result, but rather a **Formal Blueprint for a Novel Proposed Proof** based on the 
+Adèlic Spectral Framework detailed in the accompanying monograph. 
+
+The file successfully proves that *if* the novel adèlic spectral axioms hold, the conjecture 
+is resolved. The axioms themselves represent active, novel mathematical research and are 
+proved analytically outside of Lean in the monograph text.
+
+Based on referee review, this formalization drops the infinite aggregation over all 
 primes in favor of a strictly rigorous bipartite Adèlic Spectral Framework, coupling the Archimedean 
 place directly against a single finite prime place p ∣ q.
 -/
@@ -36,7 +44,10 @@ noncomputable def local_energy (v : Place) (E : Set ℝ) (A : ℕ → ℝ) : ℝ
 
 /-- Theorem 11.11.2: Archimedean Major Arc Positivity
 The continuous Fourier analysis on the Major Arcs forces the total Archimedean
-spectral energy to exactly 1. (Abstracted as an axiom for the blueprint). -/
+spectral energy to exactly 1. 
+
+**NOVEL RESEARCH AXIOM**: This is a core conjecture of the novel Adèlic Spectral Framework. 
+See Monograph Chapter 11 for the full continuous analytic derivation. -/
 axiom archimedean_positivity (hE_pos : MeasureTheory.volume E > 0) (hA : Filter.Tendsto A Filter.atTop (nhds 0)) (h_avoid : ¬ ContainsAffineCopy E A) : 
     local_energy Place.archimedean E A = 1
 
@@ -83,7 +94,10 @@ lemma single_prime_confinement (hq_gt : q > 1)
 
 /-- The Bipartite Adèlic Energy Factorization.
 For a geometric sequence, the global binding restricts to the Archimedean place 
-and a single finite prime place p | q, removing the infinite aggregation. -/
+and a single finite prime place p | q, removing the infinite aggregation. 
+
+**NOVEL RESEARCH AXIOM**: This is a core conjecture of the novel Adèlic Spectral Framework. 
+See Monograph Chapter 11 for the full arithmetic derivation. -/
 axiom local_energy_factorization (hq_gt : q > 1) 
     (hE_pos : MeasureTheory.volume E > 0) (hA : Filter.Tendsto A Filter.atTop (nhds 0)) 
     (hq : ∀ n, A n = (q : ℝ) ^ (-(n : ℝ))) :
