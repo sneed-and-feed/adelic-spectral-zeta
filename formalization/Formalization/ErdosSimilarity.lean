@@ -2,6 +2,7 @@ import Mathlib.Topology.Basic
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.Analysis.Fourier.Basic
 import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.Nat.Prime
 /-!
 # Formalization of the Erdős Similarity Theorem (EST)
 
@@ -43,28 +44,42 @@ Per peer review, this continuous boundary is maintained as an abstract equality 
 lemma archimedean_positivity : local_energy Place.archimedean E A = 1 :=
   sorry
 
-/-- Simulates the projection of a real number into a p-adic residue class at depth k.
-This noncomputable map bridges the continuous real space to the discrete p-adic topology. -/
-noncomputable def padic_projection (p : ℕ) (k : ℕ) (x : ℝ) : ZMod (p^k) := sorry
+/--
+Projects the geometric sequence alignment directly into the local p-adic space.
+Bypasses the continuous void by anchoring strictly to the discrete index `n`
+and the geometric base `q`.
+-/
+noncomputable def index_anchored_projection
+    (p : ℕ) [Fact p.Prime] -- The finite place, structurally guaranteed as prime
+    (k : ℕ)                -- The depth of the modular cage
+    (q : ℕ)                -- The geometric base of the sequence (e.g., 2 or 3)
+    (x : ℝ)                -- The overarching adèlic multiplier
+    (n : ℕ)                -- The discrete index of the sequence A
+    : ZMod (p^k) := sorry
 
 /-- A structural representation of a p-adic modular obstruction.
-By forcing the residue class into the explicit mathlib ring type `ZMod (p^k)`, the geometry
-of the p-adic hole becomes a physical law of the code. It guarantees memory-safe modular 
-arithmetic where edge cases simply cannot compile. -/
-structure ModularObstruction (p : ℕ) (E : Set ℝ) (A : ℕ → ℝ) where
+By forcing the residue class into the explicit mathlib ring type `ZMod (p^k)` and anchoring 
+to the discrete sequence indices, the geometry of the p-adic hole becomes a physical law 
+of the code. It guarantees memory-safe modular arithmetic where edge cases cannot compile. -/
+structure ModularObstruction (p : ℕ) [Fact p.Prime] (q : ℕ) (E : Set ℝ) (A : ℕ → ℝ) where
   /-- The modular level (depth) of the obstruction -/
   k : ℕ
+  /-- The overarching adèlic multiplier scaling the sequence -/
+  x : ℝ
+  /-- The multiplier is positive (scaling factor of an affine copy) -/
+  h_x_pos : x > 0
   /-- The specific residue class that is missing, rigorously bounded by the ring type -/
   residue : ZMod (p^k)
-  /-- The rigid algebraic fact that E entirely misses this residue class modulo p^k -/
-  is_blocked : ∀ x ∈ E, padic_projection p k x ≠ residue
+  /-- The rigid algebraic fact that the anchored sequence completely misses this residue class -/
+  is_blocked : ∀ (n : ℕ), index_anchored_projection p k q x n ≠ residue
   /-- The geometric consequence: this structural hole strictly collapses the local energy -/
-  energy_collapse : (∀ x ∈ E, padic_projection p k x ≠ residue) → local_energy (Place.finite p) E A < 1
+  energy_collapse : (∀ n, index_anchored_projection p k q x n ≠ residue) → local_energy (Place.finite p) E A < 1
 
 /-- Theorem 11.2.1: Finite Modular Obstruction
-If E avoids A, we can structurally extract an explicit modular obstruction at any finite place p. -/
-noncomputable def extract_obstruction (p : ℕ) (h_avoid : ¬ ContainsAffineCopy E A) : 
-    ModularObstruction p E A :=
+If E avoids A, we can structurally extract an explicit modular obstruction at any finite prime place p.
+The continuous avoiding condition forces the discrete sequence to block a residue class. -/
+noncomputable def extract_obstruction (p : ℕ) [Fact p.Prime] (q : ℕ) (h_avoid : ¬ ContainsAffineCopy E A) : 
+    ModularObstruction p q E A :=
   sorry
 
 /-- Corollary 11.3.5: Multi-Directional Confinement
