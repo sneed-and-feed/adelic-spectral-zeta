@@ -1199,13 +1199,6 @@ theorem weighted_support_connected {d : ℕ} (hd : d ≥ 3) :
   }
   exact h_conn.map f
 
-theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3)
-    (h_pf : IsPerronFrobeniusMax (realWeightedMatrix hd) (realWeightedMatrix_isHermitian hd)) :
-    ∃ (i : ZMod (2^(d-2))), ∀ (j : ZMod (2^(d-2))),
-      (realWeightedMatrix_isHermitian hd).eigenvalues j ≤ (realWeightedMatrix_isHermitian hd).eigenvalues i
-      ∧ ((realWeightedMatrix_isHermitian hd).eigenvalues j = (realWeightedMatrix_isHermitian hd).eigenvalues i → j = i) := by
-  exact h_pf
-
 /-- The spectral gap of G_d is bounded by the spectral gap of G_{d-1} and the top eigenvalue of the antisymmetric block.
     This implies the spectral gap of G_d is strictly positive uniformly in d. -/
 theorem spectral_gap_bound {d : ℕ} (hd : d ≥ 3) :
