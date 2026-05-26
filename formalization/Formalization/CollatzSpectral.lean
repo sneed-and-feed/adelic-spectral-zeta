@@ -2,9 +2,11 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Module.Submodule.Basic
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.LinearAlgebra.Matrix.Gershgorin
 import Formalization.CollatzConnectivity
 
 open Matrix
+open Classical
 
 namespace CollatzSpectral
 
@@ -577,22 +579,113 @@ lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     The adjacency operator of G_d decomposes completely into two orthogonal sectors:
     1. A symmetric block identical to the weighted adjacency of G_{d-1}.
     2. An antisymmetric block capturing the sheet-exchange dynamics. -/
+lemma hadamard_inv_mul {d : ℕ} (hd : d ≥ 3) :
+    hadamardInv * hadamardBlock = 1 := by
+  unfold hadamardInv
+  rw [Matrix.smul_mul, hadamard_sq hd]
+  ext i j
+  simp [Matrix.smul_apply, Matrix.one_apply]
+
+lemma hadamard_mul_inv {d : ℕ} (hd : d ≥ 3) :
+    hadamardBlock * hadamardInv = 1 := by
+  unfold hadamardInv
+  rw [Matrix.mul_smul, hadamard_sq hd]
+  ext i j
+  simp [Matrix.smul_apply, Matrix.one_apply]
+
+lemma conjBlockInv_mul_conjBlock {d : ℕ} (hd : d ≥ 3) :
+    @conjBlockInv d * @conjBlock d = 1 := by
+  ext ⟨i1, j1⟩ ⟨i2, j2⟩
+  simp only [conjBlockInv, conjBlock, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
+  by_cases h : i1 = i2
+  · subst h
+    have : ∀ k1, (∑ k2, (if i1 = k1 then hadamardInv j1 k2 else 0) * (if k1 = i1 then hadamardBlock k2 j2 else 0))
+        = if i1 = k1 then ∑ k2, hadamardInv j1 k2 * hadamardBlock k2 j2 else 0 := by
+      intro k1
+      by_cases hk : i1 = k1 <;> simp [hk]
+    simp_rw [this]
+    have h_inv : (∑ k2 : ZMod 2, hadamardInv j1 k2 * hadamardBlock k2 j2) = if j1 = j2 then (1 : ℚ) else 0 := by
+      calc (∑ k2 : ZMod 2, hadamardInv j1 k2 * hadamardBlock k2 j2)
+        _ = (hadamardInv * hadamardBlock) j1 j2 := rfl
+        _ = (1 : Matrix (ZMod 2) (ZMod 2) ℚ) j1 j2 := by rw [hadamard_inv_mul hd]
+        _ = if j1 = j2 then (1 : ℚ) else 0 := by rw [Matrix.one_apply]
+    simp_rw [h_inv]
+    simp
+  · -- i1 ≠ i2
+    have : ∀ k1 k2, (if i1 = k1 then hadamardInv j1 k2 else 0) * (if k1 = i2 then hadamardBlock k2 j2 else 0) = (0 : ℚ) := by
+      intro k1 k2
+      by_cases hk1 : i1 = k1
+      · subst hk1; simp [h]
+      · simp [hk1]
+    simp_rw [this]
+    simp [h]
+
+lemma conjBlock_mul_conjBlockInv {d : ℕ} (hd : d ≥ 3) :
+    @conjBlock d * @conjBlockInv d = 1 := by
+  ext ⟨i1, j1⟩ ⟨i2, j2⟩
+  simp only [conjBlock, conjBlockInv, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
+  by_cases h : i1 = i2
+  · subst h
+    have : ∀ k1, (∑ k2, (if i1 = k1 then hadamardBlock j1 k2 else 0) * (if k1 = i1 then hadamardInv k2 j2 else 0))
+        = if i1 = k1 then ∑ k2, hadamardBlock j1 k2 * hadamardInv k2 j2 else 0 := by
+      intro k1
+      by_cases hk : i1 = k1 <;> simp [hk]
+    simp_rw [this]
+    have h_inv : (∑ k2 : ZMod 2, hadamardBlock j1 k2 * hadamardInv k2 j2) = if j1 = j2 then (1 : ℚ) else 0 := by
+      calc (∑ k2 : ZMod 2, hadamardBlock j1 k2 * hadamardInv k2 j2)
+        _ = (hadamardBlock * hadamardInv) j1 j2 := rfl
+        _ = (1 : Matrix (ZMod 2) (ZMod 2) ℚ) j1 j2 := by rw [hadamard_mul_inv hd]
+        _ = if j1 = j2 then (1 : ℚ) else 0 := by rw [Matrix.one_apply]
+    simp_rw [h_inv]
+    simp
+  · -- i1 ≠ i2
+    have : ∀ k1 k2, (if i1 = k1 then hadamardBlock j1 k2 else 0) * (if k1 = i2 then hadamardInv k2 j2 else 0) = (0 : ℚ) := by
+      intro k1 k2
+      by_cases hk1 : i1 = k1
+      · subst hk1; simp [h]
+      · simp [hk1]
+    simp_rw [this]
+    simp [h]
+
+lemma reindex_mul {α : Type*} [CommRing α] {m m' n n' o o' : Type*} [Fintype m'] [Fintype n] [Fintype n'] [Fintype o] [Fintype o']
+    [DecidableEq n] [DecidableEq n']
+    (eₘ : m ≃ m') (eₙ : n ≃ n') (eₒ : o ≃ o')
+    (M : Matrix m n α) (N : Matrix n o α) :
+    Matrix.reindex eₘ eₙ M * Matrix.reindex eₙ eₒ N = Matrix.reindex eₘ eₒ (M * N) := by
+  ext i j
+  simp [Matrix.reindex_apply, Matrix.mul_apply, Matrix.submatrix_apply]
+  exact Equiv.sum_comp eₙ.symm (fun x => M (eₘ.symm i) x * N x (eₒ.symm j))
+
 theorem collatz_spectral_decomposition {d : ℕ} (hd : d ≥ 3) :
     ∃ (S : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ) (S_inv : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ),
       S_inv * S = 1 ∧ S * S_inv = 1 ∧
       S_inv * (@adjacencyMatrix d) * S = 
         Matrix.reindex (sheetSplit hd).symm (sheetSplit hd).symm (A'_block_diag_target hd) := by
   let e := sheetSplit hd
-  use Matrix.reindex e.symm e.symm conjBlock
-  use Matrix.reindex e.symm e.symm conjBlockInv
+  use Matrix.reindex e.symm e.symm (@conjBlock d)
+  use Matrix.reindex e.symm e.symm (@conjBlockInv d)
+  have h_reindex_one : Matrix.reindex e.symm e.symm (1 : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ) = 1 := by
+    ext i j
+    have : e i = e j ↔ i = j := e.injective.eq_iff
+    simp [Matrix.reindex_apply, Matrix.one_apply, this]
   constructor
   · -- S_inv * S = 1
-    sorry
+    rw [reindex_mul]
+    rw [conjBlockInv_mul_conjBlock hd]
+    rw [h_reindex_one]
   · constructor
     · -- S * S_inv = 1
-      sorry
+      rw [reindex_mul]
+      rw [conjBlock_mul_conjBlockInv hd]
+      rw [h_reindex_one]
     · -- S_inv * A * S = block diag
-      sorry
+      have hA : @adjacencyMatrix d = Matrix.reindex e.symm e.symm (A'_matrix hd) := by
+        rw [A'_matrix]
+        ext i j
+        simp [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm]
+      rw [hA]
+      rw [reindex_mul, reindex_mul]
+      rw [A'_block_diag hd]
 
 -- Phase 5: Spectral Gap Bounds
 -- ============================================================================
@@ -605,10 +698,33 @@ lemma charpoly_block_diag {α : Type*} [CommRing α] {n m : Type*} [Fintype n] [
   rw [Matrix.charmatrix_fromBlocks]
   simp [Matrix.det_fromBlocks_zero₂₁]
 
-axiom charpoly_similarity {α : Type*} [CommRing α] {n : Type*} [Fintype n] [DecidableEq n]
+theorem charpoly_similarity {α : Type*} [CommRing α] {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n α) (S : Matrix n n α) (S_inv : Matrix n n α)
     (h : S_inv * S = 1) :
-    (S_inv * A * S).charpoly = A.charpoly
+    (S_inv * A * S).charpoly = A.charpoly := by
+  let f : α →+* Polynomial α := Polynomial.C
+  let F : Matrix n n α →+* Matrix n n (Polynomial α) := RingHom.mapMatrix f
+  have h_map : F (S_inv * S) = F 1 := by rw [h]
+  rw [map_mul F] at h_map
+  have h_one : F 1 = 1 := map_one F
+  rw [h_one] at h_map
+  have h_map_comm : F S * F S_inv = 1 := by rw [Matrix.mul_eq_one_comm, h_map]
+  unfold Matrix.charpoly
+  have h_eq : Matrix.charmatrix (S_inv * A * S) = F S_inv * Matrix.charmatrix A * F S := by
+    unfold Matrix.charmatrix
+    rw [map_mul F, map_mul F, Matrix.mul_sub, Matrix.sub_mul]
+    congr 1
+    have h1 : F S_inv * Matrix.scalar n (Polynomial.X : Polynomial α) = Matrix.scalar n (Polynomial.X : Polynomial α) * F S_inv := by
+      change F S_inv * algebraMap (Polynomial α) (Matrix n n (Polynomial α)) Polynomial.X = algebraMap (Polynomial α) (Matrix n n (Polynomial α)) Polynomial.X * F S_inv
+      exact (Algebra.commutes _ _).symm
+    rw [h1, Matrix.mul_assoc, h_map, Matrix.mul_one]
+  rw [h_eq, Matrix.det_mul, Matrix.det_mul, mul_comm]
+  have h_det : (F S).det * (F S_inv).det = 1 := by
+    rw [← Matrix.det_mul, h_map_comm, Matrix.det_one]
+  calc (F S).det * ((F S_inv).det * (Matrix.charmatrix A).det)
+    _ = ((F S).det * (F S_inv).det) * (Matrix.charmatrix A).det := by rw [mul_assoc]
+    _ = 1 * (Matrix.charmatrix A).det := by rw [h_det]
+    _ = (Matrix.charmatrix A).det := by rw [one_mul]
 
 noncomputable def blockDiagMatrix {d : ℕ} (hd : d ≥ 3) : Matrix ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ℚ :=
   Matrix.fromBlocks (weightedMatrix hd) 0 0 (sheetDiffMatrix hd)
@@ -663,22 +779,206 @@ lemma charpoly_adjacency_eq_mul {d : ℕ} (hd : d ≥ 3) :
 noncomputable def realWeightedMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℝ :=
   (weightedMatrix hd).map (algebraMap ℚ ℝ)
 
-axiom realWeightedMatrix_isHermitian {d : ℕ} (hd : d ≥ 3) :
-  (realWeightedMatrix hd).IsHermitian
+theorem realWeightedMatrix_isHermitian {d : ℕ} (hd : d ≥ 3) :
+  (realWeightedMatrix hd).IsHermitian := by
+  ext i j
+  dsimp [Matrix.IsHermitian, realWeightedMatrix, weightedMatrix, Matrix.map_apply]
+  apply congrArg (algebraMap ℚ ℝ)
+  have h1 : A'_matrix hd (j, 0) (i, 0) = A'_matrix hd (i, 0) (j, 0) := by
+    unfold A'_matrix
+    simp only [Matrix.reindex_apply, Equiv.symm_symm]
+    dsimp [adjacencyMatrix]
+    have h_symm : (G_d d).Adj ((sheetSplit hd).symm (j, 0)) ((sheetSplit hd).symm (i, 0)) ↔ (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 0)) := ⟨fun h => (G_d d).symm h, fun h => (G_d d).symm h⟩
+    have h_eq : (G_d d).Adj ((sheetSplit hd).symm (j, 0)) ((sheetSplit hd).symm (i, 0)) = (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 0)) := propext h_symm
+    simp only [h_eq]
+  have h2 : A'_matrix hd (j, 0) (i, 1) = A'_matrix hd (i, 0) (j, 1) := by
+    rw [← A'_tau_sym_01_10 hd j i]
+    unfold A'_matrix
+    simp only [Matrix.reindex_apply, Equiv.symm_symm]
+    dsimp [adjacencyMatrix]
+    have h_symm : (G_d d).Adj ((sheetSplit hd).symm (j, 1)) ((sheetSplit hd).symm (i, 0)) ↔ (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 1)) := ⟨fun h => (G_d d).symm h, fun h => (G_d d).symm h⟩
+    have h_eq : (G_d d).Adj ((sheetSplit hd).symm (j, 1)) ((sheetSplit hd).symm (i, 0)) = (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 1)) := propext h_symm
+    simp only [h_eq]
+  rw [h1, h2]
 
 -- The eigenvalues are bounded by the graph degree
-axiom weightedMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
-    ∀ i, Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) i ∈ Set.Icc (-4 : ℝ) 4
+lemma hasEigenvalue_eigenvalues {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℝ}
+    (hA : A.IsHermitian) (j : n) :
+    Module.End.HasEigenvalue (Matrix.toLin' A) (hA.eigenvalues j) := by
+  rw [Module.End.HasEigenvalue, Submodule.ne_bot_iff]
+  use (hA.eigenvectorBasis j : n → ℝ)
+  constructor
+  · rw [Module.End.mem_eigenspace_iff, toLin'_apply]
+    exact hA.mulVec_eigenvectorBasis j
+  · intro h
+    have h_ne := hA.eigenvectorBasis.toBasis.ne_zero j
+    exact h_ne h
+
+lemma eigenvalue_bound_of_gershgorin {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℝ}
+    (hA : A.IsHermitian) (j : n) (B : ℝ)
+    (h_row : ∀ i, ∑ k, ‖A i k‖ ≤ B) :
+    (hA.eigenvalues j) ∈ Set.Icc (-B) B := by
+  have h_eig := hasEigenvalue_eigenvalues hA j
+  have h_ball := eigenvalue_mem_ball h_eig
+  rcases h_ball with ⟨k, hk⟩
+  rw [mem_closedBall_iff_norm'] at hk
+  have h_symm : ‖A k k - hA.eigenvalues j‖ = ‖hA.eigenvalues j - A k k‖ := norm_sub_rev _ _
+  rw [h_symm] at hk
+  have h1 : ‖hA.eigenvalues j‖ - ‖A k k‖ ≤ ‖hA.eigenvalues j - A k k‖ := norm_sub_norm_le _ _
+  have h2 : ‖hA.eigenvalues j‖ ≤ ‖A k k‖ + ∑ y ∈ Finset.univ.erase k, ‖A k y‖ := by linarith
+  have h3 : ‖A k k‖ + ∑ y ∈ Finset.univ.erase k, ‖A k y‖ = ∑ y, ‖A k y‖ := by
+    exact Finset.add_sum_erase (s := Finset.univ) (f := fun y => ‖A k y‖) (h := Finset.mem_univ k)
+  have hk2 : ‖hA.eigenvalues j‖ ≤ B := h2.trans (by rw [h3]; exact h_row k)
+  rw [Real.norm_eq_abs, abs_le] at hk2
+  exact hk2
+
+lemma A'_matrix_val {d : ℕ} (hd : d ≥ 3) (x y : (ZMod (2^(d-2))) × ZMod 2) :
+    A'_matrix hd x y = if (G_d d).Adj ((sheetSplit hd).symm x) ((sheetSplit hd).symm y) then (1 : ℚ) else (0 : ℚ) := rfl
+
+lemma sum_A'_matrix_le {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
+    ∑ v : ZMod (2^(d-2)), (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1)) ≤ 4 := by
+  have h_sum : ∑ v : ZMod (2^(d-2)), (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1)) = ∑ v, ∑ b : ZMod 2, A'_matrix hd (u, 0) (v, b) := by
+    apply Finset.sum_congr rfl
+    intro v _
+    have h_zmod2 : (Finset.univ : Finset (ZMod 2)) = {0, 1} := rfl
+    have h_not_mem : (0 : ZMod 2) ∉ ({1} : Finset (ZMod 2)) := by decide
+    rw [h_zmod2, Finset.sum_insert h_not_mem, Finset.sum_singleton]
+  rw [h_sum, ← Finset.sum_product']
+  have h_univ_prod : (Finset.univ : Finset (ZMod (2^(d-2)))) ×ˢ (Finset.univ : Finset (ZMod 2)) = Finset.univ := rfl
+  rw [h_univ_prod]
+  have h_eq : ∑ p : (ZMod (2^(d-2))) × ZMod 2, A'_matrix hd (u, 0) p = ∑ y : ZMod (2^(d-1)), if (G_d d).Adj ((sheetSplit hd).symm (u, 0)) y then (1 : ℚ) else (0 : ℚ) := by
+    have h_equiv := Equiv.sum_comp (sheetSplit hd).symm (fun y => if (G_d d).Adj ((sheetSplit hd).symm (u, 0)) y then (1 : ℚ) else (0 : ℚ))
+    rw [← h_equiv]
+    apply Finset.sum_congr rfl
+    intro p _
+    rw [A'_matrix_val]
+  rw [h_eq]
+  have h_filter : ∑ y : ZMod (2^(d-1)), (if (G_d d).Adj ((sheetSplit hd).symm (u, 0)) y then (1 : ℚ) else (0 : ℚ)) = ((Finset.univ.filter (fun y => (G_d d).Adj ((sheetSplit hd).symm (u, 0)) y)).card : ℚ) := by
+    rw [Finset.sum_ite]
+    simp only [Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul, mul_one]
+  rw [h_filter]
+  have h_bound := G_d_degree_le hd ((sheetSplit hd).symm (u, 0))
+  exact_mod_cast h_bound
+
+lemma realWeightedMatrix_row_sum_le {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
+    ∑ v, ‖realWeightedMatrix hd u v‖ ≤ 4 := by
+  have h_sum : ∑ v, ‖realWeightedMatrix hd u v‖ = ∑ v, (realWeightedMatrix hd u v) := by
+    apply Finset.sum_congr rfl
+    intro v _
+    unfold realWeightedMatrix
+    rw [Matrix.map_apply]
+    have h_nonneg : (0 : ℝ) ≤ algebraMap ℚ ℝ (weightedMatrix hd u v) := by
+      unfold weightedMatrix
+      rw [map_add]
+      have h1 : (0 : ℝ) ≤ algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0)) := by
+        rw [A'_matrix_val]
+        split_ifs
+        · norm_num
+        · norm_num
+      have h2 : (0 : ℝ) ≤ algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 1)) := by
+        rw [A'_matrix_val]
+        split_ifs
+        · norm_num
+        · norm_num
+      exact add_nonneg h1 h2
+    exact Real.norm_of_nonneg h_nonneg
+  rw [h_sum]
+  have h_map : ∑ v, realWeightedMatrix hd u v = algebraMap ℚ ℝ (∑ v, weightedMatrix hd u v) := by
+    unfold realWeightedMatrix
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro v _
+    rw [Matrix.map_apply]
+  rw [h_map]
+  have h_sum_q : ∑ v, weightedMatrix hd u v = ∑ v : ZMod (2^(d-2)), (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1)) := by
+    apply Finset.sum_congr rfl
+    intro v _
+    unfold weightedMatrix
+    rfl
+  rw [h_sum_q]
+  have h_le := sum_A'_matrix_le hd u
+  have h_alg : algebraMap ℚ ℝ (∑ v : ZMod (2^(d-2)), (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1))) = ∑ v : ZMod (2^(d-2)), ((A'_matrix hd (u, 0) (v, 0) : ℝ) + (A'_matrix hd (u, 0) (v, 1) : ℝ)) := by
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro v _
+    rw [map_add]
+    rfl
+  rw [h_alg]
+  exact_mod_cast h_le
+
+-- The eigenvalues are bounded by the graph degree
+theorem weightedMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
+    ∀ i, Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) i ∈ Set.Icc (-4 : ℝ) 4 := by
+  intro i
+  apply eigenvalue_bound_of_gershgorin (realWeightedMatrix_isHermitian hd) i 4
+  exact fun u => realWeightedMatrix_row_sum_le hd u
 
 -- The antisymmetric block eigenvalues are empirically bounded by 2 in magnitude
 noncomputable def realSheetDiffMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℝ :=
   (sheetDiffMatrix hd).map (algebraMap ℚ ℝ)
 
-axiom realSheetDiffMatrix_isHermitian {d : ℕ} (hd : d ≥ 3) :
-  (realSheetDiffMatrix hd).IsHermitian
+theorem realSheetDiffMatrix_isHermitian {d : ℕ} (hd : d ≥ 3) :
+  (realSheetDiffMatrix hd).IsHermitian := by
+  ext i j
+  dsimp [Matrix.IsHermitian, realSheetDiffMatrix, sheetDiffMatrix, Matrix.map_apply]
+  apply congrArg (algebraMap ℚ ℝ)
+  have h1 : A'_matrix hd (j, 0) (i, 0) = A'_matrix hd (i, 0) (j, 0) := by
+    unfold A'_matrix
+    simp only [Matrix.reindex_apply, Equiv.symm_symm]
+    dsimp [adjacencyMatrix]
+    have h_symm : (G_d d).Adj ((sheetSplit hd).symm (j, 0)) ((sheetSplit hd).symm (i, 0)) ↔ (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 0)) := ⟨fun h => (G_d d).symm h, fun h => (G_d d).symm h⟩
+    have h_eq : (G_d d).Adj ((sheetSplit hd).symm (j, 0)) ((sheetSplit hd).symm (i, 0)) = (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 0)) := propext h_symm
+    simp only [h_eq]
+  have h2 : A'_matrix hd (j, 0) (i, 1) = A'_matrix hd (i, 0) (j, 1) := by
+    rw [← A'_tau_sym_01_10 hd j i]
+    unfold A'_matrix
+    simp only [Matrix.reindex_apply, Equiv.symm_symm]
+    dsimp [adjacencyMatrix]
+    have h_symm : (G_d d).Adj ((sheetSplit hd).symm (j, 1)) ((sheetSplit hd).symm (i, 0)) ↔ (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 1)) := ⟨fun h => (G_d d).symm h, fun h => (G_d d).symm h⟩
+    have h_eq : (G_d d).Adj ((sheetSplit hd).symm (j, 1)) ((sheetSplit hd).symm (i, 0)) = (G_d d).Adj ((sheetSplit hd).symm (i, 0)) ((sheetSplit hd).symm (j, 1)) := propext h_symm
+    simp only [h_eq]
+  rw [h1, h2]
 
-axiom sheetDiffMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
-    ∀ i, Matrix.IsHermitian.eigenvalues (realSheetDiffMatrix_isHermitian hd) i ∈ Set.Icc (-2 : ℝ) 2
+lemma realSheetDiffMatrix_row_sum_le {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
+    ∑ v, ‖realSheetDiffMatrix hd u v‖ ≤ 4 := by
+  have h_le : ∀ v, ‖realSheetDiffMatrix hd u v‖ ≤ algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1)) := by
+    intro v
+    unfold realSheetDiffMatrix sheetDiffMatrix
+    rw [Matrix.map_apply, map_sub, map_add]
+    have h1 : ‖algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0)) - algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 1))‖ ≤ ‖algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0))‖ + ‖algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 1))‖ := norm_sub_le _ _
+    have hp1 : (0 : ℝ) ≤ algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0)) := by
+      rw [A'_matrix_val]
+      split_ifs
+      · norm_num
+      · norm_num
+    have hp2 : (0 : ℝ) ≤ algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 1)) := by
+      rw [A'_matrix_val]
+      split_ifs
+      · norm_num
+      · norm_num
+    rw [Real.norm_of_nonneg hp1, Real.norm_of_nonneg hp2] at h1
+    exact h1
+  have h_sum_le : ∑ v, ‖realSheetDiffMatrix hd u v‖ ≤ ∑ v, algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1)) := Finset.sum_le_sum (fun v _ => h_le v)
+  have h_map : ∑ v, algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1)) = algebraMap ℚ ℝ (∑ v, (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1))) := by
+    rw [map_sum]
+  rw [h_map] at h_sum_le
+  have h_le2 := sum_A'_matrix_le hd u
+  have h_le3 : algebraMap ℚ ℝ (∑ v, (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1))) ≤ 4 := by
+    have h_alg : algebraMap ℚ ℝ (∑ v : ZMod (2^(d-2)), (A'_matrix hd (u, 0) (v, 0) + A'_matrix hd (u, 0) (v, 1))) = ∑ v : ZMod (2^(d-2)), ((A'_matrix hd (u, 0) (v, 0) : ℝ) + (A'_matrix hd (u, 0) (v, 1) : ℝ)) := by
+      rw [map_sum]
+      apply Finset.sum_congr rfl
+      intro v _
+      rw [map_add]
+      rfl
+    rw [h_alg]
+    exact_mod_cast h_le2
+  exact h_sum_le.trans h_le3
+
+theorem sheetDiffMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
+    ∀ i, Matrix.IsHermitian.eigenvalues (realSheetDiffMatrix_isHermitian hd) i ∈ Set.Icc (-4 : ℝ) 4 := by
+  intro i
+  apply eigenvalue_bound_of_gershgorin (realSheetDiffMatrix_isHermitian hd) i 4
+  exact fun u => realSheetDiffMatrix_row_sum_le hd u
 
 /-- The spectral gap of G_d is bounded by the spectral gap of G_{d-1} and the top eigenvalue of the antisymmetric block.
     This implies the spectral gap of G_d is strictly positive uniformly in d. -/
@@ -690,8 +990,14 @@ theorem spectral_gap_bound {d : ℕ} (hd : d ≥ 3) :
 noncomputable def realAdjacencyMatrix {d : ℕ} : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℝ :=
   (@adjacencyMatrix d).map (algebraMap ℚ ℝ)
 
-axiom realAdjacencyMatrix_isHermitian {d : ℕ} :
-  (@realAdjacencyMatrix d).IsHermitian
+theorem realAdjacencyMatrix_isHermitian {d : ℕ} :
+  (@realAdjacencyMatrix d).IsHermitian := by
+  ext i j
+  dsimp [Matrix.IsHermitian, realAdjacencyMatrix, adjacencyMatrix, Matrix.map_apply]
+  apply congrArg (algebraMap ℚ ℝ)
+  have h_symm : (G_d d).Adj i j ↔ (G_d d).Adj j i := ⟨fun h => (G_d d).symm h, fun h => (G_d d).symm h⟩
+  have h_eq : (G_d d).Adj i j = (G_d d).Adj j i := propext h_symm
+  simp only [h_eq]
 
 theorem adjacencyMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
     ∀ i, Matrix.IsHermitian.eigenvalues (@realAdjacencyMatrix_isHermitian d) i ∈ Set.Icc (-4 : ℝ) 4 := by

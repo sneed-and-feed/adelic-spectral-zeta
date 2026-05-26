@@ -15,12 +15,12 @@
    ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:351:18: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:414:5: unused variable `hne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:451:5: unused variable `hne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:414:22: unused variable `hv`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:451:22: unused variable `hv`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:694:32: unused variable `hw'_len`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   ".\\.\\.\\.\\Formalization\\CollatzConnectivity.lean:731:32: unused variable `hw'_len`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "10097578958674616788"}
+ "depHash": "6442970123397565337"}
