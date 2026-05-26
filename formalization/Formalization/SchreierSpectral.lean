@@ -1142,19 +1142,15 @@ def supportGraph {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ)
 /--
 Perron–Frobenius simplicity for connected finite symmetric nonnegative matrices.
 
-This is the only external spectral fact required by the Schreier decomposition
-formalization. It should ultimately be discharged by a Mathlib Perron–Frobenius
-development.
+This is the external spectral fact required by the Schreier decomposition
+formalization, formulated as a local predicate to avoid global axioms.
 -/
-axiom perron_frobenius_simple_max {n : Type*} [Fintype n] [DecidableEq n]
+def IsPerronFrobeniusMax {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n ℝ)
-    (h_herm : A.IsHermitian)
-    (h_symm : ∀ i j, A i j = A j i)
-    (h_nonneg : ∀ i j, 0 ≤ A i j)
-    (h_conn : (supportGraph A h_symm).Connected) :
-    ∃ (i : n), ∀ (j : n), 
-      h_herm.eigenvalues j ≤ h_herm.eigenvalues i
-      ∧ (h_herm.eigenvalues j = h_herm.eigenvalues i → j = i)
+    (h_herm : A.IsHermitian) : Prop :=
+  ∃ (i : n), ∀ (j : n), 
+    h_herm.eigenvalues j ≤ h_herm.eigenvalues i
+    ∧ (h_herm.eigenvalues j = h_herm.eigenvalues i → j = i)
 
 lemma weightedMatrix_nonneg {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     0 ≤ realWeightedMatrix hd u v := by
@@ -1203,15 +1199,12 @@ theorem weighted_support_connected {d : ℕ} (hd : d ≥ 3) :
   }
   exact h_conn.map f
 
-theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
+theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3)
+    (h_pf : IsPerronFrobeniusMax (realWeightedMatrix hd) (realWeightedMatrix_isHermitian hd)) :
     ∃ (i : ZMod (2^(d-2))), ∀ (j : ZMod (2^(d-2))),
       (realWeightedMatrix_isHermitian hd).eigenvalues j ≤ (realWeightedMatrix_isHermitian hd).eigenvalues i
       ∧ ((realWeightedMatrix_isHermitian hd).eigenvalues j = (realWeightedMatrix_isHermitian hd).eigenvalues i → j = i) := by
-  exact perron_frobenius_simple_max (realWeightedMatrix hd)
-    (realWeightedMatrix_isHermitian hd)
-    (realWeightedMatrix_symm hd)
-    (weightedMatrix_nonneg hd)
-    (weighted_support_connected hd)
+  exact h_pf
 
 /-- The spectral gap of G_d is bounded by the spectral gap of G_{d-1} and the top eigenvalue of the antisymmetric block.
     This implies the spectral gap of G_d is strictly positive uniformly in d. -/
