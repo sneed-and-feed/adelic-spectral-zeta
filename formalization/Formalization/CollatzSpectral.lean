@@ -567,10 +567,145 @@ lemma weighted_adj_eq_two_iff {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
   rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
   exact two_add_eq_two_iff _ _
 
+lemma tau_eq_of_sub_eq_pow {d : ℕ} (hd : d ≥ 3) (x y : ZMod (2^(d-1))) 
+    (h : x - y = (2^(d-2) : ZMod (2^(d-1)))) : tau x = y := by
+  have h_pow : (2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1))) = 0 := by
+    have h2 : (2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1))) = ((2 * 2^(d-2) : ℕ) : ZMod (2^(d-1))) := by push_cast; ring
+    have h4 : 2 * 2^(d-2) = 2^(d-1) := by
+      calc 2 * 2^(d-2) = 2^1 * 2^(d-2) := by ring
+        _ = 2^(1 + (d - 2)) := by rw [← pow_add]
+        _ = 2^(d-1) := by
+          have : 1 + (d - 2) = d - 1 := by omega
+          rw [this]
+    rw [h4] at h2
+    rw [h2]
+    exact CharP.cast_eq_zero (ZMod (2^(d-1))) (2^(d-1))
+  have h_tau : tau x = x + (2^(d-2) : ZMod (2^(d-1))) := by unfold tau; push_cast; rfl
+  calc tau x = x + (2^(d-2) : ZMod (2^(d-1))) := h_tau
+    _ = (y + (2^(d-2) : ZMod (2^(d-1)))) + (2^(d-2) : ZMod (2^(d-1))) := by
+      have hxy : x = y + (2^(d-2) : ZMod (2^(d-1))) := by
+        calc x = x - y + y := by ring
+             _ = (2^(d-2) : ZMod (2^(d-1))) + y := by rw [h]
+             _ = y + (2^(d-2) : ZMod (2^(d-1))) := by ring
+      rw [hxy]
+    _ = y + ((2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1)))) := by ring
+    _ = y + 0 := by rw [h_pow]
+    _ = y := by ring
+
+lemma three_mul_tau {d : ℕ} (hd : d ≥ 3) (x : ZMod (2^(d-1))) :
+    3 * tau x = 3 * x + (2^(d-2) : ZMod (2^(d-1))) := by
+  have h_tau : tau x = x + (2^(d-2) : ZMod (2^(d-1))) := by unfold tau; push_cast; rfl
+  have h_pow : (2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1))) = 0 := by
+    have h2 : (2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1))) = ((2 * 2^(d-2) : ℕ) : ZMod (2^(d-1))) := by push_cast; ring
+    have h4 : 2 * 2^(d-2) = 2^(d-1) := by
+      calc 2 * 2^(d-2) = 2^1 * 2^(d-2) := by ring
+        _ = 2^(1 + (d - 2)) := by rw [← pow_add]
+        _ = 2^(d-1) := by
+          have : 1 + (d - 2) = d - 1 := by omega
+          rw [this]
+    rw [h4] at h2
+    rw [h2]
+    exact CharP.cast_eq_zero (ZMod (2^(d-1))) (2^(d-1))
+  calc 3 * tau x = 3 * (x + (2^(d-2) : ZMod (2^(d-1)))) := by rw [h_tau]
+    _ = 3 * x + 3 * (2^(d-2) : ZMod (2^(d-1))) := by ring
+    _ = 3 * x + (2^(d-2) : ZMod (2^(d-1))) + ((2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1)))) := by ring
+    _ = 3 * x + (2^(d-2) : ZMod (2^(d-1))) + 0 := by rw [h_pow]
+    _ = 3 * x + (2^(d-2) : ZMod (2^(d-1))) := by ring
+
+lemma lift_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    (G_d (d-1)).Adj u v →
+    (G_d d).Adj (canonicalLift u) (canonicalLift v) ∨ (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) := by
+  intro h_adj
+  rcases h_adj with ⟨h_ne, h_cases⟩
+  have hx : canonicalLift u ≠ canonicalLift v := by
+    intro h
+    have h2 : pi (canonicalLift u) = pi (canonicalLift v) := by rw [h]
+    rw [pi_canonicalLift, pi_canonicalLift] at h2
+    exact h_ne h2
+  have hy : canonicalLift u ≠ tau (canonicalLift v) := by
+    intro h
+    have h2 : pi (canonicalLift u) = pi (tau (canonicalLift v)) := by rw [h]
+    rw [pi_canonicalLift, tau_pi hd, pi_canonicalLift] at h2
+    exact h_ne h2
+  rcases h_cases with h | h | h | h
+  · -- v = 3u
+    have h_pi : pi (canonicalLift v - 3 * canonicalLift u) = 0 := by
+      rw [pi_sub, pi_mul_three, pi_canonicalLift, pi_canonicalLift, h, sub_self]
+    rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
+    · left
+      refine ⟨hx, Or.inl ?_⟩
+      calc canonicalLift v = canonicalLift v - 3 * canonicalLift u + 3 * canonicalLift u := by ring
+        _ = 0 + 3 * canonicalLift u := by rw [h0]
+        _ = 3 * canonicalLift u := by ring
+    · right
+      refine ⟨hy, Or.inl ?_⟩
+      exact tau_eq_of_sub_eq_pow hd (canonicalLift v) (3 * canonicalLift u) h2
+  · -- v = 3u - 1
+    have h_pi : pi (canonicalLift v - (3 * canonicalLift u - 1)) = 0 := by
+      rw [pi_sub, pi_mul_three_sub_one, pi_canonicalLift, pi_canonicalLift, h, sub_self]
+    rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
+    · left
+      refine ⟨hx, Or.inr (Or.inl ?_)⟩
+      calc canonicalLift v = canonicalLift v - (3 * canonicalLift u - 1) + (3 * canonicalLift u - 1) := by ring
+        _ = 0 + (3 * canonicalLift u - 1) := by rw [h0]
+        _ = 3 * canonicalLift u - 1 := by ring
+    · right
+      refine ⟨hy, Or.inr (Or.inl ?_)⟩
+      exact tau_eq_of_sub_eq_pow hd (canonicalLift v) (3 * canonicalLift u - 1) h2
+  · -- u = 3v
+    have h_pi : pi (canonicalLift u - 3 * canonicalLift v) = 0 := by
+      rw [pi_sub, pi_mul_three, pi_canonicalLift, pi_canonicalLift, h, sub_self]
+    rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
+    · left
+      refine ⟨hx, Or.inr (Or.inr (Or.inl ?_))⟩
+      calc canonicalLift u = canonicalLift u - 3 * canonicalLift v + 3 * canonicalLift v := by ring
+        _ = 0 + 3 * canonicalLift v := by rw [h0]
+        _ = 3 * canonicalLift v := by ring
+    · right
+      refine ⟨hy, Or.inr (Or.inr (Or.inl ?_))⟩
+      calc canonicalLift u = canonicalLift u - 3 * canonicalLift v + 3 * canonicalLift v := by ring
+        _ = (2^(d-2) : ZMod (2^(d-1))) + 3 * canonicalLift v := by rw [h2]
+        _ = 3 * canonicalLift v + (2^(d-2) : ZMod (2^(d-1))) := by ring
+        _ = 3 * tau (canonicalLift v) := (three_mul_tau hd (canonicalLift v)).symm
+  · -- u = 3v - 1
+    have h_pi : pi (canonicalLift u - (3 * canonicalLift v - 1)) = 0 := by
+      rw [pi_sub, pi_mul_three_sub_one, pi_canonicalLift, pi_canonicalLift, h, sub_self]
+    rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
+    · left
+      refine ⟨hx, Or.inr (Or.inr (Or.inr ?_))⟩
+      calc canonicalLift u = canonicalLift u - (3 * canonicalLift v - 1) + (3 * canonicalLift v - 1) := by ring
+        _ = 0 + (3 * canonicalLift v - 1) := by rw [h0]
+        _ = 3 * canonicalLift v - 1 := by ring
+    · right
+      refine ⟨hy, Or.inr (Or.inr (Or.inr ?_))⟩
+      calc canonicalLift u = canonicalLift u - (3 * canonicalLift v - 1) + (3 * canonicalLift v - 1) := by ring
+        _ = (2^(d-2) : ZMod (2^(d-1))) + (3 * canonicalLift v - 1) := by rw [h2]
+        _ = 3 * canonicalLift v + (2^(d-2) : ZMod (2^(d-1))) - 1 := by ring
+        _ = 3 * tau (canonicalLift v) - 1 := by rw [three_mul_tau hd (canonicalLift v)]
+
 open Classical in
 lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v ≥ if (G_d (d-1)).Adj u v then 1 else 0 := by
-  sorry
+  by_cases h_adj : (G_d (d-1)).Adj u v
+  · rw [if_pos h_adj]
+    rw [weighted_adj_eq_sum hd]
+    dsimp [weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex, Equiv.refl]
+    rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
+    have h_lift := lift_adj hd u v h_adj
+    rcases h_lift with h1 | h2
+    · have h_eq1 : (if (G_d d).Adj (canonicalLift u) (canonicalLift v) then (1:ℚ) else 0) = 1 := if_pos h1
+      have h_eq2 : (0 : ℚ) ≤ if (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) then 1 else 0 := by split_ifs <;> norm_num
+      linarith
+    · have h_eq1 : (0 : ℚ) ≤ if (G_d d).Adj (canonicalLift u) (canonicalLift v) then 1 else 0 := by split_ifs <;> norm_num
+      have h_eq2 : (if (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) then (1:ℚ) else 0) = 1 := if_pos h2
+      linarith
+  · rw [if_neg h_adj]
+    rw [weighted_adj_eq_sum hd]
+    dsimp [weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex, Equiv.refl]
+    rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
+    have hp1 : (0 : ℚ) ≤ if (G_d d).Adj (canonicalLift u) (canonicalLift v) then 1 else 0 := by split_ifs <;> norm_num
+    have hp2 : (0 : ℚ) ≤ if (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) then 1 else 0 := by split_ifs <;> norm_num
+    exact add_nonneg hp1 hp2
 
 -- Phase 4: Spectral Decomposition & The Main Bound
 -- ============================================================================
@@ -999,16 +1134,42 @@ theorem realAdjacencyMatrix_isHermitian {d : ℕ} :
   have h_eq : (G_d d).Adj i j = (G_d d).Adj j i := propext h_symm
   simp only [h_eq]
 
+lemma realAdjacencyMatrix_row_sum_le {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-1))) :
+    ∑ v, ‖(@realAdjacencyMatrix d) u v‖ ≤ 4 := by
+  have h_sum : ∑ v, ‖(@realAdjacencyMatrix d) u v‖ = ∑ v, (@realAdjacencyMatrix d) u v := by
+    apply Finset.sum_congr rfl
+    intro v _
+    unfold realAdjacencyMatrix
+    rw [Matrix.map_apply]
+    have h_nonneg : (0 : ℝ) ≤ algebraMap ℚ ℝ (@adjacencyMatrix d u v) := by
+      dsimp [adjacencyMatrix]
+      split_ifs <;> norm_num
+    exact Real.norm_of_nonneg h_nonneg
+  rw [h_sum]
+  have h_map : ∑ v, (@realAdjacencyMatrix d) u v = algebraMap ℚ ℝ (∑ v, @adjacencyMatrix d u v) := by
+    unfold realAdjacencyMatrix
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro v _
+    rw [Matrix.map_apply]
+  rw [h_map]
+  have h_filter : ∑ v, @adjacencyMatrix d u v = ((Finset.univ.filter (fun v => (G_d d).Adj u v)).card : ℚ) := by
+    dsimp [adjacencyMatrix]
+    rw [Finset.sum_ite]
+    simp only [Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul, mul_one]
+  rw [h_filter]
+  have h_bound := G_d_degree_le hd u
+  have h_bound_real : algebraMap ℚ ℝ ((Finset.univ.filter (fun v => (G_d d).Adj u v)).card : ℚ) ≤ 4 := by
+    have h_eq : algebraMap ℚ ℝ ((Finset.univ.filter (fun v => (G_d d).Adj u v)).card : ℚ) = ((Finset.univ.filter (fun v => (G_d d).Adj u v)).card : ℝ) := rfl
+    rw [h_eq]
+    exact_mod_cast h_bound
+  exact h_bound_real
+
 theorem adjacencyMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
     ∀ i, Matrix.IsHermitian.eigenvalues (@realAdjacencyMatrix_isHermitian d) i ∈ Set.Icc (-4 : ℝ) 4 := by
-  -- Follows from charpoly_adjacency_eq_mul and the bounds on the two blocks
-  sorry
-
--- For a connected graph, the largest eigenvalue is simple and the spectral gap is positive
--- This requires Perron-Frobenius, which is not yet in Mathlib
-axiom weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
-    Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) 0 > 
-    Matrix.IsHermitian.eigenvalues (realWeightedMatrix_isHermitian hd) 1
+  intro i
+  apply eigenvalue_bound_of_gershgorin (@realAdjacencyMatrix_isHermitian d) i 4
+  exact fun u => realAdjacencyMatrix_row_sum_le hd u
 
 
 
