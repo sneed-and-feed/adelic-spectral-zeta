@@ -1,90 +1,40 @@
-import Formalization.CollatzSpectral
-
+import Mathlib.Analysis.InnerProductSpace.PiL2
 open Classical
-open Matrix
 
-lemma hadamardInv_right_inv {d : ℕ} (hd : d ≥ 3) :
-    hadamardBlock * hadamardInv = 1 := by
-  simp [hadamardInv]
-  rw [Matrix.mul_smul, hadamard_sq hd]
-  ext i j
-  simp [Matrix.smul_apply, Matrix.one_apply]
-  split_ifs <;> norm_num
-
-lemma conjBlockInv_mul_conjBlock {d : ℕ} (hd : d ≥ 3) :
-    conjBlockInv * conjBlock = 1 := by
-  ext ⟨i1, j1⟩ ⟨i2, j2⟩
-  simp only [conjBlockInv, conjBlock, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
-  by_cases h : i1 = i2
-  · subst h
-    have : ∀ k1, (∑ k2, (if i1 = k1 then hadamardInv j1 k2 else 0) * (if k1 = i1 then hadamardBlock k2 j2 else 0))
-        = if i1 = k1 then ∑ k2, hadamardInv j1 k2 * hadamardBlock k2 j2 else 0 := by
-      intro k1
-      by_cases hk : i1 = k1 <;> simp [hk]
-    simp_rw [this]
-    rw [Finset.sum_eq_single i1]
-    · simp [hadamardInv_left_inv hd]
-    · intro k1 _ hk1; simp [hk1]
-    · intro h_mem; exact (h_mem (Finset.mem_univ i1)).elim
-  · -- i1 ≠ i2
-    have : ∀ k1 k2, (if i1 = k1 then hadamardInv j1 k2 else 0) * (if k1 = i2 then hadamardBlock k2 j2 else 0) = 0 := by
-      intro k1 k2
-      by_cases hk1 : i1 = k1 <;> simp [hk1, h]
-    simp_rw [this]
-    simp [h]
-
-lemma conjBlock_mul_conjBlockInv {d : ℕ} (hd : d ≥ 3) :
-    conjBlock * conjBlockInv = 1 := by
-  ext ⟨i1, j1⟩ ⟨i2, j2⟩
-  simp only [conjBlock, conjBlockInv, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
-  by_cases h : i1 = i2
-  · subst h
-    have : ∀ k1, (∑ k2, (if i1 = k1 then hadamardBlock j1 k2 else 0) * (if k1 = i1 then hadamardInv k2 j2 else 0))
-        = if i1 = k1 then ∑ k2, hadamardBlock j1 k2 * hadamardInv k2 j2 else 0 := by
-      intro k1
-      by_cases hk : i1 = k1 <;> simp [hk]
-    simp_rw [this]
-    rw [Finset.sum_eq_single i1]
-    · simp [hadamardInv_right_inv hd]
-    · intro k1 _ hk1; simp [hk1]
-    · intro h_mem; exact (h_mem (Finset.mem_univ i1)).elim
-  · -- i1 ≠ i2
-    have : ∀ k1 k2, (if i1 = k1 then hadamardBlock j1 k2 else 0) * (if k1 = i2 then hadamardInv k2 j2 else 0) = 0 := by
-      intro k1 k2
-      by_cases hk1 : i1 = k1 <;> simp [hk1, h]
-    simp_rw [this]
-    simp [h]
-
-lemma reindex_mul [Fintype n] {m' n' o' : Type*}
-    (eₘ : m ≃ m') (eₙ : n ≃ n') (eₒ : o ≃ o')
-    (M : Matrix m n α) (N : Matrix n o α) :
-    Matrix.reindex eₘ eₙ M * Matrix.reindex eₙ eₒ N = Matrix.reindex eₘ eₒ (M * N) := by
-  simp [Matrix.reindex, Matrix.submatrix_mul _ _ _ _ _ _ eₙ.symm.bijective]
-
-theorem collatz_spectral_decomposition_new {d : ℕ} (hd : d ≥ 3) :
-    ∃ (S : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ) (S_inv : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ),
-      S_inv * S = 1 ∧ S * S_inv = 1 ∧
-      S_inv * (@adjacencyMatrix d) * S = 
-        Matrix.reindex (sheetSplit hd).symm (sheetSplit hd).symm (A'_block_diag_target hd) := by
-  let e := sheetSplit hd
-  use Matrix.reindex e.symm e.symm conjBlock
-  use Matrix.reindex e.symm e.symm conjBlockInv
-  constructor
-  · -- S_inv * S = 1
-    rw [reindex_mul]
-    rw [conjBlockInv_mul_conjBlock hd]
-    rw [Matrix.reindex_one]
-  · constructor
-    · -- S * S_inv = 1
-      rw [reindex_mul]
-      rw [conjBlock_mul_conjBlockInv hd]
-      rw [Matrix.reindex_one]
-    · -- S_inv * A * S = block diag
-      have hA : @adjacencyMatrix d = Matrix.reindex e.symm e.symm (A'_matrix hd) := by
-        rw [A'_matrix]
-        -- Matrix.reindex_reindex doesn't exist explicitly sometimes, let's use submatrix
-        ext i j
-        simp [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm]
-      rw [hA]
-      rw [reindex_mul, reindex_mul]
-      rw [A'_block_diag hd]
+lemma evec_orth (n : Type*) [Fintype n] [DecidableEq n]
+    (evec : OrthonormalBasis n ℝ (EuclideanSpace ℝ n))
+    (i_max j : n) (h_neq : j ≠ i_max)
+    (v_B w_i w_j : n → ℝ)
+    (ci cj : ℝ) (hw_j_neq : w_j ≠ 0)
+    (hi : w_i = ci • v_B) (hj : w_j = cj • v_B) 
+    (h_wi : w_i = evec i_max) (h_wj : w_j = evec j) :
+    False := by
+  have hcj_neq : cj ≠ 0 := by
+    intro h
+    rw [h, zero_smul] at hj
+    exact hw_j_neq hj
+  have h_eq : (evec i_max : EuclideanSpace ℝ n) = (ci / cj) • (evec j : EuclideanSpace ℝ n) := by
+    ext k
+    have hik := congr_fun hi k
+    have hjk := congr_fun hj k
+    have h_wi_k : (evec i_max : EuclideanSpace ℝ n) k = w_i k := by rw [h_wi]
+    have h_wj_k : (evec j : EuclideanSpace ℝ n) k = w_j k := by rw [h_wj]
+    rw [h_wi_k, h_wj_k]
+    simp only [Pi.smul_apply, smul_eq_mul] at hik hjk ⊢
+    calc
+      w_i k = ci * v_B k := hik
+      _ = ci * (w_j k / cj) := by rw [hjk, mul_div_cancel_right₀ (v_B k) hcj_neq]
+      _ = (ci / cj) * w_j k := by ring
+  let b := evec.toBasis
+  have h_eq_b : b i_max = (ci / cj) • b j := h_eq
+  have h1 : b.repr (b i_max) i_max = 1 := by
+    rw [Basis.repr_self]
+    exact Finsupp.single_eq_same
+  have h2 : b.repr (b j) i_max = 0 := by
+    rw [Basis.repr_self]
+    exact Finsupp.single_eq_of_ne (Ne.symm h_neq)
+  have h3 : b.repr ((ci / cj) • b j) i_max = 0 := by
+    rw [map_smul, Finsupp.smul_apply, smul_eq_mul, h2, mul_zero]
+  rw [h_eq_b] at h1
+  rw [h3] at h1
+  norm_num at h1
