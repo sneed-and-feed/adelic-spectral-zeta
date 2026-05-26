@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: Formalization
-// Imports: Init Formalization.SpectralGRH Formalization.CollatzGalois Formalization.CollatzConnectivity Formalization.CollatzSpectral
+// Imports: Init Formalization.SpectralGRH Formalization.CollatzGalois Formalization.SchreierConnectivity Formalization.SchreierSpectral
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -16,8 +16,8 @@ extern "C" {
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Formalization_SpectralGRH(uint8_t builtin, lean_object*);
 lean_object* initialize_Formalization_CollatzGalois(uint8_t builtin, lean_object*);
-lean_object* initialize_Formalization_CollatzConnectivity(uint8_t builtin, lean_object*);
-lean_object* initialize_Formalization_CollatzSpectral(uint8_t builtin, lean_object*);
+lean_object* initialize_Formalization_SchreierConnectivity(uint8_t builtin, lean_object*);
+lean_object* initialize_Formalization_SchreierSpectral(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_Formalization(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -32,10 +32,10 @@ lean_dec_ref(res);
 res = initialize_Formalization_CollatzGalois(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Formalization_CollatzConnectivity(builtin, lean_io_mk_world());
+res = initialize_Formalization_SchreierConnectivity(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_Formalization_CollatzSpectral(builtin, lean_io_mk_world());
+res = initialize_Formalization_SchreierSpectral(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));

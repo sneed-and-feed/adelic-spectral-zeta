@@ -3,12 +3,12 @@ import Mathlib.Algebra.Module.Submodule.Basic
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.Gershgorin
-import Formalization.CollatzConnectivity
+import Formalization.SchreierConnectivity
 
 open Matrix
 open Classical
 
-namespace CollatzSpectral
+namespace SchreierSpectral
 
 -- ============================================================================
 -- Layer of Genius: Canonical Sheet Decomposition & Simp Set
@@ -710,7 +710,7 @@ lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
 -- Phase 4: Spectral Decomposition & The Main Bound
 -- ============================================================================
 
-/-- The fundamental theorem of the Collatz Schreier graphs.
+/-- The fundamental theorem of the Schreier graphs of affine maps.
     The adjacency operator of G_d decomposes completely into two orthogonal sectors:
     1. A symmetric block identical to the weighted adjacency of G_{d-1}.
     2. An antisymmetric block capturing the sheet-exchange dynamics. -/
@@ -1132,7 +1132,7 @@ def supportGraph {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ)
 /--
 Perron–Frobenius simplicity for connected finite symmetric nonnegative matrices.
 
-This is the only external spectral fact required by the Collatz decomposition
+This is the only external spectral fact required by the Schreier decomposition
 formalization. It should ultimately be discharged by a Mathlib Perron–Frobenius
 development.
 -/
@@ -1261,4 +1261,4 @@ theorem adjacencyMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
 
 
 
-end CollatzSpectral
+end SchreierSpectral

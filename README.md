@@ -50,8 +50,8 @@ $$
 \Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 \vert L'\left(\frac{1}{2}+it_k\right)\vert ^2}
 $$
 
-### 6. Collatz Gauge Geometry & Commutator Rigidity
-We study finite truncations of a natural transfer representation of the shortcut Collatz map on $\mathbb{Z}_2$, proving exact commutator rank and kernel formulas, reducing the commutator square to a 4-regular graph adjacency model, and establishing infinite-dimensionality of the projective-limit kernel. We further formulate a conjectural spectral recursion verified computationally through depth 8.
+### 6. Schreier Graph Geometry & Spectral Rigidity
+We study the 4-regular Schreier graphs $G_d$ of affine maps modulo $2^{d-1}$, motivated by the structural dynamics of the $3x+1$ iteration on $\mathbb{Z}_2$. We formalize the topological connectivity and full spectral decomposition of this graph tower in Lean 4. While the graphs encode the 2-adic modular structure of the Collatz-like generators, the spectral bounds characterize a random walk on $G_d$ rather than the deterministic Collatz dynamical orbits—leaving the dynamical bridge as an open research direction. We further prove exact commutator rank and kernel formulas, reducing the commutator square to a 4-regular graph adjacency model, and establishing infinite-dimensionality of the projective-limit kernel.
 
 Specifically:
 * **Commutator Dimension Identity**: The finite-dimensional commutator $K_d = [A_d, B_d]$ between the $2^d$-dimensional translation $A_d$ and the transfer operator $B_d$ satisfies:

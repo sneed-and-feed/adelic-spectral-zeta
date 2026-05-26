@@ -1,4 +1,4 @@
 import Formalization.SpectralGRH
 import Formalization.CollatzGalois
-import Formalization.CollatzConnectivity
-import Formalization.CollatzSpectral
+import Formalization.SchreierConnectivity
+import Formalization.SchreierSpectral
