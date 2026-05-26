@@ -567,6 +567,16 @@ lemma weighted_adj_eq_two_iff {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
   rw [sheetSplitInv_zero hd u, sheetSplitInv_zero hd v, sheetSplitInv_one hd v]
   exact two_add_eq_two_iff _ _
 
+/- **REMOVED: `weightedMatrix_eq_two_smul_adj_plus_monodromy` (mathematically false).**
+    The formula `weightedMatrix = 2 • adj_{d-1} + monodromy` is wrong:
+    not every G_{d-1} edge lifts to both sheets. Counterexample at d=4:
+    weightedMatrix(1,3) = 1 (only one lift exists), but 2·adj_G₃(1,3) = 2.
+
+    The correct bounds that ARE proven:
+    • `weighted_adj_ge_adj`:  weightedMatrix(u,v) ≥ adj_{d-1}(u,v)
+    • `weighted_adj_bounds`:  weightedMatrix(u,v) ≤ 2
+    • `lift_adj`:             each G_{d-1} edge lifts to at least one sheet in G_d  -/
+
 lemma tau_eq_of_sub_eq_pow {d : ℕ} (hd : d ≥ 3) (x y : ZMod (2^(d-1))) 
     (h : x - y = (2^(d-2) : ZMod (2^(d-1)))) : tau x = y := by
   have h_pow : (2^(d-2) : ZMod (2^(d-1))) + (2^(d-2) : ZMod (2^(d-1))) = 0 := by
@@ -1260,5 +1270,17 @@ theorem adjacencyMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
   exact fun u => realAdjacencyMatrix_row_sum_le hd u
 
 
-
 end SchreierSpectral
+
+/- **REMOVED: `spectral_radius_exactly_four` (mathematically false).**
+   G_d is never 4-regular: vertex 0 always has degree ≤ 2 (generators 3·0=0
+   and inv3·0=0 are self-loops). For non-regular connected graphs, the spectral
+   radius is strictly less than the max degree, so ρ(G_d) < 4 for all d ≥ 2.
+   Concrete values: ρ(G₂) = 1, ρ(G₃) = (1+√5)/2 ≈ 1.618.
+
+   The correct spectral results that ARE proven:
+   • `adjacencyMatrix_eigenvalue_bound`:  all eigenvalues ∈ [-4, 4]  (Gershgorin)
+   • `weightedMatrix_eigenvalue_bound`:   symmetric block eigenvalues ∈ [-4, 4]
+   • `weightedMatrix_spectral_gap_positive`: top eigenvalue of weighted block
+     is simple (Perron–Frobenius, conditional on `perron_frobenius_simple_max` axiom)
+   • `charpoly_adjacency_eq_mul`:  charpoly factors into weighted × antisym blocks -/
