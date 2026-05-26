@@ -36,6 +36,7 @@ LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit___elambda__2(lean_object*,
 static lean_object* l_CollatzSpectral_symSubspace___closed__4;
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__2___closed__1;
 static lean_object* l_CollatzSpectral_symSubspace___closed__1;
+LEAN_EXPORT lean_object* l_CollatzSpectral_supportGraph___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__1___closed__1;
 LEAN_EXPORT lean_object* l_CollatzSpectral_sheetSplit(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_sumProdEquiv___elambda__2___boxed(lean_object*);
@@ -63,6 +64,7 @@ LEAN_EXPORT lean_object* l_CollatzSpectral_canonicalLift___boxed(lean_object*, l
 LEAN_EXPORT lean_object* l_CollatzSpectral_antisymSubspace(lean_object*, lean_object*);
 lean_object* lean_nat_sub(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Nat_cast___at_CollatzSpectral_canonicalLift___spec__1___boxed(lean_object*, lean_object*);
+LEAN_EXPORT lean_object* l_CollatzSpectral_supportGraph(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_Field_toSemifield___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_CollatzSpectral_symSubspace(lean_object*, lean_object*);
 static lean_object* l_CollatzSpectral_sheetSplit___elambda__1___closed__2;
@@ -585,6 +587,25 @@ lean_dec(x_3);
 lean_dec(x_2);
 lean_dec(x_1);
 return x_4;
+}
+}
+LEAN_EXPORT lean_object* l_CollatzSpectral_supportGraph(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = lean_box(0);
+return x_6;
+}
+}
+LEAN_EXPORT lean_object* l_CollatzSpectral_supportGraph___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
+_start:
+{
+lean_object* x_6; 
+x_6 = l_CollatzSpectral_supportGraph(x_1, x_2, x_3, x_4, x_5);
+lean_dec(x_4);
+lean_dec(x_3);
+lean_dec(x_2);
+return x_6;
 }
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);

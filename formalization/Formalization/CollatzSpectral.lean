@@ -1115,6 +1115,94 @@ theorem sheetDiffMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
   apply eigenvalue_bound_of_gershgorin (realSheetDiffMatrix_isHermitian hd) i 4
   exact fun u => realSheetDiffMatrix_row_sum_le hd u
 
+lemma symm_of_herm {n : Type*} {A : Matrix n n ℝ} (h : A.IsHermitian) (i j : n) : A i j = A j i := by
+  have h1 : A.conjTranspose j i = A j i := by rw [h]
+  dsimp [Matrix.conjTranspose] at h1
+  simp only [starRingEnd_apply, star_trivial] at h1
+  exact h1
+
+def supportGraph {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ)
+    (h_symm : ∀ i j, A i j = A j i) : SimpleGraph n where
+  Adj i j := 0 < A i j ∧ i ≠ j
+  symm := by
+    intro i j h
+    exact ⟨by rw [h_symm j i]; exact h.1, h.2.symm⟩
+  loopless := by intro i h; exact h.2 rfl
+
+/--
+Perron–Frobenius simplicity for connected finite symmetric nonnegative matrices.
+
+This is the only external spectral fact required by the Collatz decomposition
+formalization. It should ultimately be discharged by a Mathlib Perron–Frobenius
+development.
+-/
+axiom perron_frobenius_simple_max {n : Type*} [Fintype n] [DecidableEq n]
+    (A : Matrix n n ℝ)
+    (h_herm : A.IsHermitian)
+    (h_symm : ∀ i j, A i j = A j i)
+    (h_nonneg : ∀ i j, 0 ≤ A i j)
+    (h_conn : (supportGraph A h_symm).Connected) :
+    ∃ (i : n), ∀ (j : n), 
+      h_herm.eigenvalues j ≤ h_herm.eigenvalues i
+      ∧ (h_herm.eigenvalues j = h_herm.eigenvalues i → j = i)
+
+lemma weightedMatrix_nonneg {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    0 ≤ realWeightedMatrix hd u v := by
+  dsimp [realWeightedMatrix, Matrix.map_apply]
+  have h1 : 0 ≤ weightedMatrix hd u v := by
+    dsimp [weightedMatrix, A'_matrix, adjacencyMatrix, Matrix.reindex, Equiv.refl]
+    apply add_nonneg <;> split_ifs <;> norm_num
+  have h2 : (0:ℝ) = algebraMap ℚ ℝ 0 := by norm_num
+  rw [h2]
+  exact Rat.cast_le.mpr h1
+
+lemma realWeightedMatrix_symm {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
+    realWeightedMatrix hd u v = realWeightedMatrix hd v u := 
+  symm_of_herm (realWeightedMatrix_isHermitian hd) u v
+
+theorem weighted_support_lift
+  {d : ℕ} (hd : d ≥ 3)
+  {u v : ZMod (2^(d-2))}
+  (h : (G_d (d-1)).Adj u v) :
+  (supportGraph (realWeightedMatrix hd) (realWeightedMatrix_symm hd)).Adj u v := by
+  dsimp [supportGraph]
+  constructor
+  · have h1 := weighted_adj_ge_adj hd u v
+    have h2 : (if (G_d (d - 1)).Adj u v then (1 : ℚ) else 0) = 1 := if_pos h
+    rw [h2] at h1
+    dsimp [realWeightedMatrix, Matrix.map_apply]
+    have h3 : (1:ℝ) = algebraMap ℚ ℝ 1 := by norm_num
+    have h4 : (0:ℝ) < 1 := by norm_num
+    have h5 : algebraMap ℚ ℝ 1 ≤ algebraMap ℚ ℝ (weightedMatrix hd u v) := 
+      Rat.cast_le.mpr h1
+    rw [←h3] at h5
+    exact lt_of_lt_of_le h4 h5
+  · exact h.ne
+
+theorem weighted_support_connected {d : ℕ} (hd : d ≥ 3) :
+    (supportGraph (realWeightedMatrix hd) (realWeightedMatrix_symm hd)).Connected := by
+  constructor
+  intro u v
+  have hd2 : d - 1 ≥ 2 := by omega
+  have h_conn := (G_d_connected hd2).preconnected u v
+  let f : (G_d (d-1)) →g (supportGraph (realWeightedMatrix hd) (realWeightedMatrix_symm hd)) := {
+    toFun := id
+    map_rel' := by
+      intro x y hxy
+      exact weighted_support_lift hd hxy
+  }
+  exact h_conn.map f
+
+theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
+    ∃ (i : ZMod (2^(d-2))), ∀ (j : ZMod (2^(d-2))),
+      (realWeightedMatrix_isHermitian hd).eigenvalues j ≤ (realWeightedMatrix_isHermitian hd).eigenvalues i
+      ∧ ((realWeightedMatrix_isHermitian hd).eigenvalues j = (realWeightedMatrix_isHermitian hd).eigenvalues i → j = i) := by
+  exact perron_frobenius_simple_max (realWeightedMatrix hd)
+    (realWeightedMatrix_isHermitian hd)
+    (realWeightedMatrix_symm hd)
+    (weightedMatrix_nonneg hd)
+    (weighted_support_connected hd)
+
 /-- The spectral gap of G_d is bounded by the spectral gap of G_{d-1} and the top eigenvalue of the antisymmetric block.
     This implies the spectral gap of G_d is strictly positive uniformly in d. -/
 theorem spectral_gap_bound {d : ℕ} (hd : d ≥ 3) :

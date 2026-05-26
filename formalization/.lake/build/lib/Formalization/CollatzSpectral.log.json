@@ -15,12 +15,6 @@
    ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:559:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice\nnote: this linter can be disabled with `set_option linter.unnecessarySeqFocus false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:571:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:758:69: unused variable `h_inv2`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:1002:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\CollatzSpectral.lean:893:69: unused variable `h_inv2`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "7164362532444881808"}
+ "depHash": "11502636554587477317"}
