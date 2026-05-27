@@ -10,8 +10,5 @@
    "level": "warning"},
   {"message":
    ".\\.\\.\\.\\Formalization\\SchreierAntisymBound.lean:565:80: `Finsupp.ext_iff` has been deprecated, use `DFunLike.ext_iff` instead",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\SchreierAntisymBound.lean:592:8: declaration uses 'sorry'",
    "level": "warning"}],
- "depHash": "14349977971685603676"}
+ "depHash": "13957239131211255826"}

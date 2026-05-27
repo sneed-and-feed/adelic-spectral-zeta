@@ -98,6 +98,9 @@ In `formalization/Formalization/AdelicTopology.lean`, we bypass the lack of diff
 $$ \langle U_\delta x, U_\delta x \rangle = \langle V x, V x \rangle + |C|^2 \langle W x, W x \rangle \neq \langle x, x \rangle $$
 Because an extension must be unitary to represent a valid physical quantum system, this formalization strictly proves that the topological boundary rigorously rejects any state that does not have $\sigma = 1/2$. While the explicit construction of the Adèlic operator itself remains unformalized in Lean 4 due to library limitations, this compiled theorem provides the exact mathematical "kill shot" required to seal the Connes spectral realization against off-line counterexamples.
 
+**Lean 4 Formalization: Macroscopic Entanglement Degeneracy**
+In `formalization/Formalization/ManyBodyPhaseTransition.lean`, we bridge the extreme thermodynamic limit physics back to the zero-axiom logical framework. We mechanically formalize the fact that if a parameter exactly aligns with an L-function zero (the single-particle Dirac eigenvalue hits exactly 0), the many-body interacting Fermionic Fock space undergoes a rigorous ground-state degeneracy. This degeneracy mechanically enforces the localized breakdown (entanglement entropy phase transition) observed in our `L=14` physical simulations.
+
 ---
 
 ## Directory Structure
@@ -224,6 +227,12 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   python experiments/interacting_artin_fermions.py
   ```
   Simulates many-body fermions under the action of Artin $L$-function zeros and sweeps interaction strengths to check entanglement spikes.
+
+* **Macroscopic Entanglement Phase Transition**:
+  ```bash
+  python experiments/entanglement_phase_transition.py
+  ```
+  A heavy thermodynamic cluster script that pushes the interacting fermion model up to $L=14$ modes using `scipy.sparse.coo_matrix` and Krylov solvers. Demonstrates the strict macroscopic entanglement phase transition locking onto the L-function zeros.
 
 * **Sato-Tate Statistics**:
   ```bash

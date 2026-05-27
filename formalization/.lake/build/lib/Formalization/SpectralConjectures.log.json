@@ -1,0 +1,24 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\SpectralConjectures.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\SpectralConjectures.olean -i .\\.\\.lake\\build\\lib\\Formalization\\SpectralConjectures.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\SpectralConjectures.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SpectralConjectures.lean:59:42: type mismatch\n  chain_rayleigh_quotient d\nhas type\n  ℝ : Type\nbut is expected to have type\n  ?m.3947 ≥ 4 → ℝ : Type",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SpectralConjectures.lean:59:33: omega could not prove the goal:\na possible counterexample may satisfy the constraints\n  7 ≤ a ≤ 9\nwhere\n a := ↑d",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SpectralConjectures.lean:65:42: type mismatch\n  max_antisym_eig ?m.6386\nhas type\n  ℝ : Type\nbut is expected to have type\n  ?m.6385 ≥ 4 → ℝ : Type",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SpectralConjectures.lean:65:33: omega could not prove the goal:\na possible counterexample may satisfy the constraints\n  7 ≤ a ≤ 9\nwhere\n a := ↑d",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SpectralConjectures.lean:67:8: type mismatch\n  chain_rayleigh_quotient d\nhas type\n  ℝ : Type\nbut is expected to have type\n  ?m.11136 ≥ 4 → ℝ : Type",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SpectralConjectures.lean:67:4: invalid 'calc' step, left-hand-side is\n  Sort ?u.11148 : Type ?u.11148\nprevious right-hand-side is\n  sym_second_eigenvalue : ?m.11136 ≥ 4 → ℝ",
+   "level": "error"},
+  {"message": "Lean exited with code 1", "level": "error"}],
+ "depHash": "3990297073510124139"}
