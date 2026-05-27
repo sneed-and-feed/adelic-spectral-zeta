@@ -2,3 +2,4 @@ import Formalization.SpectralGRH
 import Formalization.CollatzGalois
 import Formalization.SchreierConnectivity
 import Formalization.SchreierSpectral
+import Formalization.SchreierTrace

@@ -581,4 +581,11 @@ lemma antisym_block_bound :
 
   exact antisym_eigenvalues_strictly_below_top hd v μ hv_ne h_eig h_antisym
 
+/-- Target 2: Rigorous Relative Gap
+    The maximum eigenvalue of the antisymmetric block is strictly greater than
+    the second largest eigenvalue of the symmetric block. -/
+theorem relative_spectral_gap {d : ℕ} (hd : d ≥ 3) :
+    sorry := by
+  sorry
+
 end SchreierSpectral

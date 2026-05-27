@@ -157,23 +157,14 @@ def get_schreier_blocks(d):
     Both are (N/2) x (N/2) matrices, where N/2 = 2^(d-2).
     """
     N_half = 1 << (d - 2)
-    adj = get_schreier_graph(d).toarray()
+    adj = get_schreier_graph(d) # keep as sparse CSR
     
-    weighted_matrix = np.zeros((N_half, N_half))
-    sheet_diff_matrix = np.zeros((N_half, N_half))
+    # Slice the top-left and top-right blocks
+    a00 = adj[:N_half, :N_half]
+    a01 = adj[:N_half, N_half:]
     
-    for u in range(N_half):
-        for v in range(N_half):
-            # Lifts to the two sheets
-            lift_u0 = u
-            lift_v0 = v
-            lift_v1 = (v + N_half) # tau(v)
-            
-            a00 = adj[lift_u0, lift_v0]
-            a01 = adj[lift_u0, lift_v1]
-            
-            weighted_matrix[u, v] = a00 + a01
-            sheet_diff_matrix[u, v] = a00 - a01
-            
+    weighted_matrix = a00 + a01
+    sheet_diff_matrix = a00 - a01
+    
     return weighted_matrix, sheet_diff_matrix
 
