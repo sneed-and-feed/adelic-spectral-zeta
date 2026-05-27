@@ -170,8 +170,6 @@ def tau_comp (n : ℕ) : ℤ :=
 def ramanujan_congruence_comp (n : ℕ) : Bool :=
   (tau_comp n - divisor_sum_11 n) % 691 == 0
 
-set_option maxRecDepth 200000
-theorem ramanujan_congruence_finite_1 : ramanujan_congruence_comp 1 = true := by decide
-theorem ramanujan_congruence_finite_2 : ramanujan_congruence_comp 2 = true := by decide
-theorem ramanujan_congruence_finite_3 : ramanujan_congruence_comp 3 = true := by decide
-theorem ramanujan_congruence_finite_4 : ramanujan_congruence_comp 4 = true := by decide
+set_option maxRecDepth 2000000
+set_option maxHeartbeats 0
+

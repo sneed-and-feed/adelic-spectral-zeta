@@ -5,3 +5,8 @@ import Formalization.SchreierSpectral
 import Formalization.SchreierTrace
 import Formalization.Partition
 import Formalization.IharaZeta
+import Formalization.IharaBass
+import Formalization.CollatzRelMatrix
+import Formalization.RamanujanTau
+import Formalization.RamanujanTauCompute
+import Formalization.ProfiniteTower

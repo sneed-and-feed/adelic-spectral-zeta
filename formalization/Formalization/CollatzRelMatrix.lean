@@ -361,7 +361,7 @@ theorem fiber_sum_identity (n : ℕ) (hn : n ≥ 2) (v u : ZMod (2^(n-1))) :
 -- ============================================================================
 
 /-- The directed matrix reindexed into sheet form. -/
-noncomputable def D'_matrix {n : ℕ} (hn : n ≥ 2) :
+noncomputable def D'_matrix {n : ℕ} (_ : n ≥ 2) :
     Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ :=
   fun ⟨v, s⟩ ⟨u, t⟩ =>
     collatzDirMatrix n
@@ -427,9 +427,11 @@ noncomputable def D'_block_diag_target {n : ℕ} (hn : n ≥ 2) :
                                else twistedDirMatrix hn s1 r1
                              else 0
 
+/-- The inverse Hadamard conjugation block matrix for the directed decomposition. -/
 noncomputable def conjBlockInv_dir {n : ℕ} : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ :=
   fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then SchreierSpectral.hadamardInv j1 j2 else 0
 
+/-- The Hadamard conjugation block matrix for the directed decomposition. -/
 noncomputable def conjBlock_dir {n : ℕ} : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ :=
   fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then SchreierSpectral.hadamardBlock j1 j2 else 0
 
@@ -488,7 +490,7 @@ theorem D'_block_diag {n : ℕ} (hn : n ≥ 2) :
     twisted block at scale `n` and the spectrum of `D_{n-1}`.
 
     By induction, `spec(D_n) = spec(S_n) ∪ spec(S_{n-1}) ∪ ... ∪ spec(D_1)`. -/
-theorem spectral_tower_one_step {n : ℕ} (hn : n ≥ 2) :
+theorem spectral_tower_one_step {n : ℕ} (_ : n ≥ 2) :
     -- The one-step decomposition: D_n's spectrum splits into
     -- spec(twistedDirMatrix) ∪ spec(D_{n-1})
     -- This is an immediate consequence of D'_block_diag + weightedDirMatrix_eq
@@ -496,5 +498,3 @@ theorem spectral_tower_one_step {n : ℕ} (hn : n ≥ 2) :
   trivial
 
 end CollatzDirMatrix
-
-#lint
