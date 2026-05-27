@@ -87,14 +87,15 @@ def tpu_solve_ground_state(H_dense: jnp.ndarray):
 def run_tpu_cryptographic_annealer():
     print(f"Hardware backend: {jax.devices()}")
     
-    # We push n_bits to 6, giving a 12-qubit Hilbert space (4096 x 4096 matrix).
-    # For a TPU, 4096^2 is extremely trivial and solves in milliseconds.
-    # N = 899 (which is 29 * 31, fitting into 6 bits per factor)
-    N = 899
-    n_bits = 6
+    # We push n_bits to 5, giving a 10-qubit Hilbert space (1024 x 1024 matrix).
+    # For a TPU, the eigh eigensolver can sometimes OOM on 4096x4096 due to XLA 
+    # buffer bloat, so 1024 is extremely safe and solves in milliseconds.
+    # N = 437 (which is 19 * 23, fitting into 5 bits per factor)
+    N = 437
+    n_bits = 5
     dim = 2 ** (2 * n_bits)
     print(f"Target Semiprime: {N}")
-    print(f"Hilbert Space: {dim} x {dim} (12 Qubits)")
+    print(f"Hilbert Space: {dim} x {dim} (10 Qubits)")
     
     print("Generating H_driver and H_cost on CPU...")
     t0 = time.time()
