@@ -270,23 +270,23 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```
   Simulates scaling correlations and Schrödinger eigenvalues to sweep confinement shifts and eigenvalue clustering under sequence absence.
 
-* **Cryptographic Adèlic Annealer (Phase 5)**:
+* **Cryptographic Adèlic Annealer**:
   ```bash
   python experiments/cryptographic_phase_transition.py
   ```
-  Constructs a sparse quantum integer factorization model mapping $N=437$ to a 10-qubit Hilbert space. Uses the Adèlic distance as a non-local quantum driver, demonstrating a strict geometric phase transition that bypasses chaotic search spaces and snaps directly into the prime factors $|19, 23\rangle$.
+  Constructs a sparse quantum integer factorization model embedding $N=437$ into a 10-qubit Hilbert space. Applies the Adèlic metric as a non-local quantum driver Hamiltonian, establishing a geometric phase transition that directly collapses the state space into the target prime factors.
 
-* **Topological Quantum Error Correction (Phase 6)**:
+* **Topological Quantum Error Correction**:
   ```bash
   python experiments/topological_qec.py
   ```
-  Evaluates the Adèlic Stabilizer Code. Maps 999 physical qubits into integer space and defines stabilizers using prime number parity checks. Monte Carlo sweeps of thermal bit-flip ($X$) noise prove that the Adèlic geometry yields an extremely robust infinite-dimensional topological error threshold.
+  Evaluates an Adèlic Stabilizer Code defined over a 999-qubit physical lattice, utilizing prime number parity checks as syndrome measurements. Monte Carlo simulations of thermal bit-flip ($X$) noise demonstrate an intrinsic topological error threshold.
 
-* **TPU / JAX Rigorous Quantum Tensors (Phase 7)**:
+* **TPU / JAX Quantum Tensor Compilation**:
   ```bash
-  # Google Colab Only (Requires TPU/GPU backend)
+  # Executed via Google Colab (TPU/GPU backend)
   ```
-  Two Jupyter Notebooks (`experiments/colab_tpu_adelic_annealer.ipynb` and `experiments/colab_tpu_coherent_qec.ipynb`) compile the physical geometry into XLA/JAX. This tracks fully coherent, continuous wave function drift and massive dense eigensolvers by running batched tensor contractions on parallelized hardware arrays.
+  Provides Jupyter notebooks (`experiments/colab_tpu_adelic_annealer.ipynb` and `experiments/colab_tpu_coherent_qec.ipynb`) that compile the physical geometry into XLA/JAX. Enables fully coherent, continuous wave function drift simulation and dense eigensolving via batched tensor contractions on parallel hardware arrays.
 
 ---
 
