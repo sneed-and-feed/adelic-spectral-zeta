@@ -63,6 +63,12 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.8.0",
    "inherited": false,
+   "configFile": "lakefile.lean"},
+  {"type": "path",
+   "name": "«spectral-positivity-ext»",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "././spectral-positivity-ext",
    "configFile": "lakefile.lean"}],
  "name": "formalization",
  "lakeDir": ".lake"}

@@ -2,6 +2,7 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Module.Submodule.Basic
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Spectrum
+import SpectralPositivityExt.WalkPropagation
 import Mathlib.LinearAlgebra.Matrix.Gershgorin
 import Formalization.SchreierConnectivity
 
@@ -1130,14 +1131,6 @@ lemma symm_of_herm {n : Type*} {A : Matrix n n ℝ} (h : A.IsHermitian) (i j : n
   dsimp [Matrix.conjTranspose] at h1
   simp only [starRingEnd_apply, star_trivial] at h1
   exact h1
-
-def supportGraph {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ)
-    (h_symm : ∀ i j, A i j = A j i) : SimpleGraph n where
-  Adj i j := 0 < A i j ∧ i ≠ j
-  symm := by
-    intro i j h
-    exact ⟨by rw [h_symm j i]; exact h.1, h.2.symm⟩
-  loopless := by intro i h; exact h.2 rfl
 
 /--
 Perron–Frobenius simplicity for connected finite symmetric nonnegative matrices.

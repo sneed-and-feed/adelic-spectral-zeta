@@ -1,6 +1,6 @@
 {"log":
  [{"message":
-   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\SchreierConnectivity.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\SchreierConnectivity.olean -i .\\.\\.lake\\build\\lib\\Formalization\\SchreierConnectivity.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\SchreierConnectivity.c --json",
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\././spectral-positivity-ext\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\SchreierConnectivity.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\SchreierConnectivity.olean -i .\\.\\.lake\\build\\lib\\Formalization\\SchreierConnectivity.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\SchreierConnectivity.c --json",
    "level": "trace"},
   {"message":
    ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:117:39: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
@@ -23,4 +23,4 @@
   {"message":
    ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:731:32: unused variable `hw'_len`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "6442970123397565337"}
+ "depHash": "17349048495067105862"}

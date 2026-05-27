@@ -11,3 +11,5 @@ lean_lib «Formalization» where
   -- add any library configuration options here
 
 lean_lib «SpectralPositivity» where
+
+require «spectral-positivity-ext» from "./spectral-positivity-ext"

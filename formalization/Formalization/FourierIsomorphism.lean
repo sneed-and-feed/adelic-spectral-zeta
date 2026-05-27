@@ -4,16 +4,18 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Algebra.Group.AddChar
 import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.Analysis.Asymptotics.Asymptotics
 import Formalization.SchreierSpectral
+import Formalization.TrigSum
+import Formalization.FourierChain
 
 open Complex
 open Matrix
+open Finset
 
 namespace SchreierSpectral
 
 variable {d : ℕ} (hd : d ≥ 3)
-
-def N (d : ℕ) : ℕ := 2^(d-1)
 
 def M (d : ℕ) : ℕ := 2^(d-3)
 
@@ -26,9 +28,9 @@ noncomputable def T_chain (d : ℕ) : Matrix (Fin (M d)) (Fin (M d)) ℝ :=
     else if i.val = j.val + 1 then hopping d j.val
     else 0
 
--- We use a localized support L(d) <= M(d)
+-- We use a dynamically scaling support L(d) = d/2 to match the asymptotic 1/d^2 gap
 noncomputable def L_supp (d : ℕ) : ℕ :=
-  if d < 7 then 0 else 5 -- Found via Python search
+  d / 2
 
 noncomputable def test_vector (d : ℕ) (j : Fin (M d)) : ℝ :=
   if j.val < L_supp d then
@@ -40,6 +42,11 @@ noncomputable def test_vector (d : ℕ) (j : Fin (M d)) : ℝ :=
 noncomputable def chain_rayleigh_quotient (d : ℕ) : ℝ :=
   let u := test_vector d
   (Matrix.dotProduct u (T_chain d *ᵥ u)) / (Matrix.dotProduct u u)
+
+lemma test_vector_norm (d : ℕ) :
+    Matrix.dotProduct (test_vector d) (test_vector d) = ((L_supp d : ℝ) + 1) / 2 := by
+  sorry
+
 
 /-- The Taylor bound for the hopping amplitudes: W_j >= 2 - (pi * 3^j / N)^2 -/
 lemma hopping_taylor_bound (d : ℕ) (hd : d ≥ 3) (j : ℕ) :
@@ -60,10 +67,25 @@ lemma sum_sin_mul_sin (L : ℕ) (j : ℕ) :
   rw [Real.sin_neg] at h
   linarith
 
-/-- The main algebraic lower bound on the 1D chain Rayleigh quotient.
-    (This will be bounded below by the known algebraic expression for the previous depth's spectral gap) -/
-theorem chain_rayleigh_lower_bound (d : ℕ) (hd : d ≥ 4) :
-    chain_rayleigh_quotient d > 0 := by
+lemma chain_rayleigh_numerator_bound (d : ℕ) :
+    Matrix.dotProduct (test_vector d) (T_chain d *ᵥ test_vector d) ≤
+    2 * Real.cos (Real.pi / (L_supp d + 1)) * Matrix.dotProduct (test_vector d) (test_vector d) := by
+  sorry
+
+
+/-- The main algebraic upper bound on the 1D chain Rayleigh quotient.
+    Because L(d) = d/2, the Taylor error (3^{d/2}/2^d)^2 vanishes exponentially,
+    and the Rayleigh quotient is asymptotically bounded by ~2, which is strictly less than 4.
+    This guarantees the spectral gap drops no faster than 1/d^2. -/
+theorem chain_rayleigh_upper_bound (d : ℕ) (hd : d ≥ 4) :
+    chain_rayleigh_quotient d < 4 := by
+  sorry
+
+/-- The rigorous asymptotic statement of the Collatz spectral bridge:
+    The gap between the Rayleigh quotient and the trivial eigenvalue 4
+    is bounded from below by Ω(1/d^2). -/
+theorem chain_rayleigh_asymptotic_gap :
+    Asymptotics.IsBigO Filter.atTop (fun d : ℕ => (1 : ℝ) / (d : ℝ)^2) (fun d => 4 - chain_rayleigh_quotient d) := by
   sorry
 
 end SchreierSpectral

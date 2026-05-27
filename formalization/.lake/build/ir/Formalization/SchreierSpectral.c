@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: Formalization.SchreierSpectral
-// Imports: Init Mathlib.Data.Matrix.Basic Mathlib.Algebra.Module.Submodule.Basic Mathlib.LinearAlgebra.Matrix.Hermitian Mathlib.LinearAlgebra.Matrix.Spectrum Mathlib.LinearAlgebra.Matrix.Gershgorin Formalization.SchreierConnectivity
+// Imports: Init Mathlib.Data.Matrix.Basic Mathlib.Algebra.Module.Submodule.Basic Mathlib.LinearAlgebra.Matrix.Hermitian Mathlib.LinearAlgebra.Matrix.Spectrum SpectralPositivityExt.WalkPropagation Mathlib.LinearAlgebra.Matrix.Gershgorin Formalization.SchreierConnectivity
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -14,7 +14,6 @@
 extern "C" {
 #endif
 extern lean_object* l_Rat_addCommMonoid;
-LEAN_EXPORT lean_object* l_SchreierSpectral_supportGraph(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_SchreierSpectral_sumProdEquiv___elambda__1___rarg___boxed(lean_object*);
 LEAN_EXPORT lean_object* l___private_Formalization_SchreierSpectral_0__SchreierSpectral_sumProdEquiv_match__2_splitter(lean_object*);
 LEAN_EXPORT lean_object* l_SchreierSpectral_sumProdEquiv(lean_object*);
@@ -67,7 +66,6 @@ static lean_object* l_SchreierSpectral_sheetSplit___elambda__1___closed__1;
 LEAN_EXPORT lean_object* l___private_Formalization_SchreierSpectral_0__SchreierSpectral_sumProdEquiv_match__1_splitter___boxed(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_SchreierSpectral_sumProdEquiv___elambda__1___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_SchreierSpectral_antisymSubspace___boxed(lean_object*, lean_object*);
-LEAN_EXPORT lean_object* l_SchreierSpectral_supportGraph___boxed(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_SchreierSpectral_sumProdEquiv___boxed(lean_object*);
 LEAN_EXPORT lean_object* l_SchreierSpectral_symSubspace(lean_object*, lean_object*);
 lean_object* l_ZMod_val(lean_object*, lean_object*);
@@ -589,30 +587,12 @@ lean_dec(x_1);
 return x_4;
 }
 }
-LEAN_EXPORT lean_object* l_SchreierSpectral_supportGraph(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
-_start:
-{
-lean_object* x_6; 
-x_6 = lean_box(0);
-return x_6;
-}
-}
-LEAN_EXPORT lean_object* l_SchreierSpectral_supportGraph___boxed(lean_object* x_1, lean_object* x_2, lean_object* x_3, lean_object* x_4, lean_object* x_5) {
-_start:
-{
-lean_object* x_6; 
-x_6 = l_SchreierSpectral_supportGraph(x_1, x_2, x_3, x_4, x_5);
-lean_dec(x_4);
-lean_dec(x_3);
-lean_dec(x_2);
-return x_6;
-}
-}
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Data_Matrix_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Algebra_Module_Submodule_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Hermitian(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Spectrum(uint8_t builtin, lean_object*);
+lean_object* initialize_SpectralPositivityExt_WalkPropagation(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Gershgorin(uint8_t builtin, lean_object*);
 lean_object* initialize_Formalization_SchreierConnectivity(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
@@ -633,6 +613,9 @@ res = initialize_Mathlib_LinearAlgebra_Matrix_Hermitian(builtin, lean_io_mk_worl
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_LinearAlgebra_Matrix_Spectrum(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_SpectralPositivityExt_WalkPropagation(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_LinearAlgebra_Matrix_Gershgorin(builtin, lean_io_mk_world());
