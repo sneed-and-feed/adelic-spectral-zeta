@@ -1,0 +1,30 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\TestCollatz.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\TestCollatz.olean -i .\\.\\.lake\\build\\lib\\Formalization\\TestCollatz.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\TestCollatz.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:17:6: type mismatch\n  h_sub\nhas type\n  (↑(x - y).val).cast = 0 : Prop\nbut is expected to have type\n  ↑(x - y).val = 0 : Prop",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:32:43: tactic 'rewrite' failed, did not find instance of the pattern in the target expression\n  0 * ?n\nn : ℕ\nhn : n ≥ 2\nx y : ZMod (2 ^ n)\nh : (projDir n ⋯) x = (projDir n ⋯) y\nh_sub : (projDir n ⋯) (x - y) = 0\nh_cast : ↑(x - y).val = 0\nh_bound : (x - y).val < 2 ^ n\nhk : (x - y).val = 2 ^ (n - 1) * 0\nh_k : 0 < 2\n⊢ 2 ^ (n - 1) * 0 = 0",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:36:49: tactic 'rewrite' failed, did not find instance of the pattern in the target expression\n  1 * ?n\nn : ℕ\nhn : n ≥ 2\nx y : ZMod (2 ^ n)\nh : (projDir n ⋯) x = (projDir n ⋯) y\nh_sub : (projDir n ⋯) (x - y) = 0\nh_cast : ↑(x - y).val = 0\nh_bound : (x - y).val < 2 ^ n\nhk : (x - y).val = 2 ^ (n - 1) * 1\nh_k : 1 < 2\n⊢ 2 ^ (n - 1) * 1 = 2 ^ (n - 1)",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:40:29: application type mismatch\n  eq_add_of_sub_eq h_xy\nargument\n  h_xy\nhas type\n  x - y = ↑(2 ^ (n - 1)) : Prop\nbut is expected to have type\n  x - ↑(2 ^ (n - 1)) = y : Prop",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:44:70: unsolved goals\nn : ℕ\nhn : n ≥ 2\ny : ZMod (2 ^ n)\n⊢ (↑(2 ^ (n - 1))).cast = 0",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:50:15: tactic 'rewrite' failed, did not find instance of the pattern in the target expression\n  ?f ↑?n\nn : ℕ\nhn : n ≥ 1\nx : ZMod (2 ^ n)\n⊢ (projDir n hn) 3 * (projDir n hn) x = 3 * (projDir n hn) x",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:54:24: tactic 'rewrite' failed, did not find instance of the pattern in the target expression\n  ?f ↑?n\nn : ℕ\nhn : n ≥ 1\nx : ZMod (2 ^ n)\n⊢ (projDir n hn) 3 * (projDir n hn) x - (projDir n hn) 1 = 3 * (projDir n hn) x - 1",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCollatz.lean:57:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message": "Lean exited with code 1", "level": "error"}],
+ "depHash": "4169561378239870339"}

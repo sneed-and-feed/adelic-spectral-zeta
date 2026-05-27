@@ -1,20 +1,5 @@
 import Mathlib
+import Formalization.SchreierSpectral
+open Matrix SchreierSpectral
 
-open Polynomial Matrix
-
-variable {V : Type*} [Fintype V] [DecidableEq V]
-variable (G : SimpleGraph V) [DecidableRel G.Adj]
-variable (R : Type*) [CommRing R]
-
-noncomputable def Dart.sourceMatrix : Matrix V G.Dart R :=
-  fun v e => if v = e.fst then 1 else 0
-
-noncomputable def Dart.targetMatrix : Matrix V G.Dart R :=
-  fun v e => if v = e.snd then 1 else 0
-
-lemma sourceMatrix_mul_targetMatrix_transpose :
-    Dart.sourceMatrix G R * (Dart.targetMatrix G R).transpose = G.adjMatrix R := by
-  ext u v
-  simp only [mul_apply, Dart.sourceMatrix, transpose_apply, Dart.targetMatrix, SimpleGraph.adjMatrix_apply]
-  sorry
 
