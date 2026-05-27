@@ -23,6 +23,8 @@ The following claims have been rigorously formalized in Lean 4 (`v4.8.0`) with *
 * **Discrete Fourier Basis** ([FourierChain.lean](formalization/Formalization/FourierChain.lean)): Rigorous definition of discrete real sine/cosine Fourier modes.
 * **Rayleigh Quotient Lower Bound on 1D Chain** ([FourierIsomorphism.lean](formalization/Formalization/FourierIsomorphism.lean)): A lower bound showing that the Rayleigh quotient on the 1D Fourier chain is strictly positive.
 * **Ramanujan Tau Congruence Verification** ([RamanujanTau.lean](formalization/Formalization/RamanujanTau.lean)): The Ramanujan tau function satisfies the congruence modulo 691. Verified computationally for finite $n=1..4$.
+* **Ihara Zeta Incidence Geometry** ([IharaZeta.lean](formalization/Formalization/IharaZeta.lean)): For any finite simple graph $G$ over a commutative ring $R$, we define the Hashimoto (edge adjacency) matrix $T$, the source and target incidence matrices $S, T$, and the dart involution $J$, and prove the seven foundational incidence identities: $S T^\top = A$ (adjacency), $S S^\top = T T^\top = D$ (degree diagonal), $T^\top S = T + J$ (Hashimoto decomposition), $J T^\top = S^\top$, $S J = T$, and $J^2 = I$. All proofs are 0-sorry.
+* **Ihara-Bass Block Matrix Decomposition** ([IharaBass.lean](formalization/Formalization/IharaBass.lean)): The Bass determinant formula framework for the Ihara zeta function: defines the block matrices $M, N, K, L$ whose products yield the identity $\det(I - uT) \cdot \det(I - uJ) \cdot (1-u^2)^{|V|} = \det(I - uA + u^2(D-I)) \cdot (1-u^2)^{|E|}$, connecting graph spectra to zeta functions. Block matrix definitions verified; full determinant identity in progress.
 
 ---
 
