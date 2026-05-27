@@ -1,8 +1,4 @@
 import Mathlib
-
-open Complex UpperHalfPlane
-open scoped ModularForm
-
-lemma f_periodic_z (k : ℤ) (f : ModularForm (⊤ : Subgroup SL(2, ℤ)) k) (z : ℍ) (m : ℤ) : 
-  f (z + (m : ℂ)) = f z := by
-  sorry
+open Real
+example (a b c : ℝ) (hc : 0 < c) (h : a ≤ b * c) : a / c ≤ b := by
+  exact?

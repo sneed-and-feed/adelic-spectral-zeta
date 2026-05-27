@@ -1,30 +1,21 @@
-import Mathlib.NumberTheory.ModularForms.Basic
-import Mathlib.NumberTheory.ModularForms.SlashActions
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup
+import Mathlib.Analysis.Asymptotics.Asymptotics
+import Formalization.FourierIsomorphism
 
-open Complex UpperHalfPlane
-open scoped ModularForm
+open Real
+open Asymptotics
+open Filter
 
-variable (k : ℤ) (N : ℕ)
+namespace SchreierSpectral
 
-set_option linter.unusedVariables false
+lemma chain_rayleigh_quotient_le (d : ℕ) :
+    chain_rayleigh_quotient d ≤ 2 * Real.cos (Real.pi / (L_supp d + 1)) := by
+  unfold chain_rayleigh_quotient
+  have h_num := chain_rayleigh_numerator_bound d
+  have h_denom := test_vector_norm d
+  have h_denom_pos : Matrix.dotProduct (test_vector d) (test_vector d) > 0 := by
+    rw [h_denom]
+    have h1 : (L_supp d : ℝ) ≥ 0 := Nat.cast_nonneg (L_supp d)
+    linarith
+  exact (div_le_iff₀ h_denom_pos).mpr h_num
 
-noncomputable def hecke_matrix_1 (p : ℕ) (j : ℤ) : Matrix.GLPos (Fin 2) ℝ :=
-  (1 : Matrix.GLPos (Fin 2) ℝ)
-
-noncomputable def hecke_matrix_p (p : ℕ) : Matrix.GLPos (Fin 2) ℝ :=
-  (1 : Matrix.GLPos (Fin 2) ℝ)
-
-noncomputable def hecke_T_p (p : ℕ) (hp : Nat.Prime p) (k : ℤ) (f : ℍ → ℂ) : ℍ → ℂ :=
-  fun z => (p : ℂ)^(k/2 - 1) * (
-    (∑ j in Finset.Ico 0 p, (f ∣[k] hecke_matrix_1 p j) z) +
-    (f ∣[k] hecke_matrix_p p) z
-  )
-
-lemma hecke_commute (p q : ℕ) (hp : Nat.Prime p) (hq : Nat.Prime q) (hpq : p ≠ q) (f : ℍ → ℂ) :
-    hecke_T_p p hp k (hecke_T_p q hq k f) =
-    hecke_T_p q hq k (hecke_T_p p hp k f) := by
-  simp [hecke_T_p, hecke_matrix_1, hecke_matrix_p, SlashAction.slash_one]
-  ext z
-  ring
+end SchreierSpectral

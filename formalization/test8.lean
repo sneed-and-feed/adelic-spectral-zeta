@@ -1,0 +1,21 @@
+import Mathlib.Analysis.Asymptotics.Asymptotics
+import Formalization.FourierIsomorphism
+
+open Real
+open Asymptotics
+open Filter
+
+namespace SchreierSpectral
+
+theorem chain_rayleigh_upper_bound_test (d : ℕ) (hd : d ≥ 4) :
+    chain_rayleigh_quotient d < 4 := by
+  unfold chain_rayleigh_quotient
+  have h_num := chain_rayleigh_numerator_bound d
+  have h_denom := test_vector_norm d
+  have h_denom_pos : 0 < Matrix.dotProduct (test_vector d) (test_vector d) := by
+    rw [h_denom]
+    have hd_pos : (L_supp d : ℝ) ≥ 0 := Nat.cast_nonneg (L_supp d)
+    linarith
+  have h_div := (div_le_iff₀ h_denom_pos.ne').mpr h_num
+  -- wait, `div_le_iff₀` might require `ne'`. Let's just use `exact (div_le_iff h_denom_pos).mpr h_num` instead
+end SchreierSpectral

@@ -1,9 +1,5 @@
 {"log":
  [{"message":
-   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\RamanujanTau.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\RamanujanTau.olean -i .\\.\\.lake\\build\\lib\\Formalization\\RamanujanTau.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\RamanujanTau.c --json",
-   "level": "trace"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\RamanujanTau.lean:16:4: failed to compile definition, consider marking it as 'noncomputable' because it depends on 'PowerSeries.instCommRing', and it does not have executable code",
-   "level": "error"},
-  {"message": "Lean exited with code 1", "level": "error"}],
- "depHash": "7833716186675984281"}
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\././spectral-positivity-ext\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\RamanujanTau.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\RamanujanTau.olean -i .\\.\\.lake\\build\\lib\\Formalization\\RamanujanTau.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\RamanujanTau.c --json",
+   "level": "trace"}],
+ "depHash": "15647687137863803517"}

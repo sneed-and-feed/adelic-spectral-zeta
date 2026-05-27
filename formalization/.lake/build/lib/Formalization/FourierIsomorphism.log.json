@@ -12,9 +12,15 @@
    ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:70:6: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:80:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:80:44: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:87:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:87:9: unused variable `hd_pos`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:113:9: unused variable `hd_pos`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:119:7: unused variable `h3`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "1061510368093896384"}
+ "depHash": "13169520867062984149"}

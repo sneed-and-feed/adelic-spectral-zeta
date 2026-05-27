@@ -79,13 +79,47 @@ lemma chain_rayleigh_numerator_bound (d : ℕ) :
     This guarantees the spectral gap drops no faster than 1/d^2. -/
 theorem chain_rayleigh_upper_bound (d : ℕ) (hd : d ≥ 4) :
     chain_rayleigh_quotient d < 4 := by
-  sorry
+  unfold chain_rayleigh_quotient
+  have h_num := chain_rayleigh_numerator_bound d
+  have h_denom := test_vector_norm d
+  have h_denom_pos : 0 < Matrix.dotProduct (test_vector d) (test_vector d) := by
+    rw [h_denom]
+    have hd_pos : (L_supp d : ℝ) ≥ 0 := Nat.cast_nonneg (L_supp d)
+    linarith
+  have h_div : Matrix.dotProduct (test_vector d) (T_chain d *ᵥ test_vector d) / Matrix.dotProduct (test_vector d) (test_vector d) ≤ 2 * Real.cos (Real.pi / (L_supp d + 1)) := by
+    exact (div_le_iff h_denom_pos).mpr h_num
+  have h_cos : Real.cos (Real.pi / (L_supp d + 1)) ≤ 1 := Real.cos_le_one _
+  linarith
 
 /-- The rigorous asymptotic statement of the Collatz spectral bridge:
     The gap between the Rayleigh quotient and the trivial eigenvalue 4
     is bounded from below by Ω(1/d^2). -/
 theorem chain_rayleigh_asymptotic_gap :
     Asymptotics.IsBigO Filter.atTop (fun d : ℕ => (1 : ℝ) / (d : ℝ)^2) (fun d => 4 - chain_rayleigh_quotient d) := by
-  sorry
+  apply Asymptotics.IsBigO.of_bound 1
+  filter_upwards [Filter.Ici_mem_atTop 1] with d hd
+  have h1 : ‖(1 : ℝ) / (d : ℝ)^2‖ ≤ 1 := by
+    rw [Real.norm_eq_abs, abs_div, abs_one, _root_.abs_of_nonneg (sq_nonneg _)]
+    have hd_ge : (d : ℝ) ≥ 1 := Nat.one_le_cast.mpr hd
+    have hsq : (d : ℝ)^2 ≥ 1 := by nlinarith
+    have h_pos : (d : ℝ)^2 > 0 := by linarith
+    exact (div_le_iff h_pos).mpr (by linarith)
+  have h2 : 1 * ‖4 - chain_rayleigh_quotient d‖ = ‖4 - chain_rayleigh_quotient d‖ := one_mul _
+  rw [h2]
+  have h_num := chain_rayleigh_numerator_bound d
+  have h_denom := test_vector_norm d
+  have h_denom_pos : 0 < Matrix.dotProduct (test_vector d) (test_vector d) := by
+    rw [h_denom]
+    have hd_pos : (L_supp d : ℝ) ≥ 0 := Nat.cast_nonneg (L_supp d)
+    linarith
+  have h_div : chain_rayleigh_quotient d ≤ 2 * Real.cos (Real.pi / (L_supp d + 1)) := by
+    unfold chain_rayleigh_quotient
+    exact (div_le_iff h_denom_pos).mpr h_num
+  have h_cos : Real.cos (Real.pi / (L_supp d + 1)) ≤ 1 := Real.cos_le_one _
+  have h3 : 4 - chain_rayleigh_quotient d ≥ 2 := by linarith
+  have h4 : ‖4 - chain_rayleigh_quotient d‖ ≥ 2 := by
+    rw [Real.norm_eq_abs, _root_.abs_of_nonneg (by linarith)]
+    linarith
+  linarith
 
 end SchreierSpectral
