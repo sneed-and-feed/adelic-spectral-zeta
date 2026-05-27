@@ -1,0 +1,51 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\IharaBass.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\IharaBass.olean -i .\\.\\.lake\\build\\lib\\Formalization\\IharaBass.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\IharaBass.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:37:52: failed to synthesize instance\n  HMul (Matrix V G.Dart R) ℕ (Matrix V V R)",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:37:103: unsolved goals\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\n⊢ u • Dart.sourceMatrix G R * 0 = 0",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:39:13: failed to synthesize instance\n  HAdd (Matrix V V R) (Matrix V G.Dart R) (Matrix V G.Dart R)",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:43:8: tactic 'rewrite' failed, did not find instance of the pattern in the target expression\n  ?a₁ • ?a₂ • ?b\ncase h.e_1\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\nh11 : 1 * (1 - u ^ 2) • 1 + u • Dart.sourceMatrix G R * 0 = (1 - u ^ 2) • 1\n⊢ Matrix V V R = Matrix V G.Dart R",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:44:50: failed to synthesize instance\n  HSMul R ℕ ?m.66306",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:44:158: unsolved goals\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\nh11 : 1 * (1 - u ^ 2) • 1 + u • Dart.sourceMatrix G R * 0 = (1 - u ^ 2) • 1\nh12 :\n  1 * 0 + u • Dart.sourceMatrix G R * (1 - u • Dart.involutionMatrix G R) =\n    u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R\n⊢ (Dart.targetMatrix G R)ᵀ * (1 - u ^ 2) • 1 + 0 = (1 - u ^ 2) • (Dart.targetMatrix G R)ᵀ",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:34:72: unsolved goals\ncase refine_2\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\nh11 : 1 * (1 - u ^ 2) • 1 + u • Dart.sourceMatrix G R * 0 = (1 - u ^ 2) • 1\nh12 :\n  1 * 0 + u • Dart.sourceMatrix G R * (1 - u • Dart.involutionMatrix G R) =\n    u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R\n⊢ (1 * (1 - u ^ 2) • 1 + u • Dart.sourceMatrix G R * 0).fromBlocks\n      (1 * 0 + u • Dart.sourceMatrix G R * (1 - u • Dart.involutionMatrix G R))\n      ((Dart.targetMatrix G R)ᵀ * (1 - u ^ 2) • 1 + (1 + u • Dart.involutionMatrix G R) * 0)\n      ((Dart.targetMatrix G R)ᵀ * 0 + (1 + u • Dart.involutionMatrix G R) * (1 - u • Dart.involutionMatrix G R)) =\n    ((1 - u ^ 2) • 1).fromBlocks (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R)\n      ((1 - u ^ 2) • (Dart.targetMatrix G R)ᵀ) ((1 - u ^ 2) • 1)",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:76:6: Try this: ring_nf",
+   "level": "info"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:75:4: unsolved goals\ncase pos\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\ni j : V\nh : i = j\n⊢ 1 + (-u ^ 2 - ((u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * (Dart.targetMatrix G R)ᵀ) j j) =\n    1 - u ^ 2 + u ^ 2 * ↑(G.degree i)",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:78:6: Try this: ring_nf",
+   "level": "info"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:77:4: unsolved goals\ncase neg\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\ni j : V\nh : ¬i = j\n⊢ ((u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * (Dart.targetMatrix G R)ᵀ) i j =\n    if G.Adj i j then u else 0",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:79:50: failed to synthesize instance\n  HMul (Matrix V G.Dart R) ℕ ?m.150804",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:79:173: unsolved goals\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\nh11 :\n  (1 - u ^ 2) • 1 * 1 + (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * -(Dart.targetMatrix G R)ᵀ =\n    1 - u • SimpleGraph.adjMatrix R G + u ^ 2 • ((diagonal fun v => ↑(G.degree v)) - 1)\n⊢ 0 + (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * 1 =\n    u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:67:71: unsolved goals\nV : Type u_1\ninst✝³ : Fintype V\ninst✝² : DecidableEq V\nG : SimpleGraph V\ninst✝¹ : DecidableRel G.Adj\nR : Type u_2\ninst✝ : CommRing R\nu : R\nh11 :\n  (1 - u ^ 2) • 1 * 1 + (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * -(Dart.targetMatrix G R)ᵀ =\n    1 - u • SimpleGraph.adjMatrix R G + u ^ 2 • ((diagonal fun v => ↑(G.degree v)) - 1)\n⊢ ((1 - u ^ 2) • 1 * 1 +\n          (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * -(Dart.targetMatrix G R)ᵀ).fromBlocks\n      ((1 - u ^ 2) • 1 * 0 + (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) * 1)\n      ((1 - u ^ 2) • (Dart.targetMatrix G R)ᵀ * 1 + (1 - u ^ 2) • 1 * -(Dart.targetMatrix G R)ᵀ)\n      ((1 - u ^ 2) • (Dart.targetMatrix G R)ᵀ * 0 + (1 - u ^ 2) • 1 * 1) =\n    (1 - u • SimpleGraph.adjMatrix R G + u ^ 2 • ((diagonal fun v => ↑(G.degree v)) - 1)).fromBlocks\n      (u • Dart.sourceMatrix G R - u ^ 2 • Dart.targetMatrix G R) 0 ((1 - u ^ 2) • 1)",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\IharaBass.lean:92:8: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message": "Lean exited with code 1", "level": "error"}],
+ "depHash": "2084859471097405547"}

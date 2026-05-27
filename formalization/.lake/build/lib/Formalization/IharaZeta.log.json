@@ -3,24 +3,9 @@
    ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\IharaZeta.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\IharaZeta.olean -i .\\.\\.lake\\build\\lib\\Formalization\\IharaZeta.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\IharaZeta.c --json",
    "level": "trace"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:22:6: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:268:17: unused variable `h1`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:26:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:30:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:34:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:38:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:42:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:59:8: declaration uses 'sorry'",
+   ".\\.\\.\\.\\Formalization\\IharaZeta.lean:349:8: declaration uses 'sorry'",
    "level": "warning"}],
- "depHash": "9597859385779555777"}
+ "depHash": "15361196321372754272"}
