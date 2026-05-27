@@ -270,6 +270,24 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```
   Simulates scaling correlations and Schrödinger eigenvalues to sweep confinement shifts and eigenvalue clustering under sequence absence.
 
+* **Cryptographic Adèlic Annealer (Phase 5)**:
+  ```bash
+  python experiments/cryptographic_phase_transition.py
+  ```
+  Constructs a sparse quantum integer factorization model mapping $N=437$ to a 10-qubit Hilbert space. Uses the Adèlic distance as a non-local quantum driver, demonstrating a strict geometric phase transition that bypasses chaotic search spaces and snaps directly into the prime factors $|19, 23\rangle$.
+
+* **Topological Quantum Error Correction (Phase 6)**:
+  ```bash
+  python experiments/topological_qec.py
+  ```
+  Evaluates the Adèlic Stabilizer Code. Maps 999 physical qubits into integer space and defines stabilizers using prime number parity checks. Monte Carlo sweeps of thermal bit-flip ($X$) noise prove that the Adèlic geometry yields an extremely robust infinite-dimensional topological error threshold.
+
+* **TPU / JAX Rigorous Quantum Tensors (Phase 7)**:
+  ```bash
+  # Google Colab Only (Requires TPU/GPU backend)
+  ```
+  Two Jupyter Notebooks (`experiments/colab_tpu_adelic_annealer.ipynb` and `experiments/colab_tpu_coherent_qec.ipynb`) compile the physical geometry into XLA/JAX. This tracks fully coherent, continuous wave function drift and massive dense eigensolvers by running batched tensor contractions on parallelized hardware arrays.
+
 ---
 
 ## Authors & Contributors
