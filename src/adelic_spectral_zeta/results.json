@@ -50,5 +50,19 @@
     }
   ],
   "pearson": 0.9672785549246306,
-  "spearman": 0.7714285714285715
+  "pearson_p_value": 0.0015885221411610694,
+  "bootstrap_ci": [
+    0.8646011914526525,
+    0.9999752357985916
+  ],
+  "spearman": 0.7714285714285715,
+  "spearman_p_value": 0.07239650145772594,
+  "null_model_properties": {
+    "mean_correlation": 0.9639683013100087,
+    "empirical_p_value": 0.378
+  },
+  "null_model_shuffling": {
+    "mean_correlation": -0.05193067248495177,
+    "empirical_p_value": 0.001
+  }
 }
