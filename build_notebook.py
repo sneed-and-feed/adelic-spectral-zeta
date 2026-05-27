@@ -37,7 +37,7 @@ mpl.rcParams.update({
     'axes.titlesize': 18,
     'axes.labelsize': 14,
     'font.family': 'sans-serif',
-    'font.sans-serif': ['Inter', 'Segoe UI', 'Helvetica']
+    'font.sans-serif': ['DejaVu Sans', 'Liberation Sans', 'Arial', 'sans-serif']
 })
 
 LILAC = '#C4A6D1'
