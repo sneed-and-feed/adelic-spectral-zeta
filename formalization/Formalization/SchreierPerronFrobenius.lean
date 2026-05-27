@@ -487,7 +487,7 @@ lemma isPerronFrobeniusMax_realWeightedMatrix :
   let max_eig := Finset.max' s hs_nonempty
   obtain ⟨i_max, _, hi_max⟩ : ∃ i ∈ Finset.univ, eig i = max_eig :=
     Finset.mem_image.mp (Finset.max'_mem s hs_nonempty)
-  use i_max; intro j; refine ⟨?_, ?_⟩
+  use i_max; intro j; refine ⟨?_, ?_, ?_⟩
   · have h_le : (realWeightedMatrix_isHermitian hd).eigenvalues j ≤ max_eig :=
       Finset.le_max' s (eig j) (Finset.mem_image_of_mem eig (Finset.mem_univ j))
     have h_eq : (realWeightedMatrix_isHermitian hd).eigenvalues i_max = max_eig := hi_max
@@ -581,7 +581,68 @@ lemma isPerronFrobeniusMax_realWeightedMatrix :
     rw [h_eq_b] at h1
     rw [h3] at h1
     norm_num at h1
-
+  · let w_i := evec i_max
+    have hA_wi : A.mulVec w_i = max_eig • w_i := by
+      have h := (realWeightedMatrix_isHermitian hd).mulVec_eigenvectorBasis i_max
+      have h_eig : (realWeightedMatrix_isHermitian hd).eigenvalues i_max = max_eig := hi_max
+      rw [h_eig] at h
+      exact h
+    have hB_wi : B.mulVec w_i = (max_eig + 1) • w_i := h_add_eig hA_wi
+    have hw_i_neq : w_i ≠ 0 := by
+      intro h
+      have h1 : ‖w_i‖ = 0 := by rw [h, norm_zero]
+      have h2 : ‖(evec i_max : EuclideanSpace ℝ _)‖ = 1 := (OrthonormalBasis.orthonormal evec).1 i_max
+      have h3 : ‖w_i‖ = ‖(evec i_max : EuclideanSpace ℝ _)‖ := rfl
+      rw [h3] at h1
+      rw [h2] at h1
+      norm_num at h1
+    have hA_symm := realWeightedMatrix_symm (hd := hd)
+    have hA_nn := weightedMatrix_nonneg (hd := hd)
+    have hA_conn := weighted_support_connected hd
+    have hA_vB : A.mulVec v_B = (μ_B - 1) • v_B := by
+      ext k
+      have hk := congr_fun hv_eig k
+      dsimp [B, mulVec, dotProduct] at hk ⊢
+      have h1 : ∑ l, (A k l + (1:Matrix _ _ ℝ) k l) * v_B l =
+                  ∑ l, A k l * v_B l + ∑ l, (1:Matrix _ _ ℝ) k l * v_B l := by
+        rw [←Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro _ _; ring
+      rw [h1] at hk
+      have h2 : ∑ l, (1:Matrix _ _ ℝ) k l * v_B l = v_B k := congr_fun (Matrix.one_mulVec v_B) k
+      rw [h2] at hk
+      try simp only [Pi.smul_apply, smul_eq_mul] at hk ⊢
+      linarith
+    have h_vB_neq : v_B ≠ 0 := by
+      intro h; have := hv_pos 0; rw [h] at this; exact lt_irrefl 0 this
+    have h_max_bound : ∀ k, (realWeightedMatrix_isHermitian hd).eigenvalues k ≤ max_eig := fun k =>
+      Finset.le_max' s (eig k) (Finset.mem_image_of_mem eig (Finset.mem_univ k))
+    have h_le_2 := pf_eigenvalue_is_max hB_symm hB_nn μ_B v_B hv_pos hv_eig (max_eig + 1) w_i hw_i_neq hB_wi
+    have h_mu_le : μ_B ≤ max_eig + 1 :=
+      mu_B_le_max_eig' (realWeightedMatrix_isHermitian hd) hA_vB h_vB_neq max_eig h_max_bound
+    have h_eq : μ_B = max_eig + 1 := le_antisymm h_mu_le h_le_2
+    have hA_vB_max : A.mulVec v_B = max_eig • v_B := by
+      have : μ_B - 1 = max_eig := by linarith
+      rw [this] at hA_vB
+      exact hA_vB
+    have hc_i := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
+    obtain ⟨ci, hi⟩ := hc_i
+    have hci_neq : ci ≠ 0 := by
+      intro h
+      rw [h, zero_smul] at hi
+      exact hw_i_neq hi
+    rcases lt_trichotomy ci 0 with h_neg | h_zero | h_pos
+    · right
+      intro x
+      have h_val := congr_fun hi x
+      dsimp [w_i] at h_val
+      rw [h_val]
+      exact mul_neg_of_neg_of_pos h_neg (hv_pos x)
+    · exact False.elim (hci_neq h_zero)
+    · left
+      intro x
+      have h_val := congr_fun hi x
+      dsimp [w_i] at h_val
+      rw [h_val]
+      exact mul_pos h_pos (hv_pos x)
 
 lemma B_matrix_adj_isIrreducible : Matrix.IsIrreducible (@realAdjacencyMatrix d + 1) := by
   have h_nn : ∀ i j, 0 ≤ (@realAdjacencyMatrix d) i j := adjacencyMatrix_nonneg
@@ -653,7 +714,7 @@ lemma isPerronFrobeniusMax_realAdjacencyMatrix :
   let max_eig := Finset.max' s hs_nonempty
   obtain ⟨i_max, _, hi_max⟩ : ∃ i ∈ Finset.univ, eig i = max_eig :=
     Finset.mem_image.mp (Finset.max'_mem s hs_nonempty)
-  use i_max; intro j; refine ⟨?_, ?_⟩
+  use i_max; intro j; refine ⟨?_, ?_, ?_⟩
   · have h_le : (@realAdjacencyMatrix_isHermitian d).eigenvalues j ≤ max_eig :=
       Finset.le_max' s (eig j) (Finset.mem_image_of_mem eig (Finset.mem_univ j))
     have h_eq : (@realAdjacencyMatrix_isHermitian d).eigenvalues i_max = max_eig := hi_max
@@ -753,17 +814,81 @@ lemma isPerronFrobeniusMax_realAdjacencyMatrix :
     rw [h_eq_b] at h1
     rw [h3] at h1
     norm_num at h1
+  · let w_i := evec i_max
+    have hA_wi : A.mulVec w_i = max_eig • w_i := by
+      have h := (@realAdjacencyMatrix_isHermitian d).mulVec_eigenvectorBasis i_max
+      have h_eig : (@realAdjacencyMatrix_isHermitian d).eigenvalues i_max = max_eig := hi_max
+      rw [h_eig] at h
+      exact h
+    have hB_wi : B.mulVec w_i = (max_eig + 1) • w_i := h_add_eig hA_wi
+    have hw_i_neq : w_i ≠ 0 := by
+      intro h
+      have h1 : ‖w_i‖ = 0 := by rw [h, norm_zero]
+      have h2 : ‖(evec i_max : EuclideanSpace ℝ _)‖ = 1 := (OrthonormalBasis.orthonormal evec).1 i_max
+      have h3 : ‖w_i‖ = ‖(evec i_max : EuclideanSpace ℝ _)‖ := rfl
+      rw [h3] at h1
+      rw [h2] at h1
+      norm_num at h1
+    have hA_symm := realAdjacencyMatrix_symm (d := d)
+    have hA_nn := adjacencyMatrix_nonneg (d := d)
+    have hA_conn := adjacency_support_connected hd2
+    have hA_vB : A.mulVec v_B = (μ_B - 1) • v_B := by
+      ext k
+      have hk := congr_fun hv_eig k
+      dsimp [B, mulVec, dotProduct] at hk ⊢
+      have h1 : ∑ l, (A k l + (1:Matrix _ _ ℝ) k l) * v_B l =
+                  ∑ l, A k l * v_B l + ∑ l, (1:Matrix _ _ ℝ) k l * v_B l := by
+        rw [←Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro _ _; ring
+      rw [h1] at hk
+      have h2 : ∑ l, (1:Matrix _ _ ℝ) k l * v_B l = v_B k := congr_fun (Matrix.one_mulVec v_B) k
+      rw [h2] at hk
+      try simp only [Pi.smul_apply, smul_eq_mul] at hk ⊢
+      linarith
+    have h_vB_neq : v_B ≠ 0 := by
+      intro h; have := hv_pos 0; rw [h] at this; exact lt_irrefl 0 this
+    have h_max_bound : ∀ k, (@realAdjacencyMatrix_isHermitian d).eigenvalues k ≤ max_eig := fun k =>
+      Finset.le_max' s (eig k) (Finset.mem_image_of_mem eig (Finset.mem_univ k))
+    have h_le_2 := pf_eigenvalue_is_max hB_symm hB_nn μ_B v_B hv_pos hv_eig (max_eig + 1) w_i hw_i_neq hB_wi
+    have h_mu_le : μ_B ≤ max_eig + 1 :=
+      mu_B_le_max_eig' (@realAdjacencyMatrix_isHermitian d) hA_vB h_vB_neq max_eig h_max_bound
+    have h_eq : μ_B = max_eig + 1 := le_antisymm h_mu_le h_le_2
+    have hA_vB_max : A.mulVec v_B = max_eig • v_B := by
+      have : μ_B - 1 = max_eig := by linarith
+      rw [this] at hA_vB
+      exact hA_vB
+    have hc_i := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
+    obtain ⟨ci, hi⟩ := hc_i
+    have hci_neq : ci ≠ 0 := by
+      intro h
+      rw [h, zero_smul] at hi
+      exact hw_i_neq hi
+    rcases lt_trichotomy ci 0 with h_neg | h_zero | h_pos
+    · right
+      intro x
+      have h_val := congr_fun hi x
+      dsimp [w_i] at h_val
+      rw [h_val]
+      exact mul_neg_of_neg_of_pos h_neg (hv_pos x)
+    · exact False.elim (hci_neq h_zero)
+    · left
+      intro x
+      have h_val := congr_fun hi x
+      dsimp [w_i] at h_val
+      rw [h_val]
+      exact mul_pos h_pos (hv_pos x)
 
 end SchreierSpectral
 
 theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
     ∃ (i : ZMod (2^(d-2))), ∀ (j : ZMod (2^(d-2))),
       (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues j ≤ (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues i
-      ∧ ((SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues j = (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues i → j = i) := by
+      ∧ ((SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues j = (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues i → j = i)
+      ∧ ((∀ x, 0 < (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvectorBasis i x) ∨ (∀ x, (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvectorBasis i x < 0)) := by
   exact SchreierSpectral.isPerronFrobeniusMax_realWeightedMatrix hd
 
 theorem adjacencyMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
     ∃ (i : ZMod (2^(d-1))), ∀ (j : ZMod (2^(d-1))),
       (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues j ≤ (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues i
-      ∧ ((SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues j = (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues i → j = i) := by
+      ∧ ((SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues j = (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues i → j = i)
+      ∧ ((∀ x, 0 < (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvectorBasis i x) ∨ (∀ x, (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvectorBasis i x < 0)) := by
   exact SchreierSpectral.isPerronFrobeniusMax_realAdjacencyMatrix hd

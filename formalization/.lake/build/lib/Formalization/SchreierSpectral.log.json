@@ -17,4 +17,4 @@
   {"message":
    ".\\.\\.\\.\\Formalization\\SchreierSpectral.lean:903:69: unused variable `h_inv2`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
- "depHash": "6126319838527182670"}
+ "depHash": "2332392621366977973"}

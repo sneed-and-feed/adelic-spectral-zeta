@@ -1151,6 +1151,7 @@ def IsPerronFrobeniusMax {n : Type*} [Fintype n] [DecidableEq n]
   ∃ (i : n), ∀ (j : n), 
     h_herm.eigenvalues j ≤ h_herm.eigenvalues i
     ∧ (h_herm.eigenvalues j = h_herm.eigenvalues i → j = i)
+    ∧ ((∀ x, 0 < h_herm.eigenvectorBasis i x) ∨ (∀ x, h_herm.eigenvectorBasis i x < 0))
 
 lemma weightedMatrix_nonneg {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     0 ≤ realWeightedMatrix hd u v := by
