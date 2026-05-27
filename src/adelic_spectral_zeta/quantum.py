@@ -172,3 +172,97 @@ def solve_ground_state_entanglement_sparse(t_zero, n_fermions, n_sites, repulsio
 def solve_ground_state_entanglement(t_zero, n_fermions, n_sites, repulsion_strength=0.1):
     # Backward compatible wrapper mapping to sparse
     return solve_ground_state_entanglement_sparse(t_zero, n_fermions, n_sites, repulsion_strength)
+
+def compute_partition_oeis(n):
+    if n < 0: return 0
+    if n == 0: return 1
+    p = [0]*(n+1)
+    p[0] = 1
+    for i in range(1, n+1):
+        for j in range(i, n+1):
+            p[j] += p[j - i]
+    return p[n]
+
+def build_ramanujan_superconductor_H_sparse(D, U, Delta, L):
+    """Builds the full Fock space BdG interacting Hamiltonian."""
+    # Generate full Fock space basis
+    basis = []
+    for nf in range(L + 1):
+        for state in combinations(range(L), nf):
+            basis.append(state)
+    state_to_idx = {state: i for i, state in enumerate(basis)}
+    
+    dim_fock = len(basis)
+    rows = []
+    cols = []
+    data = []
+    
+    # Precompute Ramanujan pairings
+    V_pair = {}
+    for i in range(L):
+        for j in range(L):
+            if i != j:
+                p_val = compute_partition_oeis(abs(i - j))
+                V_pair[(i, j)] = Delta * p_val
+                
+    for idx, state in enumerate(basis):
+        # 1. Diagonal elements
+        diag_val = sum(D[i, i] for i in state)
+        
+        # Coulomb repulsion
+        int_val = 0.0
+        for i_idx in range(len(state)):
+            for j_idx in range(i_idx + 1, len(state)):
+                pos_i = state[i_idx]
+                pos_j = state[j_idx]
+                int_val += 1.0 / abs(pos_i - pos_j)
+                
+        total_diag = diag_val + U * int_val
+        if abs(total_diag) > 1e-12:
+            rows.append(idx)
+            cols.append(idx)
+            data.append(total_diag)
+            
+        # 2. Single-particle hopping
+        for i in range(L):
+            for j in range(L):
+                if i == j: continue
+                val = D[i, j]
+                if abs(val) < 1e-12: continue
+                new_state, sign = hop(state, i, j)
+                if new_state is not None:
+                    target_idx = state_to_idx[new_state]
+                    rows.append(target_idx)
+                    cols.append(idx)
+                    data.append(val * sign)
+                    
+        # 3. Superconducting pairing: \sum_{i < j} V_{ij} c_i^\dagger c_j^\dagger + h.c.
+        for i in range(L):
+            for j in range(i + 1, L):
+                if i not in state and j not in state:
+                    # Apply c_i^dagger c_j^dagger
+                    pos_i = sum(1 for p in state if p < i)
+                    pos_j = sum(1 for p in state if p < j)
+                    sign = (-1)**(pos_i + pos_j)
+                    
+                    new_state = list(state)
+                    new_state.append(i)
+                    new_state.append(j)
+                    new_state.sort()
+                    new_state = tuple(new_state)
+                    
+                    target_idx = state_to_idx[new_state]
+                    v_ij = V_pair[(i, j)]
+                    
+                    # <new_state | H | state> = V_{ij} * sign
+                    rows.append(target_idx)
+                    cols.append(idx)
+                    data.append(v_ij * sign)
+                    
+                    # <state | H | new_state> = conj(V_{ij} * sign)
+                    rows.append(idx)
+                    cols.append(target_idx)
+                    data.append(np.conj(v_ij * sign))
+                    
+    H_sparse = sp.coo_matrix((data, (rows, cols)), shape=(dim_fock, dim_fock), dtype=complex)
+    return H_sparse.tocsr(), basis, state_to_idx
