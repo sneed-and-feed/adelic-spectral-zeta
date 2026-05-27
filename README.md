@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/20327753.svg)](https://doi.org/10.5281/zenodo.20327753)
 
-A Python library implementing the **Adèlic Spectral Triple** $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta}) framework$ for automorphic $L$-functions. This project provides the numerical verification and quantum simulation infrastructure supporting the analytical theorems detailed in [unified_monograph.md](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md).
+A Python library implementing the **Adèlic Spectral Triple** $`(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})`$ framework for automorphic $L$-functions. This project provides the numerical verification and quantum simulation infrastructure supporting the analytical theorems detailed in [unified_monograph.md](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md).
 
 ---
 
@@ -11,7 +11,7 @@ A Python library implementing the **Adèlic Spectral Triple** $(\mathcal{A}, \ma
 The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry:
 
 ### 1. The Global Dirac Operator
-We define a symmetric restricted operator $D_{\text{sym}} = D_0\bigr\vert _{\text{Ker}(\langle\xi,\cdot\rangle)}$ with deficiency indices exactly $(1,1),$ spanned by deficiency vectors $g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z}).$ The global operator $D_{\text{glob}}$ is formulated as a singular rank-1 perturbation:
+We define a symmetric restricted operator $`D_{\text{sym}} = D_0\bigr\vert _{\text{Ker}(\langle\xi,\cdot\rangle)}`$ with deficiency indices exactly $(1,1),$ spanned by deficiency vectors $`g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})`$. The global operator $`D_{\text{glob}}`$ is formulated as a singular rank-1 perturbation:
 
 $$
 (D_{\text{glob}} - z)^{-1} = (D_0 - z)^{-1} - \frac{\vert (D_0 - \bar{z})^{-1} \xi\rangle\langle (D_0 - z)^{-1} \xi\vert }{1 + \langle \xi, (D_0 - z)^{-1} \xi \rangle_{\text{reg}}}
@@ -19,23 +19,23 @@ $$
 
    
 ### 2. Weierstrass Determinant & Zeros of $L$-Functions
-To resolve the pole mismatch where the bare Krein determinant/ratio $\mathfrak{D}_{\text{ratio}}(z)$ is meromorphic with poles at $\{\lambda_n\}, while$ the completed $L$-function $\Lambda(z)$ is entire, we define the completed spectral determinant:
+To resolve the pole mismatch where the bare Krein determinant/ratio $\mathfrak{D}_{\text{ratio}}(z)$ is meromorphic with poles at $\{\lambda_n\}$, while the completed $L$-function $\Lambda(z)$ is entire, we define the completed spectral determinant:
 
 $$
 \mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_{n}^\ast \neq 0} \left( 1 - \frac{z}{t_{n}^\ast} \right) \exp\!\left( \frac{z}{t_{n}^\ast} \right)
 $$
 
-where $\mathfrak{D}_0(z)$ is the Weierstrass product over the unperturbed eigenvalues $\{\lambda_n\}.$ The multiplication by $\mathfrak{D}_0(z) exactly cancels$ the poles of $\mathfrak{D}_{\text{ratio}}(z),$ yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $s = 1/2 + i t_{n}^\ast,$ satisfying:
+where $\mathfrak{D}_0(z)$ is the Weierstrass product over the unperturbed eigenvalues $\{\lambda_n\}$. The multiplication by $\mathfrak{D}_0(z)$ exactly cancels the poles of $\mathfrak{D}_{\text{ratio}}(z)$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $s = 1/2 + i t_{n}^\ast$, satisfying:
 
 $$
 \mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)
 $$
 
 ### 3. Critical Line Rigidity & Extension Parameter
-The von Neumann self-adjoint extension parameter $\theta_0 = \pi$ is uniquely determined by the functional equation symmetry $\Lambda(s) = \Lambda(1-s).$ Under a non-unitary deformation off the critical line ($\sigma \neq 1/2),$ the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I},$ breaking the symmetry of the coupling equations and causing a fractional APS eta invariant spectral flow jump of $\pm 1/4.$ This fractional jump violates Fredholm index integrality, making $\sigma = 1/2$ a rigid topological requirement.
+The von Neumann self-adjoint extension parameter $\theta_0 = \pi$ is uniquely determined by the functional equation symmetry $\Lambda(s) = \Lambda(1-s)$. Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$, breaking the symmetry of the coupling equations and causing a fractional APS eta invariant spectral flow jump of $\pm 1/4$. This fractional jump violates Fredholm index integrality, making $\sigma = 1/2$ a rigid topological requirement.
 
 ### 4. Weil Explicit Formula & Subconvexity
-Applying the Weil explicit formula with test functions $h(w) = 1/(w-z) yields$ a rigorous, spectral Weyl-strength subconvexity bound:
+Applying the Weil explicit formula with test functions $h(w) = 1/(w-z)$ yields a rigorous, spectral Weyl-strength subconvexity bound:
 
 $$
 \left\vert L\left(\frac{1}{2}+it, \Delta\right) \right\vert \ll t^{\frac{1}{4} + \epsilon}
@@ -44,7 +44,7 @@ $$
 We also formulate a GUE-conditional conjecture improving this bound to $t^{1/3+\epsilon}.$
 
 ### 5. Quantum Physical Many-Body Entanglement
-Mapping the spectral geometry to a system of interacting fermions under Coulomb repulsion reveals a characteristic entanglement entropy "spike" $\Delta S$ at each $L$-function zero $t_k, analytically$ bounded by:
+Mapping the spectral geometry to a system of interacting fermions under Coulomb repulsion reveals a characteristic entanglement entropy "spike" $\Delta S$ at each $L$-function zero $t_k$, analytically bounded by:
 
 $$
 \Delta S(t_k) \approx \ln(2) - \frac{\mathcal{C}^2 \cdot \Delta_0^2}{8 \vert L'\left(\frac{1}{2}+it_k\right)\vert ^2}
@@ -86,7 +86,7 @@ Rather than attempting ill-posed continuous Fourier analytics, the computational
 **CRITICAL GUARDRAIL**: The discrete vanishing of density (Szemerédi) is *necessary but not sufficient* for the continuous ESC. A positive-measure continuous set may avoid all integer-rescaled copies of a pattern while containing real-rescaled copies. This discrete survey is a computational model and does **not** formally prove the continuous conjecture.
 
 ### 8. Spectral Realization of the Generalized Riemann Hypothesis
-We deploy the Adèlic Spectral Framework to construct a formal spectral reduction for the Generalized Riemann Hypothesis (GRH). By extending the Fredholm topological obstruction (where fractional index jumps forbid off-line zeros) and merging it with Arithmetic Quantum Ergodicity (AQE), we establish that any hypothetical eigenstate off the critical line ($\sigma \neq 1/2$) is algebraically rigid and perfectly bound by the Adèlic Product Formula. Consequently, local $p$-adic modular filters unconditionally trigger an infinite Dirichlet energy explosion, mathematically ejecting all off-line states from the physical Hilbert space $\mathcal{H}_\infty$. This restricts the spectral measure of the global Dirac operator $D_{\text{glob}}$ strictly to the critical line.
+We deploy the Adèlic Spectral Framework to construct a formal spectral reduction for the Generalized Riemann Hypothesis (GRH). By extending the Fredholm topological obstruction (where fractional index jumps forbid off-line zeros) and merging it with Arithmetic Quantum Ergodicity (AQE), we establish that any hypothetical eigenstate off the critical line ($\sigma \neq 1/2$) is algebraically rigid and perfectly bound by the Adèlic Product Formula. Consequently, local $p$-adic modular filters unconditionally trigger an infinite Dirichlet energy explosion, mathematically ejecting all off-line states from the physical Hilbert space $`\mathcal{H}_\infty`$. This restricts the spectral measure of the global Dirac operator $`D_{\text{glob}}`$ strictly to the critical line.
 
 ---
 
