@@ -279,5 +279,138 @@ lemma antisym_lift_zero_iff (w : ZMod (2^(d-2)) → ℝ) :
     split
     · rfl
     · rw [neg_zero]
+noncomputable def real_A'_matrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℝ :=
+  Matrix.reindex (sheetSplit hd) (sheetSplit hd) (@realAdjacencyMatrix d)
 
+lemma real_A'_matrix_eq (u v : ZMod (2^(d-2)) × ZMod 2) :
+    real_A'_matrix hd u v = (A'_matrix hd u v : ℝ) := by
+  dsimp [real_A'_matrix, A'_matrix, realAdjacencyMatrix, adjacencyMatrix, Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.map_apply]
+  rfl
+
+lemma real_A'_tau_sym_01_10 (u : ZMod (2^(d-2))) (v : ZMod (2^(d-2))) :
+    real_A'_matrix hd (u, 1) (v, 0) = real_A'_matrix hd (u, 0) (v, 1) := by
+  rw [real_A'_matrix_eq, real_A'_matrix_eq, A'_tau_sym_01_10 hd u v]
+
+lemma real_A'_tau_sym_11_00 (u : ZMod (2^(d-2))) (v : ZMod (2^(d-2))) :
+    real_A'_matrix hd (u, 1) (v, 1) = real_A'_matrix hd (u, 0) (v, 0) := by
+  rw [real_A'_matrix_eq, real_A'_matrix_eq, A'_tau_sym_11_00 hd u v]
+
+def antisym_ext_r (w : ZMod (2^(d-2)) → ℝ) : (ZMod (2^(d-2)) × ZMod 2) → ℝ :=
+  fun p => if p.2 = 0 then w p.1 else - w p.1
+
+lemma antisym_lift_eq_ext_comp_r (w : ZMod (2^(d-2)) → ℝ) (x : ZMod (2^(d-1))) :
+    antisym_lift w x = antisym_ext_r w (sheetSplit hd x) := by
+  change (if x.val < 2^(d-2) then w (pi x) else -w (pi x)) = if (if x.val < 2^(d-2) then (0 : ZMod 2) else 1) = 0 then w (pi x) else -w (pi x)
+  by_cases h : x.val < 2^(d-2)
+  · rw [if_pos h]
+    have h_if : (if x.val < 2 ^ (d - 2) then (0 : ZMod 2) else 1) = 0 := if_pos h
+    rw [h_if, if_pos rfl]
+  · rw [if_neg h]
+    have h_if : (if x.val < 2 ^ (d - 2) then (0 : ZMod 2) else 1) = 1 := if_neg h
+    rw [h_if]
+    have h_ne : ¬ (1 : ZMod 2) = 0 := by decide
+    rw [if_neg h_ne]
+
+lemma real_A'_matrix_mul_antisym_ext (w : ZMod (2^(d-2)) → ℝ) (u : ZMod (2^(d-2))) (b : ZMod 2) :
+    Matrix.mulVec (real_A'_matrix hd) (antisym_ext_r w) (u, b) = antisym_ext_r (Matrix.mulVec (realSheetDiffMatrix hd) w) (u, b) := by
+  dsimp [Matrix.mulVec, Matrix.dotProduct, antisym_ext_r]
+  have h_sum : ∑ j : ZMod (2^(d-2)) × ZMod 2, real_A'_matrix hd (u, b) j * (if j.snd = 0 then w j.fst else -w j.fst) =
+               ∑ v : ZMod (2^(d-2)), ∑ c : ZMod 2, real_A'_matrix hd (u, b) (v, c) * (if c = 0 then w v else -w v) := by
+    exact Fintype.sum_prod_type
+  rw [h_sum]
+  have h_inner : ∀ v, ∑ c : ZMod 2, real_A'_matrix hd (u, b) (v, c) * (if c = 0 then w v else -w v) =
+                 real_A'_matrix hd (u, b) (v, 0) * w v - real_A'_matrix hd (u, b) (v, 1) * w v := by
+    intro v
+    have h_univ : (Finset.univ : Finset (ZMod 2)) = {0, 1} := rfl
+    rw [h_univ, Finset.sum_insert, Finset.sum_singleton]
+    · simp only [if_true, eq_self_iff_true, if_false, one_ne_zero, neg_eq_zero]
+      ring
+    · decide
+  simp only [h_inner]
+  by_cases hb : b = 0
+  · rw [if_pos hb, hb]
+    dsimp [realSheetDiffMatrix, sheetDiffMatrix]
+    have h_eq : ∑ v : ZMod (2 ^ (d - 2)), (real_A'_matrix hd (u, 0) (v, 0) * w v - real_A'_matrix hd (u, 0) (v, 1) * w v) =
+                 ∑ v : ZMod (2 ^ (d - 2)), (real_A'_matrix hd (u, 0) (v, 0) - real_A'_matrix hd (u, 0) (v, 1)) * w v := by
+      apply Finset.sum_congr rfl
+      intro v _
+      ring
+    rw [h_eq]
+    apply Finset.sum_congr rfl
+    intro v _
+    have h_map : (algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0) - A'_matrix hd (u, 0) (v, 1))) =
+                 (A'_matrix hd (u, 0) (v, 0) : ℝ) - (A'_matrix hd (u, 0) (v, 1) : ℝ) := by
+      exact RingHom.map_sub (algebraMap ℚ ℝ) _ _
+    rw [h_map, ← real_A'_matrix_eq, ← real_A'_matrix_eq]
+  · have hb1 : b = 1 := by
+      have h_cases : b = 0 ∨ b = 1 := by
+        have h_univ : (Finset.univ : Finset (ZMod 2)) = {0, 1} := rfl
+        have h_mem := Finset.mem_univ b
+        rw [h_univ] at h_mem
+        simp only [Finset.mem_insert, Finset.mem_singleton] at h_mem
+        exact h_mem
+      exact h_cases.resolve_left hb
+    rw [if_neg hb, hb1]
+    have h1 : ∀ v, real_A'_matrix hd (u, 1) (v, 0) = real_A'_matrix hd (u, 0) (v, 1) := real_A'_tau_sym_01_10 hd u
+    have h2 : ∀ v, real_A'_matrix hd (u, 1) (v, 1) = real_A'_matrix hd (u, 0) (v, 0) := real_A'_tau_sym_11_00 hd u
+    have h_eq : ∑ v : ZMod (2 ^ (d - 2)), (real_A'_matrix hd (u, 1) (v, 0) * w v - real_A'_matrix hd (u, 1) (v, 1) * w v) =
+                 - ∑ v : ZMod (2 ^ (d - 2)), (real_A'_matrix hd (u, 0) (v, 0) - real_A'_matrix hd (u, 0) (v, 1)) * w v := by
+      rw [← Finset.sum_neg_distrib]
+      apply Finset.sum_congr rfl
+      intro v _
+      rw [h1 v, h2 v]
+      ring
+    rw [h_eq]
+    have h_sum_map : ∑ v : ZMod (2 ^ (d - 2)), (real_A'_matrix hd (u, 0) (v, 0) - real_A'_matrix hd (u, 0) (v, 1)) * w v =
+                     ∑ v : ZMod (2 ^ (d - 2)), (algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0) - A'_matrix hd (u, 0) (v, 1))) * w v := by
+      apply Finset.sum_congr rfl
+      intro v _
+      have h_map : (algebraMap ℚ ℝ (A'_matrix hd (u, 0) (v, 0) - A'_matrix hd (u, 0) (v, 1))) =
+                   (A'_matrix hd (u, 0) (v, 0) : ℝ) - (A'_matrix hd (u, 0) (v, 1) : ℝ) := by
+        exact RingHom.map_sub (algebraMap ℚ ℝ) _ _
+      rw [h_map, ← real_A'_matrix_eq, ← real_A'_matrix_eq]
+    rw [h_sum_map]
+    rfl
+
+lemma realAdjacencyMatrix_mul_antisym_lift (w : ZMod (2^(d-2)) → ℝ) (x : ZMod (2^(d-1))) :
+    Matrix.mulVec (@realAdjacencyMatrix d) (antisym_lift w) x =
+    antisym_lift (Matrix.mulVec (realSheetDiffMatrix hd) w) x := by
+  have h2 : antisym_lift (Matrix.mulVec (realSheetDiffMatrix hd) w) x = antisym_ext_r (Matrix.mulVec (realSheetDiffMatrix hd) w) (sheetSplit hd x) :=
+    antisym_lift_eq_ext_comp_r hd (Matrix.mulVec (realSheetDiffMatrix hd) w) x
+  rw [h2]
+  dsimp [Matrix.mulVec, Matrix.dotProduct]
+  have h_sum : ∑ j : ZMod (2^(d-1)), @realAdjacencyMatrix d x j * antisym_lift w j =
+               ∑ j : ZMod (2^(d-1)), @realAdjacencyMatrix d x j * antisym_ext_r w (sheetSplit hd j) := by
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [antisym_lift_eq_ext_comp_r hd w j]
+  rw [h_sum]
+  have h_sum2 : ∑ j : ZMod (2^(d-1)), @realAdjacencyMatrix d x j * antisym_ext_r w (sheetSplit hd j) =
+                ∑ j : ZMod (2^(d-2)) × ZMod 2, @realAdjacencyMatrix d x ((sheetSplit hd).symm j) * antisym_ext_r w j := by
+    have heq := Equiv.sum_comp (sheetSplit hd).symm (fun j => @realAdjacencyMatrix d x j * antisym_ext_r w (sheetSplit hd j))
+    rw [← heq]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [Equiv.apply_symm_apply]
+  rw [h_sum2]
+  have h_A_matrix : ∀ j, @realAdjacencyMatrix d x ((sheetSplit hd).symm j) = real_A'_matrix hd (sheetSplit hd x) j := by
+    intro j
+    have hh : real_A'_matrix hd = Matrix.reindex (sheetSplit hd) (sheetSplit hd) (@realAdjacencyMatrix d) := rfl
+    have h_eq : @realAdjacencyMatrix d = Matrix.reindex (sheetSplit hd).symm (sheetSplit hd).symm (real_A'_matrix hd) := by
+      rw [hh]
+      simp [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm]
+    rw [h_eq]
+    simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm, Equiv.symm_apply_apply]
+    rw [Equiv.apply_symm_apply]
+  have h_sum3 : ∑ j : ZMod (2 ^ (d - 2)) × ZMod 2, @realAdjacencyMatrix d x ((sheetSplit hd).symm j) * antisym_ext_r w j =
+                ∑ j : ZMod (2 ^ (d - 2)) × ZMod 2, real_A'_matrix hd (sheetSplit hd x) j * antisym_ext_r w j := by
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [h_A_matrix j]
+  rw [h_sum3]
+  have h3 : ∑ j : ZMod (2 ^ (d - 2)) × ZMod 2, real_A'_matrix hd (sheetSplit hd x) j * antisym_ext_r w j =
+            Matrix.mulVec (real_A'_matrix hd) (antisym_ext_r w) (sheetSplit hd x) := rfl
+  rw [h3]
+  rcases sheetSplit hd x with ⟨u, b⟩
+  exact real_A'_matrix_mul_antisym_ext hd w u b
 end SchreierSpectral
