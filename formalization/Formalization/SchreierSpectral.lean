@@ -1255,6 +1255,50 @@ theorem adjacencyMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
   apply eigenvalue_bound_of_gershgorin (@realAdjacencyMatrix_isHermitian d) i 4
   exact fun u => realAdjacencyMatrix_row_sum_le hd u
 
+lemma adjacencyMatrix_nonneg {d : ℕ} (u v : ZMod (2^(d-1))) :
+    0 ≤ @realAdjacencyMatrix d u v := by
+  dsimp [realAdjacencyMatrix, Matrix.map_apply]
+  have h1 : 0 ≤ @adjacencyMatrix d u v := by
+    dsimp [adjacencyMatrix]
+    split_ifs <;> norm_num
+  have h2 : (0:ℝ) = algebraMap ℚ ℝ 0 := by norm_num
+  rw [h2]
+  exact Rat.cast_le.mpr h1
+
+lemma realAdjacencyMatrix_symm {d : ℕ} (u v : ZMod (2^(d-1))) :
+    @realAdjacencyMatrix d u v = @realAdjacencyMatrix d v u := 
+  symm_of_herm (@realAdjacencyMatrix_isHermitian d) u v
+
+theorem adjacency_support_lift
+  {d : ℕ} {u v : ZMod (2^(d-1))}
+  (h : (G_d d).Adj u v) :
+  (supportGraph (@realAdjacencyMatrix d) (@realAdjacencyMatrix_symm d)).Adj u v := by
+  dsimp [supportGraph]
+  constructor
+  · have h1 : @adjacencyMatrix d u v = 1 := by
+      dsimp [adjacencyMatrix]
+      rw [if_pos h]
+    dsimp [realAdjacencyMatrix, Matrix.map_apply]
+    rw [h1]
+    have h3 : (1:ℝ) = algebraMap ℚ ℝ 1 := by norm_num
+    have h4 : (0:ℝ) < 1 := by norm_num
+    rw [←h3]
+    exact h4
+  · exact h.ne
+
+theorem adjacency_support_connected {d : ℕ} (hd : d ≥ 2) :
+    (supportGraph (@realAdjacencyMatrix d) (@realAdjacencyMatrix_symm d)).Connected := by
+  constructor
+  intro u v
+  have h_conn := (G_d_connected hd).preconnected u v
+  let f : (G_d d) →g (supportGraph (@realAdjacencyMatrix d) (@realAdjacencyMatrix_symm d)) := {
+    toFun := id
+    map_rel' := by
+      intro x y hxy
+      exact adjacency_support_lift hxy
+  }
+  exact h_conn.map f
+
 
 end SchreierSpectral
 
