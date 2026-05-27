@@ -19,20 +19,20 @@ $$
 
    
 ### 2. Weierstrass Determinant & Zeros of $L$-Functions
-To resolve the pole mismatch where the bare Krein determinant/ratio $\mathfrak{D}_{\text{ratio}}(z)$ is meromorphic with poles at $\{\lambda_n\}$, while the completed $L$-function $\Lambda(z)$ is entire, we define the completed spectral determinant:
+To resolve the pole mismatch where the bare Krein determinant/ratio $`\mathfrak{D}_{\text{ratio}}(z)`$ is meromorphic with poles at $`\{\lambda_n\}`$, while the completed $L$-function $\Lambda(z)$ is entire, we define the completed spectral determinant:
 
 $$
 \mathfrak{D}_{\text{glob}}(z) := \mathfrak{D}_{\text{ratio}}(z) \mathfrak{D}_0(z) = \prod_{n \in \mathbb{Z}, t_{n}^\ast \neq 0} \left( 1 - \frac{z}{t_{n}^\ast} \right) \exp\!\left( \frac{z}{t_{n}^\ast} \right)
 $$
 
-where $\mathfrak{D}_0(z)$ is the Weierstrass product over the unperturbed eigenvalues $\{\lambda_n\}$. The multiplication by $\mathfrak{D}_0(z)$ exactly cancels the poles of $\mathfrak{D}_{\text{ratio}}(z)$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $s = 1/2 + i t_{n}^\ast$, satisfying:
+where $`\mathfrak{D}_0(z)`$ is the Weierstrass product over the unperturbed eigenvalues $`\{\lambda_n\}`$. The multiplication by $`\mathfrak{D}_0(z)`$ exactly cancels the poles of $`\mathfrak{D}_{\text{ratio}}(z)`$, yielding a globally entire function of order 1 whose zeros are precisely the eigenvalues $`s = 1/2 + i t_{n}^\ast`$, satisfying:
 
 $$
 \mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)
 $$
 
 ### 3. Critical Line Rigidity & Extension Parameter
-The von Neumann self-adjoint extension parameter $\theta_0 = \pi$ is uniquely determined by the functional equation symmetry $\Lambda(s) = \Lambda(1-s)$. Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$, breaking the symmetry of the coupling equations and causing a fractional APS eta invariant spectral flow jump of $\pm 1/4$. This fractional jump violates Fredholm index integrality, making $\sigma = 1/2$ a rigid topological requirement.
+The von Neumann self-adjoint extension parameter $`\theta_0 = \pi`$ is uniquely determined by the functional equation symmetry $\Lambda(s) = \Lambda(1-s)$. Under a non-unitary deformation off the critical line ($\sigma \neq 1/2$), the unperturbed operator shifts by $-i(\sigma - 1/2)\mathbb{I}$, breaking the symmetry of the coupling equations and causing a fractional APS eta invariant spectral flow jump of $\pm 1/4$. This fractional jump violates Fredholm index integrality, making $\sigma = 1/2$ a rigid topological requirement.
 
 ### 4. Weil Explicit Formula & Subconvexity
 Applying the Weil explicit formula with test functions $h(w) = 1/(w-z)$ yields a rigorous, spectral Weyl-strength subconvexity bound:
@@ -51,27 +51,27 @@ $$
 $$
 
 ### 6. Schreier Graph Geometry & Spectral Rigidity
-We study the 4-regular Schreier graphs $G_d$ of affine maps modulo $2^{d-1}$, motivated by the structural dynamics of the $3x+1$ iteration on $\mathbb{Z}_2$. We formalize the topological connectivity and full spectral decomposition of this graph tower in Lean 4. While the graphs encode the 2-adic modular structure of the Collatz-like generators, the spectral bounds characterize a random walk on $G_d$ rather than the deterministic Collatz dynamical orbits—leaving the dynamical bridge as an open research direction. We further prove exact commutator rank and kernel formulas, reducing the commutator square to a 4-regular graph adjacency model, and establishing infinite-dimensionality of the projective-limit kernel.
+We study the 4-regular Schreier graphs $`G_d`$ of affine maps modulo $2^{d-1}$, motivated by the structural dynamics of the $3x+1$ iteration on $`\mathbb{Z}_2`$. We formalize the topological connectivity and full spectral decomposition of this graph tower in Lean 4. While the graphs encode the 2-adic modular structure of the Collatz-like generators, the spectral bounds characterize a random walk on $`G_d`$ rather than the deterministic Collatz dynamical orbits—leaving the dynamical bridge as an open research direction. We further prove exact commutator rank and kernel formulas, reducing the commutator square to a 4-regular graph adjacency model, and establishing infinite-dimensionality of the projective-limit kernel.
 
 Specifically:
-* **Commutator Dimension Identity**: The finite-dimensional commutator $K_d = [A_d, B_d]$ between the $2^d$-dimensional translation $A_d$ and the transfer operator $B_d$ satisfies:
+* **Commutator Dimension Identity**: The finite-dimensional commutator $`K_d = [A_d, B_d]`$ between the $2^d$-dimensional translation $`A_d`$ and the transfer operator $`B_d`$ satisfies:
   
 
 $$
 \text{rank}(K_d) = 2^{d-1} - 1 \quad \text{and} \quad \dim(\ker(K_d)) = 2^{d-1} + 1
 $$
 
-* **Graph Correspondence**: The commutator square $K_d K_d^\dagger$ on the periodic subspace $V_+$ reduces to the adjacency operator $A_{G_d}$ of a 4-regular covering graph $G_d$:
+* **Graph Correspondence**: The commutator square $`K_d K_d^\dagger`$ on the periodic subspace $`V_+`$ reduces to the adjacency operator $`A_{G_d}`$ of a 4-regular covering graph $`G_d`$:
   
 
 $$
 K_d K_d^\dagger \Big|_{V_+} = 2 I - \frac{1}{2} A_{G_d}
 $$
 
-  where $G_d$ is an undirected graph on $2^{d-1}$ vertices. We show that $G_d$ is a regular 2-fold covering of $G_{d-1}$ with connected sheets, proving $\text{rank}(K_d\bigr\vert_{V_+}) = 2^{d-1} - 1$.
-* **Projective-Limit Kernel**: In the infinite-dimensional limit $d \to \infty$, the global commutator kernel $\ker([A, B])$ contains the dense union of all cylinder commutator kernels $\Phi_d(\ker(K_d))$, confirming it is infinite-dimensional.
-* **Spectral Recursion**: The new adjacency eigenvalues $\mu$ at each depth are roots of a sequence of monic polynomials $P_d(z) = 0$ in $z = \mu^2$ of degree $2^{d-4}$ (for $d \ge 4$) with constant term $P_d(0) = 4$ and sum of roots equal to $2^{d-2}$ (yielding an average root value of exactly 4). The new singular values of $K_d$ satisfy the exact product formula $\prod_{\text{new}} \sigma_i = P_d(16) / 4^{2^{d-4}}$, verified via symbolic computer algebra up to depth $d = 8$.
-* **Foundational Spectral Gap**: We completed an axiom-free Lean 4 formalization proving the spectral gap positivity for the $G_d$ adjacency operators. By strictly exploiting the preconnectedness of the graph walk (`SimpleGraph.Walk` induction) and utilizing orthogonal basis linear independence in `EuclideanSpace`, we established the unicity of the dominant Perron-Frobenius eigenvector without relying on heavy topological fixed-point limits or third-party unverified libraries. This algebraic combinatorial reduction allowed the complete mechanical verification of the dominant eigenspace from absolute first principles.
+  where $`G_d`$ is an undirected graph on $2^{d-1}$ vertices. We show that $`G_d`$ is a regular 2-fold covering of $`G_{d-1}`$ with connected sheets, proving $`\text{rank}(K_d\bigr\vert_{V_+}) = 2^{d-1} - 1`$.
+* **Projective-Limit Kernel**: In the infinite-dimensional limit $d \to \infty$, the global commutator kernel $\ker([A, B])$ contains the dense union of all cylinder commutator kernels $`\Phi_d(\ker(K_d))`$, confirming it is infinite-dimensional.
+* **Spectral Recursion**: The new adjacency eigenvalues $\mu$ at each depth are roots of a sequence of monic polynomials $`P_d(z) = 0`$ in $z = \mu^2$ of degree $2^{d-4}$ (for $d \ge 4$) with constant term $`P_d(0) = 4`$ and sum of roots equal to $2^{d-2}$ (yielding an average root value of exactly 4). The new singular values of $`K_d`$ satisfy the exact product formula $`\prod_{\text{new}} \sigma_i = P_d(16) / 4^{2^{d-4}}`$, verified via symbolic computer algebra up to depth $d = 8$.
+* **Foundational Spectral Gap**: We completed an axiom-free Lean 4 formalization proving the spectral gap positivity for the $`G_d`$ adjacency operators. By strictly exploiting the preconnectedness of the graph walk (`SimpleGraph.Walk` induction) and utilizing orthogonal basis linear independence in `EuclideanSpace`, we established the unicity of the dominant Perron-Frobenius eigenvector without relying on heavy topological fixed-point limits or third-party unverified libraries. This algebraic combinatorial reduction allowed the complete mechanical verification of the dominant eigenspace from absolute first principles.
 
 ### 7. Rigorous Adèlic Reduction of the Erdős Similarity Conjecture
 
