@@ -586,11 +586,27 @@ noncomputable def max_antisym_eig {d : ℕ} (hd : d ≥ 3) : ℝ :=
   have hs_nonempty : s.Nonempty := ⟨_, Finset.mem_image_of_mem _ (Finset.mem_univ 0)⟩
   s.max' hs_nonempty
 
+/-- The Min-Max theorem guarantees that the maximum eigenvalue of the antisymmetric block
+    is bounded below by the Rayleigh quotient of any test vector. By the Fourier isomorphism,
+    this is equivalent to the Rayleigh quotient of `test_vector d` on `T_chain d`. -/
+lemma max_antisym_eig_lower_bound (d : ℕ) (hd : d ≥ 7) :
+    chain_rayleigh_quotient d ≤ max_antisym_eig hd := by
+  sorry
+
+/-- The exact evaluation of the test vector's Rayleigh quotient (utilizing the telescoping sum
+    from `TrigSum.lean` and Taylor bounds from `hopping_taylor_bound`) strictly exceeds
+    the known symmetric spectral gap (which equals the previous antisymmetric maximum). -/
+lemma chain_rayleigh_beats_prev_gap (d : ℕ) (hd : d ≥ 7) :
+    max_antisym_eig (by omega : d - 1 ≥ 3) < chain_rayleigh_quotient d := by
+  sorry
+
 /-- Target 2: Rigorous Relative Gap
     The maximum eigenvalue of the antisymmetric block at depth d is strictly greater than
     the maximum eigenvalue of the antisymmetric block at depth d-1 (which equals lambda_{sym, 2} of depth d). -/
-theorem relative_spectral_gap {d : ℕ} (hd : d ≥ 7) :
-    max_antisym_eig (by omega : d - 1 ≥ 3) < max_antisym_eig (by omega : d ≥ 3) := by
-  sorry
+theorem relative_spectral_gap (d : ℕ) (hd : d ≥ 7) :
+    max_antisym_eig (by omega : d - 1 ≥ 3) < max_antisym_eig hd := by
+  calc max_antisym_eig (by omega : d - 1 ≥ 3)
+    _ < chain_rayleigh_quotient d := chain_rayleigh_beats_prev_gap d hd
+    _ ≤ max_antisym_eig hd := max_antisym_eig_lower_bound d hd
 
 end SchreierSpectral
