@@ -1,4 +1,4 @@
-=== Phase 2 Verification Report ===
+=== Phase 2 Exploration Report ===
 Local p-adic residue at z=1: 0
 Regularized log determinant: log(1 - 1/p**s)
 s-derivative: log(p)/(p**s*(1 - 1/p**s))

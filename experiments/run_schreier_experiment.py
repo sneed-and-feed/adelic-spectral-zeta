@@ -23,8 +23,8 @@ def run_experiment():
     # 2. Block Decomposition
     weighted_matrix, sheet_diff_matrix = get_schreier_blocks(d)
     
-    eigenvalues_sym = np.sort(np.linalg.eigvals(weighted_matrix).real)
-    eigenvalues_anti = np.sort(np.linalg.eigvals(sheet_diff_matrix).real)
+    eigenvalues_sym = np.sort(np.linalg.eigvals(weighted_matrix.toarray()).real)
+    eigenvalues_anti = np.sort(np.linalg.eigvals(sheet_diff_matrix.toarray()).real)
     
     # Combine block eigenvalues
     eigenvalues_combined = np.sort(np.concatenate([eigenvalues_sym, eigenvalues_anti]))
