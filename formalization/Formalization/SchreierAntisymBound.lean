@@ -413,4 +413,172 @@ lemma realAdjacencyMatrix_mul_antisym_lift (w : ZMod (2^(d-2)) → ℝ) (x : ZMo
   rw [h3]
   rcases sheetSplit hd x with ⟨u, b⟩
   exact real_A'_matrix_mul_antisym_ext hd w u b
+
+lemma antisym_eigenvalues_strictly_below_top (v : ZMod (2^(d-1)) → ℝ) (μ : ℝ)
+    (hv_ne : v ≠ 0)
+    (h_eig : Matrix.mulVec (@realAdjacencyMatrix d) v = μ • v)
+    (h_antisym : tau_op v = -v) :
+    μ < (@realAdjacencyMatrix_isHermitian d).eigenvalues (Classical.choose (isPerronFrobeniusMax_realAdjacencyMatrix hd)) := by
+  let A := @realAdjacencyMatrix d
+  let hA := @realAdjacencyMatrix_isHermitian d
+  let h_pf := isPerronFrobeniusMax_realAdjacencyMatrix hd
+  let i_max := Classical.choose h_pf
+  let h_pf_spec := Classical.choose_spec h_pf
+  let max_eig := hA.eigenvalues i_max
+  
+  let evec := hA.eigenvectorBasis
+  let b := evec.toBasis
+  let eig := hA.eigenvalues
+
+  have h_repr_eq : ∀ j, b.repr v j * eig j = μ * b.repr v j := by
+    intro j
+    have hw_sum : v = ∑ k, b.repr v k • evec k := (b.sum_repr v).symm
+    have h2 : b.repr (A.mulVec v) j = b.repr v j * eig j := by
+      have h_Aw_eq : A.mulVec v = ∑ k, (b.repr v k) • (eig k • evec k) := by
+        calc A.mulVec v = Matrix.toLin' A v := rfl
+             _ = Matrix.toLin' A (∑ k, b.repr v k • evec k) := by nth_rw 1 [hw_sum]
+             _ = ∑ k, Matrix.toLin' A (b.repr v k • evec k) := by exact map_sum (Matrix.toLin' A) _ _
+             _ = ∑ k, (b.repr v k) • A.mulVec (evec k) := by
+               apply Finset.sum_congr rfl
+               intro k _
+               exact LinearMap.map_smul (Matrix.toLin' A) (b.repr v k) (evec k)
+             _ = ∑ k, (b.repr v k) • (eig k • evec k) := by
+               apply Finset.sum_congr rfl
+               intro k _
+               have hevec : A.mulVec (evec k) = eig k • evec k := hA.mulVec_eigenvectorBasis k
+               rw [hevec]
+      have h_sum_eq : b.repr (∑ k, (b.repr v k) • (eig k • evec k)) j = b.repr v j * eig j := by
+        rw [map_sum b.repr]
+        simp only [Finsupp.coe_finset_sum, Finset.sum_apply]
+        have h_term : ∀ k, (b.repr ((b.repr v k) • (eig k • evec k))) j = b.repr v k * eig k * b.repr (evec k) j := by
+          intro k
+          rw [LinearEquiv.map_smul, LinearEquiv.map_smul]
+          simp only [Finsupp.smul_apply, smul_eq_mul, b]
+          ring
+        have h_term2 : ∀ k, b.repr (evec k) j = if k = j then 1 else 0 := by
+          intro k
+          have h_repr_k : b.repr (evec k) = Finsupp.single k 1 := b.repr_self k
+          rw [h_repr_k, Finsupp.single_apply]
+        have h_sum_single : (∑ k, (b.repr ((b.repr v k) • (eig k • evec k))) j) = (b.repr ((b.repr v j) • (eig j • evec j))) j := by
+          apply Finset.sum_eq_single_of_mem j (Finset.mem_univ j)
+          intro k _ hk_neq
+          rw [h_term k, h_term2 k, if_neg hk_neq]; ring
+        rw [h_sum_single, h_term j, h_term2 j, if_pos rfl]; ring
+      rw [h_Aw_eq]
+      exact h_sum_eq
+    have h1_Aw : b.repr (A.mulVec v) j = μ * b.repr v j := by
+      have heq_w : A.mulVec v = μ • v := h_eig
+      rw [heq_w]
+      rw [LinearEquiv.map_smul, Finsupp.smul_apply, smul_eq_mul]
+    rw [h1_Aw] at h2
+    exact h2.symm
+
+  have h_le : μ ≤ max_eig := by
+    have h_repr_ne_zero : ∃ j, b.repr v j ≠ 0 := by
+      by_contra h_all_zero
+      push_neg at h_all_zero
+      have h_v_zero : v = 0 := by
+        have hw_sum : v = ∑ k, b.repr v k • evec k := (b.sum_repr v).symm
+        calc v = ∑ k, b.repr v k • evec k := hw_sum
+             _ = 0 := by
+               apply Finset.sum_eq_zero
+               intro k _
+               rw [h_all_zero k, zero_smul]
+      exact hv_ne h_v_zero
+    rcases h_repr_ne_zero with ⟨j, hj⟩
+    have h_eig_eq := h_repr_eq j
+    have heq : eig j = μ := by
+      have h_eig_eq2 : b.repr v j * eig j = b.repr v j * μ := by
+        calc b.repr v j * eig j = μ * b.repr v j := h_eig_eq
+             _ = b.repr v j * μ := mul_comm _ _
+      exact mul_left_cancel₀ hj h_eig_eq2
+    rw [← heq]
+    exact (h_pf_spec j).1
+
+  by_cases h_eq : μ = max_eig
+  · exfalso
+    have hw_zero : ∀ j, j ≠ i_max → b.repr v j = 0 := by
+      intro j hj
+      have h_eq_j := h_repr_eq j
+      have heig_neq : eig j ≠ max_eig := by
+        intro heq_eig
+        have h_im := (h_pf_spec j).2.1 heq_eig
+        exact hj h_im
+      by_contra h_repr_ne
+      have h_eq2 : eig j = μ := by
+        have h_eq_j2 : b.repr v j * eig j = b.repr v j * μ := by
+          calc b.repr v j * eig j = μ * b.repr v j := h_eq_j
+               _ = b.repr v j * μ := mul_comm _ _
+        exact mul_left_cancel₀ h_repr_ne h_eq_j2
+      rw [h_eq] at h_eq2
+      exact heig_neq h_eq2
+    
+    have h_v_prop : v = (b.repr v i_max) • evec i_max := by
+      calc v = ∑ k, b.repr v k • evec k := (b.sum_repr v).symm
+           _ = (b.repr v i_max) • evec i_max := by
+             apply Finset.sum_eq_single_of_mem i_max (Finset.mem_univ i_max)
+             intro k _ hk
+             rw [hw_zero k hk, zero_smul]
+
+    have h_tau_v0 : tau_op (evec i_max) = evec i_max := pf_eigenvector_symmetric hd
+    have h_tau_v : tau_op v = v := by
+      ext x
+      have h1 : v (tau x) = (b.repr v i_max • evec i_max) (tau x) := congr_fun h_v_prop (tau x)
+      have h2 : v x = (b.repr v i_max • evec i_max) x := congr_fun h_v_prop x
+      change v (tau x) = v x
+      rw [h1, h2]
+      have h_tau_v0_x : evec i_max (tau x) = evec i_max x := congr_fun h_tau_v0 x
+      calc (b.repr v i_max • evec i_max) (tau x) = b.repr v i_max * evec i_max (tau x) := rfl
+           _ = b.repr v i_max * evec i_max x := by rw [h_tau_v0_x]
+           _ = (b.repr v i_max • evec i_max) x := rfl
+    have h_tau_v_eq : tau_op v = v := h_tau_v
+    rw [h_antisym] at h_tau_v_eq
+    have h_2v : (2:ℝ) • v = 0 := by
+      calc (2:ℝ) • v = v + v := by rw [two_smul]
+           _ = -v + v := by nth_rw 1 [← h_tau_v_eq]
+           _ = 0 := add_left_neg v
+    have h_v_zero : v = 0 := by
+      exact smul_eq_zero.mp h_2v |>.resolve_left (by norm_num)
+    exact hv_ne h_v_zero
+  · exact lt_of_le_of_ne h_le h_eq
+
+lemma antisym_block_bound : 
+    ∀ i : ZMod (2^(d-2)), (@realSheetDiffMatrix_isHermitian d hd).eigenvalues i <
+      (@realAdjacencyMatrix_isHermitian d).eigenvalues (Classical.choose (isPerronFrobeniusMax_realAdjacencyMatrix hd)) := by
+  intro i
+  let hA' := @realSheetDiffMatrix_isHermitian d hd
+  let μ := hA'.eigenvalues i
+  let v' := hA'.eigenvectorBasis i
+  let v := antisym_lift v'
+  have h_eig_v' : Matrix.mulVec (realSheetDiffMatrix hd) v' = μ • v' := hA'.mulVec_eigenvectorBasis i
+  
+  have h_antisym : tau_op v = -v := by
+    ext x
+    change v (tau x) = - v x
+    exact antisym_lift_tau hd v' x
+
+  have hv_ne : v ≠ 0 := by
+    intro h_zero
+    have hw_zero : v' = 0 := (antisym_lift_zero_iff hd v').mp h_zero
+    have h_repr_k : hA'.eigenvectorBasis.toBasis.repr v' = Finsupp.single i 1 := hA'.eigenvectorBasis.toBasis.repr_self i
+    rw [hw_zero, map_zero] at h_repr_k
+    have h_eval : (0 : Finsupp _ _) i = (Finsupp.single i 1 : Finsupp _ _) i := Finsupp.ext_iff.1 h_repr_k i
+    rw [Finsupp.single_apply, if_pos rfl, Finsupp.coe_zero, Pi.zero_apply] at h_eval
+    exact zero_ne_one h_eval
+
+  have h_eig : Matrix.mulVec (@realAdjacencyMatrix d) v = μ • v := by
+    ext x
+    rw [realAdjacencyMatrix_mul_antisym_lift]
+    have h_v' : Matrix.mulVec (realSheetDiffMatrix hd) v' = μ • v' := h_eig_v'
+    rw [h_v']
+    change antisym_lift (μ • v') x = μ * antisym_lift v' x
+    rw [antisym_lift_eq_ext_comp_r hd (μ • v') x]
+    rw [antisym_lift_eq_ext_comp_r hd v' x]
+    dsimp [antisym_ext_r]
+    split_ifs
+    · rfl
+    · ring
+
+  exact antisym_eigenvalues_strictly_below_top hd v μ hv_ne h_eig h_antisym
+
 end SchreierSpectral
