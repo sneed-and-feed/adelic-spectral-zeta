@@ -1,5 +1,11 @@
 import Mathlib
 import Formalization.SchreierSpectral
+/-!
+# CollatzRelMatrix
+
+Core formalization for the Collatz Spectral Theorem.
+-/
+
 
 open Classical
 open Matrix
@@ -490,3 +496,5 @@ theorem spectral_tower_one_step {n : ℕ} (hn : n ≥ 2) :
   trivial
 
 end CollatzDirMatrix
+
+#lint

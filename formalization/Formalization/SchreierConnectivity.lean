@@ -2,6 +2,12 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Connectivity
 import Mathlib.Tactic
+/-!
+# SchreierConnectivity
+
+Core formalization for the Collatz Spectral Theorem.
+-/
+
 
 -- ============================================================
 -- 1. GRAPH DEFINITION
@@ -76,13 +82,11 @@ lemma pi_eq_zero_iff {d : ℕ} (hd : d ≥ 3) (z : ZMod (2^(d-1))) :
     have h_bound : z.val < 2^(d-1) := ZMod.val_lt z
     have h_cases : z.val = 0 ∨ z.val = 2^(d-2) := by
       obtain ⟨k, hk⟩ := h_div
-      have h_pos : 0 < 2^(d-2) := by positivity
       have h_exp : 2^(d-1) = 2 * 2^(d-2) := by
         have h_sub : d - 1 = (d - 2) + 1 := by omega
         rw [h_sub, pow_add, pow_one, mul_comm]
       have h_k : k < 2 := by
-        have hk' : k * 2^(d-2) = z.val := by rw [mul_comm]; exact hk.symm
-        nlinarith [h_bound, hk', h_pos, h_exp]
+        nlinarith [h_bound, hk, h_exp]
       have h_k_eq : k = 0 ∨ k = 1 := by omega
       rcases h_k_eq with h_k_eq | h_k_eq
       · left; rw [hk, h_k_eq]; ring
@@ -114,13 +118,14 @@ lemma pi_eq_zero_iff {d : ℕ} (hd : d ≥ 3) (z : ZMod (2^(d-1))) :
       exact (CharP.cast_eq_zero_iff (ZMod (2^(d-2))) (2^(d-2)) (2^(d-2))).mpr h_div
 
 /-- π is a graph homomorphism in the relational sense: edges project to edges or self-loops (which collapse to a single point). -/
-theorem pi_is_graph_hom_or_eq {d : ℕ} (hd : d ≥ 3) :
+@[nolint unusedArguments]
+theorem pi_is_graph_hom_or_eq {d : ℕ} (_hd : d ≥ 3) :
     ∀ x y, (G_d d).Adj x y → pi x = pi y ∨ (G_d (d-1)).Adj (pi x) (pi y) := by
   intro x y hxy
   by_cases h_eq : pi x = pi y
   · exact Or.inl h_eq
   · right
-    rcases hxy with ⟨hne, h | h | h | h⟩
+    rcases hxy with ⟨_hne, h | h | h | h⟩
     · refine ⟨h_eq, Or.inl ?_⟩
       have h_pi : pi y = pi (3 * x) := by rw [h]
       rw [pi_mul_three] at h_pi
@@ -227,6 +232,7 @@ theorem nontrivial_loop_lift {d : ℕ} (hd : d ≥ 3) :
 
 
 
+/-- Translation by 2^(d-2). -/
 def tau {d : ℕ} (x : ZMod (2^(d-1))) : ZMod (2^(d-1)) :=
   x + (2^(d-2) : ℕ)
 
@@ -261,7 +267,8 @@ lemma tau_neq {d : ℕ} (hd : d ≥ 3) (x : ZMod (2^(d-1))) : tau x ≠ x := by
     omega
   omega
 
-lemma tau_pi {d : ℕ} (hd : d ≥ 3) (x : ZMod (2^(d-1))) : pi (tau x) = pi x := by
+@[nolint unusedArguments]
+lemma tau_pi {d : ℕ} (_hd : d ≥ 3) (x : ZMod (2^(d-1))) : pi (tau x) = pi x := by
   change pi (x + ((2^(d-2) : ℕ) : ZMod (2^(d-1)))) = pi x
   rw [pi_add, pi_natCast]
   have h_zero : ((2^(d-2) : ℕ) : ZMod (2^(d-2))) = 0 := ZMod.natCast_self _
@@ -340,6 +347,7 @@ lemma tau_is_hom {d : ℕ} (hd : d ≥ 3) {x y : ZMod (2^(d-1))} :
            _ = 3 * (y + ↑(2 ^ (d - 2))) - 1 - 0 := by rw [h_zero]
            _ = 3 * (y + ↑(2 ^ (d - 2))) - 1 := by ring
 
+/-- The graph homomorphism induced by tau. -/
 def tau_hom {d : ℕ} (hd : d ≥ 3) : (G_d d) →g (G_d d) where
   toFun := tau
   map_rel' := @tau_is_hom d hd
@@ -348,7 +356,9 @@ lemma coprime_3_2_pow {d : ℕ} : Nat.Coprime 3 (2^(d-1)) := by
   have h1 : Nat.Coprime 3 2 := by decide
   exact Nat.Coprime.pow_right (d-1) h1
 
-def inv3 {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) :=
+/-- The inverse of 3 modulo 2^(d-1). -/
+@[nolint unusedArguments]
+def inv3 {d : ℕ} (_hd : d ≥ 3) : ZMod (2^(d-1)) :=
   (ZMod.unitOfCoprime 3 (coprime_3_2_pow (d:=d))).inv
 
 lemma three_mul_inv3 {d : ℕ} (hd : d ≥ 3) : (3 : ZMod (2^(d-1))) * inv3 hd = 1 := by
@@ -447,8 +457,9 @@ lemma adj_implies_not_fixed_inv {d : ℕ} (hd : d ≥ 3) {x : ZMod (2^(d-1))} {v
          _ = pi x := by ring
   exact hne h_v.symm
 
+@[nolint unusedArguments]
 lemma adj_implies_not_fixed_inv_sub {d : ℕ} (hd : d ≥ 3) {x : ZMod (2^(d-1))} {v : ZMod (2^(d-2))}
-    (hne : pi x ≠ v) (hv : pi x = 3 * v - 1) : x ≠ 3 * x - 1 := by
+    (_hne : pi x ≠ v) (_hv : pi x = 3 * v - 1) : x ≠ 3 * x - 1 := by
   intro h
   have h_2x : 2 * x = 1 := by
     calc 2 * x = 3 * x - x := by ring
@@ -728,7 +739,7 @@ theorem G_d_connected {d : ℕ} (hd : d ≥ 2) : (G_d d).Connected := by
           have h1 : u_lift = (u.val : ZMod (2^(d+2))) := rfl
           rw [h1, pi_natCast]
           exact ZMod.natCast_zmod_val u
-        obtain ⟨x', w', hx'_eq, hw'_len⟩ := @path_lift_gen (d+3) (by omega) u y w u_lift h_pi_u
+        obtain ⟨x', w', hx'_eq, _hw'_len⟩ := @path_lift_gen (d+3) (by omega) u y w u_lift h_pi_u
         
         -- w' is a walk in G_{d+3} from u_lift to x', where pi x' = y = pi x.
         -- Therefore, x' and x are in the same fiber over y.
@@ -738,3 +749,5 @@ theorem G_d_connected {d : ℕ} (hd : d ≥ 2) : (G_d d).Connected := by
         
         -- u_lift is reachable to x' via w', and x' is reachable to x via h_reach_x'_x.
         exact SimpleGraph.Reachable.trans ⟨w'⟩ h_reach_x'_x
+
+#lint

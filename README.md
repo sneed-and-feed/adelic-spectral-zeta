@@ -26,9 +26,9 @@ The following claims have been rigorously formalized in Lean 4 (`v4.8.0`) with *
 
 ---
 
-## Mathematical Framework Overview
+## Theoretical Motivation & Physical Implications (Speculative / Numerical)
 
-The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry:
+The core of the library was originally developed to explore the physical realization of the following components of the adèlic spectral geometry. While the formal proofs above stand unconditionally on their own, the following sections describe the *speculative* physical and number-theoretic motivations behind the project:
 
 ### 1. The Global Dirac Operator
 We define a symmetric restricted operator $`D_{\text{sym}} = D_0\bigr\vert _{\text{Ker}(\langle\xi,\cdot\rangle)}`$ with deficiency indices exactly $(1,1),$ spanned by deficiency vectors $`g_\pm = (D_0 \mp i\mathbb{I})^{-1}\xi \in \ell^2(\mathbb{Z})`$. The global operator $`D_{\text{glob}}`$ is formulated as a singular rank-1 perturbation:

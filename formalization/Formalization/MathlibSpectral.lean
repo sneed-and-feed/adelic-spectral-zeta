@@ -5,6 +5,12 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.Group.Abs
 import Mathlib.LinearAlgebra.Matrix.Spectrum
 import Mathlib.Analysis.InnerProductSpace.PiL2
+/-!
+# MathlibSpectral
+
+Core formalization for the Collatz Spectral Theorem.
+-/
+
 
 open Matrix
 open Classical
@@ -65,28 +71,22 @@ lemma pow_pos_of_walk {A : Matrix n n ℝ}
 lemma pow_le_add_one_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
     ∀ i j, (A ^ k) i j ≤ ((A + 1) ^ k) i j := by
   induction k with
-  | zero =>
-    intro i j
-    rfl
+  | zero => intro i j; rfl
   | succ k ih =>
     intro i j
     rw [pow_succ', pow_succ', mul_apply, mul_apply]
-    apply Finset.sum_le_sum
-    intro l _
+    apply Finset.sum_le_sum; intro l _
+    have hA1_nn : 0 ≤ (A + 1) i l := by
+      by_cases h : i = l
+      · have : 0 ≤ A l l := hA_nn l l
+        simp [h, add_apply, one_apply_eq]
+        positivity
+      · simp [h, add_apply, one_apply_ne, hA_nn i l]
     have h1 : A i l ≤ (A + 1) i l := by
-      by_cases hil : i = l
-      · rw [hil, add_apply, one_apply_eq]
-        exact le_add_of_nonneg_right zero_le_one
-      · rw [add_apply, one_apply_ne hil, add_zero]
-    have h2 : (A ^ k) l j ≤ ((A + 1) ^ k) l j := ih l j
-    have h3 : 0 ≤ (A ^ k) l j := pow_nonneg hA_nn k l j
-    have hA1_nn : ∀ x y, 0 ≤ (A + 1) x y := fun x y => by
-      by_cases h : x = y
-      · rw [h, add_apply, one_apply_eq]
-        exact add_nonneg (hA_nn y y) zero_le_one
-      · rw [add_apply, one_apply_ne h, add_zero]
-        exact hA_nn x y
-    exact mul_le_mul h1 h2 h3 (hA1_nn i l)
+      by_cases h : i = l
+      · simp [h, add_apply, one_apply_eq]
+      · simp [h, add_apply, one_apply_ne]
+    exact mul_le_mul h1 (ih l j) (pow_nonneg hA_nn k l j) hA1_nn
 
 
 /-- A non-negative eigenvector that is zero at one vertex must be zero along any connected walk. -/
@@ -99,26 +99,22 @@ lemma eq_zero_of_walk_of_eigenvector {A : Matrix n n ℝ}
     u i = 0 → u j = 0 := by
   induction w with
   | nil => intro h; exact h
-  | cons h rest ih =>
+  | cons h _rest ih =>
     clear i j
     rename_i u_start u_next u_end
     intro hui
     have h_adj_pos : 0 < A u_start u_next := h.1
-    have h_eq : (A.mulVec u) u_start = lam * u u_start := by
-      have := congr_fun hu_eig u_start
-      rw [Pi.smul_apply, smul_eq_mul] at this
-      exact this
-    dsimp [mulVec, dotProduct] at h_eq
-    rw [hui, mul_zero] at h_eq
-    have h_sum_nn : ∀ l ∈ Finset.univ, 0 ≤ A u_start l * u l := fun l _ => mul_nonneg (hA_nn u_start l) (hu_nn l)
+    have h_eq : ∑ l, A u_start l * u l = 0 := by
+      calc ∑ l, A u_start l * u l = (A.mulVec u) u_start := rfl
+      _ = lam * u u_start := by rw [hu_eig, Pi.smul_apply, smul_eq_mul]
+      _ = 0 := by rw [hui, mul_zero]
+    have h_sum_nn : ∀ l ∈ Finset.univ, 0 ≤ A u_start l * u l := fun l _ => mul_nonneg (hA_nn _ _) (hu_nn _)
     have h_term_zero : A u_start u_next * u u_next = 0 := by
-      have h_le : A u_start u_next * u u_next ≤ ∑ l, A u_start l * u l := Finset.single_le_sum h_sum_nn (Finset.mem_univ u_next)
+      have h_le := Finset.single_le_sum h_sum_nn (Finset.mem_univ u_next)
       linarith [h_sum_nn u_next (Finset.mem_univ u_next)]
-    have hux_zero : u u_next = 0 := by
-      cases mul_eq_zero.mp h_term_zero with
-      | inl h1 => exact False.elim (ne_of_gt h_adj_pos h1)
-      | inr h2 => exact h2
-    exact ih hux_zero
+    cases mul_eq_zero.mp h_term_zero with
+    | inl h1 => exact False.elim (ne_of_gt h_adj_pos h1)
+    | inr h2 => exact ih h2
 
 /-- The eigenspace of the Perron-Frobenius eigenvalue is one-dimensional for a connected support graph. -/
 lemma eigenvector_unique_of_connected {A : Matrix n n ℝ}
@@ -386,14 +382,14 @@ lemma eigenvalue_le_of_symm_of_nonneg {B : Matrix n n ℝ} (hB_symm : ∀ i j, B
   have h_le : |lam| ≤ μ := (mul_le_mul_right h_dot_pos).mp h_dot1
   exact le_trans (le_abs_self lam) h_le
 /-- A real Hermitian matrix is symmetric. -/
-lemma IsHermitian.transpose_eq {n : Type*} [Fintype n] [DecidableEq n]
+lemma IsHermitian.transpose_eq {n : Type*}
     (A : Matrix n n ℝ) (h : A.IsHermitian) : Aᵀ = A := by
   have hH : Aᴴ = A := h
   simp only [Matrix.conjTranspose, Matrix.transpose_map, star_trivial] at hH
   exact hH
 
 /-- The dot product commutes with matrix multiplication for a symmetric matrix. -/
-lemma dotProduct_mulVec_of_symm {n : Type*} [Fintype n] [DecidableEq n]
+lemma dotProduct_mulVec_of_symm {n : Type*} [Fintype n]
     (A : Matrix n n ℝ) (h : A.IsHermitian) (u v : n → ℝ) :
     dotProduct u (A.mulVec v) = dotProduct (A.mulVec u) v := by
   rw [dotProduct_mulVec]
@@ -403,7 +399,7 @@ lemma dotProduct_mulVec_of_symm {n : Type*} [Fintype n] [DecidableEq n]
   rw [vecMul_transpose, hAt]
 
 /-- The inner product on Euclidean space coincides with the standard dot product. -/
-lemma euclideanSpace_inner_eq_dotProduct {n : Type*} [Fintype n] [DecidableEq n]
+lemma euclideanSpace_inner_eq_dotProduct {n : Type*} [Fintype n]
     (u : EuclideanSpace ℝ n) (w : n → ℝ) :
     ⟪u, (EuclideanSpace.equiv n ℝ).symm w⟫_ℝ = dotProduct (u : n → ℝ) w := by
   simp only [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
@@ -413,7 +409,7 @@ lemma euclideanSpace_inner_eq_dotProduct {n : Type*} [Fintype n] [DecidableEq n]
   congr 1
 
 /-- Bound on eigenvalues shifted by the identity matrix, using the Hermitian spectral theorem. -/
-lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
+lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n]
     {A : Matrix n n ℝ} (hA_herm : A.IsHermitian)
     {μ_B : ℝ} {v_B : n → ℝ}
     (hA_vB : A.mulVec v_B = (μ_B - 1) • v_B)
@@ -455,3 +451,5 @@ lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n] [None
 
 
 end Matrix
+
+#lint

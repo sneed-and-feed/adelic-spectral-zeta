@@ -5,6 +5,12 @@ import Mathlib.LinearAlgebra.Matrix.Spectrum
 import Formalization.MathlibSpectral
 import Mathlib.LinearAlgebra.Matrix.Gershgorin
 import Formalization.SchreierConnectivity
+/-!
+# SchreierSpectral
+
+Core formalization for the Collatz Spectral Theorem.
+-/
+
 
 open Matrix
 open Classical
@@ -19,6 +25,7 @@ lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by
   have h_sub : d - 1 = (d - 2) + 1 := by omega
   rw [h_sub, pow_add, pow_one, mul_comm]
 
+/-- Internal API. -/
 def canonicalLift {d : ℕ} (v : ZMod (2^(d-2))) : ZMod (2^(d-1)) :=
   (v.val : ZMod (2^(d-1)))
 
@@ -27,13 +34,15 @@ lemma pi_canonicalLift {d : ℕ} (w : ZMod (2^(d-2))) :
   unfold canonicalLift
   rw [pi_natCast, ZMod.natCast_zmod_val]
 
-lemma val_pi {d : ℕ} (hd : d ≥ 3) (x : ZMod (2^(d-1))) :
+@[nolint unusedArguments]
+lemma val_pi {d : ℕ} (_hd : d ≥ 3) (x : ZMod (2^(d-1))) :
     (pi x).val = x.val % 2^(d-2) := by
   have h1 : x = (x.val : ZMod (2^(d-1))) := (ZMod.natCast_zmod_val x).symm
   nth_rw 1 [h1]
   rw [pi_natCast]
   exact ZMod.val_natCast x.val
 
+/-- Internal API. -/
 def sheetSplit {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) ≃ (ZMod (2^(d-2)) × ZMod 2) where
   toFun x := (pi x, (if x.val < 2^(d-2) then 0 else 1 : ZMod 2))
   invFun := fun p => if p.2 = 0 then canonicalLift p.1 else tau (canonicalLift p.1)
@@ -51,7 +60,7 @@ def sheetSplit {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) ≃ (ZMod (2^(d-2)) × 
       have h2 : x.val % 2^(d-2) = x.val := Nat.mod_eq_of_lt h
       rw [h1, h2]
       exact ZMod.val_natCast_of_lt (by omega)
-    · have h_ge : x.val ≥ 2^(d-2) := by omega
+    · have _h_ge : x.val ≥ 2^(d-2) := by omega
       have h_if : (if x.val < 2^(d-2) then (0:ZMod 2) else 1) = 1 := if_neg h
       change (if (if x.val < 2^(d-2) then (0:ZMod 2) else 1) = 0 then canonicalLift (pi x) else tau (canonicalLift (pi x))) = x
       rw [h_if]
@@ -113,12 +122,16 @@ def sheetSplit {d : ℕ} (hd : d ≥ 3) : ZMod (2^(d-1)) ≃ (ZMod (2^(d-2)) × 
 
 -- Step 0: Deck Action & Subspaces
 
+/-- Internal API. -/
+@[nolint unusedArguments]
 def symSubspace {d : ℕ} (_hd : d ≥ 3) : Submodule ℚ (ZMod (2^(d-1)) → ℚ) where
   carrier := {f | ∀ x, f (tau x) = f x}
   zero_mem' := by simp
   add_mem' := by intros f g hf hg x; simp [hf x, hg x]
   smul_mem' := by intros c f hf x; simp [hf x]
 
+/-- Internal API. -/
+@[nolint unusedArguments]
 def antisymSubspace {d : ℕ} (_hd : d ≥ 3) : Submodule ℚ (ZMod (2^(d-1)) → ℚ) where
   carrier := {f | ∀ x, f (tau x) = - f x}
   zero_mem' := by simp
@@ -140,10 +153,12 @@ theorem tau_adj_bicond {d : ℕ} (hd : d ≥ 3) (x y : ZMod (2^(d-1))) :
 -- ============================================================================
 
 open Classical in
+/-- Internal API. -/
 noncomputable def adjacencyMatrix {d : ℕ} : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ :=
   fun x y => if (G_d d).Adj x y then 1 else 0
 
 open Classical in
+/-- Internal API. -/
 noncomputable def tauMatrix {d : ℕ} : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℚ :=
   fun x y => if y = tau x then 1 else 0
 
@@ -216,14 +231,17 @@ lemma tau_adjacency_commute {d : ℕ} (hd : d ≥ 3) :
 -- Phase 1c: Hadamard Transformation
 -- ============================================================================
 
+/-- Internal API. -/
 noncomputable def hadamardBlock : Matrix (ZMod 2) (ZMod 2) ℚ :=
   !![1, 1; 1, -1]
 
-lemma hadamard_sq {d : ℕ} (hd : d ≥ 3) :
+@[nolint unusedArguments]
+lemma hadamard_sq {d : ℕ} (_hd : d ≥ 3) :
     hadamardBlock * hadamardBlock = (2 : ℚ) • (1 : Matrix (ZMod 2) (ZMod 2) ℚ) := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [hadamardBlock, Matrix.mul_apply, Matrix.one_apply] <;> norm_num
 
+/-- Internal API. -/
 noncomputable def hadamardInv : Matrix (ZMod 2) (ZMod 2) ℚ := (2 : ℚ)⁻¹ • hadamardBlock
 
 -- Entry-level evaluation of hadamardInv (critical: use (2:ℚ)⁻¹, not 1/2 which can elaborate as ℕ)
@@ -247,6 +265,7 @@ lemma hadamardInv_left_inv {d : ℕ} (hd : d ≥ 3) :
 -- Phase 2a: Block Indices
 -- ============================================================================
 
+/-- Internal API. -/
 def toBlockIndices {d : ℕ} (hd : d ≥ 3) :
     ZMod (2^(d-1)) ≃ ZMod (2^(d-2)) × ZMod 2 :=
   sheetSplit hd
@@ -268,8 +287,7 @@ lemma sum_zmod_two {β : Type*} [AddCommMonoid β] (f : ZMod 2 → β) :
 lemma sheetSplitInv_zero {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
     (sheetSplit hd).symm (v, 0) = canonicalLift v := by
   dsimp [sheetSplit, canonicalLift]
-  have h0 : (0 : ZMod 2) = 0 := rfl
-  simp [h0]
+  simp
 
 lemma sheetSplitInv_one {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
     (sheetSplit hd).symm (v, 1) = tau (canonicalLift v) := by
@@ -277,6 +295,7 @@ lemma sheetSplitInv_one {d : ℕ} (hd : d ≥ 3) (v : ZMod (2^(d-2))) :
   have h1 : ¬((1 : ZMod 2) = 0) := by decide
   simp [h1]
 
+/-- Internal API. -/
 noncomputable def A'_matrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
   Matrix.reindex (sheetSplit hd) (sheetSplit hd) (@adjacencyMatrix d)
 
@@ -305,12 +324,15 @@ lemma A'_tau_sym_11_00 {d : ℕ} (hd : d ≥ 3) (s1 r1 : ZMod (2^(d-2))) :
   · intro h; rw [← tau_tau hd (canonicalLift r1)]; exact (tau_adj_bicond hd _ _).mp h
   · intro h; exact (tau_adj_bicond hd _ _).mpr (by rw [tau_tau hd]; exact h)
 
+/-- Internal API. -/
 noncomputable def weightedMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℚ :=
   fun v u => A'_matrix hd (v, 0) (u, 0) + A'_matrix hd (v, 0) (u, 1)
 
+/-- Internal API. -/
 noncomputable def sheetDiffMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℚ :=
   fun v u => A'_matrix hd (v, 0) (u, 0) - A'_matrix hd (v, 0) (u, 1)
 
+/-- Internal API. -/
 noncomputable def A'_block_diag_target {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
   fun ⟨s1, s2⟩ ⟨r1, r2⟩ => if s2 = r2 then
                              if s2 = 0 then weightedMatrix hd s1 r1
@@ -318,10 +340,12 @@ noncomputable def A'_block_diag_target {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (
                            else 0
 
 -- The tensor product of identity and Hadamard inverse
+/-- Internal API. -/
 noncomputable def conjBlockInv {d : ℕ} : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
   fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then hadamardInv j1 j2 else 0
 
 -- The tensor product of identity and Hadamard
+/-- Internal API. -/
 noncomputable def conjBlock {d : ℕ} : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
   fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then hadamardBlock j1 j2 else 0
 
@@ -347,30 +371,8 @@ lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
   simp only [A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply] at hA10 hA11 ⊢
   
   -- Now fin_cases on s2 and r2
-  fin_cases s2 <;> fin_cases r2
-  · -- s2=0, r2=0: should equal weightedMatrix s1 r1 = P + Q
-    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
-    simp only [sum_zmod_two]
-    rw [hA10, hA11]
-    simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
-    norm_num
-    ring
-  · -- s2=0, r2=1: should equal 0 (off-diagonal block)
-    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
-    simp only [sum_zmod_two]
-    rw [hA10, hA11]
-    simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
-    norm_num
-    ring
-  · -- s2=1, r2=0: should equal 0 (off-diagonal block)  
-    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
-    simp only [sum_zmod_two]
-    rw [hA10, hA11]
-    simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
-    norm_num
-    ring
-  · -- s2=1, r2=1: should equal sheetDiffMatrix s1 r1 = P - Q
-    dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
+  fin_cases s2 <;> fin_cases r2 <;>
+  · dsimp [A'_block_diag_target, weightedMatrix, sheetDiffMatrix]
     simp only [sum_zmod_two]
     rw [hA10, hA11]
     simp only [hadamardInv, hadamardBlock, Matrix.smul_apply, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, if_true, if_false, eq_self_iff_true, A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
@@ -382,6 +384,7 @@ lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
 
 -- Define weighted_adj algebraically for the spectral theory
 open Classical in
+/-- Internal API. -/
 noncomputable def weighted_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) : ℚ :=
   weightedMatrix hd u v
 
@@ -534,6 +537,7 @@ lemma s_card_eq_double {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
 
 -- weighted_adj is combinatorially the number of edges divided by 2
 open Classical in
+/-- Internal API. -/
 lemma weighted_adj_card {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     let s := Finset.filter (fun (p : ZMod (2^(d-1)) × ZMod (2^(d-1))) =>
       pi p.1 = u ∧ pi p.2 = v ∧ (G_d d).Adj p.1 p.2) Finset.univ
@@ -544,10 +548,12 @@ lemma weighted_adj_card {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
   calc (s.card : ℚ) / 2 = (2 * weightedMatrix hd u v) / 2 := by rw [h_s]
        _ = weightedMatrix hd u v := by ring
 
+/-- Internal API. -/
 lemma weighted_adj_eq_sum {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v = weightedMatrix hd u v := rfl
 
 open Classical in
+/-- Internal API. -/
 lemma weighted_adj_bounds {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v ≤ 2 := by
   rw [weighted_adj_eq_sum hd]
@@ -557,9 +563,18 @@ lemma weighted_adj_bounds {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
 open Classical in
 lemma two_add_eq_two_iff (A B : Prop) [Decidable A] [Decidable B] :
   ((if A then (1 : ℚ) else 0) + (if B then 1 else 0) = 2) ↔ A ∧ B := by
-  split_ifs <;> simp [*] <;> norm_num
+  constructor
+  · intro h
+    by_cases hA : A <;> by_cases hB : B
+    · exact ⟨hA, hB⟩
+    · simp [hA, hB] at h
+    · simp [hA, hB] at h
+    · simp [hA, hB] at h
+  · rintro ⟨hA, hB⟩
+    simp [hA, hB]; norm_num
 
 open Classical in
+/-- Internal API. -/
 lemma weighted_adj_eq_two_iff {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v = 2 ↔ 
     (G_d d).Adj (canonicalLift u) (canonicalLift v) ∧ (G_d d).Adj (canonicalLift u) (tau (canonicalLift v)) := by
@@ -695,6 +710,7 @@ lemma lift_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
         _ = 3 * tau (canonicalLift v) - 1 := by rw [three_mul_tau hd (canonicalLift v)]
 
 open Classical in
+/-- Internal API. -/
 lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     weighted_adj hd u v ≥ if (G_d (d-1)).Adj u v then 1 else 0 := by
   by_cases h_adj : (G_d (d-1)).Adj u v
@@ -793,6 +809,7 @@ lemma conjBlock_mul_conjBlockInv {d : ℕ} (hd : d ≥ 3) :
     simp_rw [this]
     simp [h]
 
+@[nolint unusedArguments]
 lemma reindex_mul {α : Type*} [CommRing α] {m m' n n' o o' : Type*} [Fintype m'] [Fintype n] [Fintype n'] [Fintype o] [Fintype o']
     [DecidableEq n] [DecidableEq n']
     (eₘ : m ≃ m') (eₙ : n ≃ n') (eₒ : o ≃ o')
@@ -872,9 +889,11 @@ theorem charpoly_similarity {α : Type*} [CommRing α] {n : Type*} [Fintype n] [
     _ = 1 * (Matrix.charmatrix A).det := by rw [h_det]
     _ = (Matrix.charmatrix A).det := by rw [one_mul]
 
+/-- Internal API. -/
 noncomputable def blockDiagMatrix {d : ℕ} (hd : d ≥ 3) : Matrix ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ((ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2)))) ℚ :=
   Matrix.fromBlocks (weightedMatrix hd) 0 0 (sheetDiffMatrix hd)
 
+/-- Internal API. -/
 def sumProdEquiv {d : ℕ} : (ZMod (2^(d-2))) ⊕ (ZMod (2^(d-2))) ≃ ZMod (2^(d-2)) × ZMod 2 where
   toFun := fun x => match x with
     | Sum.inl a => (a, 0)
@@ -901,7 +920,7 @@ lemma charpoly_adjacency_eq_mul {d : ℕ} (hd : d ≥ 3) :
   
   -- Step 2: charpoly A' = charpoly (block diag) (by similarity)
   have h2 : (A'_matrix hd).charpoly = (A'_block_diag_target hd).charpoly := by
-    rcases collatz_spectral_decomposition hd with ⟨S, S_inv, h_inv1, h_inv2, h_block⟩
+    rcases collatz_spectral_decomposition hd with ⟨S, S_inv, h_inv1, _h_inv2, h_block⟩
     have h_sim : (S_inv * (@adjacencyMatrix d) * S).charpoly = (@adjacencyMatrix d).charpoly := by
       apply charpoly_similarity _ S S_inv
       exact h_inv1
@@ -922,6 +941,7 @@ lemma charpoly_adjacency_eq_mul {d : ℕ} (hd : d ≥ 3) :
   rw [h1, h2, h3]
 
 -- For spectral_gap_bound, we need to map to ℝ to talk about ordered eigenvalues
+/-- Internal API. -/
 noncomputable def realWeightedMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℝ :=
   (weightedMatrix hd).map (algebraMap ℚ ℝ)
 
@@ -1060,6 +1080,7 @@ theorem weightedMatrix_eigenvalue_bound {d : ℕ} (hd : d ≥ 3) :
   exact fun u => realWeightedMatrix_row_sum_le hd u
 
 -- The antisymmetric block eigenvalues are empirically bounded by 2 in magnitude
+/-- Internal API. -/
 noncomputable def realSheetDiffMatrix {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (2^(d-2))) (ZMod (2^(d-2))) ℝ :=
   (sheetDiffMatrix hd).map (algebraMap ℚ ℝ)
 
@@ -1200,6 +1221,7 @@ theorem spectral_gap_bound {d : ℕ} (hd : d ≥ 3) :
   exact weightedMatrix_eigenvalue_bound hd
 
 -- The eigenvalues of the full adjacency matrix are bounded by 4
+/-- Internal API. -/
 noncomputable def realAdjacencyMatrix {d : ℕ} : Matrix (ZMod (2^(d-1))) (ZMod (2^(d-1))) ℝ :=
   (@adjacencyMatrix d).map (algebraMap ℚ ℝ)
 
@@ -1308,3 +1330,5 @@ end SchreierSpectral
    • `weightedMatrix_spectral_gap_positive`: top eigenvalue of weighted block
      is simple (Perron–Frobenius, conditional on `perron_frobenius_simple_max` axiom)
    • `charpoly_adjacency_eq_mul`:  charpoly factors into weighted × antisym blocks -/
+
+#lint

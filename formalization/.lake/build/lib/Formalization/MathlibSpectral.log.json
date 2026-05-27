@@ -3,6 +3,6 @@
    ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\MathlibSpectral.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\MathlibSpectral.olean -i .\\.\\.lake\\build\\lib\\Formalization\\MathlibSpectral.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\MathlibSpectral.c --json",
    "level": "trace"},
   {"message":
-   ".\\.\\.\\.\\Formalization\\MathlibSpectral.lean:102:11: unused variable `rest`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
-   "level": "warning"}],
- "depHash": "12155049174882816885"}
+   ".\\.\\.\\.\\Formalization\\MathlibSpectral.lean:455:0: -- Found 0 errors in 13 declarations (plus 5 automatically generated ones) in the current file with 14 linters\n\n\n-- All linting checks passed!",
+   "level": "info"}],
+ "depHash": "2698746636797674300"}
