@@ -242,6 +242,12 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```
   Constructs the exact Schreier graph formalization from Lean, empirically validating the canonical sheet decomposition of the spectrum into symmetric and antisymmetric blocks.
 
+* **High-Depth Numeric Spectral Check (Sparse Lanczos)**:
+  ```bash
+  python experiments/colab_sparse_solver.py --start-d 16 --max-d 20
+  ```
+  A highly optimized `scipy.sparse.linalg.eigsh` solver to compute the maximum eigenvalue of the antisymmetric block up to 1-million node graphs ($d \ge 20$). Demonstrates that the spectral gap definitively drops (the graph loses optimal expansion) exactly as required by the Collatz tree-collapse dynamics.
+
 * **Erdős Similarity Confinement & Clustering**:
   ```bash
   python experiments/erdos_similarity_spectra.py
