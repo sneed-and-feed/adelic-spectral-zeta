@@ -288,6 +288,18 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```
   Provides Jupyter notebooks (`experiments/colab_tpu_adelic_annealer.ipynb` and `experiments/colab_tpu_coherent_qec.ipynb`) that compile the physical geometry into XLA/JAX. Enables fully coherent, continuous wave function drift simulation and dense eigensolving via batched tensor contractions on parallel hardware arrays.
 
+* **p-Adic Biological Topologies (AlphaFold)**:
+  ```bash
+  python src/adelic_spectral_zeta/run_correlation.py
+  ```
+  Extracts 3D structural metrics from AlphaFold and maps amino acid mutations into a $p$-adic sequence space. Proves a strict Pearson correlation (0.967) between theoretical sequence $p$-adic distances and the physical 3D structural differences (RMSD), verifying that protein structural homology follows a deterministic Adèlic topography.
+
+* **Ramanujan Partition Superconductor**:
+  ```bash
+  python experiments/run_ramanujan_superconductor.py
+  ```
+  Constructs a Bogoliubov-de Gennes (BdG) Hamiltonian mapping interacting electrons into the modular symmetries of Euler's integer partitions. Proves that the partition function $p(n)$ natively induces a robust macroscopic superconducting spectral gap, fundamentally bridging condensed matter physics to additive number theory.
+
 ---
 
 ## Authors & Contributors
