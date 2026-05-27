@@ -1,0 +1,20 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\SchreierSpectral.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\SchreierSpectral.olean -i .\\.\\.lake\\build\\lib\\Formalization\\SchreierSpectral.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\SchreierSpectral.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierSpectral.lean:29:22: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierSpectral.lean:53:11: unused variable `h_ge`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierSpectral.lean:221:27: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierSpectral.lean:559:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice\nnote: this linter can be disabled with `set_option linter.unnecessarySeqFocus false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierSpectral.lean:903:69: unused variable `h_inv2`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"}],
+ "depHash": "17734422800430583116"}

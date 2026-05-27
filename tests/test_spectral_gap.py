@@ -84,3 +84,20 @@ def test_doubly_stochastic():
     
     assert np.allclose(row_sums, 1.0)
     assert np.allclose(col_sums, 1.0)
+
+def test_schreier_graph_decomposition():
+    from src.spectral_gap import get_schreier_graph, get_schreier_blocks
+    
+    d = 5
+    adj = get_schreier_graph(d).toarray()
+    eigenvalues_full = np.sort(np.linalg.eigvals(adj).real)
+    
+    weighted_matrix, sheet_diff_matrix = get_schreier_blocks(d)
+    
+    eigenvalues_sym = np.sort(np.linalg.eigvals(weighted_matrix).real)
+    eigenvalues_anti = np.sort(np.linalg.eigvals(sheet_diff_matrix).real)
+    
+    eigenvalues_combined = np.sort(np.concatenate([eigenvalues_sym, eigenvalues_anti]))
+    
+    # Assert that the union of eigenvalues of the blocks perfectly matches the full spectrum
+    assert np.allclose(eigenvalues_full, eigenvalues_combined, atol=1e-10)

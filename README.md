@@ -232,6 +232,12 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```
   Measures the non-abelian gauge curvature scaling and spectral gap behavior across tree depths.
 
+* **Schreier Graph Spectral Decomposition**:
+  ```bash
+  python experiments/run_schreier_experiment.py
+  ```
+  Constructs the exact Schreier graph formalization from Lean, empirically validating the canonical sheet decomposition of the spectrum into symmetric and antisymmetric blocks.
+
 * **Erdős Similarity Confinement & Clustering**:
   ```bash
   python experiments/erdos_similarity_spectra.py

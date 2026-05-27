@@ -1,0 +1,26 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\SchreierConnectivity.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\SchreierConnectivity.olean -i .\\.\\.lake\\build\\lib\\Formalization\\SchreierConnectivity.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\SchreierConnectivity.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:117:39: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:123:21: unused variable `hne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:264:22: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:351:18: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:451:5: unused variable `hne`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:451:22: unused variable `hv`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierConnectivity.lean:731:32: unused variable `hw'_len`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"}],
+ "depHash": "6442970123397565337"}
