@@ -14,6 +14,7 @@ namespace Matrix
 variable {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
 
 
+/-- The support graph of a non-negative symmetric matrix, where edges correspond to positive entries. -/
 def supportGraph (A : Matrix n n ℝ) (h_symm : ∀ i j, A i j = A j i) : SimpleGraph n where
   Adj i j := 0 < A i j ∧ i ≠ j
   symm := by
@@ -21,7 +22,9 @@ def supportGraph (A : Matrix n n ℝ) (h_symm : ∀ i j, A i j = A j i) : Simple
     exact ⟨by rw [h_symm j i]; exact h.1, h.2.symm⟩
   loopless := by intro i h; exact h.2 rfl
 
-lemma matrix_pow_nonneg {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
+/-- The powers of a non-negative matrix have non-negative entries. -/
+@[simp]
+lemma pow_nonneg {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
     ∀ i j, 0 ≤ (A ^ k) i j := by
   induction k with
   | zero =>
@@ -37,7 +40,9 @@ lemma matrix_pow_nonneg {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k :
     intro x _
     exact mul_nonneg (hA_nn i x) (ih x j)
 
-lemma matrix_pow_pos_of_walk {A : Matrix n n ℝ}
+/-- If there is a walk in the support graph of a non-negative symmetric matrix, 
+the corresponding entry in the matrix power is strictly positive. -/
+lemma pow_pos_of_walk {A : Matrix n n ℝ}
     (hA_symm : ∀ i j, A i j = A j i) (hA_nn : ∀ i j, 0 ≤ A i j)
     {i j : n} (w : SimpleGraph.Walk (supportGraph A hA_symm) i j) :
     0 < (A ^ w.length) i j := by
@@ -53,10 +58,11 @@ lemma matrix_pow_pos_of_walk {A : Matrix n n ℝ}
     have h_nonneg : ∀ k ∈ Finset.univ, 0 ≤ A u k * (A ^ w_rest.length) k w := by
       intro k _
       apply mul_nonneg (hA_nn _ _)
-      exact matrix_pow_nonneg hA_nn w_rest.length k w
+      exact pow_nonneg hA_nn w_rest.length k w
     exact Finset.sum_pos' h_nonneg ⟨v, Finset.mem_univ v, h_term⟩
 
-lemma B_matrix_pow_ge_A_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
+/-- Bounding the powers of a non-negative matrix by the powers of the matrix plus the identity. -/
+lemma pow_le_add_one_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
     ∀ i j, (A ^ k) i j ≤ ((A + 1) ^ k) i j := by
   induction k with
   | zero =>
@@ -73,7 +79,7 @@ lemma B_matrix_pow_ge_A_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) 
         exact le_add_of_nonneg_right zero_le_one
       · rw [add_apply, one_apply_ne hil, add_zero]
     have h2 : (A ^ k) l j ≤ ((A + 1) ^ k) l j := ih l j
-    have h3 : 0 ≤ (A ^ k) l j := matrix_pow_nonneg hA_nn k l j
+    have h3 : 0 ≤ (A ^ k) l j := pow_nonneg hA_nn k l j
     have hA1_nn : ∀ x y, 0 ≤ (A + 1) x y := fun x y => by
       by_cases h : x = y
       · rw [h, add_apply, one_apply_eq]
@@ -83,7 +89,8 @@ lemma B_matrix_pow_ge_A_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) 
     exact mul_le_mul h1 h2 h3 (hA1_nn i l)
 
 
-lemma eigenvector_zero_of_walk {A : Matrix n n ℝ}
+/-- A non-negative eigenvector that is zero at one vertex must be zero along any connected walk. -/
+lemma eq_zero_of_walk_of_eigenvector {A : Matrix n n ℝ}
     (hA_symm : ∀ i j, A i j = A j i) (hA_nn : ∀ i j, 0 ≤ A i j)
     (u : n → ℝ) (hu_nn : ∀ i, 0 ≤ u i)
     (lam : ℝ) (hu_eig : A.mulVec u = lam • u)
@@ -113,7 +120,8 @@ lemma eigenvector_zero_of_walk {A : Matrix n n ℝ}
       | inr h2 => exact h2
     exact ih hux_zero
 
-lemma connected_eigenvector_unique {A : Matrix n n ℝ}
+/-- The eigenspace of the Perron-Frobenius eigenvalue is one-dimensional for a connected support graph. -/
+lemma eigenvector_unique_of_connected {A : Matrix n n ℝ}
     (hA_symm : ∀ i j, A i j = A j i) (hA_nn : ∀ i j, 0 ≤ A i j)
     (hA_conn : SimpleGraph.Connected (supportGraph A hA_symm))
     (μ : ℝ) (v w : n → ℝ) (hv_pos : ∀ i, 0 < v i)
@@ -143,12 +151,13 @@ lemma connected_eigenvector_unique {A : Matrix n n ℝ}
       intro k
       have h_reach : SimpleGraph.Reachable (supportGraph A hA_symm) i₀ k := hA_conn.preconnected i₀ k
       obtain ⟨w_walk⟩ := h_reach
-      exact eigenvector_zero_of_walk hA_symm hA_nn (w - t • v) h_diff_nn μ h_diff_eig w_walk h_min_achieved
+      exact eq_zero_of_walk_of_eigenvector hA_symm hA_nn (w - t • v) h_diff_nn μ h_diff_eig w_walk h_min_achieved
     have h_diff_zero_again : w - t • v = 0 := by ext k; exact h_all_zero k
     exact h_diff_zero h_diff_zero_again
 
 
-lemma eigenvector_constant_sign_matrix {B : Matrix n n ℝ} (hB : ∀ i j, 0 < B i j)
+/-- An eigenvector of a strictly positive matrix corresponding to a positive eigenvalue has constant sign. -/
+lemma eigenvector_constant_sign_of_pos {B : Matrix n n ℝ} (hB : ∀ i j, 0 < B i j)
     (μ : ℝ) (hμ : 0 < μ) (w : n → ℝ) (hw_nonzero : w ≠ 0)
     (hw_eig : B.mulVec w = μ • w) (h_abs_eig : B.mulVec (|w|) = μ • (|w|)) :
     (∀ i, 0 < w i) ∨ (∀ i, w i < 0) := by
@@ -213,7 +222,8 @@ lemma eigenvector_constant_sign_matrix {B : Matrix n n ℝ} (hB : ∀ i j, 0 < B
     · exact not_le.mp hwi
 
 
-lemma abs_eigenvector_of_symmetric {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j i)
+/-- The absolute value of an eigenvector is also an eigenvector for a non-negative symmetric matrix. -/
+lemma abs_eigenvector_of_symm {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j i)
     (hB_nn : ∀ i j, 0 ≤ B i j)
     (μ : ℝ) (hμ_pos : 0 < μ) (v : n → ℝ) (hv_pos : ∀ i, 0 < v i) (hv_eig : B.mulVec v = μ • v)
     (w : n → ℝ) (hw_eig : B.mulVec w = μ • w) :
@@ -298,7 +308,8 @@ lemma abs_eigenvector_of_symmetric {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i 
   rw [Pi.smul_apply, smul_eq_mul]
   exact eq_of_sub_eq_zero this
 
-lemma pf_eigenvalue_is_max {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j i)
+/-- The Perron-Frobenius eigenvalue dominates all other eigenvalues for a non-negative symmetric matrix. -/
+lemma eigenvalue_le_of_symm_of_nonneg {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j i)
     (hB_nn : ∀ i j, 0 ≤ B i j)
     (μ : ℝ) (v : n → ℝ) (hv_pos : ∀ i, 0 < v i) (hv_eig : B.mulVec v = μ • v)
     (lam : ℝ) (w : n → ℝ) (hw_nonzero : w ≠ 0) (hw_eig : B.mulVec w = lam • w) :
@@ -374,25 +385,25 @@ lemma pf_eigenvalue_is_max {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j 
       exact mul_pos (hv_pos j) hj
   have h_le : |lam| ≤ μ := (mul_le_mul_right h_dot_pos).mp h_dot1
   exact le_trans (le_abs_self lam) h_le
--- For ℝ, IsHermitian means Aᵀ = A
-lemma hermitian_real_transpose_eq' {n : Type*} [Fintype n] [DecidableEq n]
+/-- A real Hermitian matrix is symmetric. -/
+lemma IsHermitian.transpose_eq {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n ℝ) (h : A.IsHermitian) : Aᵀ = A := by
   have hH : Aᴴ = A := h
   simp only [Matrix.conjTranspose, Matrix.transpose_map, star_trivial] at hH
   exact hH
 
--- Symmetric swap: u ⬝ᵥ (A *ᵥ v) = (A *ᵥ u) ⬝ᵥ v for symmetric A
-lemma dotProduct_symm_of_hermitian' {n : Type*} [Fintype n] [DecidableEq n]
+/-- The dot product commutes with matrix multiplication for a symmetric matrix. -/
+lemma dotProduct_mulVec_of_symm {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n ℝ) (h : A.IsHermitian) (u v : n → ℝ) :
     dotProduct u (A.mulVec v) = dotProduct (A.mulVec u) v := by
   rw [dotProduct_mulVec]
-  have hAt : Aᵀ = A := hermitian_real_transpose_eq' A h
+  have hAt : Aᵀ = A := IsHermitian.transpose_eq A h
   suffices u ᵥ* A = A *ᵥ u by rw [this]
   conv_lhs => rw [← transpose_transpose A]
   rw [vecMul_transpose, hAt]
 
--- EuclideanSpace ℝ n inner = dotProduct on underlying n → ℝ
-lemma euclidean_inner_eq_dotProduct'' {n : Type*} [Fintype n] [DecidableEq n]
+/-- The inner product on Euclidean space coincides with the standard dot product. -/
+lemma euclideanSpace_inner_eq_dotProduct {n : Type*} [Fintype n] [DecidableEq n]
     (u : EuclideanSpace ℝ n) (w : n → ℝ) :
     ⟪u, (EuclideanSpace.equiv n ℝ).symm w⟫_ℝ = dotProduct (u : n → ℝ) w := by
   simp only [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
@@ -401,8 +412,8 @@ lemma euclidean_inner_eq_dotProduct'' {n : Type*} [Fintype n] [DecidableEq n]
   simp only [star_trivial, EuclideanSpace.equiv]
   congr 1
 
--- If μ_B - 1 is an eigenvalue of A (via eigenvector v_B), then μ_B ≤ max_eig + 1
-lemma mu_B_le_max_eig' {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
+/-- Bound on eigenvalues shifted by the identity matrix, using the Hermitian spectral theorem. -/
+lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
     {A : Matrix n n ℝ} (hA_herm : A.IsHermitian)
     {μ_B : ℝ} {v_B : n → ℝ}
     (hA_vB : A.mulVec v_B = (μ_B - 1) • v_B)
@@ -415,7 +426,7 @@ lemma mu_B_le_max_eig' {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
   let c := fun k => evec.repr v_E k
   have h_c_inner : ∀ k, c k = ⟪evec k, v_E⟫_ℝ := fun k => evec.repr_apply_apply v_E k
   have h_inner_dot : ∀ k, ⟪evec k, v_E⟫_ℝ = dotProduct (evec k : n → ℝ) v_B :=
-    fun k => euclidean_inner_eq_dotProduct'' (evec k) v_B
+    fun k => euclideanSpace_inner_eq_dotProduct (evec k) v_B
   have smul_dot : ∀ (r : ℝ) (u v : n → ℝ), dotProduct u (r • v) = r * dotProduct u v := by
     intros; simp [dotProduct, Finset.mul_sum, mul_comm, mul_left_comm]
   have dot_smul : ∀ (r : ℝ) (u v : n → ℝ), dotProduct (r • u) v = r * dotProduct u v := by
@@ -428,7 +439,7 @@ lemma mu_B_le_max_eig' {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
       rw [hA_vB]; exact smul_dot (μ_B - 1) (evec k : n → ℝ) v_B
     have step2 : dotProduct (evec k : n → ℝ) (A.mulVec v_B) =
                   eig k * dotProduct (evec k : n → ℝ) v_B := by
-      rw [dotProduct_symm_of_hermitian' A hA_herm]
+      rw [dotProduct_mulVec_of_symm A hA_herm]
       have h3 : A.mulVec (evec k : n → ℝ) = eig k • (evec k : n → ℝ) :=
         hA_herm.mulVec_eigenvectorBasis k
       rw [h3]

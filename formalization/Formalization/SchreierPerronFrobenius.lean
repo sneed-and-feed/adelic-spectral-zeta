@@ -40,9 +40,9 @@ lemma B_matrix_isIrreducible : Matrix.IsIrreducible (realWeightedMatrix hd + 1) 
           have heq := SimpleGraph.Walk.eq_of_length_eq_zero this
           exact hij heq
         exact Nat.pos_of_ne_zero this.symm
-      · have h1 : 0 < (realWeightedMatrix hd ^ w.length) i j := matrix_pow_pos_of_walk h_symm h_nn w
+      · have h1 : 0 < (realWeightedMatrix hd ^ w.length) i j := pow_pos_of_walk h_symm h_nn w
         have h2 : (realWeightedMatrix hd ^ w.length) i j ≤ ((realWeightedMatrix hd + 1) ^ w.length) i j :=
-          B_matrix_pow_ge_A_pow h_nn w.length i j
+          pow_le_add_one_pow h_nn w.length i j
         exact lt_of_lt_of_le h1 h2
   · use 0
     have : ((realWeightedMatrix hd + 1) : Matrix _ _ ℝ) 0 0 = realWeightedMatrix hd 0 0 + 1 := by
@@ -136,7 +136,7 @@ lemma isPerronFrobeniusMax_realWeightedMatrix :
       have h1 : ‖w_j‖ = 0 := by rw [h, norm_zero]
       have h2 : ‖w_j‖ = 1 := (OrthonormalBasis.orthonormal evec).1 j
       rw [h2] at h1; norm_num at h1
-    have h_le := pf_eigenvalue_is_max hB_symm hB_nn μ_B v_B hv_pos hv_eig
+    have h_le := eigenvalue_le_of_symm_of_nonneg hB_symm hB_nn μ_B v_B hv_pos hv_eig
                    (max_eig + 1) w_i hw_i_neq hB_wi
     -- Derive A *ᵥ v_B = (μ_B - 1) • v_B
     have hA_vB : A.mulVec v_B = (μ_B - 1) • v_B := by
@@ -156,7 +156,7 @@ lemma isPerronFrobeniusMax_realWeightedMatrix :
     have h_max_bound : ∀ k, eig k ≤ max_eig := fun k =>
       Finset.le_max' s (eig k) (Finset.mem_image_of_mem eig (Finset.mem_univ k))
     have h_mu_le : μ_B ≤ max_eig + 1 :=
-      mu_B_le_max_eig' (realWeightedMatrix_isHermitian hd) hA_vB h_vB_neq max_eig h_max_bound
+      eigenvalue_le_maxEig_add_one (realWeightedMatrix_isHermitian hd) hA_vB h_vB_neq max_eig h_max_bound
     have h_eq : μ_B = max_eig + 1 := le_antisymm h_mu_le h_le
     rw [h_eq] at hv_eig
     have hA_symm := realWeightedMatrix_symm hd
@@ -166,8 +166,8 @@ lemma isPerronFrobeniusMax_realWeightedMatrix :
       have : μ_B - 1 = max_eig := by linarith
       rw [this] at hA_vB
       exact hA_vB
-    have hc_i := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
-    have hc_j := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_j hv_pos hA_vB_max hA_wj
+    have hc_i := eigenvector_unique_of_connected hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
+    have hc_j := eigenvector_unique_of_connected hA_symm hA_nn hA_conn max_eig v_B w_j hv_pos hA_vB_max hA_wj
     obtain ⟨ci, hi⟩ := hc_i
     obtain ⟨cj, hj⟩ := hc_j
     by_contra h_neq
@@ -229,15 +229,15 @@ lemma isPerronFrobeniusMax_realWeightedMatrix :
       intro h; have := hv_pos 0; rw [h] at this; exact lt_irrefl 0 this
     have h_max_bound : ∀ k, (realWeightedMatrix_isHermitian hd).eigenvalues k ≤ max_eig := fun k =>
       Finset.le_max' s (eig k) (Finset.mem_image_of_mem eig (Finset.mem_univ k))
-    have h_le_2 := pf_eigenvalue_is_max hB_symm hB_nn μ_B v_B hv_pos hv_eig (max_eig + 1) w_i hw_i_neq hB_wi
+    have h_le_2 := eigenvalue_le_of_symm_of_nonneg hB_symm hB_nn μ_B v_B hv_pos hv_eig (max_eig + 1) w_i hw_i_neq hB_wi
     have h_mu_le : μ_B ≤ max_eig + 1 :=
-      mu_B_le_max_eig' (realWeightedMatrix_isHermitian hd) hA_vB h_vB_neq max_eig h_max_bound
+      eigenvalue_le_maxEig_add_one (realWeightedMatrix_isHermitian hd) hA_vB h_vB_neq max_eig h_max_bound
     have h_eq : μ_B = max_eig + 1 := le_antisymm h_mu_le h_le_2
     have hA_vB_max : A.mulVec v_B = max_eig • v_B := by
       have : μ_B - 1 = max_eig := by linarith
       rw [this] at hA_vB
       exact hA_vB
-    have hc_i := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
+    have hc_i := eigenvector_unique_of_connected hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
     obtain ⟨ci, hi⟩ := hc_i
     have hci_neq : ci ≠ 0 := by
       intro h
@@ -280,9 +280,9 @@ lemma B_matrix_adj_isIrreducible : Matrix.IsIrreducible (@realAdjacencyMatrix d 
           have heq := SimpleGraph.Walk.eq_of_length_eq_zero this
           exact hij heq
         exact Nat.pos_of_ne_zero this.symm
-      · have h1 : 0 < (@realAdjacencyMatrix d ^ w.length) i j := matrix_pow_pos_of_walk h_symm h_nn w
+      · have h1 : 0 < (@realAdjacencyMatrix d ^ w.length) i j := pow_pos_of_walk h_symm h_nn w
         have h2 : (@realAdjacencyMatrix d ^ w.length) i j ≤ ((@realAdjacencyMatrix d + 1) ^ w.length) i j :=
-          B_matrix_pow_ge_A_pow h_nn w.length i j
+          pow_le_add_one_pow h_nn w.length i j
         exact lt_of_lt_of_le h1 h2
   · use 0
     have : ((@realAdjacencyMatrix d + 1) : Matrix _ _ ℝ) 0 0 = @realAdjacencyMatrix d 0 0 + 1 := by
@@ -369,7 +369,7 @@ lemma isPerronFrobeniusMax_realAdjacencyMatrix :
       rw [h3] at h1
       rw [h2] at h1
       norm_num at h1
-    have h_le := pf_eigenvalue_is_max hB_symm hB_nn μ_B v_B hv_pos hv_eig
+    have h_le := eigenvalue_le_of_symm_of_nonneg hB_symm hB_nn μ_B v_B hv_pos hv_eig
                    (max_eig + 1) w_i hw_i_neq hB_wi
     have hA_vB : A.mulVec v_B = (μ_B - 1) • v_B := by
       ext k
@@ -388,7 +388,7 @@ lemma isPerronFrobeniusMax_realAdjacencyMatrix :
     have h_max_bound : ∀ k, (@realAdjacencyMatrix_isHermitian d).eigenvalues k ≤ max_eig := fun k =>
       Finset.le_max' s (eig k) (Finset.mem_image_of_mem eig (Finset.mem_univ k))
     have h_mu_le : μ_B ≤ max_eig + 1 :=
-      mu_B_le_max_eig' (@realAdjacencyMatrix_isHermitian d) hA_vB h_vB_neq max_eig h_max_bound
+      eigenvalue_le_maxEig_add_one (@realAdjacencyMatrix_isHermitian d) hA_vB h_vB_neq max_eig h_max_bound
     have h_eq : μ_B = max_eig + 1 := le_antisymm h_mu_le h_le
     rw [h_eq] at hv_eig
     have hA_symm := realAdjacencyMatrix_symm (d := d)
@@ -398,8 +398,8 @@ lemma isPerronFrobeniusMax_realAdjacencyMatrix :
       have : μ_B - 1 = max_eig := by linarith
       rw [this] at hA_vB
       exact hA_vB
-    have hc_i := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
-    have hc_j := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_j hv_pos hA_vB_max hA_wj
+    have hc_i := eigenvector_unique_of_connected hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
+    have hc_j := eigenvector_unique_of_connected hA_symm hA_nn hA_conn max_eig v_B w_j hv_pos hA_vB_max hA_wj
     obtain ⟨ci, hi⟩ := hc_i
     obtain ⟨cj, hj⟩ := hc_j
     by_contra h_neq
@@ -462,15 +462,15 @@ lemma isPerronFrobeniusMax_realAdjacencyMatrix :
       intro h; have := hv_pos 0; rw [h] at this; exact lt_irrefl 0 this
     have h_max_bound : ∀ k, (@realAdjacencyMatrix_isHermitian d).eigenvalues k ≤ max_eig := fun k =>
       Finset.le_max' s (eig k) (Finset.mem_image_of_mem eig (Finset.mem_univ k))
-    have h_le_2 := pf_eigenvalue_is_max hB_symm hB_nn μ_B v_B hv_pos hv_eig (max_eig + 1) w_i hw_i_neq hB_wi
+    have h_le_2 := eigenvalue_le_of_symm_of_nonneg hB_symm hB_nn μ_B v_B hv_pos hv_eig (max_eig + 1) w_i hw_i_neq hB_wi
     have h_mu_le : μ_B ≤ max_eig + 1 :=
-      mu_B_le_max_eig' (@realAdjacencyMatrix_isHermitian d) hA_vB h_vB_neq max_eig h_max_bound
+      eigenvalue_le_maxEig_add_one (@realAdjacencyMatrix_isHermitian d) hA_vB h_vB_neq max_eig h_max_bound
     have h_eq : μ_B = max_eig + 1 := le_antisymm h_mu_le h_le_2
     have hA_vB_max : A.mulVec v_B = max_eig • v_B := by
       have : μ_B - 1 = max_eig := by linarith
       rw [this] at hA_vB
       exact hA_vB
-    have hc_i := connected_eigenvector_unique hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
+    have hc_i := eigenvector_unique_of_connected hA_symm hA_nn hA_conn max_eig v_B w_i hv_pos hA_vB_max hA_wi
     obtain ⟨ci, hi⟩ := hc_i
     have hci_neq : ci ≠ 0 := by
       intro h
