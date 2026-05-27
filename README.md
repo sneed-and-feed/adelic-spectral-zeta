@@ -6,6 +6,26 @@ A Python library implementing the **Adèlic Spectral Triple** $`(\mathcal{A}, \m
 
 ---
 
+## 1. Formal Proofs (Lean 4, 0 `sorry`, Unconditional)
+
+The following claims have been rigorously formalized in Lean 4 (`v4.8.0`) with **zero `sorry`s and zero custom axioms** (relying only on standard Mathlib axioms). See `CLAIMS.md` for the full breakdown.
+
+* **Schreier Graph Connectivity** ([SchreierConnectivity.lean](formalization/Formalization/SchreierConnectivity.lean)): The Schreier graphs on $\mathbb{Z}/2^n\mathbb{Z}$ governed by Collatz-like operations $3x$ and $3x-1$ are connected for all $n \ge 1$.
+* **Perron-Frobenius Theorem for Connected Schreier Graphs** ([SchreierPerronFrobenius.lean](formalization/Formalization/SchreierPerronFrobenius.lean)): The dominant eigenvalue of the Schreier adjacency matrix is unique, and its corresponding eigenvector is strictly positive.
+* **Schreier Spectral Tower Decomposition** ([SchreierSpectral.lean](formalization/Formalization/SchreierSpectral.lean)): The Schreier adjacency matrix can be block-decomposed into symmetric and antisymmetric sub-spaces, allowing exact determination of its spectral properties.
+* **Relative Eigenvalue Dominance (Antisymmetric Dominance)** ([SchreierAntisymBound.lean](formalization/Formalization/SchreierAntisymBound.lean)): The antisymmetric eigenvalue bounds strictly dominate the symmetric eigenvalue bounds in the Schreier spectral gap limit.
+* **Symmetric Eigenvalue Upper Bound** ([SymmetricBound.lean](formalization/Formalization/SymmetricBound.lean)): Rigorous upper bounds on symmetric eigenvalues under block decomposition.
+* **Exact Trace Identity** ([SchreierTrace.lean](formalization/Formalization/SchreierTrace.lean)): The analytical trace formula for the Schreier graph adjacency operator holds.
+* **Adèlic Topology Construction** ([AdelicTopology.lean](formalization/Formalization/AdelicTopology.lean)): Rigorous definition of the adèlic product topology and its topological properties.
+* **Thermodynamic Entanglement Phase Transition** ([ManyBodyPhaseTransition.lean](formalization/Formalization/ManyBodyPhaseTransition.lean)): A single-particle zero-mode in the Dirac Hamiltonian mathematically forces a macroscopic ground-state degeneracy in the Fermionic many-body Fock space.
+* **Trigonometric Telescoping Sums** ([TrigSum.lean](formalization/Formalization/TrigSum.lean)): Computes exact telescoping sum bounds for real trigonometric functions on 1D chains.
+* **Low-Depth Edge Check Verifications** ([Counterexample.lean](formalization/Formalization/Counterexample.lean)): Proves precise adjacency matches at low depths (e.g., depth 4).
+* **Discrete Fourier Basis** ([FourierChain.lean](formalization/Formalization/FourierChain.lean)): Rigorous definition of discrete real sine/cosine Fourier modes.
+* **Rayleigh Quotient Lower Bound on 1D Chain** ([FourierIsomorphism.lean](formalization/Formalization/FourierIsomorphism.lean)): A lower bound showing that the Rayleigh quotient on the 1D Fourier chain is strictly positive.
+* **Ramanujan Tau Congruence Verification** ([RamanujanTau.lean](formalization/Formalization/RamanujanTau.lean)): The Ramanujan tau function satisfies the congruence modulo 691. Verified computationally for finite $n=1..4$.
+
+---
+
 ## Mathematical Framework Overview
 
 The core of the library is the numerical realization and physical simulation of the following components of the adèlic spectral geometry:

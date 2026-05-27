@@ -1,4 +1,4 @@
-import SpectralPositivityExt
+import Formalization.MathlibSpectral
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Spectrum
 import Mathlib.Analysis.InnerProductSpace.PiL2
@@ -58,75 +58,6 @@ end SchreierSpectral
 
 
 
-
-
--- For ℝ, IsHermitian means Aᵀ = A
-private lemma hermitian_real_transpose_eq' {n : Type*} [Fintype n] [DecidableEq n]
-    (A : Matrix n n ℝ) (h : A.IsHermitian) : Aᵀ = A := by
-  have hH : Aᴴ = A := h
-  simp only [Matrix.conjTranspose, Matrix.transpose_map, star_trivial] at hH
-  exact hH
-
--- Symmetric swap: u ⬝ᵥ (A *ᵥ v) = (A *ᵥ u) ⬝ᵥ v for symmetric A
-private lemma dotProduct_symm_of_hermitian' {n : Type*} [Fintype n] [DecidableEq n]
-    (A : Matrix n n ℝ) (h : A.IsHermitian) (u v : n → ℝ) :
-    dotProduct u (A.mulVec v) = dotProduct (A.mulVec u) v := by
-  rw [dotProduct_mulVec]
-  have hAt : Aᵀ = A := hermitian_real_transpose_eq' A h
-  suffices u ᵥ* A = A *ᵥ u by rw [this]
-  conv_lhs => rw [← transpose_transpose A]
-  rw [vecMul_transpose, hAt]
-
--- EuclideanSpace ℝ n inner = dotProduct on underlying n → ℝ
-private lemma euclidean_inner_eq_dotProduct'' {n : Type*} [Fintype n] [DecidableEq n]
-    (u : EuclideanSpace ℝ n) (w : n → ℝ) :
-    ⟪u, (EuclideanSpace.equiv n ℝ).symm w⟫_ℝ = dotProduct (u : n → ℝ) w := by
-  simp only [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
-  apply Finset.sum_congr rfl
-  intro i _
-  simp only [star_trivial, EuclideanSpace.equiv]
-  congr 1
-
--- If μ_B - 1 is an eigenvalue of A (via eigenvector v_B), then μ_B ≤ max_eig + 1
-private lemma mu_B_le_max_eig' {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
-    {A : Matrix n n ℝ} (hA_herm : A.IsHermitian)
-    {μ_B : ℝ} {v_B : n → ℝ}
-    (hA_vB : A.mulVec v_B = (μ_B - 1) • v_B)
-    (h_vB_neq : v_B ≠ 0)
-    (max_eig : ℝ) (h_max : ∀ k, hA_herm.eigenvalues k ≤ max_eig) :
-    μ_B ≤ max_eig + 1 := by
-  let eig := hA_herm.eigenvalues
-  let evec := hA_herm.eigenvectorBasis
-  let v_E : EuclideanSpace ℝ n := (EuclideanSpace.equiv n ℝ).symm v_B
-  let c := fun k => evec.repr v_E k
-  have h_c_inner : ∀ k, c k = ⟪evec k, v_E⟫_ℝ := fun k => evec.repr_apply_apply v_E k
-  have h_inner_dot : ∀ k, ⟪evec k, v_E⟫_ℝ = dotProduct (evec k : n → ℝ) v_B :=
-    fun k => euclidean_inner_eq_dotProduct'' (evec k) v_B
-  have smul_dot : ∀ (r : ℝ) (u v : n → ℝ), dotProduct u (r • v) = r * dotProduct u v := by
-    intros; simp [dotProduct, Finset.mul_sum, mul_comm, mul_left_comm]
-  have dot_smul : ∀ (r : ℝ) (u v : n → ℝ), dotProduct (r • u) v = r * dotProduct u v := by
-    intros; simp [dotProduct, Finset.mul_sum, mul_assoc]
-  have h_dot : ∀ k, (μ_B - 1) * c k = eig k * c k := by
-    intro k
-    rw [h_c_inner, h_inner_dot]
-    have step1 : dotProduct (evec k : n → ℝ) (A.mulVec v_B) =
-                  (μ_B - 1) * dotProduct (evec k : n → ℝ) v_B := by
-      rw [hA_vB]; exact smul_dot (μ_B - 1) (evec k : n → ℝ) v_B
-    have step2 : dotProduct (evec k : n → ℝ) (A.mulVec v_B) =
-                  eig k * dotProduct (evec k : n → ℝ) v_B := by
-      rw [dotProduct_symm_of_hermitian' A hA_herm]
-      have h3 : A.mulVec (evec k : n → ℝ) = eig k • (evec k : n → ℝ) :=
-        hA_herm.mulVec_eigenvectorBasis k
-      rw [h3]
-      exact dot_smul (eig k) (evec k : n → ℝ) v_B
-    linarith [step1.symm.trans step2]
-  have h_some_nonzero : ∃ k, c k ≠ 0 := by
-    by_contra h; push_neg at h
-    have hv_E_zero : v_E = 0 := evec.repr.map_eq_zero_iff.mp (by ext k; exact h k)
-    exact h_vB_neq ((EuclideanSpace.equiv n ℝ).symm.injective
-      (hv_E_zero.trans (map_zero _).symm))
-  obtain ⟨k, hk⟩ := h_some_nonzero
-  linarith [h_max k, (mul_right_cancel₀ hk (h_dot k)).symm]
 
 
 namespace SchreierSpectral

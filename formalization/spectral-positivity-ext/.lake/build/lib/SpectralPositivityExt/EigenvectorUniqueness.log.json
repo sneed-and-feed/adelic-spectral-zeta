@@ -1,0 +1,8 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\././spectral-positivity-ext\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\././spectral-positivity-ext\\.\\.\\SpectralPositivityExt\\EigenvectorUniqueness.lean -R .\\.\\././spectral-positivity-ext\\.\\. -o .\\.\\././spectral-positivity-ext\\.lake\\build\\lib\\SpectralPositivityExt\\EigenvectorUniqueness.olean -i .\\.\\././spectral-positivity-ext\\.lake\\build\\lib\\SpectralPositivityExt\\EigenvectorUniqueness.ilean -c .\\.\\././spectral-positivity-ext\\.lake\\build\\ir\\SpectralPositivityExt\\EigenvectorUniqueness.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\././spectral-positivity-ext\\.\\.\\SpectralPositivityExt\\EigenvectorUniqueness.lean:26:11: unused variable `rest`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"}],
+ "depHash": "14500858969029024028"}

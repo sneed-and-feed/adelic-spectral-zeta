@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: Formalization.SchreierSpectral
-// Imports: Init Mathlib.Data.Matrix.Basic Mathlib.Algebra.Module.Submodule.Basic Mathlib.LinearAlgebra.Matrix.Hermitian Mathlib.LinearAlgebra.Matrix.Spectrum SpectralPositivityExt.WalkPropagation Mathlib.LinearAlgebra.Matrix.Gershgorin Formalization.SchreierConnectivity
+// Imports: Init Mathlib.Data.Matrix.Basic Mathlib.Algebra.Module.Submodule.Basic Mathlib.LinearAlgebra.Matrix.Hermitian Mathlib.LinearAlgebra.Matrix.Spectrum Formalization.MathlibSpectral Mathlib.LinearAlgebra.Matrix.Gershgorin Formalization.SchreierConnectivity
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -592,7 +592,7 @@ lean_object* initialize_Mathlib_Data_Matrix_Basic(uint8_t builtin, lean_object*)
 lean_object* initialize_Mathlib_Algebra_Module_Submodule_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Hermitian(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Spectrum(uint8_t builtin, lean_object*);
-lean_object* initialize_SpectralPositivityExt_WalkPropagation(uint8_t builtin, lean_object*);
+lean_object* initialize_Formalization_MathlibSpectral(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_LinearAlgebra_Matrix_Gershgorin(uint8_t builtin, lean_object*);
 lean_object* initialize_Formalization_SchreierConnectivity(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
@@ -615,7 +615,7 @@ lean_dec_ref(res);
 res = initialize_Mathlib_LinearAlgebra_Matrix_Spectrum(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
-res = initialize_SpectralPositivityExt_WalkPropagation(builtin, lean_io_mk_world());
+res = initialize_Formalization_MathlibSpectral(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_LinearAlgebra_Matrix_Gershgorin(builtin, lean_io_mk_world());

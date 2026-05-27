@@ -2,7 +2,7 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Module.Submodule.Basic
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Spectrum
-import SpectralPositivityExt.WalkPropagation
+import Formalization.MathlibSpectral
 import Mathlib.LinearAlgebra.Matrix.Gershgorin
 import Formalization.SchreierConnectivity
 

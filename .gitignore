@@ -17,3 +17,6 @@ phase3_telemetry.txt
 Thumbs.db
 
 sym3_z_function.png
+
+# Lean build artifacts
+.lake/build/
