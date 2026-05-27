@@ -581,11 +581,16 @@ lemma antisym_block_bound :
 
   exact antisym_eigenvalues_strictly_below_top hd v μ hv_ne h_eig h_antisym
 
+noncomputable def max_antisym_eig {d : ℕ} (hd : d ≥ 3) : ℝ :=
+  let s := Finset.image (@realSheetDiffMatrix_isHermitian d hd).eigenvalues Finset.univ
+  have hs_nonempty : s.Nonempty := ⟨_, Finset.mem_image_of_mem _ (Finset.mem_univ 0)⟩
+  s.max' hs_nonempty
+
 /-- Target 2: Rigorous Relative Gap
-    The maximum eigenvalue of the antisymmetric block is strictly greater than
-    the second largest eigenvalue of the symmetric block. -/
-theorem relative_spectral_gap {d : ℕ} (hd : d ≥ 3) :
-    sorry := by
+    The maximum eigenvalue of the antisymmetric block at depth d is strictly greater than
+    the maximum eigenvalue of the antisymmetric block at depth d-1 (which equals lambda_{sym, 2} of depth d). -/
+theorem relative_spectral_gap {d : ℕ} (hd : d ≥ 7) :
+    max_antisym_eig (by omega : d - 1 ≥ 3) < max_antisym_eig (by omega : d ≥ 3) := by
   sorry
 
 end SchreierSpectral

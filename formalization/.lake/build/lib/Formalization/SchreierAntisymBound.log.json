@@ -7,5 +7,11 @@
    "level": "warning"},
   {"message":
    ".\\.\\.\\.\\Formalization\\SchreierAntisymBound.lean:95:11: unused variable `h1`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierAntisymBound.lean:565:80: `Finsupp.ext_iff` has been deprecated, use `DFunLike.ext_iff` instead",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\SchreierAntisymBound.lean:592:8: declaration uses 'sorry'",
    "level": "warning"}],
- "depHash": "16322670065598674401"}
+ "depHash": "14349977971685603676"}

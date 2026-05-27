@@ -1,0 +1,11 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\FourierIsomorphism.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\FourierIsomorphism.olean -i .\\.\\.lake\\build\\lib\\Formalization\\FourierIsomorphism.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\FourierIsomorphism.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:45:36: unused variable `hd`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\FourierIsomorphism.lean:65:8: declaration uses 'sorry'",
+   "level": "warning"}],
+ "depHash": "18028865165607890168"}

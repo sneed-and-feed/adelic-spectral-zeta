@@ -6,20 +6,20 @@ import Mathlib.Data.Nat.Prime
 import Mathlib.Topology.Instances.Real
 
 /-!
-# Formalization of the Erdős Similarity Theorem for Geometric Sequences (Novel Proof Blueprint)
+# Conditional Formalization of the Erdős Similarity Conjecture for Geometric Sequences
 
-**ACADEMIC DISCLAIMER**: The Erdős Similarity Conjecture for exponentially decaying sequences 
-is a famous open problem in mathematics. This Lean 4 file is not a standard verification of 
-a known result, but rather a **Formal Blueprint for a Novel Proposed Proof** based on the 
-Adèlic Spectral Framework detailed in the accompanying monograph. 
+**DISCLAIMER**: The Erdős Similarity Conjecture for exponentially decaying sequences
+is a longstanding open problem in combinatorial analysis. This Lean 4 file is not a
+standard verification of a known result, but rather a **formal blueprint for a proposed
+proof** based on the Adèlic Spectral Framework detailed in the accompanying monograph.
 
-The file successfully proves that *if* the novel adèlic spectral axioms hold, the conjecture 
-is resolved. The axioms themselves represent active, novel mathematical research and are 
-proved analytically outside of Lean in the monograph text.
+The file establishes that *if* the adèlic spectral axioms hold, the conjecture follows.
+Several intermediate steps remain as `sorry`-marked stubs. The axioms themselves represent
+active mathematical research and are treated analytically outside of Lean in the monograph.
 
-Based on referee review, this formalization formally restricts the Archimedean measure to a 
-pure Fourier concentration ratio, and models the p-adic energy via the local graph Laplacian 
-on the Bruhat-Tits tree. The global bridge relies on Hypothesis 11.H.1 (The Bipartite Adèlic Ansatz).
+The formalization restricts the Archimedean measure to a pure Fourier concentration ratio,
+and models the p-adic energy via the local graph Laplacian on the Bruhat-Tits tree. The
+global bridge relies on Hypothesis 11.H.1 (The Bipartite Adèlic Ansatz).
 -/
 
 -- We define the explicit affine copy property globally

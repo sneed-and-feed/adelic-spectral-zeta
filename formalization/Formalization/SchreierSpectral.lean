@@ -11,7 +11,7 @@ open Classical
 namespace SchreierSpectral
 
 -- ============================================================================
--- Layer of Genius: Canonical Sheet Decomposition & Simp Set
+-- Canonical Sheet Decomposition & Simp Set
 -- ============================================================================
 
 lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by

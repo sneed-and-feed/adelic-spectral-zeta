@@ -1,0 +1,12 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\FourierChain.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\FourierChain.olean -i .\\.\\.lake\\build\\lib\\Formalization\\FourierChain.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\FourierChain.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\FourierChain.lean:16:4: failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Real.instLinearOrderedField', and it does not have executable code",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\FourierChain.lean:19:4: failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Real.instLinearOrderedField', and it does not have executable code",
+   "level": "error"},
+  {"message": "Lean exited with code 1", "level": "error"}],
+ "depHash": "17748965253972291393"}
