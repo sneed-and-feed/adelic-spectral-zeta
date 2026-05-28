@@ -46,8 +46,94 @@ lemma Z_valid : ValidFermionState (Z : FermionState I) := by intro i; left; rfl
 noncomputable def Z_state : QuantumState I :=
   fun n => if n = ⟨Z (I:=I), Z_valid (I:=I)⟩ then (1 : ℂ) else (0 : ℂ)
 
+noncomputable def Z_A : BasisState bp.A := ⟨fun _ => 0, fun _ => Or.inl rfl⟩
+noncomputable def Z_B : BasisState bp.B := ⟨fun _ => 0, fun _ => Or.inl rfl⟩
+
+lemma joinBasisState_eq_Z_iff (nA : BasisState bp.A) (nB : BasisState bp.B) :
+    joinBasisState nA nB = ⟨Z (I:=I), Z_valid (I:=I)⟩ ↔ nA = Z_A bp ∧ nB = Z_B bp := by
+  constructor
+  · intro h
+    constructor
+    · apply Subtype.ext
+      funext a
+      have h_val := congr_arg Subtype.val h
+      have h_i := congr_fun h_val (bp.equiv.symm (Sum.inl a))
+      dsimp [joinState, Z] at h_i
+      rw [Equiv.apply_symm_apply] at h_i
+      exact h_i
+    · apply Subtype.ext
+      funext b
+      have h_val := congr_arg Subtype.val h
+      have h_i := congr_fun h_val (bp.equiv.symm (Sum.inr b))
+      dsimp [joinState, Z] at h_i
+      rw [Equiv.apply_symm_apply] at h_i
+      exact h_i
+  · rintro ⟨rfl, rfl⟩
+    apply Subtype.ext
+    funext i
+    dsimp [joinBasisState, joinState, Z_A, Z_B, Z]
+    cases bp.equiv i <;> rfl
+
+lemma Z_ReducedDensityMatrix (nA1 nA2 : BasisState bp.A) :
+    ReducedDensityMatrix bp (Z_state (I:=I)) nA1 nA2 = if nA1 = Z_A bp ∧ nA2 = Z_A bp then 1 else 0 := by
+  unfold ReducedDensityMatrix Z_state
+  split_ifs with h
+  · rcases h with ⟨rfl, rfl⟩
+    have h_eq : ∀ nB : BasisState bp.B,
+      (if joinBasisState (Z_A bp) nB = ⟨Z (I:=I), Z_valid (I:=I)⟩ then (1 : ℂ) else (0 : ℂ)) *
+      starRingEnd ℂ (if joinBasisState (Z_A bp) nB = ⟨Z (I:=I), Z_valid (I:=I)⟩ then (1 : ℂ) else (0 : ℂ)) =
+      if nB = Z_B bp then 1 else 0 := by
+        intro nB
+        rw [joinBasisState_eq_Z_iff]
+        simp only [true_and]
+        split_ifs with h_nB
+        · simp
+        · simp
+    simp_rw [h_eq]
+    rw [Finset.sum_ite_eq']
+    simp
+  · have h_zero : ∀ nB : BasisState bp.B,
+      (if joinBasisState nA1 nB = ⟨Z (I:=I), Z_valid (I:=I)⟩ then (1 : ℂ) else (0 : ℂ)) *
+      starRingEnd ℂ (if joinBasisState nA2 nB = ⟨Z (I:=I), Z_valid (I:=I)⟩ then (1 : ℂ) else (0 : ℂ)) = 0 := by
+        intro nB
+        split_ifs with h1 h2
+        · rw [joinBasisState_eq_Z_iff] at h1 h2
+          exfalso
+          exact h ⟨h1.1, h2.1⟩
+        · simp
+        · simp
+        · simp
+    simp_rw [h_zero]
+    rw [Finset.sum_const_zero]
+
 lemma Z_purity : Purity bp (Z_state (I:=I)) = 1 := by
-  sorry
+  unfold Purity
+  have h_mul : ∀ nA1 nA2 : BasisState bp.A,
+    (ReducedDensityMatrix bp Z_state * ReducedDensityMatrix bp Z_state) nA1 nA2 =
+    if nA1 = Z_A bp ∧ nA2 = Z_A bp then 1 else 0 := by
+      intro nA1 nA2
+      simp_rw [Matrix.mul_apply]
+      simp_rw [Z_ReducedDensityMatrix]
+      have h_summand : ∀ nA3 : BasisState bp.A,
+        (if nA1 = Z_A bp ∧ nA3 = Z_A bp then (1 : ℂ) else (0 : ℂ)) *
+        (if nA3 = Z_A bp ∧ nA2 = Z_A bp then (1 : ℂ) else (0 : ℂ)) =
+        if nA3 = Z_A bp then (if nA1 = Z_A bp ∧ nA2 = Z_A bp then (1 : ℂ) else (0 : ℂ)) else (0 : ℂ) := by
+          intro nA3
+          by_cases h1 : nA1 = Z_A bp <;> by_cases h2 : nA2 = Z_A bp <;> by_cases h3 : nA3 = Z_A bp <;> simp [h1, h2, h3]
+      simp_rw [h_summand]
+      rw [Finset.sum_ite_eq']
+      simp
+  unfold Matrix.trace Matrix.diag
+  dsimp
+  have h_diag : ∀ nA1 : BasisState bp.A,
+    (ReducedDensityMatrix bp Z_state * ReducedDensityMatrix bp Z_state) nA1 nA1 =
+    if nA1 = Z_A bp then 1 else 0 := by
+      intro nA1
+      rw [h_mul]
+      simp
+  simp_rw [h_diag]
+  rw [Finset.sum_ite_eq']
+  simp
 
 theorem adelic_zero_mode_is_scar (h_pos : 0 < Fintype.card bp.A) : IsQuantumScar bp E (Z (I:=I)) := by
   unfold IsQuantumScar
