@@ -1,5 +1,0 @@
-{"log":
- [{"message":
-   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\././spectral-positivity-ext\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\././spectral-positivity-ext\\.\\.\\SpectralPositivityExt.lean -R .\\.\\././spectral-positivity-ext\\.\\. -o .\\.\\././spectral-positivity-ext\\.lake\\build\\lib\\SpectralPositivityExt.olean -i .\\.\\././spectral-positivity-ext\\.lake\\build\\lib\\SpectralPositivityExt.ilean -c .\\.\\././spectral-positivity-ext\\.lake\\build\\ir\\SpectralPositivityExt.c --json",
-   "level": "trace"}],
- "depHash": "6305246132026381821"}

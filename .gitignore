@@ -19,4 +19,12 @@ Thumbs.db
 sym3_z_function.png
 
 # Lean build artifacts
-.lake/build/
+.lake/
+
+# Node dependencies
+node_modules/
+
+# Local text/data outputs
+charpoly_results.txt
+openalex_search.json
+
