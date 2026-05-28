@@ -132,6 +132,9 @@ identity.
 \Cref{sec:directed} presents the directed spectral results.
 \Cref{sec:undirected} presents the undirected gap collapse.
 \Cref{sec:ihara} presents the Ihara--Bass formalization.
+\Cref{sec:gershgorin} applies Gershgorin disk analysis to the
+adjacency and Laplacian matrices, providing a priori eigenvalue
+localization without full diagonalization.
 \Cref{sec:lean} discusses the Lean~4 proof architecture.
 \Cref{sec:openproblems} lists open problems and the Phase~5 roadmap.
 
@@ -334,6 +337,64 @@ matrix.  We give the first complete machine-verified proof.
 \end{proof}
 
 % -----------------------------------------------------------------------
+\section{Gershgorin Disk Analysis of the Collatz--Schreier Tower}
+\label{sec:gershgorin}
+% -----------------------------------------------------------------------
+
+The Gershgorin circle theorem \cite{gershgorin1931} provides a
+classical tool for eigenvalue localization that requires no
+diagonalization: every eigenvalue of a matrix $A \in \C^{n \times n}$
+lies in at least one of the \emph{Gershgorin disks}
+\[
+  D_i = \Bigl\{z \in \C : \abs{z - a_{ii}} \le R_i\Bigr\}, \qquad
+  R_i = \sum_{j \ne i} \abs{a_{ij}}.
+\]
+Applied to the Collatz--Schreier adjacency matrix $A_d$ and the
+combinatorial Laplacian $L_d = D_d - A_d$, the disks yield concrete a
+priori bounds on the spectrum.
+
+\begin{proposition}[Gershgorin containment for $A_d$]
+  \label{prop:gersh-adj}
+  For each vertex $i \in V_d$, the Gershgorin disk of $A_d$ centered at
+  $a_{ii} = 0$ (since $A_d$ has zero diagonal) has radius $R_i$ equal
+  to the degree $\deg(i)$.  Hence every eigenvalue satisfies
+  $\abs{\lambda} \le \max_i \deg(i) \le 4$.
+\end{proposition}
+
+\begin{remark}
+  Since $A_d$ is real symmetric, all eigenvalues are real and the
+  Gershgorin disks collapse to intervals on the real axis.  The
+  containment $\spec(A_d) \subseteq [-4, 4]$ is thus a direct
+  consequence.  However, for the \emph{directed} transfer matrix $D_n$
+  (which is not symmetric), the disks extend into the complex plane,
+  and their radii reflect the row-wise branching structure of the
+  Collatz map.
+\end{remark}
+
+\begin{proposition}[Gershgorin containment for $L_d$]
+  \label{prop:gersh-lap}
+  The combinatorial Laplacian $L_d = D_d - A_d$ has diagonal entries
+  $\ell_{ii} = \deg(i)$ and off-diagonal entries $\ell_{ij} = -a_{ij}$.
+  Each Gershgorin disk is centered at $\deg(i)$ with radius $\deg(i)$,
+  giving containment $\spec(L_d) \subseteq [0, 2\Delta]$ where
+  $\Delta = \max_i \deg(i)$.  In particular, $L_d \succeq 0$
+  (positive semidefinite) is immediate from the disk geometry.
+\end{proposition}
+
+\paragraph{Interactive visualizer.}
+To build intuition for how the Gershgorin disks evolve as $d$ grows
+and the spectral gap collapses, we provide an interactive web-based
+visualizer (\texttt{gershgorin-visualizer/}) that renders the disks
+and exact eigenvalues simultaneously in the complex plane.  The tool
+supports real-time perturbation of off-diagonal entries, allowing one
+to observe how the disks expand and the eigenvalues migrate as the
+matrix structure is deformed---directly illustrating the mechanism
+behind the gap collapse of \Cref{thm:gap}.  The visualizer also
+includes presets for graph Laplacians and neural network weight
+matrices, connecting this analysis to spectral graph theory and
+applied linear algebra.
+
+% -----------------------------------------------------------------------
 \section{Lean 4 Proof Architecture}
 \label{sec:lean}
 % -----------------------------------------------------------------------
@@ -423,9 +484,15 @@ We have formalized in Lean~4 (zero \texttt{sorry}) the following:
     finite simple graphs.
 \end{itemize}
 Numerically we have established that the undirected Schreier gap also
-collapses to zero.  Together these results constitute the first
-machine-verified spectral analysis of the Collatz system and provide a
-formal obstruction to rapid-mixing proofs of the Collatz conjecture.
+collapses to zero.  Gershgorin disk analysis provides a complementary,
+diagonalization-free perspective: the containment
+$\spec(A_d) \subseteq [-4,4]$ is immediate from the disk geometry,
+and the shrinking separation between overlapping disks as $d$ grows
+visually encodes the gap collapse.  An interactive visualizer for
+exploring these phenomena in real time is included in the repository.
+Together these results constitute the first machine-verified spectral
+analysis of the Collatz system and provide a formal obstruction to
+rapid-mixing proofs of the Collatz conjecture.
 
 \vspace{1em}
 \noindent\textbf{Code availability.}
@@ -466,6 +533,11 @@ Cambridge University Press, 2011.
 The Mathlib Community,
 ``Lean Mathlib,''
 \url{https://github.com/leanprover-community/mathlib4}, 2020--2026.
+
+\bibitem{gershgorin1931}
+S.~Ger{\v s}gorin,
+``\"{U}ber die Abgrenzung der Eigenwerte einer Matrix,''
+\textit{Izv. Akad. Nauk SSSR, Ser.\ fiz.-mat.} \textbf{6}, 749--754, 1931.
 
 \bibitem{moreira2019}
 J.~Moreira, F.~K.\ Richter, D.~Robertson,
