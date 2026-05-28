@@ -47,44 +47,50 @@ instance (n : ℕ) : CommRing (TruncRing n) :=
 instance (n : ℕ) : Algebra ℂ (TruncRing n) :=
   Ideal.Quotient.algebra ℂ
 
+lemma truncIdeal_mono {n m : ℕ} (h : n ≤ m) :
+  Ideal.span {(PowerSeries.X : PowerSeries ℂ)^(2^(m+1))}
+    ≤
+  Ideal.span {(PowerSeries.X : PowerSeries ℂ)^(2^(n+1))} := by
+  rw [Ideal.span_le, Set.singleton_subset_iff]
+  change (PowerSeries.X : PowerSeries ℂ)^(2^(m+1)) ∈ Ideal.span {(PowerSeries.X : PowerSeries ℂ)^(2^(n+1))}
+  rw [Ideal.mem_span_singleton]
+  use (PowerSeries.X : PowerSeries ℂ) ^ (2 ^ (m + 1) - 2 ^ (n + 1))
+  rw [← pow_add]
+  congr 1
+  have le_pow : 2 ^ (n + 1) ≤ 2 ^ (m + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+  exact (Nat.add_sub_of_le le_pow).symm
+
 -- Truncation map: ℂ[[t]]/(t^m) ⟶ ℂ[[t]]/(t^n)
 noncomputable def truncMap {n m : ℕ} (h : n ≤ m) : TruncRing m →ₐ[ℂ] TruncRing n :=
   Ideal.Quotient.liftₐ (Ideal.span { (PowerSeries.X : PowerSeries ℂ)^(2^(m+1)) }) 
     (Ideal.Quotient.mkₐ ℂ (Ideal.span { (PowerSeries.X : PowerSeries ℂ)^(2^(n+1)) })) 
     (by
       intro x hx
-      rw [Ideal.mem_span_singleton] at hx
-      rcases hx with ⟨y, rfl⟩
-      rw [map_mul]
-      have H : (Ideal.Quotient.mkₐ ℂ (Ideal.span {(PowerSeries.X : PowerSeries ℂ) ^ 2 ^ (n + 1)})) ((PowerSeries.X : PowerSeries ℂ) ^ 2 ^ (m + 1)) = 0 := by
-        change Ideal.Quotient.mk (Ideal.span {(PowerSeries.X : PowerSeries ℂ) ^ 2 ^ (n + 1)}) ((PowerSeries.X : PowerSeries ℂ) ^ 2 ^ (m + 1)) = 0
-        rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
-        use (PowerSeries.X : PowerSeries ℂ) ^ (2 ^ (m + 1) - 2 ^ (n + 1))
-        rw [← pow_add]
-        congr 1
-        have le_pow : 2 ^ (n + 1) ≤ 2 ^ (m + 1) := by gcongr; omega
-        exact (Nat.add_sub_of_le le_pow).symm
-      exact mul_eq_zero_of_left H _
+      change Ideal.Quotient.mk _ x = 0
+      rw [Ideal.Quotient.eq_zero_iff_mem]
+      exact truncIdeal_mono h hx
     )
+
+def Sn_series_mod (n : ℕ) (hn : n ≥ 2) : TruncRing n :=
+  Ideal.Quotient.mkₐ ℂ _ (Sn_series n hn)
+
+theorem Sn_series_compatible {m n : ℕ} (h : n ≤ m) (hm : m ≥ 2) (hn : n ≥ 2) :
+  truncMap h (Sn_series_mod m hm) = Sn_series_mod n hn := by sorry
 
 -- The Projective System
 noncomputable def Z_functor : ℕᵒᵖ ⥤ AlgebraCat ℂ where
   obj n := AlgebraCat.of ℂ (TruncRing n.unop)
   map {m n} f := AlgebraCat.ofHom (truncMap f.unop.le)
   map_id n := by
-    change AlgebraCat.ofHom _ = 𝟙 _
-    apply AlgHom.ext
+    apply CategoryTheory.ConcreteCategory.hom_ext
     intro x
-    change truncMap (le_refl n.unop) x = x
-    induction x using Quotient.inductionOn
+    obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
     rfl
   map_comp := by
     intro m n p f g
-    change AlgebraCat.ofHom _ = AlgebraCat.ofHom _ ≫ AlgebraCat.ofHom _
-    apply AlgHom.ext
+    apply CategoryTheory.ConcreteCategory.hom_ext
     intro x
-    change truncMap (f ≫ g).unop.le x = truncMap g.unop.le (truncMap f.unop.le x)
-    induction x using Quotient.inductionOn
+    obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
     rfl
 
 -- The abstract inverse limit algebra: 
@@ -93,8 +99,8 @@ noncomputable def Z_limit_algebra : AlgebraCat ℂ := limit Z_functor
 variable (Z_seq : ∀ n : ℕ, TruncRing n)
 variable (Z_compat : ∀ {m n : ℕ} (h : n ≤ m), truncMap h (Z_seq m) = Z_seq n)
 
-noncomputable def Z_element : Z_limit_algebra :=
-  (limit.lift Z_functor {
+noncomputable def Z_element_hom : AlgebraCat.of ℂ (Polynomial ℂ) ⟶ Z_limit_algebra :=
+  limit.lift Z_functor {
     pt := AlgebraCat.of ℂ (Polynomial ℂ)
     π := {
       app := fun j => Polynomial.aeval (Z_seq j.unop)
@@ -102,10 +108,13 @@ noncomputable def Z_element : Z_limit_algebra :=
         apply Polynomial.algHom_ext
         dsimp [Z_functor]
         change Polynomial.aeval (Z_seq j.unop) Polynomial.X = truncMap f.unop.le (Polynomial.aeval (Z_seq i.unop) Polynomial.X)
-        simp
+        rw [Polynomial.aeval_X, Polynomial.aeval_X]
         exact (Z_compat f.unop.le).symm
     }
-  }) Polynomial.X
+  }
+
+noncomputable def Z_element : Z_limit_algebra :=
+  Z_element_hom Z_seq Z_compat Polynomial.X
 
 end
 
