@@ -1,4 +1,6 @@
-import Mathlib
+import os
+
+content = """import Mathlib
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 open Matrix Polynomial Finset
@@ -267,11 +269,9 @@ theorem charpoly_cyclicWeightMatrix :
         
         have h_term1 : (-1 : Polynomial R) ^ 0 * (X - C 0) * X ^ (n + 1) = X ^ (n + 1 + 1) := by
           simp only [pow_zero, map_zero, sub_zero, one_mul]
-          have : (X : Polynomial R) = X ^ 1 := (pow_one X).symm
-          nth_rw 1 [this]
           rw [← pow_add]
-          congr 1
-          omega
+          have : 1 + (n + 1) = n + 1 + 1 := by omega
+          rw [this]
         rw [h_term1]
         
         have h_term2 : -((-1 : Polynomial R) ^ (n + 1) * C (W (Fin.last (n + 1)))) * (-C (W 0) * ((-1 : Polynomial R) ^ n * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))))) = - (C (W 0) * C (W (Fin.last (n + 1))) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i)))) := by
@@ -298,8 +298,8 @@ theorem charpoly_cyclicWeightMatrix :
           rw [_root_.map_mul]
         rw [h_C_mul]
         have h_C_mul2 : C (W 0 * W (Fin.last (n + 1))) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))) = C (W 0 * W (Fin.last (n + 1)) * ∏ i : Fin n, W (Fin.castSucc (Fin.succ i))) := by
-          have h_prod_C : C (∏ i : Fin n, W (Fin.castSucc (Fin.succ i))) = (∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i)))) := map_prod C _ _
-          rw [← h_prod_C, ← _root_.map_mul]
+          have h_prod_C : (∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i)))) = C (∏ i : Fin n, W (Fin.castSucc (Fin.succ i))) := map_prod C _ _
+          rw [h_prod_C, ← _root_.map_mul]
         rw [h_C_mul2]
         ring
       · exact mem_univ 0
@@ -330,3 +330,6 @@ theorem charpoly_cyclicWeightMatrix :
           apply hb0
           exact Fin.ext this
         simp [c1, c2]
+"""
+with open("Formalization/CyclicWeightCharpoly.lean", "w", encoding="utf-8") as f:
+    f.write(content)

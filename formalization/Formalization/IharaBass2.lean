@@ -34,12 +34,12 @@ noncomputable def KL_Bass : Matrix (V ⊕ G.Dart) (V ⊕ G.Dart) R :=
 lemma M_Bass_mul_N_Bass : M_Bass G R u * N_Bass G R u = K_Bass G R u := by
   simp [M_Bass, N_Bass, K_Bass, fromBlocks_multiply, fromBlocks_inj, Matrix.mul_sub, Matrix.mul_one, Matrix.one_mul, Matrix.smul_mul, Matrix.mul_smul, sourceMatrix_mul_involutionMatrix, smul_smul, sq]
   ext i j; simp [Matrix.add_mul, Matrix.mul_sub, Matrix.mul_one, Matrix.one_mul, Matrix.smul_mul, Matrix.mul_smul, involutionMatrix_sq, smul_smul, sq, Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply, mul_comm]
-  by_cases h : i = j <;> simp [h]; ring
+  by_cases h : i = j <;> simp [h] <;> ring
 
 lemma K_Bass_mul_L_Bass : K_Bass G R u * L_Bass G R = KL_Bass G R u := by
   simp [K_Bass, L_Bass, KL_Bass, fromBlocks_multiply, fromBlocks_inj]
   ext i j; simp [Matrix.sub_mul, sourceMatrix_mul_targetMatrix_transpose, targetMatrix_mul_targetMatrix_transpose, Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply, Matrix.neg_apply, Matrix.diagonal_apply, sq, mul_comm]
-  by_cases h : i = j <;> simp [h]; ring
+  by_cases h : i = j <;> simp [h] <;> ring
 
 lemma det_M_Bass : det (M_Bass G R u) = det (1 - u • HashimotoMatrix G R) := by
   have : Invertible (1 : Matrix V V R) := invertibleOne

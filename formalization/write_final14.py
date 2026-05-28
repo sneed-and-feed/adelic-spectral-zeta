@@ -1,4 +1,6 @@
-import Mathlib
+import os
+
+content = """import Mathlib
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 open Matrix Polynomial Finset
@@ -17,24 +19,15 @@ lemma charmatrix_shiftMatrix_submatrix (n : ℕ) (W : Fin (n + 1) → R) :
   by_cases h_eq : i = j
   · have h_eq_nat : (i : ℕ) = (j : ℕ) := congrArg Fin.val h_eq
     have c1 : Fin.succ i = Fin.succ j := congrArg Fin.succ h_eq
-    have c2 : (Fin.succ i : ℕ) ≠ (Fin.succ j : ℕ) + 1 := by
-      have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-      have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-      omega
+    have c2 : (Fin.succ i : ℕ) ≠ (Fin.succ j : ℕ) + 1 := by simp only [Fin.val_succ]; omega
     have c3 : (i : ℕ) ≠ (j : ℕ) + 1 := by omega
     simp [h_eq, h_eq_nat, c1, c2, c3]
   · have h_eq_nat : (i : ℕ) ≠ (j : ℕ) := fun h => h_eq (Fin.ext h)
     have c1 : Fin.succ i ≠ Fin.succ j := fun h => h_eq (Fin.succ_injective _ h)
     by_cases h_succ : (i : ℕ) = (j : ℕ) + 1
-    · have c2 : (Fin.succ i : ℕ) = (Fin.succ j : ℕ) + 1 := by
-        have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-        have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-        omega
+    · have c2 : (Fin.succ i : ℕ) = (Fin.succ j : ℕ) + 1 := by simp only [Fin.val_succ]; omega
       simp [h_eq, h_eq_nat, h_succ, c1, c2]
-    · have c2 : (Fin.succ i : ℕ) ≠ (Fin.succ j : ℕ) + 1 := by
-        have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-        have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-        omega
+    · have c2 : (Fin.succ i : ℕ) ≠ (Fin.succ j : ℕ) + 1 := by simp only [Fin.val_succ]; omega
       simp [h_eq, h_eq_nat, h_succ, c1, c2]
 
 lemma charpoly_shiftMatrix (n : ℕ) (W : Fin n → R) :
@@ -66,30 +59,15 @@ lemma upperBidiagonal_submatrix (n : ℕ) (W : Fin (n + 1) → R) :
   ext i j
   dsimp [upperBidiagonal, Matrix.submatrix_apply]
   by_cases h_eq : (i : ℕ) = (j : ℕ)
-  · have c1 : (Fin.succ i : ℕ) = (Fin.succ j : ℕ) := by
-      have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-      have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-      omega
-    have c2 : (Fin.succ i : ℕ) + 1 ≠ (Fin.succ j : ℕ) := by
-      have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-      have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-      omega
+  · have c1 : (Fin.succ i : ℕ) = (Fin.succ j : ℕ) := by simp only [Fin.val_succ]; omega
+    have c2 : (Fin.succ i : ℕ) + 1 ≠ (Fin.succ j : ℕ) := by simp only [Fin.val_succ]; omega
     have c3 : (i : ℕ) + 1 ≠ (j : ℕ) := by omega
     simp [h_eq, c1, c2, c3]
-  · have c1 : (Fin.succ i : ℕ) ≠ (Fin.succ j : ℕ) := by
-      have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-      have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-      omega
+  · have c1 : (Fin.succ i : ℕ) ≠ (Fin.succ j : ℕ) := by simp only [Fin.val_succ]; omega
     by_cases h_succ : (i : ℕ) + 1 = (j : ℕ)
-    · have c2 : (Fin.succ i : ℕ) + 1 = (Fin.succ j : ℕ) := by
-        have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-        have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-        omega
+    · have c2 : (Fin.succ i : ℕ) = (Fin.succ j : ℕ) + 1 := by simp only [Fin.val_succ]; omega
       simp [h_eq, h_succ, c1, c2]
-    · have c2 : (Fin.succ i : ℕ) + 1 ≠ (Fin.succ j : ℕ) := by
-        have hi : (Fin.succ i : ℕ) = (i : ℕ) + 1 := Fin.val_succ i
-        have hj : (Fin.succ j : ℕ) = (j : ℕ) + 1 := Fin.val_succ j
-        omega
+    · have c2 : (Fin.succ i : ℕ) + 1 ≠ (Fin.succ j : ℕ) := by simp only [Fin.val_succ]; omega
       simp [h_eq, h_succ, c1, c2]
 
 lemma det_upperBidiagonal (n : ℕ) (W : Fin n → R) :
@@ -204,16 +182,12 @@ theorem charpoly_cyclicWeightMatrix :
     cases m with
     | zero =>
       have h_charpoly : (cyclicWeightMatrix W).charpoly = (Matrix.of fun (i j : Fin 1) => cyclicWeightMatrix W i j).charpoly := rfl
-      rw [h_charpoly, Matrix.charpoly, Matrix.det_fin_one]
+      rw [h_charpoly]
+      rw [Matrix.charpoly, Matrix.det_fin_one]
       change X - C (if ((0 : Fin 1) : ZMod 1) = ((0 : Fin 1) : ZMod 1) + 1 then W ((0 : Fin 1) : ZMod 1) else 0) = X ^ 1 - C (∏ k : ZMod 1, W k)
       have h2 : ((0 : Fin 1) : ZMod 1) = ((0 : Fin 1) : ZMod 1) + 1 := Subsingleton.elim _ _
       rw [if_pos h2]
-      have h_pow : X ^ 1 = (X : Polynomial R) := pow_one X
-      rw [h_pow]
-      have h_prod : (∏ k : ZMod 1, W k) = W ((0 : Fin 1) : ZMod 1) := by
-        have h_equiv : (∏ k : ZMod 1, W k) = ∏ k : Fin 1, W k := rfl
-        rw [h_equiv, Fin.prod_univ_one]
-      rw [h_prod]
+      simp
     | succ n =>
       have h_charpoly : (cyclicWeightMatrix W).charpoly = (Matrix.of fun (i j : Fin (n + 2)) => cyclicWeightMatrix W i j).charpoly := rfl
       rw [h_charpoly]
@@ -225,10 +199,10 @@ theorem charpoly_cyclicWeightMatrix :
         rw [Matrix.charpoly] at h_shift
         rw [h_shift]
         rw [charmatrix_cyclic_submatrix_0n, det_upperBidiagonal]
-        have h_pow : (-1 : Polynomial R) ^ (Fin.last (n + 1) : ℕ) = (-1) ^ (n + 1) := rfl
+        have h_pow : (-1 : Polynomial R) ^ ((Fin.last (n + 1) : ℕ) + 0) = (-1) ^ (n + 1) := by congr 1; omega
         rw [h_pow]
         dsimp [cyclicWeightMatrix, Matrix.of_apply, charmatrix, Matrix.diagonal_apply]
-        have c0 : (0 : ZMod (n + 2)) = 0 ↔ True := ⟨fun _ => trivial, fun _ => rfl⟩
+        have c0 : (0 : ZMod (n + 2)) = 0 ↔ True := by simp
         have c1 : (0 : ZMod (n + 2)) = 1 ↔ False := by
           apply iff_false_intro; intro h
           have h' : (0 : Fin (n + 2)) = (1 : Fin (n + 2)) := h
@@ -241,7 +215,7 @@ theorem charpoly_cyclicWeightMatrix :
           have h'' := congrArg Fin.val h'
           change 0 = n + 1 at h''
           omega
-        have c3 : (0 : ZMod (n + 2)) = (Fin.last (n + 1) + 1 : Fin (n + 2)) ↔ True := by
+        have c3 : (0 : ZMod (n + 2)) = (Fin.last (n + 1) : ZMod (n + 2)) + 1 ↔ True := by
           apply iff_true_intro
           have h' : (0 : Fin (n + 2)).val = ((Fin.last (n + 1) : Fin (n + 2)) + 1).val := by
             change 0 = (n + 1 + 1) % (n + 2)
@@ -250,57 +224,26 @@ theorem charpoly_cyclicWeightMatrix :
           exact Fin.ext h'
         simp only [c0, c1, c2, c3, if_false, if_true, sub_zero, zero_sub, Fin.prod_univ_succ, zero_add, mul_neg, mul_zero]
         rw [prod_ZMod]
-        
+        ring_nf
         have h_prod_neg : (∏ i : Fin n, -C (W (Fin.castSucc (Fin.succ i)))) = (-1 : Polynomial R) ^ n * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))) := by
           have : ∀ i, -C (W (Fin.castSucc (Fin.succ i))) = (-1 : Polynomial R) * C (W (Fin.castSucc (Fin.succ i))) := fun i => by ring
           simp_rw [this]
           rw [Finset.prod_mul_distrib]
-          have h_const : (∏ i : Fin n, (-1 : Polynomial R)) = (-1 : Polynomial R) ^ n := by
-            have hc : (Finset.univ : Finset (Fin n)).card = n := Fintype.card_fin n
-            have : (∏ i : Fin n, (-1 : Polynomial R)) = (-1 : Polynomial R) ^ (Finset.univ : Finset (Fin n)).card := Finset.prod_const (-1 : Polynomial R)
-            rw [this, hc]
-          rw [h_const]
-        rw [h_prod_neg]
-        
-        have h_W0 : W (Fin.castSucc 0) = W 0 := rfl
-        rw [h_W0]
-        
-        have h_term1 : (-1 : Polynomial R) ^ 0 * (X - C 0) * X ^ (n + 1) = X ^ (n + 1 + 1) := by
-          simp only [pow_zero, map_zero, sub_zero, one_mul]
-          have : (X : Polynomial R) = X ^ 1 := (pow_one X).symm
-          nth_rw 1 [this]
-          rw [← pow_add]
           congr 1
-          omega
-        rw [h_term1]
-        
-        have h_term2 : -((-1 : Polynomial R) ^ (n + 1) * C (W (Fin.last (n + 1)))) * (-C (W 0) * ((-1 : Polynomial R) ^ n * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))))) = - (C (W 0) * C (W (Fin.last (n + 1))) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i)))) := by
-          have h_pow_even : (-1 : Polynomial R) ^ (n * 2) = 1 := by
-            have h1 : (-1 : Polynomial R) ^ (n * 2) = ((-1 : Polynomial R) ^ 2) ^ n := by
-              have : n * 2 = 2 * n := mul_comm n 2
-              rw [this, pow_mul]
-            rw [h1]
-            have h2 : (-1 : Polynomial R) ^ 2 = 1 := by ring
-            rw [h2, one_pow]
-          have h_pow_simp : (-1 : Polynomial R) ^ n * (-1 : Polynomial R) ^ n = 1 := by
-            have h3 : (-1 : Polynomial R) ^ n * (-1 : Polynomial R) ^ n = (-1 : Polynomial R) ^ (n * 2) := by
-              rw [← pow_add]
-              have : n + n = n * 2 := by omega
-              rw [this]
-            rw [h3, h_pow_even]
-          have : (-1 : Polynomial R) ^ (n + 1) = (-1 : Polynomial R) ^ n * (-1 : Polynomial R) := by ring
-          rw [this]
-          have h_rearrange : -(((-1 : Polynomial R) ^ n * -1) * C (W (Fin.last (n + 1)))) * (-C (W 0) * ((-1 : Polynomial R) ^ n * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))))) = - (((-1 : Polynomial R) ^ n * (-1 : Polynomial R) ^ n) * (C (W 0) * C (W (Fin.last (n + 1))) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))))) := by ring
-          rw [h_rearrange, h_pow_simp, one_mul]
-        rw [h_term2]
-        
-        have h_C_mul : C (W 0) * C (W (Fin.last (n + 1))) = C (W 0 * W (Fin.last (n + 1))) := by
-          rw [_root_.map_mul]
-        rw [h_C_mul]
-        have h_C_mul2 : C (W 0 * W (Fin.last (n + 1))) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))) = C (W 0 * W (Fin.last (n + 1)) * ∏ i : Fin n, W (Fin.castSucc (Fin.succ i))) := by
-          have h_prod_C : C (∏ i : Fin n, W (Fin.castSucc (Fin.succ i))) = (∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i)))) := map_prod C _ _
-          rw [← h_prod_C, ← _root_.map_mul]
-        rw [h_C_mul2]
+          exact Finset.prod_const _
+        rw [h_prod_neg]
+        ring_nf
+        have h_pow_even : (-1 : Polynomial R) ^ (n * 2) = 1 := by
+          rw [pow_mul]
+          have : (-1 : Polynomial R) ^ 2 = 1 := by ring
+          rw [this, one_pow]
+        have h_pow_simp : (-1 : Polynomial R) ^ n * (-1) ^ n = 1 := by
+          have : (-1 : Polynomial R) ^ n * (-1) ^ n = (-1 : Polynomial R) ^ (n * 2) := by ring_nf
+          rw [this, h_pow_even]
+        rw [mul_assoc]
+        have h_simplify : (-1 : Polynomial R) ^ n * ((-1) ^ n * C (W (Fin.last (n + 1))) * C (W 0) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i)))) =
+          ((-1 : Polynomial R) ^ n * (-1) ^ n) * C (W (Fin.last (n + 1))) * C (W 0) * ∏ i : Fin n, C (W (Fin.castSucc (Fin.succ i))) := by ring
+        rw [h_simplify, h_pow_simp, one_mul]
         ring
       · exact mem_univ 0
       · exact mem_univ (Fin.last (n + 1))
@@ -330,3 +273,6 @@ theorem charpoly_cyclicWeightMatrix :
           apply hb0
           exact Fin.ext this
         simp [c1, c2]
+"""
+with open("Formalization/CyclicWeightCharpoly.lean", "w", encoding="utf-8") as f:
+    f.write(content)

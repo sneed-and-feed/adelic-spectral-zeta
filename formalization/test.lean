@@ -38,11 +38,6 @@ lemma neg_mem_primitiveRoots (μ : F) (hn : 2 ≤ n) (hμ : μ ∈ primitiveRoot
   rw [neg_pow, heven_l.neg_one_pow, one_mul] at hl
   exact hμ.dvd_of_pow_eq_one _ hl
 
-/--
-The product W_1 * W_2 equals 2.
-This proves that the product of the weights over the cycles gives 2.
-Surjectivity of the Galois permutation is left as a sorry for now.
--/
 lemma W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n))) 
   (h_partition : Disjoint C_1 C_2) 
   (h_union : C_1 ∪ C_2 = {x : ZMod (2^n) | Odd x.val}.toFinset)
@@ -73,14 +68,6 @@ lemma W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n)))
       ring
   rw [h_bij, prod_one_sub_primitive_roots zeta hzeta, eval_one_cyclotomic_two_pow (by omega)]
 
-/--
-Spectral Gap Theorem for S_n:
-If lambda is the eigenvalue associated with the cycle C_1 of length 2^{n-2},
-it satisfies lambda^(2^{n-2}) = W_1.
-By symmetry, the conjugate eigenvalue satisfies lambda_conj^(2^{n-2}) = W_2.
-Thus their product is 2, meaning the magnitude squared is 2^{1/2^{n-2}},
-yielding an exact magnitude of 2^{1/2^{n-1}}.
--/
 lemma eigenvalue_magnitude_squared_eq (lambda lambda_conj : F)
   (C_1 C_2 : Finset (ZMod (2^n)))
   (h_lambda : lambda ^ (2^(n-2)) = W_1 zeta C_1)

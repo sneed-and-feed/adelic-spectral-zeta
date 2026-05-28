@@ -1,4 +1,6 @@
-import Mathlib
+import os
+
+content = """import Mathlib
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 open Matrix Polynomial Finset
@@ -330,3 +332,6 @@ theorem charpoly_cyclicWeightMatrix :
           apply hb0
           exact Fin.ext this
         simp [c1, c2]
+"""
+with open("Formalization/CyclicWeightCharpoly.lean", "w", encoding="utf-8") as f:
+    f.write(content)

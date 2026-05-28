@@ -24,15 +24,12 @@ lemma char_star (x : ZMod N) : star (zmodChar_C zeta hzeta x) = zmodChar_C zeta 
   rw [← RCLike.star_def] at hz2
   exact hz2.trans (by simp [h_norm])
 
-/-- The Discrete Fourier Transform Matrix -/
 noncomputable def dftMatrix : Matrix (ZMod N) (ZMod N) ℂ :=
   fun i j ↦ (1 / Real.sqrt N) * zmodChar_C zeta hzeta (i * j)
 
-/-- Conjugate transpose of the DFT Matrix -/
 noncomputable def dftMatrix_star : Matrix (ZMod N) (ZMod N) ℂ :=
   fun i j ↦ star (dftMatrix zeta hzeta j i)
 
-/-- The DFT matrix is unitary -/
 lemma dft_mul_star :
     dftMatrix zeta hzeta * dftMatrix_star zeta hzeta = 1 := by
   ext i j
@@ -58,7 +55,6 @@ lemma dft_mul_star :
   · rw [ZMod.card, one_div, inv_mul_cancel hN]
   · simp
 
-/-- The DFT matrix is unitary (star_mul version) -/
 lemma dft_star_mul :
     dftMatrix_star zeta hzeta * dftMatrix zeta hzeta = 1 := by
   ext i j
@@ -138,44 +134,13 @@ lemma fourierBasisMatrix_mul_star :
     fourierBasisMatrix zeta hzeta * fourierBasisMatrix_star zeta hzeta = 1 := by
   rw [fourierBasisMatrix, fourierBasisMatrix_star, ← Matrix.mul_kronecker_mul, dft_mul_star, Matrix.mul_one, Matrix.one_kronecker_one]
 
-/-- The Fourier-conjugated twisted matrix `(F⊗I) · S_n · (F⊗I)*`.
-
-    This is a unitary similarity transform, preserving the spectrum.
-
-    ## Block Diagonalization Status
-
-    The `F ⊗ I_2` conjugation does NOT produce 2×2 block diagonal form.
-    However, the full DFT `F_{2^{n-1}}` applied directly to `S_n` DOES produce
-    a **monomial** (generalized permutation) matrix, because:
-
-    1. The generators `y = 3x` and `y = 3x-1` both respect the character
-       decomposition: `χ_k(3x) = χ_{3k}(x)` and `χ_k(3x-1) = ω^{-k} · χ_{3k}(x)`.
-
-    2. So `D_n` maps `χ_k ↦ (1 + ω^{-k}) · χ_{3k}`, a monomial action.
-
-    3. The odd characters (where `χ_k(x + 2^{n-1}) = -χ_k(x)`) form the `S_n`
-       eigenspace, and `×3` preserves parity, so `S_n` is monomial on odd `k`.
-
-    4. The ×3 orbits on odd residues mod 2^n form exactly 2 cycles of length 2^{n-2}.
-
-    5. The cyclotomic product identity `∏_{k odd} (1 + ω^{-k}) = 2` (proven in
-       `CyclotomicProduct.lean`) gives each orbit weight product magnitude √2.
-
-    6. Therefore ALL eigenvalues of `S_n` lie on a circle of radius `2^{1/2^{n-1}}`.
-
-    The `F⊗I` infrastructure and definitions below remain valid as building blocks. -/
 noncomputable def twistedBlockDiag :
     Matrix (ZMod (2^(n-2)) × ZMod 2) (ZMod (2^(n-2)) × ZMod 2) ℂ :=
   fourierBasisMatrix zeta hzeta * twistedDirMatrixC_reindexed hn * fourierBasisMatrix_star zeta hzeta
 
-/-- The 2×2 diagonal blocks of the Fourier-conjugated matrix.
-    Note: the full matrix is NOT block diagonal in these 2×2 blocks.
-    The correct decomposition uses the full DFT into 2 orbit blocks. -/
 noncomputable def twistedBlock (k : ZMod (2^(n-2))) : Matrix (ZMod 2) (ZMod 2) ℂ :=
   fun i j ↦ twistedBlockDiag hn zeta hzeta (k, i) (k, j)
 
-/-- The Fourier-conjugated matrix is a unitary similarity of the reindexed twisted matrix.
-    Therefore they share the same spectrum (eigenvalues with multiplicities). -/
 lemma twistedBlockDiag_spectrum_eq :
     twistedBlockDiag hn zeta hzeta =
     fourierBasisMatrix zeta hzeta * twistedDirMatrixC_reindexed hn * fourierBasisMatrix_star zeta hzeta := rfl
