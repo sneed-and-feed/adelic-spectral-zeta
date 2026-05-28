@@ -22,8 +22,7 @@ namespace SchreierSpectral
 -- ============================================================================
 
 lemma pow_two_identity {d : ℕ} (hd : d ≥ 3) : 2^(d-1) = 2 * 2^(d-2) := by
-  have h_sub : d - 1 = (d - 2) + 1 := by omega
-  rw [h_sub, pow_add, pow_one, mul_comm]
+  rw [show d - 1 = d - 2 + 1 by omega, pow_add, pow_one, mul_comm]
 
 /-- Internal API. -/
 def canonicalLift {d : ℕ} (v : ZMod (2^(d-2))) : ZMod (2^(d-1)) :=
@@ -660,9 +659,7 @@ lemma lift_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
     · left
       refine ⟨hx, Or.inl ?_⟩
-      calc canonicalLift v = canonicalLift v - 3 * canonicalLift u + 3 * canonicalLift u := by ring
-        _ = 0 + 3 * canonicalLift u := by rw [h0]
-        _ = 3 * canonicalLift u := by ring
+      exact sub_eq_zero.mp h0
     · right
       refine ⟨hy, Or.inl ?_⟩
       exact tau_eq_of_sub_eq_pow hd (canonicalLift v) (3 * canonicalLift u) h2

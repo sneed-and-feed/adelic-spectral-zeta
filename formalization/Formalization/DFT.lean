@@ -58,19 +58,10 @@ lemma dft_mul_star :
       simp only [star_div', star_one, RCLike.star_def, conj_ofReal]
     rw [hs]
     calc
-      _ = (1 / (Real.sqrt N : ℂ)) * (1 / (Real.sqrt N : ℂ)) * (zmodChar_C zeta hzeta (i * k) * zmodChar_C zeta hzeta (-(j * k))) := by ring
       _ = (1 / (Real.sqrt N : ℂ) ^ 2) * (zmodChar_C zeta hzeta (i * k) * zmodChar_C zeta hzeta (-(j * k))) := by ring
-      _ = (1 / (N : ℂ)) * (zmodChar_C zeta hzeta (i * k) * zmodChar_C zeta hzeta (-(j * k))) := by
-        congr 2
-        have hs2 : (Real.sqrt N : ℂ) ^ 2 = (N : ℂ) := by
-          norm_cast
-          exact Real.sq_sqrt (by positivity)
-        rw [hs2]
       _ = (1 / (N : ℂ)) * zmodChar_C zeta hzeta ((i - j) * k) := by
-        congr 1
-        rw [← AddChar.map_add_mul]
-        congr 1
-        ring
+        have hs2 : (Real.sqrt N : ℂ) ^ 2 = (N : ℂ) := by norm_cast; exact Real.sq_sqrt (by positivity)
+        rw [hs2, ← AddChar.map_add_mul]; congr 2; ring
   rw [h_sum_congr, ← Finset.mul_sum]
   have h_sum_comm : (∑ i_1 : ZMod N, (zmodChar_C zeta hzeta) ((i - j) * i_1)) = ∑ i_1 : ZMod N, (zmodChar_C zeta hzeta) (i_1 * (i - j)) := by
     apply sum_congr rfl
@@ -106,19 +97,10 @@ lemma dft_star_mul :
       simp only [star_div', star_one, RCLike.star_def, conj_ofReal]
     rw [hs]
     calc
-      _ = (1 / (Real.sqrt N : ℂ)) * (1 / (Real.sqrt N : ℂ)) * (zmodChar_C zeta hzeta (-(k * i)) * zmodChar_C zeta hzeta (k * j)) := by ring
       _ = (1 / (Real.sqrt N : ℂ) ^ 2) * (zmodChar_C zeta hzeta (-(k * i)) * zmodChar_C zeta hzeta (k * j)) := by ring
-      _ = (1 / (N : ℂ)) * (zmodChar_C zeta hzeta (-(k * i)) * zmodChar_C zeta hzeta (k * j)) := by
-        congr 2
-        have hs2 : (Real.sqrt N : ℂ) ^ 2 = (N : ℂ) := by
-          norm_cast
-          exact Real.sq_sqrt (by positivity)
-        rw [hs2]
       _ = (1 / (N : ℂ)) * zmodChar_C zeta hzeta ((j - i) * k) := by
-        congr 1
-        rw [← AddChar.map_add_mul]
-        congr 1
-        ring
+        have hs2 : (Real.sqrt N : ℂ) ^ 2 = (N : ℂ) := by norm_cast; exact Real.sq_sqrt (by positivity)
+        rw [hs2, ← AddChar.map_add_mul]; congr 2; ring
   rw [h_sum_congr, ← Finset.mul_sum]
   have h_sum_comm : (∑ i_1 : ZMod N, (zmodChar_C zeta hzeta) ((j - i) * i_1)) = ∑ i_1 : ZMod N, (zmodChar_C zeta hzeta) (i_1 * (j - i)) := by
     apply sum_congr rfl
@@ -177,6 +159,7 @@ noncomputable def twistedDirMatrixC_reindexed :
     Matrix (ZMod (2^(n-2)) × ZMod 2) (ZMod (2^(n-2)) × ZMod 2) ℂ :=
   Matrix.reindex (index_equiv hn) (index_equiv hn) (twistedDirMatrixC hn)
 
+set_option linter.unreachableTactic false
 variable (zeta : ℂ) (hzeta : IsPrimitiveRoot zeta (⟨2^(n-2), by positivity⟩ : ℕ+))
 
 open scoped Kronecker

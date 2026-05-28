@@ -69,23 +69,11 @@ lemma odd_coprime_pow_two {a n : ℕ} (ha : Odd a) : a.Coprime (2^n) := by
   exact h1.pow_right n
 
 lemma neg_val_odd {n : ℕ} {a : ZMod (2^n)} (hn : 1 ≤ n) (ha : Odd a.val) : Odd (-a).val := by
-  have hpos : 0 < 2^n := by positivity
-  have _inst : NeZero (2^n) := ⟨ne_of_gt hpos⟩
-  have h_ne_zero : a ≠ 0 := by
-    intro h
-    rw [h] at ha
-    have h_zero : (0 : ZMod (2^n)).val = 0 := ZMod.val_zero
-    rw [h_zero] at ha
-    simp at ha
-  have _inst2 : NeZero a := ⟨h_ne_zero⟩
-  have h_val_neg : (-a).val = 2^n - a.val := ZMod.val_neg_of_ne_zero (a := a)
+  have hpos : NeZero (2^n) := ⟨by positivity⟩
+  have h_ne : a ≠ 0 := by intro h; rw [h, ZMod.val_zero] at ha; exact Nat.even_iff_not_odd.mp even_zero ha
+  have h_val_neg : (-a).val = 2^n - a.val := @ZMod.val_neg_of_ne_zero (2^n) hpos a ⟨h_ne⟩
   rw [h_val_neg]
-  have heven : Even (2^n) := by
-    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
-    use 2^m
-    ring
-  have h_lt : a.val ≤ 2^n := le_of_lt (ZMod.val_lt a)
-  exact Nat.Even.sub_odd h_lt heven ha
+  exact Nat.Even.sub_odd (le_of_lt (ZMod.val_lt a)) (Even.pow_of_ne_zero even_two (by omega)) ha
 
 /--
 The product W_1 * W_2 equals 2.

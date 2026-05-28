@@ -48,16 +48,10 @@ def tauDir (n : ℕ) (x : ZMod (2^n)) : ZMod (2^n) :=
     This is because `3 * 2^(n-1) = 2^(n-1) + 2 * 2^(n-1) = 2^(n-1) + 2^n ≡ 2^(n-1)`. -/
 lemma three_mul_half_mod (n : ℕ) (hn : n ≥ 1) :
     (3 : ZMod (2^n)) * ((2^(n-1) : ℕ) : ZMod (2^n)) = ((2^(n-1) : ℕ) : ZMod (2^n)) := by
-  have h_exp : 2 * 2^(n-1) = 2^n := by
-    calc 2 * 2^(n-1) = 2^1 * 2^(n-1) := by ring
-      _ = 2^(1 + (n - 1)) := by rw [← pow_add]
-      _ = 2^n := by
-        have : 1 + (n - 1) = n := by omega
-        rw [this]
-  have h_calc : (3 : ℕ) * 2^(n-1) = 2^(n-1) + 2 * 2^(n-1) := by ring
-  have h_calc2 : ((3 : ℕ) : ZMod (2^n)) = 3 := by norm_cast
-  rw [←h_calc2, ←Nat.cast_mul, h_calc, Nat.cast_add, h_exp]
-  rw [ZMod.natCast_self, add_zero]
+  calc (3 : ZMod (2^n)) * ((2^(n-1) : ℕ) : ZMod (2^n)) = ↑(3 * 2^(n-1) : ℕ) := by norm_cast
+    _ = ↑(2^(n-1) + 2 * 2^(n-1) : ℕ) := by congr 1; ring
+    _ = ↑(2^(n-1) + 2^n : ℕ) := by rw [← pow_succ', Nat.sub_add_cancel hn]
+    _ = ((2^(n-1) : ℕ) : ZMod (2^n)) := by rw [Nat.cast_add, ZMod.natCast_self, add_zero]
 
 /-- `3 * τ(x) = τ(3x)` — the Collatz map commutes with the deck transformation. -/
 lemma three_mul_tauDir (n : ℕ) (hn : n ≥ 1) (x : ZMod (2^n)) :
