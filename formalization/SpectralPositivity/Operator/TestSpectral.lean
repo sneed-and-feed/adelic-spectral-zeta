@@ -1,2 +1,0 @@
--- This file is intentionally left empty.
--- It was used for testing during development and can be deleted.
