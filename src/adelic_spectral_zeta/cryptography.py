@@ -4,7 +4,10 @@ from typing import Tuple, List
 import math
 
 def padic_norm(n: int, p: int) -> float:
-    """Computes the p-adic norm |n|_p"""
+    """Computes the p-adic norm |n|_p.
+    
+    Convention: Returns 0.0 for n=0.
+    """
     if n == 0:
         return 0.0
     order = 0
@@ -14,7 +17,11 @@ def padic_norm(n: int, p: int) -> float:
     return p ** (-order)
 
 def adelic_distance(x: int, y: int, primes: List[int] = [2, 3, 5, 7, 11, 13]) -> float:
-    """Computes a truncated adèlic distance between two integers."""
+    """Computes a truncated adèlic distance between two integers.
+    
+    The default prime set [2, 3, 5, 7, 11, 13] is chosen for computational
+    efficiency as a truncated approximation over the smallest non-archimedean places.
+    """
     diff = abs(x - y)
     if diff == 0:
         return 0.0
@@ -40,6 +47,8 @@ def build_factorization_hamiltonian(N: int, n_bits: int) -> sp.coo_matrix:
         y = i & ((1 << n_bits) - 1)
         
         # Penalize if x or y is 0 or 1 to avoid trivial factorizations (1 * N = N)
+        # The 1e6 penalty is arbitrary but chosen to strongly dominate the (x*y - N)^2 term
+        # for feasible N, ensuring trivial factors are gapped out of the low-energy spectrum.
         if x <= 1 or y <= 1:
             diag[i] = 1e6
         else:
@@ -50,8 +59,11 @@ def build_factorization_hamiltonian(N: int, n_bits: int) -> sp.coo_matrix:
 def build_adelic_driver_hamiltonian(n_bits: int, sparsity_threshold: float = 2.0) -> sp.coo_matrix:
     """
     Builds the Adèlic Driver Hamiltonian.
-    Instead of standard quantum transverse fields, this mixer uses the Adèlic distance
-    so that quantum tunneling respects prime distributions.
+    
+    Instead of standard quantum transverse fields, this mixer uses the Adèlic distance 
+    (computed via p-adic norms over a set of primes, plus the real archimedean norm). 
+    This injects the spectral zeta structure into the quantum tunneling amplitudes, 
+    ensuring that the driver respects the distribution of primes natively.
     """
     dim = 2 ** (2 * n_bits)
     
@@ -83,7 +95,9 @@ def build_adelic_driver_hamiltonian(n_bits: int, sparsity_threshold: float = 2.0
 
 def bipartite_entanglement_entropy_xy(state: np.ndarray, n_bits: int) -> float:
     """
-    Computes the entanglement entropy between the X register and Y register.
+    Computes the Von Neumann entanglement entropy S = -Tr(rho_X ln rho_X) 
+    between the X register and Y register.
+    
     State is a 1D vector of length 2^(2 * n_bits).
     """
     dim_x = 2 ** n_bits

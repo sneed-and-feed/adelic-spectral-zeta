@@ -1,9 +1,23 @@
+"""Universality test for GL(n) spectral triples: rank-1 vs rank-N projection comparison."""
+
 import numpy as np
 import scipy.linalg as la
 import mpmath
+from typing import Tuple, List, Optional
 from .core import get_tau
 
-def simulate_universality(degree, ref_zeros, get_phase, lambda_val, N_dim=600, OP_P_MAX=200):
+def _build_spectral_triple(degree: int, lambda_val: float, N_dim: int, OP_P_MAX: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float, np.ndarray]:
+    """Helper to construct the shared spectral triple components for GL(n).
+    
+    Args:
+        degree: 4 = Sym³, 5 = Sym⁴.
+        lambda_val: Scaling parameter.
+        N_dim: Truncation dimension.
+        OP_P_MAX: Maximum prime for the coupling vector.
+        
+    Returns:
+        (D0_diag, xi_r1, gamma_shift, log_lam, op_primes)
+    """
     dim = 2 * N_dim + 1
     n_vals = np.arange(-N_dim, N_dim + 1)
     log_lam = np.log(lambda_val)
@@ -19,6 +33,7 @@ def simulate_universality(degree, ref_zeros, get_phase, lambda_val, N_dim=600, O
             psi2 = complex(mpmath.psi(0, s_val + 5.5)) - np.log(2*np.pi)
             gamma_shift[i] = 0.5 * (psi1 + psi2)
         else:
+            # GL(5) Satake parameters for Sym^4
             psi_R = complex(mpmath.psi(0, (s_val + 22.0)/2.0)) - np.log(np.pi)
             psi_C1 = complex(mpmath.psi(0, s_val + 11.0)) - np.log(2*np.pi)
             psi_C2 = complex(mpmath.psi(0, s_val + 22.0)) - np.log(2*np.pi)
@@ -37,6 +52,7 @@ def simulate_universality(degree, ref_zeros, get_phase, lambda_val, N_dim=600, O
     xi_r1 = np.zeros(dim, dtype=complex)
     for p in op_primes:
         tp = float(tau[p] * (p ** -5.5))
+        # A_prime represents the symmetric power Hecke eigenvalue relations
         if degree == 4:
             A_prime = tp**3 - 2.0 * tp
         else:
@@ -45,6 +61,17 @@ def simulate_universality(degree, ref_zeros, get_phase, lambda_val, N_dim=600, O
         phases = -1j * n_vals * np.pi * np.log(p) / log_lam
         xi_r1 += A_prime * (np.log(p) / np.sqrt(p)) * np.exp(phases)
     xi_r1 += gamma_shift
+    
+    return D0_diag, xi_r1, gamma_shift, log_lam, op_primes
+
+def simulate_universality(degree: int, ref_zeros: np.ndarray, get_phase: callable, lambda_val: float, N_dim: int = 600, OP_P_MAX: int = 200) -> Tuple[float, float, float]:
+    dim = 2 * N_dim + 1
+    D0_diag, xi_r1, gamma_shift, log_lam, op_primes = _build_spectral_triple(degree, lambda_val, N_dim, OP_P_MAX)
+    
+    n_vals = np.arange(-N_dim, N_dim + 1)
+    
+    # Primes setup (we only need tau for the xi_rn part below)
+    tau = get_tau(OP_P_MAX)
     xi_r1_norm = xi_r1 / np.linalg.norm(xi_r1)
     
     P1 = np.outer(xi_r1_norm, np.conj(xi_r1_norm))
@@ -88,57 +115,18 @@ def simulate_universality(degree, ref_zeros, get_phase, lambda_val, N_dim=600, O
     mae1 = np.mean(np.abs(evs_r1[:k] - ref_zeros)) if len(evs_r1) >= k else np.inf
     maeN = np.mean(np.abs(evs_rN[:k] - ref_zeros)) if len(evs_rN) >= k else np.inf
     
-    # Dominance overlap
+    # Dominance overlap: |P_N xi_1|^2 — measures the dominance of rank-1 in the rank-N subspace.
     overlap = np.linalg.norm(P_N @ xi_r1_norm)**2
     
-    return mae1, maeN, overlap
+    return float(mae1), float(maeN), float(overlap)
 
-def compute_resolvent_trace_diff(z, dim=1000, lambda_val=800.0, degree=4, OP_P_MAX=200):
+def compute_resolvent_trace_diff(z: complex, dim: int = 1000, lambda_val: float = 800.0, degree: int = 4, OP_P_MAX: int = 200) -> complex:
     """Compute the trace of (D_glob - z)^-1 - (D_0 - z)^-1 for a finite matrix truncation."""
     # dim is total dimension, let N_dim = dim // 2
     N_dim = dim // 2
     dim_actual = 2 * N_dim + 1
     
-    n_vals = np.arange(-N_dim, N_dim + 1)
-    log_lam = np.log(lambda_val)
-    D0_diag = n_vals * np.pi / log_lam
-    
-    # Archimedean shift
-    gamma_shift = np.zeros(dim_actual, dtype=complex)
-    for i, n in enumerate(n_vals):
-        t = n * np.pi / log_lam
-        s_val = 0.5 + 1j * t
-        if degree == 4:
-            psi1 = complex(mpmath.psi(0, s_val + 16.5)) - np.log(2*np.pi)
-            psi2 = complex(mpmath.psi(0, s_val + 5.5)) - np.log(2*np.pi)
-            gamma_shift[i] = 0.5 * (psi1 + psi2)
-        else:
-            psi_R = complex(mpmath.psi(0, (s_val + 22.0)/2.0)) - np.log(np.pi)
-            psi_C1 = complex(mpmath.psi(0, s_val + 11.0)) - np.log(2*np.pi)
-            psi_C2 = complex(mpmath.psi(0, s_val + 22.0)) - np.log(2*np.pi)
-            gamma_shift[i] = 0.5 * (psi_R + psi_C1 + psi_C2)
-
-    # Primes setup
-    tau = get_tau(OP_P_MAX)
-    is_prime = np.ones(OP_P_MAX + 1, dtype=bool)
-    is_prime[:2] = False
-    for i in range(2, int(OP_P_MAX**0.5) + 1):
-        if is_prime[i]:
-            is_prime[i*i::i] = False
-    op_primes = np.where(is_prime)[0]
-
-    # Rank-1 Construction
-    xi_r1 = np.zeros(dim_actual, dtype=complex)
-    for p in op_primes:
-        tp = float(tau[p] * (p ** -5.5))
-        if degree == 4:
-            A_prime = tp**3 - 2.0 * tp
-        else:
-            A_prime = tp**4 - 3.0 * tp**2 + 1.0
-            
-        phases = -1j * n_vals * np.pi * np.log(p) / log_lam
-        xi_r1 += A_prime * (np.log(p) / np.sqrt(p)) * np.exp(phases)
-    xi_r1 += gamma_shift
+    D0_diag, xi_r1, _, _, _ = _build_spectral_triple(degree, lambda_val, N_dim, OP_P_MAX)
     
     if np.linalg.norm(xi_r1) > 0:
         xi_r1_norm = xi_r1 / np.linalg.norm(xi_r1)

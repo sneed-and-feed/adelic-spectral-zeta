@@ -1,3 +1,7 @@
+"""
+Test suite: test_spectral_triple_axioms.py
+Tests mathematical properties and correctness invariants.
+"""
 import pytest
 import numpy as np
 import scipy.linalg as la
@@ -102,7 +106,7 @@ class TestSpectralTripleAxioms:
         J_D_Jinv = P @ np.conj(D_glob) @ P
         
         # Check J D J^-1 = -D
-        assert np.linalg.norm(J_D_Jinv + D_glob) < 1e-10
+        assert np.linalg.norm(J_D_Jinv + D_glob) < 1e-10  # Tolerance accounts for floating-point truncation
 
     def test_first_order_double_commutator_vanishes(self, setup_data):
         """Checks that [[D0, a], J b* J^-1] vanishes in the interior and [[D_glob, a], J b* J^-1] is low-rank."""
@@ -120,7 +124,7 @@ class TestSpectralTripleAxioms:
             J_bstar_Jinv = P @ b.T @ P
             double_comm0 = comm_D0_a @ J_bstar_Jinv - J_bstar_Jinv @ comm_D0_a
             interior_double_comm0 = double_comm0[15:-15, 15:-15]
-            assert np.linalg.norm(interior_double_comm0, 2) < 1e-10
+            assert np.linalg.norm(interior_double_comm0, 2) < 1e-10  # Tolerance accounts for floating-point truncation
             
             # 2. D_glob double commutator is low-rank
             comm_Dglob_a = D_glob @ a - a @ D_glob
@@ -146,7 +150,7 @@ class TestSpectralTripleAxioms:
         comm_D0_S = D0 @ S - S @ D0
         orient_D0 = S.T @ comm_D0_S
         diff_D0 = orient_D0 - expected
-        assert np.linalg.norm(diff_D0[15:-15, 15:-15], 2) < 1e-10
+        assert np.linalg.norm(diff_D0[15:-15, 15:-15], 2) < 1e-10  # Tolerance accounts for floating-point truncation
         
         # 2. Low-rank difference for D_glob
         comm_Dglob_S = D_glob @ S - S @ D_glob

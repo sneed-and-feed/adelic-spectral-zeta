@@ -1,3 +1,7 @@
+"""
+Test suite: test_eigenvector_alignment.py
+Tests mathematical properties and correctness invariants.
+"""
 import numpy as np
 import pytest
 
@@ -74,7 +78,7 @@ def test_wavelet_block_diagonalization():
             start += dim
             
         # Assert that all off-diagonal block entries are close to zero
-        assert np.max(np.abs(A_w[mask])) < 1e-12
+        assert np.max(np.abs(A_w[mask])) < 1e-12  # Tolerance accounts for floating-point truncation
         
         # Test that the blocks match A_2 and H_{k-1}
         start = 0

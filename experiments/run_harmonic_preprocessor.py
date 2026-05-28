@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: run_harmonic_preprocessor.py
+"""
+
 import sys
 import numpy as np
 from adelic_spectral_zeta.erdos_similarity import (

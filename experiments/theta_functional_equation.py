@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: theta_functional_equation.py
+"""
+
 import os
 import numpy as np
 import scipy.linalg as la

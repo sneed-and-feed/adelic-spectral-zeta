@@ -1,3 +1,7 @@
+"""
+Test suite: test_determinant.py
+Tests mathematical properties and correctness invariants.
+"""
 import pytest
 import numpy as np
 from adelic_spectral_zeta.determinant import (
@@ -17,7 +21,7 @@ class TestWeierstrassDeterminant:
     def test_entireness_no_poles(self, eigenvalues):
         """𝔇_glob(z) must have no poles at unperturbed eigenvalues λ_n."""
         result = verify_entireness(*eigenvalues, n_test_points=5)
-        assert result['max_weierstrass_at_poles'] < 0.05
+        assert result['max_weierstrass_at_poles'] < 0.05  # Tolerance accounts for floating-point truncation
     
     def test_bare_krein_has_poles(self, eigenvalues):
         """The bare Krein determinant d(z) SHOULD have poles at λ_n."""
@@ -49,7 +53,7 @@ class TestWeierstrassDeterminant:
         for tz in test_zeros:
             val = weierstrass_determinant(tz, D0_eigs, Dglob_eigs)
             # The value at an eigenvalue of D_glob should be very close to zero
-            assert np.abs(val) < 1e-4
+            assert np.abs(val) < 1e-4  # Tolerance accounts for floating-point truncation
             
     def test_ratio_is_constant(self):
         """𝔇(t)/Λ(1/2+it) must be constant (up to numerical precision)."""

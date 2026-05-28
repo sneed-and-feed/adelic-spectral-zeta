@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: check_W.py
+"""
+
 import numpy as np
 
 def check_W(d):

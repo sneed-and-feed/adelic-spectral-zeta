@@ -67,7 +67,7 @@ lemma canonicalLift_adj_tau {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
         have h_sub : d - 2 = d - 3 + 1 := by omega
         have h_pow : 2^(d-2) = 2 * 2^(d-3) := by rw [h_sub, pow_add, pow_one]; ring
         rw [h_pow] at h_eq_nat
-        exact Nat.eq_of_mul_eq_mul_left (by decide) h_eq_nat
+        omega
       have hu_eq : u = 2^(d-3) := by
         have hu_val_eq : u.val = (2^(d-3) : ZMod (2^(d-2))).val := by
           have h_lt : 2^(d-3) < 2^(d-2) := by
@@ -92,33 +92,25 @@ lemma canonicalLift_adj_tau {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
         have hd_sub : d - 1 = d - 2 + 1 := by omega
         rw [hd_sub, pow_add, pow_one]
         omega
-      have h_2d2_lt : 2^(d-2) + 1 < 2^(d-1) := by
-        have hd_sub2 : d - 2 = d - 3 + 1 := by omega
-        have h_pow : 2^(d-2) = 2 * 2^(d-3) := by rw [hd_sub2, pow_add, pow_one]; ring
-        have _h_pos3 : 0 < 2^(d-3) := by positivity
-        have hd_sub_one : d - 1 = d - 2 + 1 := by omega
-        have h_pow_one : 2^(d-1) = 2 * 2^(d-2) := by rw [hd_sub_one, pow_add, pow_one]; ring
+      have h_2d2_1_lt : 2^(d-2) + 1 < 2^(d-1) := by
+        have hd_sub : d - 1 = d - 2 + 1 := by omega
+        have _h_pow : 2^(d-1) = 2 * 2^(d-2) := by rw [hd_sub, pow_add, pow_one]; ring
+        have _h_ge : 2^(d-2) ≥ 2 := by have h : 2^1 ≤ 2^(d-2) := Nat.pow_le_pow_of_le_right (by decide) (by omega); exact h
         omega
-      have h_eq_nat : 2 * k = 2^(d-2) + 1 := by
+      have hk_val2 : 2 * k = 2^(d-2) + 1 := by
         have hk_cast : ((2 * k : ℕ) : ZMod (2^(d-1))) = (2 * k : ZMod (2^(d-1))) := by push_cast; rfl
         have hd2_cast : ((2^(d-2) + 1 : ℕ) : ZMod (2^(d-1))) = (2^(d-2) + 1 : ZMod (2^(d-1))) := by push_cast; rfl
         rw [←hk_cast, ←hd2_cast] at h_eq
         have hk_val : ((2 * k : ℕ) : ZMod (2^(d-1))).val = 2 * k := ZMod.val_natCast_of_lt h_2k_lt
-        have hd2_val : ((2^(d-2) + 1 : ℕ) : ZMod (2^(d-1))).val = 2^(d-2) + 1 := ZMod.val_natCast_of_lt h_2d2_lt
+        have hd2_val : ((2^(d-2) + 1 : ℕ) : ZMod (2^(d-1))).val = 2^(d-2) + 1 := ZMod.val_natCast_of_lt h_2d2_1_lt
         have h_val_eq := congrArg ZMod.val h_eq
         rw [hk_val, hd2_val] at h_val_eq
         exact h_val_eq
       exfalso
-      have h_even : 2 ∣ 2 * k := dvd_mul_right 2 k
-      have h_odd : ¬ 2 ∣ 2^(d-2) + 1 := by
-        intro h
-        have h_even_pow : 2 ∣ 2^(d-2) := dvd_pow_self 2 (by omega)
-        have h_diff : 2 ∣ (2^(d-2) + 1) - 2^(d-2) := Nat.dvd_sub (by omega) h h_even_pow
-        have h_diff_eq : (2^(d-2) + 1) - 2^(d-2) = 1 := by omega
-        rw [h_diff_eq] at h_diff
-        revert h_diff; decide
-      rw [h_eq_nat] at h_even
-      exact h_odd h_even
+      have h_sub : d - 2 = d - 3 + 1 := by omega
+      have h_pow : 2^(d-2) = 2 * 2^(d-3) := by rw [h_sub, pow_add, pow_one]; ring
+      rw [h_pow] at hk_val2
+      omega
     · have h_pow2 : 2 * (2^(d-2) : ZMod (2^(d-1))) = 0 := by
         have h_pow : 2 * 2^(d-2) = 2^(d-1) := by
           have hd_sub : d - 1 = d - 2 + 1 := by omega
@@ -134,9 +126,7 @@ lemma canonicalLift_adj_tau {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
         _ = (k : ZMod (2^(d-1))) - (k : ZMod (2^(d-1))) := by rw [←h3]
         _ = 0 := by ring
       have h_eq_nat : 2 * k + 2^(d-2) = 2^(d-1) := by
-        have hk_cast : ((2 * k + 2^(d-2) : ℕ) : ZMod (2^(d-1))) = 0 := by
-          push_cast
-          exact h_eq
+        have hk_cast : ((2 * k + 2^(d-2) : ℕ) : ZMod (2^(d-1))) = 0 := by push_cast; exact h_eq
         have h_dvd : 2^(d-1) ∣ 2 * k + 2^(d-2) := by
           exact (CharP.cast_eq_zero_iff (ZMod (2^(d-1))) (2^(d-1)) _).mp hk_cast
         obtain ⟨c, hc⟩ := h_dvd
@@ -146,7 +136,7 @@ lemma canonicalLift_adj_tau {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
             have hc0 : c = 0 := by omega
             have hc_copy := hc
             rw [hc0, mul_zero] at hc_copy
-            have _h_pos2 : 0 < 2 * k + 2^(d-2) := by omega
+            have _h_pos2 : 0 < 2 * k + 2^(d-2) := by positivity
             omega
           have h_c_lt : c < 2 := by
             by_contra h_c
@@ -170,8 +160,7 @@ lemma canonicalLift_adj_tau {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
         have h_pow2 : 2^(d-2) = 2 * 2^(d-3) := by rw [hd_sub2, pow_add, pow_one]; ring
         rw [h_pow1] at h_eq_nat
         rw [h_pow2] at h_eq_nat
-        have h_2k : 2 * k = 2 * 2^(d-3) := by omega
-        exact Nat.eq_of_mul_eq_mul_left (by decide) h_2k
+        omega
       have hu_eq : u = 2^(d-3) := by
         have hu_val_eq : u.val = (2^(d-3) : ZMod (2^(d-2))).val := by
           have h_lt : 2^(d-3) < 2^(d-2) := by
@@ -238,19 +227,12 @@ lemma canonicalLift_adj_tau {d : ℕ} (hd : d ≥ 3) (u : ZMod (2^(d-2))) :
         rw [hc1, mul_one] at hc
         exact hc
       exfalso
-      have h_odd : ¬ 2 ∣ 2 * k + 2^(d-2) - 1 := by
-        intro h
-        have h_even_part : 2 ∣ 2 * k + 2^(d-2) := by
-          apply dvd_add
-          · exact dvd_mul_right 2 k
-          · exact dvd_pow_self 2 (by omega)
-        have h_diff : 2 ∣ (2 * k + 2^(d-2)) - (2 * k + 2^(d-2) - 1) := Nat.dvd_sub (by omega) h_even_part h
-        have h_diff_eq : (2 * k + 2^(d-2)) - (2 * k + 2^(d-2) - 1) = 1 := by omega
-        rw [h_diff_eq] at h_diff
-        revert h_diff; decide
-      have h_even : 2 ∣ 2^(d-1) := dvd_pow_self 2 (by omega)
-      rw [h_eq_nat] at h_odd
-      exact h_odd h_even
+      have hd_sub1 : d - 1 = d - 2 + 1 := by omega
+      have h_pow1 : 2^(d-1) = 2 * 2^(d-2) := by rw [hd_sub1, pow_add, pow_one]; ring
+      have hd_sub2 : d - 2 = d - 3 + 1 := by omega
+      have h_pow2 : 2^(d-2) = 2 * 2^(d-3) := by rw [hd_sub2, pow_add, pow_one]; ring
+      rw [h_pow1, h_pow2] at h_eq_nat
+      omega
   · intro h_eq
     subst h_eq
     have h_lt : 2^(d-3) < 2^(d-2) := by

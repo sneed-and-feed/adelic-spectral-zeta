@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: check_rayleigh_collapse.py
+"""
+
 import numpy as np
 
 def tau(x, d):
@@ -35,14 +39,19 @@ def get_chain_rayleigh(d):
         u[j] = np.sin(np.pi * (j + 1) / (L + 1))
     return np.dot(u, T @ u) / np.dot(u, u)
 
-for d in range(9, 12):
-    prev_d = d - 1
-    S = get_antisym_matrix(prev_d)
-    max_eig = np.max(np.real(np.linalg.eigvals(S)))
-    rq = get_chain_rayleigh(d)
-    
-    print(f"--- d={d} ---")
-    print(f"Max Eig of A_{prev_d}: {max_eig:.4f}")
-    print(f"Rayleigh Quotient: {rq:.4f}")
-    if rq < max_eig:
-        print("RAYLEIGH QUOTIENT IS SMALLER THAN MAX EIGENVALUE!!!")
+def main():
+
+    for d in range(9, 12):
+        prev_d = d - 1
+        S = get_antisym_matrix(prev_d)
+        max_eig = np.max(np.real(np.linalg.eigvals(S)))
+        rq = get_chain_rayleigh(d)
+
+        print(f"--- d={d} ---")
+        print(f"Max Eig of A_{prev_d}: {max_eig:.4f}")
+        print(f"Rayleigh Quotient: {rq:.4f}")
+        if rq < max_eig:
+            print("RAYLEIGH QUOTIENT IS SMALLER THAN MAX EIGENVALUE!!!")
+
+if __name__ == "__main__":
+    main()

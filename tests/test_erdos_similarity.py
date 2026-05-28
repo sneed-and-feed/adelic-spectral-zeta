@@ -1,3 +1,7 @@
+"""
+Test suite: test_erdos_similarity.py
+Tests mathematical properties and correctness invariants.
+"""
 import numpy as np
 import pytest
 from adelic_spectral_zeta.erdos_similarity import (

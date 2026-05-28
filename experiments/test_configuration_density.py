@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: test_configuration_density.py
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 

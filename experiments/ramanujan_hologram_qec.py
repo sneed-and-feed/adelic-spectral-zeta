@@ -61,7 +61,7 @@ def generate_golay_generator():
             if (j - i) % 11 in Q:
                 A[i, j] = 1
             elif i != j:
-                A[i, j] = 1 # Non-residues (wait, Golay is symmetric, so if j-i in Q... actually we use Paley construction)
+                A[i, j] = 1 # Non-residues (Paley construction)
     
     # Correct Paley construction for Golay matrix B (12x12)
     B = np.zeros((12, 12), dtype=int)

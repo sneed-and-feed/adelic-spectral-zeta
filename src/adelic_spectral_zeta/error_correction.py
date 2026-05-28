@@ -1,15 +1,7 @@
 import numpy as np
 from typing import List, Tuple
 
-def get_primes_up_to(n: int) -> List[int]:
-    """Returns a list of primes up to n using a simple sieve."""
-    if n < 2: return []
-    sieve = [True] * (n + 1)
-    for p in range(2, int(n**0.5) + 1):
-        if sieve[p]:
-            for i in range(p * p, n + 1, p):
-                sieve[i] = False
-    return [p for p in range(2, n + 1) if sieve[p]]
+from .primes import sieve_primes
 
 class AdelicStabilizerCode:
     def __init__(self, N: int):
@@ -17,9 +9,13 @@ class AdelicStabilizerCode:
         Initializes an Adèlic Stabilizer Code.
         Qubits are indexed from 2 to N. Total qubits = N - 1.
         Stabilizers are indexed by primes p <= N.
+        
+        Complexity:
+        Parity check matrix H construction is O(N * pi(N)) ~ O(N^2 / ln N).
+        For N=1000, this creates a matrix with ~170K entries.
         """
         self.N = N
-        self.primes = get_primes_up_to(N)
+        self.primes = sieve_primes(N).tolist()
         self.num_qubits = N - 1
         self.num_stabilizers = len(self.primes)
         
@@ -44,6 +40,9 @@ class AdelicStabilizerCode:
         A greedy Bit-Flip (Gallager) decoder utilizing the Adèlic topology.
         It iteratively flips the qubit that participates in the highest number of 
         unsatisfied prime stabilizers.
+        
+        Note: Convergence is not guaranteed in general. The max_iter=50 
+        is sufficient for codes of this density.
         """
         current_syndrome = syndrome.copy()
         estimated_error = np.zeros(self.num_qubits, dtype=np.int8)
@@ -77,10 +76,8 @@ class AdelicStabilizerCode:
     def is_logical_failure(self, true_error: np.ndarray, estimated_error: np.ndarray) -> bool:
         """
         Determines if the decoding failed.
-        In standard repetition-like codes, failure means the residual error has high weight.
-        Here we simply check if true_error == estimated_error.
-        Since H might have a non-trivial kernel (logical operators), 
-        we check if the residual error is in the kernel.
+        Returns True if the residual error is either non-trivial in the kernel 
+        (silent logical error) or has a non-zero syndrome (decoder failure).
         """
         residual = (true_error + estimated_error) % 2
         # If residual is exactly 0, perfect decode.

@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: eval_localized_sin.py
+"""
+
 import numpy as np
 
 def run_localized_sin(d):

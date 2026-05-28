@@ -1,9 +1,12 @@
+"""Analysis of arithmetic quantum confinement and spectral similarity connected to the Erdős similarity conjecture."""
+
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.linalg import eigsh
 from fractions import Fraction
+from typing import Union, List, Tuple, Dict, Any, Optional
 
-def v_p(x, p):
+def v_p(x: Union[int, float, Fraction], p: int) -> Union[int, float]:
     """
     Computes the p-adic valuation of a number x (integer, rational, or float).
     Returns inf if x is 0.
@@ -31,13 +34,13 @@ def v_p(x, p):
         den //= p
     return val
 
-def mod_inverse(B, mod):
+def mod_inverse(B: int, mod: int) -> int:
     """
     Computes the modular inverse of B modulo mod.
     """
     return pow(int(B), -1, int(mod))
 
-def fraction_mod(frac, mod):
+def fraction_mod(frac: Union[Fraction, int, float], mod: int) -> int:
     """
     Computes the modulo of a fraction mod an integer.
     The denominator must be coprime to the mod.
@@ -48,7 +51,7 @@ def fraction_mod(frac, mod):
     inv_den = mod_inverse(den, mod)
     return (num * inv_den) % mod
 
-def construct_adelic_sequence(sequence_type, M, d=None, k=None, primes=None, depths=None, base=11):
+def construct_adelic_sequence(sequence_type: str, M: int, d: Optional[int] = None, k: Optional[int] = None, primes: Optional[List[int]] = None, depths: Optional[List[int]] = None, base: Union[int, float] = 11) -> List[Tuple]:
     """
     Constructs a diagonally embedded rational sequence in the truncated adele space
     A_trunc = R/L_Z x Z/p_1^d_1 Z x ... x Z/p_r^d_r Z.
@@ -102,7 +105,7 @@ def construct_adelic_sequence(sequence_type, M, d=None, k=None, primes=None, dep
         seq.append(tuple(coords))
     return seq
 
-def construct_generalized_cantor_set(p, d, allowed_residues=None, base_level=1, allowed_digits=None):
+def construct_generalized_cantor_set(p: int, d: int, allowed_residues: Optional[List[int]] = None, base_level: int = 1, allowed_digits: Optional[Dict[int, List[int]]] = None) -> np.ndarray:
     """
     Constructs a boolean array of shape (p**d,) where True elements represent
     the allowed points in the Cantor-like set.
@@ -143,7 +146,7 @@ def construct_generalized_cantor_set(p, d, allowed_residues=None, base_level=1, 
                 
     return indicator
 
-def construct_adelic_set(set_type, N_inf, d=None, k=None, primes=None, depths=None, density=0.5, L=1.0, theta=0.4, cantor_sets=None):
+def construct_adelic_set(set_type: str, N_inf: int, d: Optional[int] = None, k: Optional[int] = None, primes: Optional[List[int]] = None, depths: Optional[List[int]] = None, density: float = 0.5, L: float = 1.0, theta: float = 0.4, cantor_sets: Optional[List[np.ndarray]] = None) -> np.ndarray:
     """
     Constructs an adèlic set indicator function of shape (N_inf, p_1**d_1, ..., p_r**d_r).
     
@@ -197,7 +200,7 @@ def construct_adelic_set(set_type, N_inf, d=None, k=None, primes=None, depths=No
         
     return indicator
 
-def compute_correlation(adelic_set, adelic_seq, b_y, b_k2=None, b_k3=None, k_vals=None, primes=None, L=1.0):
+def compute_correlation(adelic_set: np.ndarray, adelic_seq: List[Tuple], b_y: float, b_k2: Optional[int] = None, b_k3: Optional[int] = None, k_vals: Optional[List[int]] = None, primes: Optional[List[int]] = None, L: float = 1.0) -> float:
     """
     Computes the presence / correlation function Psi(b) for a scale parameter b.
     """
@@ -231,7 +234,7 @@ def compute_correlation(adelic_set, adelic_seq, b_y, b_k2=None, b_k3=None, k_val
         
     return float(np.sum(prod))
 
-def analyze_valuation_sectors(primes, depths, base, M, cantor_sets, sequence_type="geometric"):
+def analyze_valuation_sectors(primes: List[int], depths: List[int], base: Union[int, float], M: int, cantor_sets: List[np.ndarray], sequence_type: str = "geometric") -> Tuple[List[Tuple[int, ...]], bool]:
     """
     Performs algebraic cycle analysis for sequence base over prime places.
     Determines the set of admissible non-Archimedean scale factors (k_1, ..., k_r).
@@ -305,7 +308,7 @@ def analyze_valuation_sectors(primes, depths, base, M, cantor_sets, sequence_typ
         
     return admissible_scales, collapsed
 
-def construct_idelic_laplacian(N_u, *args, **kwargs):
+def construct_idelic_laplacian(N_u: int, *args, **kwargs) -> sp.csr_matrix:
     """
     Constructs the global free idelic Laplacian Delta_I acting on functions
     over the joint scale space.
@@ -346,7 +349,7 @@ def construct_idelic_laplacian(N_u, *args, **kwargs):
         
     return Delta_I
 
-def solve_schrodinger_spectrum(adelic_set, adelic_seq, grid_params, lmbda=1.0):
+def solve_schrodinger_spectrum(adelic_set: np.ndarray, adelic_seq: List[Tuple], grid_params: Dict[str, Any], lmbda: float = 1.0) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Constructs and solves the eigenvalues of the attractive Schrödinger operator
     H = Delta_I - lambda * Psi.
@@ -434,7 +437,7 @@ def solve_schrodinger_spectrum(adelic_set, adelic_seq, grid_params, lmbda=1.0):
             
     return eigenvalues, eigenvectors, Psi
 
-def fit_confinement_scaling(primes, depths, base, M, grid_params, theta_vals=[0.2, 0.3, 0.4, 0.5], lmbda=100.0):
+def fit_confinement_scaling(primes: List[int], depths: List[int], base: Union[int, float], M: int, grid_params: Dict[str, Any], theta_vals: List[float] = [0.2, 0.3, 0.4, 0.5], lmbda: float = 100.0) -> Tuple[float, float, float]:
     """
     Solves ground-state energy for a range of theta values and performs linear regression
     against 1/(1 - theta)**2.
@@ -501,7 +504,7 @@ def fit_confinement_scaling(primes, depths, base, M, grid_params, theta_vals=[0.
     
     return float(beta_0), float(beta_1), float(r_squared)
 
-def predict_projective_limit(primes, base, M, grid_params, target_theta, sample_depths=[1, 2, 3], gamma=0.5, lmbda=100.0):
+def predict_projective_limit(primes: List[int], base: Union[int, float], M: int, grid_params: Dict[str, Any], target_theta: float, sample_depths: List[int] = [1, 2, 3], gamma: float = 0.5, lmbda: float = 100.0) -> Tuple[float, float, float, Dict[str, Any]]:
     """
     Computes beta_0(d) and beta_1(d) for a range of small depths d,
     extrapolates their values as d -> infinity using an exponential decay basis,
@@ -565,7 +568,7 @@ def predict_projective_limit(primes, base, M, grid_params, target_theta, sample_
     
     return float(prediction), float(a_coef0), float(a_coef1), fits_metadata
 
-def calculate_cosine_product_bound(theta, q, terms=100):
+def calculate_cosine_product_bound(theta: Union[float, np.ndarray], q: float, terms: int = 100) -> Tuple[np.ndarray, np.ndarray]:
     r"""
     Computes the infinite cosine product P(theta) = \prod_{n=1}^{terms} \cos(theta * q^{-n})
     and the uniform lower bound B(theta) = \exp(-theta^2 / (q^2 - 1)).
@@ -583,7 +586,7 @@ def calculate_cosine_product_bound(theta, q, terms=100):
     
     return p_val, bound
 
-def construct_joint_interaction_potential(set_a, seq, grid_params, x_val=None, lmbda=1.0):
+def construct_joint_interaction_potential(set_a: np.ndarray, seq: List[Tuple], grid_params: Dict[str, Any], x_val: Optional[float] = None, lmbda: float = 1.0) -> Union[np.ndarray, float]:
     """
     Computes the genuinely coupled joint interaction potential V_joint(y, \vec{k})
     as defined in §11.C.7 of the monograph.
@@ -683,7 +686,7 @@ def construct_joint_interaction_potential(set_a, seq, grid_params, x_val=None, l
             
     return V_joint
 
-def test_adelic_weyl_criterion(sequence_type, M, primes, depths, base=11, r_vals=None):
+def test_adelic_weyl_criterion(sequence_type: str, M: int, primes: List[int], depths: List[int], base: Union[int, float] = 11, r_vals: Optional[List[int]] = None) -> float:
     r"""
     Computes the character sum for a sequence of length M to test the Adèlic Weyl Criterion.
     G_d = \prod_{p \in primes} Z/p^d Z.

@@ -1,11 +1,14 @@
+"""Many-body quantum Hamiltonians for interacting fermion systems on adèlic spectral triples."""
+
 import numpy as np
 import scipy.linalg as la
 import scipy.sparse as sp
-from scipy.sparse.linalg import eigsh
+from scipy.sparse.linalg import eigsh, ArpackNoConvergence
 from itertools import combinations
+from typing import Tuple, List, Dict, Optional
 
-def hop(state, i, j):
-    """Apply standard fermonic hop c_i^dagger c_j with anti-commutation sign."""
+def hop(state: Tuple[int, ...], i: int, j: int) -> Tuple[Optional[Tuple[int, ...]], int]:
+    """Apply standard fermionic hop c_i^dagger c_j with anti-commutation sign."""
     if j not in state or i in state:
         return None, 0
     new_state = list(state)
@@ -19,7 +22,11 @@ def hop(state, i, j):
     sign = (-1)**between
     return new_state, sign
 
-def build_many_body_H(D, U, L, basis, state_to_idx):
+def build_many_body_H(D: np.ndarray, U: float, L: int, basis: List[Tuple[int, ...]], state_to_idx: Dict[Tuple[int, ...], int]) -> np.ndarray:
+    """Builds the dense interacting Hamiltonian.
+    
+    The 1e-12 threshold is a sparsity cutoff for dropping negligible hopping terms.
+    """
     dim_fock = len(basis)
     H = np.zeros((dim_fock, dim_fock), dtype=complex)
     
@@ -48,8 +55,11 @@ def build_many_body_H(D, U, L, basis, state_to_idx):
         
     return H
 
-def build_many_body_H_sparse(D, U, L, basis, state_to_idx):
-    """Builds the interacting Hamiltonian as a scipy.sparse.coo_matrix."""
+def build_many_body_H_sparse(D: np.ndarray, U: float, L: int, basis: List[Tuple[int, ...]], state_to_idx: Dict[Tuple[int, ...], int]) -> sp.csr_matrix:
+    """Builds the interacting Hamiltonian as a scipy.sparse.csr_matrix.
+    
+    The 1e-12 threshold is a sparsity cutoff.
+    """
     dim_fock = len(basis)
     rows = []
     cols = []
@@ -87,7 +97,8 @@ def build_many_body_H_sparse(D, U, L, basis, state_to_idx):
     H_sparse = sp.coo_matrix((data, (rows, cols)), shape=(dim_fock, dim_fock), dtype=complex)
     return H_sparse.tocsr()
 
-def get_entanglement_entropy(psi, L, N_f, basis):
+def get_entanglement_entropy(psi: np.ndarray, L: int, N_f: int, basis: List[Tuple[int, ...]]) -> float:
+    """Computes Von Neumann entanglement entropy S = -Tr(ρ_A ln ρ_A) between left/right halves of the lattice."""
     # Split state into A (first L//2 modes) and B (rest)
     blocks = {}
     
@@ -127,17 +138,19 @@ def get_entanglement_entropy(psi, L, N_f, basis):
                 
     return S
 
-def solve_ground_state_entanglement_sparse(t_zero, n_fermions, n_sites, repulsion_strength=0.1):
+def solve_ground_state_entanglement_sparse(t_zero: float, n_fermions: int, n_sites: int, repulsion_strength: float = 0.1) -> float:
     """Solve the ground state many-body entanglement using sparse matrices."""
     L = n_sites
     N_f = n_fermions
     n_vals = np.arange(-L//2, L//2) if L % 2 == 0 else np.arange(-L//2, L//2 + 1)
     n_vals = n_vals[:L]
     
+    # Clamp at 1.1 avoids the log(1) = 0 singularity
     log_lam = np.log(max(1.1, t_zero))
     D0_diag = n_vals * np.pi / log_lam
     
     xi = np.zeros(L, dtype=complex)
+    # This hardcoded list of 20 primes is chosen because L is typically small (L <= 20) in exact diagonalization
     primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71][:L]
     for p in primes:
         phases = -1j * n_vals * np.pi * np.log(p) / log_lam
@@ -160,7 +173,7 @@ def solve_ground_state_entanglement_sparse(t_zero, n_fermions, n_sites, repulsio
     try:
         evals, evecs = eigsh(H_sparse, k=1, which='SA')
         psi = evecs[:, 0]
-    except:
+    except (ArpackNoConvergence, Exception) as e:
         # Fallback if ARPACK fails on small L
         H_dense = H_sparse.toarray()
         evals, evecs = la.eigh(H_dense)
@@ -183,8 +196,12 @@ def compute_partition_oeis(n):
             p[j] += p[j - i]
     return p[n]
 
-def build_ramanujan_superconductor_H_sparse(D, U, Delta, L):
-    """Builds the full Fock space BdG interacting Hamiltonian."""
+def build_ramanujan_superconductor_H_sparse(D: np.ndarray, U: float, Delta: float, L: int) -> Tuple[sp.csr_matrix, List[Tuple[int, ...]], Dict[Tuple[int, ...], int]]:
+    """Builds the full Fock space BdG interacting Hamiltonian.
+    
+    Incorporates BdG pairing Hamiltonian with Ramanujan partition-weighted Cooper pairing.
+    Delta represents the superconducting gap parameter.
+    """
     # Generate full Fock space basis
     basis = []
     for nf in range(L + 1):

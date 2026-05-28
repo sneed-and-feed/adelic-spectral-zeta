@@ -1,3 +1,7 @@
+"""
+Test suite: test_adelic_dynamics.py
+Tests mathematical properties and correctness invariants.
+"""
 import pytest
 import numpy as np
 from adelic_spectral_zeta.spectral_gap import (
@@ -24,7 +28,7 @@ def test_shielding_identity():
     norm_ram = np.linalg.norm(op_ram)
     
     # Assert it is extremely close to 0
-    assert norm_ram < 1e-14, f"Ramified norm should be 0, got {norm_ram}"
+    assert norm_ram < 1e-14, f"Ramified norm should be 0, got {norm_ram}"  # Tolerance accounts for floating-point truncation
     
     # 2. Unramified Case: P_rho * (I \otimes \omega_2) * P_rho != 0
     _, P_rho_unram = construct_xi_and_P(N_inf, d, case="unramified")
@@ -63,7 +67,7 @@ def test_artin_dirac_properties():
         # 1. Check that Artin Dirac operator has a zero eigenvalue
         eigs = np.linalg.eigvals(D_art)
         min_eig_mag = np.min(np.abs(eigs))
-        assert min_eig_mag < 1e-12, f"Artin Dirac operator in {case} case does not have a zero mode. Min eigenvalue magnitude is {min_eig_mag}"
+        assert min_eig_mag < 1e-12, f"Artin Dirac operator in {case} case does not have a zero mode. Min eigenvalue magnitude is {min_eig_mag}"  # Tolerance accounts for floating-point truncation
         
         # 2. Check the trace identity: Tr(D_artin) = Tr(D_cov) - <xi_rho| D_cov |xi_rho>
         D_cov = construct_D_cov(N_inf, d, sigma)

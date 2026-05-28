@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: eval_chain_rayleigh.py
+"""
+
 import numpy as np
 
 def run_chain_rayleigh(d):

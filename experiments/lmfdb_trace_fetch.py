@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: lmfdb_trace_fetch.py
+"""
+
 import os
 import json
 import urllib.request

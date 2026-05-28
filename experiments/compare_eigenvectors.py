@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: compare_eigenvectors.py
+"""
+
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla

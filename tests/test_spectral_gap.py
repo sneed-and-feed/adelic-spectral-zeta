@@ -1,3 +1,7 @@
+"""
+Test suite: test_spectral_gap.py
+Tests mathematical properties and correctness invariants.
+"""
 import os
 import sys
 import pytest
@@ -5,7 +9,7 @@ import numpy as np
 
 # Ensure src directory is in path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.spectral_gap import v2, padic_distance_matrix, holder_seminorm, get_operators
+from adelic_spectral_zeta.spectral_gap import v2, padic_distance_matrix, holder_seminorm, get_operators
 
 def test_v2():
     N = 16
@@ -86,7 +90,7 @@ def test_doubly_stochastic():
     assert np.allclose(col_sums, 1.0)
 
 def test_schreier_graph_decomposition():
-    from src.spectral_gap import get_schreier_graph, get_schreier_blocks
+    from adelic_spectral_zeta.spectral_gap import get_schreier_graph, get_schreier_blocks
     
     d = 5
     adj = get_schreier_graph(d).toarray()
@@ -94,8 +98,8 @@ def test_schreier_graph_decomposition():
     
     weighted_matrix, sheet_diff_matrix = get_schreier_blocks(d)
     
-    eigenvalues_sym = np.sort(np.linalg.eigvals(weighted_matrix).real)
-    eigenvalues_anti = np.sort(np.linalg.eigvals(sheet_diff_matrix).real)
+    eigenvalues_sym = np.sort(np.linalg.eigvals(weighted_matrix.toarray()).real)
+    eigenvalues_anti = np.sort(np.linalg.eigvals(sheet_diff_matrix.toarray()).real)
     
     eigenvalues_combined = np.sort(np.concatenate([eigenvalues_sym, eigenvalues_anti]))
     

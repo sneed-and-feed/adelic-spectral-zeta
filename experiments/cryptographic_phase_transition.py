@@ -1,6 +1,9 @@
+"""
+Adelic Spectral Zeta: cryptographic_phase_transition.py
+"""
+
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 import numpy as np
 import scipy.sparse as sp
@@ -25,6 +28,16 @@ def run_cryptographic_annealing():
     print(f"Target N = {N}")
     print(f"Register Size: {n_bits} bits per factor (Total {2*n_bits} qubits)")
     print(f"Hilbert Space Dimension: {dim} x {dim}")
+    
+    # --- Classical Baseline ---
+    print("\nClassical Baseline (Trial Division):")
+    t_classical = time.time()
+    for d in range(2, int(N**0.5) + 1):
+        if N % d == 0:
+            print(f"Found factors: {d} * {N//d} = {N}")
+            break
+    t_classical_end = time.time()
+    print(f"Classical factorization took {t_classical_end - t_classical:.6f}s")
     
     print("\nBuilding H_cost...")
     t0 = time.time()
@@ -51,6 +64,13 @@ def run_cryptographic_annealing():
         
         # We find the ground state. Because H_tau is sparse and symmetric, we use eigsh
         # which='SA' finds the Smallest Algebraic eigenvalues
+        # 
+        # COMPLEXITY NOTE:
+        # For dense matrices, exact diagonalization is O(dim^3).
+        # For sparse matrices (like H_tau), eigsh is O(dim) per iteration.
+        # However, dim = 2^(2*n_bits) still scales exponentially with the number of qubits.
+        # This classical simulation bottleneck highlights exactly why actual quantum 
+        # hardware is required to scale up Adèlic Quantum Algorithms.
         try:
             evals, evecs = sla.eigsh(H_tau, k=1, which='SA')
             ground_state = evecs[:, 0]

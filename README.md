@@ -133,6 +133,7 @@ In `formalization/Formalization/ManyBodyPhaseTransition.lean`, we bridge the ext
 | Directory / File | Description |
 | :--- | :--- |
 | [`src/adelic_spectral_zeta/core.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/core.py) | Fast coefficient generation (Ramanujan tau values, Dirichlet coefficients) and vectorized $Z$-function scanning. |
+| [`src/adelic_spectral_zeta/primes.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/primes.py) | Centralized prime number utilities, unified Sieve of Eratosthenes, and shared prime arrays. |
 | [`src/adelic_spectral_zeta/determinant.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/determinant.py) | Weierstrass canonical product implementation, pole cancellation checks, and completed $L$-function comparisons. |
 | [`src/adelic_spectral_zeta/universality.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/universality.py) | Singular perturbation operators, resolvent trace evaluations, and Hoffman-Wielandt perturbation bounds for rank-1 vs. rank-N projections. |
 | [`src/adelic_spectral_zeta/quantum.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/quantum.py) | Many-body Fock basis builder, interacting fermion Hamiltonians (Coulomb repulsion), and bipartite entanglement entropy calculators. |
@@ -228,7 +229,7 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```bash
   python experiments/axiom_verification_explicit.py
   ```
-  Runs the Connes-Moscovici spectral triple axiom checks (summability, regularity bounds, dimension spectrum residues, orientation cycle, and real structure).
+  Runs the Connes-Moscovici spectral triple axiom checks (summability, regularity bounds, dimension spectrum residues, orientation cycle, and real structure) under a seeded, deterministic configuration.
 
 * **Rigidity & Extension parameter Scan**:
   ```bash
@@ -312,7 +313,7 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```bash
   python experiments/topological_qec.py
   ```
-  Evaluates an Adèlic Stabilizer Code defined over a 999-qubit physical lattice, utilizing prime number parity checks as syndrome measurements. Monte Carlo simulations of thermal bit-flip ($X$) noise demonstrate an intrinsic topological error threshold.
+  Evaluates an Adèlic Stabilizer Code defined over a 999-qubit physical lattice, utilizing prime number parity checks as syndrome measurements. Monte Carlo simulations of thermal bit-flip ($X$) noise demonstrate an intrinsic topological error threshold via direct comparison against an unencoded classical baseline.
 
 * **TPU / JAX Quantum Tensor Compilation**:
   ```bash
@@ -322,7 +323,7 @@ The repository contains pre-packaged experiments to verify the mathematical and 
 
 * **p-Adic Biological Topologies (AlphaFold)**:
   ```bash
-  python src/adelic_spectral_zeta/run_correlation.py
+  python experiments/run_correlation.py
   ```
   Extracts 3D structural metrics from AlphaFold and maps amino acid mutations into a $p$-adic sequence space. Proves a strict Pearson correlation (0.967) between theoretical sequence $p$-adic distances and the physical 3D structural differences (RMSD), verifying that protein structural homology follows a deterministic Adèlic topography.
 

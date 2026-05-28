@@ -1,3 +1,7 @@
+"""
+Test suite: test_l_function_zeros.py
+Tests mathematical properties and correctness invariants.
+"""
 import mpmath
 
 # Define completed L-function for q=3, odd character

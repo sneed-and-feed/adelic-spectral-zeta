@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: collatz_gauge_sweep.py
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.linalg import norm

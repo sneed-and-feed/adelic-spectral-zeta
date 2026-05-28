@@ -1,9 +1,12 @@
+"""
+Adelic Spectral Zeta: audit_sobolev_energy.py
+"""
+
 import numpy as np
 import os
 import sys
 
 # Ensure we can import from the source tree if run from experiments folder
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from adelic_spectral_zeta.adelic_dirac import construct_D_artin, construct_D0
 
 def compute_sobolev_energy(N_inf, d, sigma, lam=2.0):

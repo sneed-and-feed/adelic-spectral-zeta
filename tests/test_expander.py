@@ -1,3 +1,7 @@
+"""
+Test suite: test_expander.py
+Tests mathematical properties and correctness invariants.
+"""
 import os
 import json
 import subprocess

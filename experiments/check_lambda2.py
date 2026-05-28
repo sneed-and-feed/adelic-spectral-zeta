@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: check_lambda2.py
+"""
+
 import numpy as np
 import scipy.sparse.linalg as sla
 from true_spectrum import get_schreier_graph

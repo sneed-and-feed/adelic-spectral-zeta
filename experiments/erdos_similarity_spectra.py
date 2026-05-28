@@ -1,3 +1,9 @@
+"""
+Erdős Similarity via Adèlic Spectra
+=======================================
+Confinement & Clustering Sweep.
+"""
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +17,7 @@ from adelic_spectral_zeta.erdos_similarity import (
     predict_projective_limit
 )
 
-def run_experiment():
+def main():
     print("======================================================================")
     print("Erdős Similarity via Adèlic Spectra: Confinement & Clustering Sweep")
     print("======================================================================")
@@ -249,4 +255,4 @@ def run_experiment():
     print("Experiment completed successfully.")
 
 if __name__ == "__main__":
-    run_experiment()
+    main()

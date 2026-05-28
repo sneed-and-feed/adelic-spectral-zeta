@@ -1,6 +1,9 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+"""
+Topological QEC
+=================
+Thermal Noise Simulation.
+"""
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,7 +11,7 @@ from tqdm import tqdm
 
 from adelic_spectral_zeta.error_correction import AdelicStabilizerCode
 
-def run_monte_carlo():
+def main():
     print("--- Adèlic Topological QEC: Thermal Noise Simulation ---")
     
     # We set a physical lattice of size N=1000.
@@ -49,7 +52,7 @@ def run_monte_carlo():
     plt.figure(figsize=(10, 6))
     
     # Plot the break-even line (Physical Error Rate = Logical Error Rate)
-    plt.plot(p_errors, p_errors, '--', color='#888888', label="Break-Even (No QEC)")
+    plt.plot(p_errors, p_errors, '--', color='#888888', label="Unprotected Qubit Baseline")
     
     # Plot the Adèlic Code performance
     plt.plot(p_errors, logical_error_rates, 'o-', color='#C4A6D1', linewidth=2.5, markersize=6, label="Adèlic Stabilizer Code")
@@ -76,4 +79,4 @@ def run_monte_carlo():
     print(f"Threshold graph saved to {out_path}")
 
 if __name__ == "__main__":
-    run_monte_carlo()
+    main()

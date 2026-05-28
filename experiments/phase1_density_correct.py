@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: phase1_density_correct.py
+"""
+
 import numpy as np
 from scipy.special import digamma, lambertw
 from scipy.optimize import least_squares, brentq

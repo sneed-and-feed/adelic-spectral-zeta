@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: audit_gl2_orbital_integrals.py
+"""
+
 import numpy as np
 import networkx as nx
 

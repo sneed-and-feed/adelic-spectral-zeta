@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: eval_local_grad.py
+"""
+
 import numpy as np
 
 def run_local_gradient(d):

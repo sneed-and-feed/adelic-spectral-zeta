@@ -1,7 +1,10 @@
+"""p-adic metric representation of amino acid sequences mapping biochemical properties to p-adic valuations."""
+
 import numpy as np
 from Bio.PDB import MMCIFParser, Superimposer
 from Bio.SeqUtils import seq1
 import gzip
+from typing import Tuple
 
 # Amino Acid Biochemical Properties Mapping
 # Categories based on standard biochemical definitions
@@ -12,19 +15,20 @@ NEGATIVE = {'D', 'E'}
 SMALL = {'G', 'A', 'S', 'P', 'C', 'T', 'D', 'N', 'V'}
 LARGE = {'F', 'Y', 'W', 'M', 'R', 'K', 'H', 'E', 'Q', 'L', 'I'}
 
-def get_properties(aa: str):
+def get_properties(aa: str) -> Tuple[bool, bool, bool]:
     """Returns a tuple of booleans (is_hydrophobic, is_charged, is_large)"""
     is_hydro = aa in HYDROPHOBIC
     is_charged = aa in POSITIVE or aa in NEGATIVE
     is_large = aa in LARGE
     return is_hydro, is_charged, is_large
 
-def p_adic_valuation(aa1: str, aa2: str):
+def p_adic_valuation(aa1: str, aa2: str) -> Tuple[int, int, int]:
     """
     Computes the p-adic valuation (v2, v3, v5) between two amino acids.
-    v2: Hydrophobicity preservation (1 if same, 0 if different)
-    v3: Charge preservation (1 if same, 0 if different)
-    v5: Size preservation (1 if same, 0 if different)
+    We assign biochemical properties to specific prime places:
+    v2 (p=2): Hydrophobicity preservation (1 if same, 0 if different)
+    v3 (p=3): Charge preservation (1 if same, 0 if different)
+    v5 (p=5): Size preservation (1 if same, 0 if different)
     """
     if aa1 == aa2:
         return 1, 1, 1
@@ -38,7 +42,7 @@ def p_adic_valuation(aa1: str, aa2: str):
     
     return v2, v3, v5
 
-def sequence_p_adic_distance(seq1: str, seq2: str, p: int):
+def sequence_p_adic_distance(seq1: str, seq2: str, p: int) -> float:
     """
     Computes the sequence-level p-adic distance.
     Valuation of sequence = sum of per-residue valuations.
@@ -62,7 +66,7 @@ def sequence_p_adic_distance(seq1: str, seq2: str, p: int):
     normalized_v = v_seq / length
     return p ** (-normalized_v)
 
-def parse_mmcif_sequence(filepath: str, chain_id: str = 'A'):
+def parse_mmcif_sequence(filepath: str, chain_id: str = 'A') -> str:
     """Extracts the sequence from an mmCIF file."""
     parser = MMCIFParser(QUIET=True)
     if filepath.endswith('.gz'):
@@ -85,7 +89,7 @@ def parse_mmcif_sequence(filepath: str, chain_id: str = 'A'):
 
 from Bio import Align
 
-def calculate_3d_rmsd(file1: str, file2: str, chain_id1: str = 'A', chain_id2: str = 'A'):
+def calculate_3d_rmsd(file1: str, file2: str, chain_id1: str = 'A', chain_id2: str = 'A') -> float:
     """Calculates the physical 3D RMSD between the CA atoms of two mmCIF structures using sequence alignment."""
     parser = MMCIFParser(QUIET=True)
     

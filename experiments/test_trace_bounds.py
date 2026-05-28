@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: test_trace_bounds.py
+"""
+
 import numpy as np
 
 def tau(x, d):
@@ -35,19 +39,24 @@ def get_chain_rayleigh(d):
         u[j] = np.sin(np.pi * (j + 1) / (L + 1))
     return np.dot(u, T @ u) / np.dot(u, u)
 
-for d in range(7, 10):
-    prev_d = d - 1
-    S = get_antisym_matrix(prev_d)
-    tr_A2 = np.trace(S @ S)
-    max_eig = np.max(np.real(np.linalg.eigvals(S)))
-    rq = get_chain_rayleigh(d)
-    
-    print(f"--- d={d} ---")
-    print(f"Max Eig of A_{prev_d}: {max_eig:.4f}")
-    print(f"Rayleigh Quotient: {rq:.4f}")
-    print(f"Tr(A^2): {tr_A2}")
-    print(f"sqrt(Tr(A^2)): {np.sqrt(tr_A2):.4f}")
-    
-    # Let's also check max row sum
-    max_row_sum = np.max(np.sum(np.abs(S), axis=1))
-    print(f"Max Absolute Row Sum (Gershgorin): {max_row_sum}")
+def main():
+
+    for d in range(7, 10):
+        prev_d = d - 1
+        S = get_antisym_matrix(prev_d)
+        tr_A2 = np.trace(S @ S)
+        max_eig = np.max(np.real(np.linalg.eigvals(S)))
+        rq = get_chain_rayleigh(d)
+
+        print(f"--- d={d} ---")
+        print(f"Max Eig of A_{prev_d}: {max_eig:.4f}")
+        print(f"Rayleigh Quotient: {rq:.4f}")
+        print(f"Tr(A^2): {tr_A2}")
+        print(f"sqrt(Tr(A^2)): {np.sqrt(tr_A2):.4f}")
+
+        # Let's also check max row sum
+        max_row_sum = np.max(np.sum(np.abs(S), axis=1))
+        print(f"Max Absolute Row Sum (Gershgorin): {max_row_sum}")
+
+if __name__ == "__main__":
+    main()

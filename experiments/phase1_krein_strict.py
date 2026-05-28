@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: phase1_krein_strict.py
+"""
+
 import numpy as np
 import scipy.optimize as opt
 import mpmath

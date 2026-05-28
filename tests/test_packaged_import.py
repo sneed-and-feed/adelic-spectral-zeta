@@ -1,3 +1,7 @@
+"""
+Test suite: test_packaged_import.py
+Tests mathematical properties and correctness invariants.
+"""
 from adelic_spectral_zeta import get_tau, Z_sym3_batch
 import numpy as np
 

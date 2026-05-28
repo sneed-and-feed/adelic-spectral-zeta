@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: axiom_verification_explicit.py
+"""
+
 import os
 import numpy as np
 import scipy.linalg as la
@@ -88,6 +92,8 @@ def main():
     print("==================================================================")
     print("        CONNES-MOSCOVICI SPECTRAL TRIPLE AXIOM EXPLORATION")
     print("==================================================================\n")
+    
+    np.random.seed(42)
     
     lambda_val = 29.0
     N_dim = 200

@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: bruhat_tits_energy_divergence.py
+"""
+
 import numpy as np
 import argparse
 

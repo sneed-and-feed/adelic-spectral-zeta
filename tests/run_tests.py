@@ -1,7 +1,14 @@
+"""
+Test runner script.
+Executes the main simulation experiment and verifies that the expected 
+output artifacts (figures and data files) are generated successfully.
+"""
+
 import subprocess
 import os
 
-print("=== Adélic Spectral Triple Exploration Runner ===")
+def main() -> None:
+    print("=== Adélic Spectral Triple Exploration Runner ===")
 
 # Run the simulation script
 script_path = os.path.join("experiments", "simulation.py")

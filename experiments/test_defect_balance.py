@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: test_defect_balance.py
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import linregress

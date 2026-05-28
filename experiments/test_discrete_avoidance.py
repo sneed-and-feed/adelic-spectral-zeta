@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: test_discrete_avoidance.py
+"""
+
 # GUARDRAILS — DO NOT VIOLATE
 # 1. This code computes the DISCRETE analog of the Erdős Similarity Conjecture.
 # 2. It does NOT suggest the continuous ESC. Discrete density → 0 is Szemerédi's theorem.

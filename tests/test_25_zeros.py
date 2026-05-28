@@ -1,3 +1,7 @@
+"""
+Test suite: test_25_zeros.py
+Tests mathematical properties and correctness invariants.
+"""
 import numpy as np
 import mpmath
 from scipy.optimize import bisect

@@ -21,110 +21,115 @@ import numpy as np
 import scipy.linalg as la
 import sympy as sp
 import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
-print("=" * 70)
-print("TASK 3.2: ARTIN SPECTRAL TRIPLE CONSTRUCTION (Icosahedral, Conductor 800)")
-print("=" * 70)
+def main():
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
 
-P_MAX = 150
-primes = list(sp.primerange(2, P_MAX))
+    print("=" * 70)
+    print("TASK 3.2: ARTIN SPECTRAL TRIPLE CONSTRUCTION (Icosahedral, Conductor 800)")
+    print("=" * 70)
 
-# ─── 1. COMPUTE FROBENIUS TRACES ────────────────────────────────────────
-x = sp.Symbol('x')
-f = x**5 + 10*x**3 - 10*x**2 + 35*x - 18
+    P_MAX = 150
+    primes = list(sp.primerange(2, P_MAX))
 
-a_p = {}
-phi = (1 + np.sqrt(5)) / 2
-phi_conj = (1 - np.sqrt(5)) / 2
+    # ─── 1. COMPUTE FROBENIUS TRACES ────────────────────────────────────────
+    x = sp.Symbol('x')
+    f = x**5 + 10*x**3 - 10*x**2 + 35*x - 18
 
-print(f"{'p':<5} | {'Splitting Type':<20} | {'Trace a_p':<10}")
-print("-" * 50)
+    a_p = {}
+    phi = (1 + np.sqrt(5)) / 2
+    phi_conj = (1 - np.sqrt(5)) / 2
 
-for p in primes:
-    if p in [2, 5]:
-        a_p[p] = 0.0
-        split_str = "Ramified"
-    else:
-        try:
-            factors = sp.factor_list(f, modulus=p)[1]
-            degrees = sorted([sp.degree(poly) for poly, mult in factors])
-            
-            if degrees == [1, 1, 1, 1, 1]:
-                # Heuristic: assign +2 for simplicity in this test
-                a_p[p] = 2.0
-            elif degrees == [1, 2, 2]:
-                a_p[p] = 0.0
-            elif degrees == [1, 1, 3]:
-                a_p[p] = -1.0
-            elif degrees == [5]:
-                # Assign one of the conjugate golden ratio roots deterministically
-                a_p[p] = phi if p % 2 == 0 else phi_conj
-            else:
-                a_p[p] = 0.0
-                
-            split_str = str(tuple(degrees))
-        except:
+    print(f"{'p':<5} | {'Splitting Type':<20} | {'Trace a_p':<10}")
+    print("-" * 50)
+
+    for p in primes:
+        if p in [2, 5]:
             a_p[p] = 0.0
-            split_str = "Error"
-            
-    if p <= 43:
-        print(f"{p:<5} | {split_str:<20} | {a_p[p]:<10.3f}")
+            split_str = "Ramified"
+        else:
+            try:
+                factors = sp.factor_list(f, modulus=p)[1]
+                degrees = sorted([sp.degree(poly) for poly, mult in factors])
 
-# ─── 2. CONSTRUCT SPECTRAL TRIPLE ───────────────────────────────────────
-N = 250
-lam = 42.0
-log_lam = np.log(lam)
-n_vals = np.arange(-N, N + 1)
-dim = 2 * N + 1
-D0_diag = n_vals * np.pi / log_lam
+                if degrees == [1, 1, 1, 1, 1]:
+                    # Heuristic: assign +2 for simplicity in this test
+                    a_p[p] = 2.0
+                elif degrees == [1, 2, 2]:
+                    a_p[p] = 0.0
+                elif degrees == [1, 1, 3]:
+                    a_p[p] = -1.0
+                elif degrees == [5]:
+                    # Assign one of the conjugate golden ratio roots deterministically
+                    a_p[p] = phi if p % 2 == 0 else phi_conj
+                else:
+                    a_p[p] = 0.0
 
-print("\nConstructing Artin Coupling Vector xi_rho...")
-xi = np.zeros(dim, dtype=complex)
+                split_str = str(tuple(degrees))
+            except Exception:
+                a_p[p] = 0.0
+                split_str = "Error"
 
-for p in primes:
-    if a_p[p] == 0:
-        continue
-    phases = -1j * n_vals * np.pi * np.log(p) / log_lam
-    xi += a_p[p] * (np.log(p) / np.sqrt(p)) * np.exp(phases)
+        if p <= 43:
+            print(f"{p:<5} | {split_str:<20} | {a_p[p]:<10.3f}")
 
-# Normalize
-xi_norm = xi / np.linalg.norm(xi)
+    # ─── 2. CONSTRUCT SPECTRAL TRIPLE ───────────────────────────────────────
+    N = 250
+    lam = 42.0
+    log_lam = np.log(lam)
+    n_vals = np.arange(-N, N + 1)
+    dim = 2 * N + 1
+    D0_diag = n_vals * np.pi / log_lam
 
-# Construct projection
-P = np.outer(xi_norm, np.conj(xi_norm))
-D_artin = (np.eye(dim) - P) @ np.diag(D0_diag) @ (np.eye(dim) - P)
+    print("\nConstructing Artin Coupling Vector xi_rho...")
+    xi = np.zeros(dim, dtype=complex)
 
-# Compute eigenvalues
-evs = np.sort(np.abs(la.eigvalsh(D_artin)))
-evs = evs[evs > 1e-6]
+    for p in primes:
+        if a_p[p] == 0:
+            continue
+        phases = -1j * n_vals * np.pi * np.log(p) / log_lam
+        xi += a_p[p] * (np.log(p) / np.sqrt(p)) * np.exp(phases)
 
-print("\n--- Low-Lying Artin Eigenvalues ---")
-for i in range(10):
-    print(f"n = {i+1:<2} | |λ_n| = {evs[i]:.6f}")
+    # Normalize
+    xi_norm = xi / np.linalg.norm(xi)
 
-# Plot eigenvalue spacing
-spacing = np.diff(evs[:100])
-fig, ax = plt.subplots(figsize=(8, 5))
-fig.patch.set_facecolor('#0f0f1a')
-ax.set_facecolor('#0f0f1a')
-ax.tick_params(colors='white')
-for spine in ax.spines.values(): spine.set_edgecolor('#444')
+    # Construct projection
+    P = np.outer(xi_norm, np.conj(xi_norm))
+    D_artin = (np.eye(dim) - P) @ np.diag(D0_diag) @ (np.eye(dim) - P)
 
-ax.hist(spacing, bins=20, color='#f72585', alpha=0.8, edgecolor='white')
-ax.set_title("Artin L-function Spectral Triple: Eigenvalue Spacing", color='white')
-ax.set_xlabel("Spacing", color='white')
-ax.set_ylabel("Frequency", color='white')
+    # Compute eigenvalues
+    evs = np.sort(np.abs(la.eigvalsh(D_artin)))
+    evs = evs[evs > 1e-6]
 
-plt.tight_layout()
-import os
-script_dir = os.path.dirname(os.path.abspath(__file__))
-out = os.path.join(script_dir, "..", "figures", "artin_spectral_triple.png")
-plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
-plt.close()
+    print("\n--- Low-Lying Artin Eigenvalues ---")
+    for i in range(10):
+        print(f"n = {i+1:<2} | |λ_n| = {evs[i]:.6f}")
 
-print(f"\nPlot saved to {out}")
-print("=" * 70)
-print("TASK 3.2 COMPLETE")
-print("=" * 70)
+    # Plot eigenvalue spacing
+    spacing = np.diff(evs[:100])
+    fig, ax = plt.subplots(figsize=(8, 5))
+    fig.patch.set_facecolor('#0f0f1a')
+    ax.set_facecolor('#0f0f1a')
+    ax.tick_params(colors='white')
+    for spine in ax.spines.values(): spine.set_edgecolor('#444')
+
+    ax.hist(spacing, bins=20, color='#f72585', alpha=0.8, edgecolor='white')
+    ax.set_title("Artin L-function Spectral Triple: Eigenvalue Spacing", color='white')
+    ax.set_xlabel("Spacing", color='white')
+    ax.set_ylabel("Frequency", color='white')
+
+    plt.tight_layout()
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    out = os.path.join(script_dir, "..", "figures", "artin_spectral_triple.png")
+    plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
+    plt.close()
+
+    print(f"\nPlot saved to {out}")
+    print("=" * 70)
+    print("TASK 3.2 COMPLETE")
+    print("=" * 70)
+
+if __name__ == "__main__":
+    main()

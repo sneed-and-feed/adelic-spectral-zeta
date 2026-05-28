@@ -1,3 +1,7 @@
+"""
+Test suite: test_zeros_sym3.py
+Tests mathematical properties and correctness invariants.
+"""
 import numpy as np
 import mpmath
 import matplotlib

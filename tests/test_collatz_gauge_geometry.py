@@ -1,3 +1,7 @@
+"""
+Test suite: test_collatz_gauge_geometry.py
+Tests mathematical properties and correctness invariants.
+"""
 import pytest
 import numpy as np
 from scipy.linalg import norm
@@ -56,7 +60,7 @@ def test_operator_gauge_identity():
         lhs = B_alg @ (A @ A)
         rhs = A @ B_alg @ P0 + (A @ A @ A) @ B_alg @ P1
         defect = lhs - rhs
-        assert norm(defect, 'fro') < 1e-12
+        assert norm(defect, 'fro') < 1e-12  # Tolerance accounts for floating-point truncation
 
 def test_numerical_representation_defect():
     """Checks that the numerical representation B_num has Frobenius norm defect exactly 2.0."""
@@ -189,5 +193,5 @@ def test_exact_graph_correspondence():
         lhs = (M + M.T) @ L
         rhs = 0.5 * L @ A_G
         defect = lhs - rhs
-        assert norm(defect, 'fro') < 1e-12
+        assert norm(defect, 'fro') < 1e-12  # Tolerance accounts for floating-point truncation
 

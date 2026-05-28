@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: projective_convergence.py
+"""
+
 import numpy as np
 from adelic_spectral_zeta.erdos_similarity import (
     construct_adelic_sequence,

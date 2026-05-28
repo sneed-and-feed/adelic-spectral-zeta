@@ -6,19 +6,19 @@ open PowerSeries
 -- The formal variable X in PowerSeries Int
 noncomputable def X_series : PowerSeries ℤ := X
 
--- We aim to formalize the Ramanujan tau function algebraically.
+-- We aim to formalize the Ramanujan ramanujanTau function algebraically.
 -- First, we define a truncation of the infinite product:
 -- prod_{n=1}^N (1 - X^n)^24
 noncomputable def ramanujan_trunc (N : ℕ) : PowerSeries ℤ :=
   (Finset.range N).prod (fun n => (1 - (X_series ^ (n + 1))) ^ 24)
 
--- We can define tau(n) as the n-th coefficient of the infinite product
+-- We can define ramanujanTau(n) as the n-th coefficient of the infinite product
 -- For a given n, we only need to compute up to N = n.
-noncomputable def tau (n : ℕ) : ℤ :=
+noncomputable def ramanujanTau (n : ℕ) : ℤ :=
   coeff ℤ n (X_series * ramanujan_trunc n)
 
 -- We can formally state the Ramanujan Congruence modulo 691
--- tau(n) == sigma_11(n) mod 691.
+-- ramanujanTau(n) == sigma_11(n) mod 691.
 -- Since proving this requires the full theory of Hecke operators and modular forms,
 -- we define the predicate algebraically to establish the topological condition for the QEC.
 
@@ -26,7 +26,7 @@ def divisor_sum_11 (n : ℕ) : ℤ :=
   (Finset.filter (fun d => n % d = 0) (Finset.Icc 1 n)).sum (fun d => (d : ℤ) ^ 11)
 
 def ramanujan_congruence_691 (n : ℕ) : Prop :=
-  (tau n - divisor_sum_11 n) % 691 = 0
+  (ramanujanTau n - divisor_sum_11 n) % 691 = 0
 
 -- The Bernoulli number identity from Mathlib
 lemma B_12_eq : bernoulli 12 = -691 / 2730 := by
@@ -40,7 +40,7 @@ noncomputable def E_12 : PowerSeries ℚ :=
   PowerSeries.mk fun n => if n = 0 then 1 else (65520 / 691) * (divisor_sum_11 n : ℚ)
 
 noncomputable def Delta_Q : PowerSeries ℚ :=
-  PowerSeries.mk fun n => (tau n : ℚ)
+  PowerSeries.mk fun n => (ramanujanTau n : ℚ)
 
 -- The subspace of modular forms of weight 12
 axiom M_12 : Set (PowerSeries ℚ)
@@ -58,8 +58,8 @@ axiom F_exists : ∃ (F_int : PowerSeries ℤ),
   coeff ℤ 1 F_int = 720
 
 -- Basic computation of the first coefficients
-axiom tau_zero : tau 0 = 0
-axiom tau_one : tau 1 = 1
+axiom tau_zero : ramanujanTau 0 = 0
+axiom tau_one : ramanujanTau 1 = 1
 axiom divisor_sum_11_one : divisor_sum_11 1 = 1
 
 theorem ramanujan_tau_congruence (n : ℕ) (hn : n > 0) : ramanujan_congruence_691 n := by
@@ -95,42 +95,42 @@ theorem ramanujan_tau_congruence (n : ℕ) (hn : n > 0) : ramanujan_congruence_6
   have hn_eq : coeff ℚ n (PowerSeries.map (algebraMap ℤ ℚ) F_int) = coeff ℚ n (a • E_12 + b • Delta_Q) := by rw [h_span]
   have hcn : coeff ℚ n (PowerSeries.map (algebraMap ℤ ℚ) F_int) = (coeff ℤ n F_int : ℚ) := by sorry
   rw [hcn] at hn_eq
-  have hsn : coeff ℚ n (a • E_12 + b • Delta_Q) = a * ((65520 / 691) * (divisor_sum_11 n : ℚ)) + b * (tau n : ℚ) := by sorry
+  have hsn : coeff ℚ n (a • E_12 + b • Delta_Q) = a * ((65520 / 691) * (divisor_sum_11 n : ℚ)) + b * (ramanujanTau n : ℚ) := by sorry
   rw [hsn, ha, hb, one_mul] at hn_eq
   
   -- Clear denominators
-  have h_clear : (691 : ℚ) * (coeff ℤ n F_int : ℚ) = 65520 * (divisor_sum_11 n : ℚ) + 432000 * (tau n : ℚ) := by
-    calc (691 : ℚ) * (coeff ℤ n F_int : ℚ) = 691 * ((65520 / 691) * (divisor_sum_11 n : ℚ) + (432000 / 691) * (tau n : ℚ)) := by rw [hn_eq]
-         _ = 65520 * (divisor_sum_11 n : ℚ) + 432000 * (tau n : ℚ) := by ring
+  have h_clear : (691 : ℚ) * (coeff ℤ n F_int : ℚ) = 65520 * (divisor_sum_11 n : ℚ) + 432000 * (ramanujanTau n : ℚ) := by
+    calc (691 : ℚ) * (coeff ℤ n F_int : ℚ) = 691 * ((65520 / 691) * (divisor_sum_11 n : ℚ) + (432000 / 691) * (ramanujanTau n : ℚ)) := by rw [hn_eq]
+         _ = 65520 * (divisor_sum_11 n : ℚ) + 432000 * (ramanujanTau n : ℚ) := by ring
          
   -- Bring to integers
-  have h_int : (691 * coeff ℤ n F_int : ℤ) = 65520 * divisor_sum_11 n + 432000 * tau n := by
+  have h_int : (691 * coeff ℤ n F_int : ℤ) = 65520 * divisor_sum_11 n + 432000 * ramanujanTau n := by
     exact_mod_cast h_clear
 
   -- Formulate the congruence
   dsimp [ramanujan_congruence_691]
   
-  have h_mod : (65520 * divisor_sum_11 n + 432000 * tau n) % 691 = 0 := by
+  have h_mod : (65520 * divisor_sum_11 n + 432000 * ramanujanTau n) % 691 = 0 := by
     rw [←h_int, mul_comm, Int.mul_emod, Int.emod_self, mul_zero, Int.zero_emod]
     
   -- 65520 = 691 * 95 - 125
   -- 432000 = 691 * 625 + 125
-  have h_rewrite : 65520 * divisor_sum_11 n + 432000 * tau n = 
-    691 * (95 * divisor_sum_11 n + 625 * tau n) + 125 * (tau n - divisor_sum_11 n) := by ring
+  have h_rewrite : 65520 * divisor_sum_11 n + 432000 * ramanujanTau n = 
+    691 * (95 * divisor_sum_11 n + 625 * ramanujanTau n) + 125 * (ramanujanTau n - divisor_sum_11 n) := by ring
     
   rw [h_rewrite] at h_mod
   rw [Int.add_emod, Int.mul_emod, Int.emod_self, zero_mul, Int.zero_emod, zero_add, Int.emod_emod] at h_mod
   
-  -- Now we have 125 * (tau n - divisor_sum_11 n) ≡ 0 (mod 691)
+  -- Now we have 125 * (ramanujanTau n - divisor_sum_11 n) ≡ 0 (mod 691)
   -- Since gcd(125, 691) = 1, we can cancel 125.
   
-  have h_cancel : ((125 * (tau n - divisor_sum_11 n)) * (-221)) % 691 = 0 := by
+  have h_cancel : ((125 * (ramanujanTau n - divisor_sum_11 n)) * (-221)) % 691 = 0 := by
     sorry -- from h_mod * (-221) % 691 = 0
     
-  have h_cancel2 : (1 - 691 * (-40)) * (tau n - divisor_sum_11 n) % 691 = 0 := by
+  have h_cancel2 : (1 - 691 * (-40)) * (ramanujanTau n - divisor_sum_11 n) % 691 = 0 := by
     sorry -- Since 125 * (-221) = 1 - 691 * (-40)
     
-  have h_cancel3 : (tau n - divisor_sum_11 n) % 691 = 0 := by
+  have h_cancel3 : (ramanujanTau n - divisor_sum_11 n) % 691 = 0 := by
     sorry -- Since 1 - 691 * (-40) ≡ 1 (mod 691)
     
   exact h_cancel3

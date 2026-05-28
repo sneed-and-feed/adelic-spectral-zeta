@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: check_antisym_eig.py
+"""
+
 import numpy as np
 
 def pi(x, d):
@@ -23,7 +27,12 @@ def get_antisym_matrix(d):
             S[u,v] = w
     return S
 
-for d in range(4, 9):
-    S = get_antisym_matrix(d)
-    eigvals = np.real(np.linalg.eigvals(S))
-    print(f"d={d}, max_antisym_eig={np.max(eigvals)}")
+def main():
+
+    for d in range(4, 9):
+        S = get_antisym_matrix(d)
+        eigvals = np.real(np.linalg.eigvals(S))
+        print(f"d={d}, max_antisym_eig={np.max(eigvals)}")
+
+if __name__ == "__main__":
+    main()

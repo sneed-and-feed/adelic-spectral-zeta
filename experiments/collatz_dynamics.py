@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: collatz_dynamics.py
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -51,13 +55,7 @@ def build_transfer_operator(depth=4):
     P = np.zeros((N, N))
     
     # 3 is invertible modulo 2^depth. Find its modular inverse.
-    # For depth=0, it's just 1.
-    inv_3 = 1
-    if depth > 0:
-        for i in range(1, N):
-            if (3 * i) % N == 1:
-                inv_3 = i
-                break
+    inv_3 = pow(3, -1, N) if depth > 0 else 1
                 
     for x in range(N):
         # Preimage 1: y_even = 2x mod 2^depth
@@ -136,7 +134,10 @@ def main():
     plt.tight_layout()
     
     # Save the plot
-    plot_path = "c:/Users/x/.gemini/antigravity/scratch/collatz_transfer_eigs.png"
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    plot_path = os.path.join(script_dir, "..", "figures", "collatz_transfer_eigs.png")
+    os.makedirs(os.path.dirname(plot_path), exist_ok=True)
     plt.savefig(plot_path)
     print(f"\nSaved eigenvalue plot to {plot_path}")
 

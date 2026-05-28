@@ -1,3 +1,7 @@
+"""
+Test suite: test_perturbation_bounds.py
+Tests mathematical properties and correctness invariants.
+"""
 import pytest
 import numpy as np
 import scipy.linalg as la

@@ -1,3 +1,7 @@
+"""
+Test suite: test_secular.py
+Tests mathematical properties and correctness invariants.
+"""
 import numpy as np
 import mpmath
 import matplotlib.pyplot as plt

@@ -1,10 +1,13 @@
+"""
+Adelic Spectral Zeta: technognostic_demiurge_miner.py
+"""
+
 import numpy as np
 import time
 import sys
 import os
 
 # Add src to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from adelic_spectral_zeta.adelic_dirac import construct_D_artin, construct_D0
 

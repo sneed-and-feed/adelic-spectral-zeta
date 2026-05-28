@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: test_sym_matrix_equality.py
+"""
+
 import numpy as np
 import scipy.sparse as sp
 

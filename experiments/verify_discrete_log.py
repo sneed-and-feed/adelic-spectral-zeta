@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: verify_discrete_log.py
+"""
+
 import numpy as np
 
 def main():

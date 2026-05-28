@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: run_all_checks.py
+"""
+
 import os
 import sys
 import numpy as np

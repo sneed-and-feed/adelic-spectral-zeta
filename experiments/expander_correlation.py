@@ -1,13 +1,16 @@
+"""
+Task: Expander Correlation Simulation
+=========================================
+Simulates asymptotic frequency sweeps and quantitative power-law exponent fitting.
+"""
+
 import os
 import json
 import numpy as np
-import sympy as sp
+from adelic_spectral_zeta.primes import sieve_primes
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
-def get_primes(n):
-    return list(sp.primerange(2, n + 1))
 
 def main():
     print("=" * 70)
@@ -39,7 +42,7 @@ def main():
     
     # Primes up to 1000 for dense sum
     P_MAX = 1000
-    primes = get_primes(P_MAX)
+    primes = sieve_primes(P_MAX)
     print(f"Number of primes up to {P_MAX}: {len(primes)}")
     
     # Filter active primes present in database

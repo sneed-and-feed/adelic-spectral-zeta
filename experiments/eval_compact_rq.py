@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: eval_compact_rq.py
+"""
+
 import numpy as np
 
 def run_compact_test_vector(d):

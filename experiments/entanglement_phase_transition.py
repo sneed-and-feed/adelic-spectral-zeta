@@ -1,3 +1,7 @@
+"""
+Adelic Spectral Zeta: entanglement_phase_transition.py
+"""
+
 import os
 import json
 import numpy as np
@@ -46,7 +50,7 @@ def get_D_matrix(t_lam, L):
         s_val = 0.5 + 1j * t
         try:
             gamma_shift[i] = 0.5 * complex(mpmath.psi(0, s_val))
-        except:
+        except Exception:
             gamma_shift[i] = 0.0
             
     xi = np.zeros(L, dtype=complex)
@@ -67,70 +71,74 @@ def get_D_matrix(t_lam, L):
     D = (np.eye(L) - P) @ np.diag(D0_diag) @ (np.eye(L) - P)
     return D
 
-results = {L: {U: [] for U in U_vals} for L in L_modes}
-
-for L in L_modes:
-    N_f = L // 2
-    basis = list(combinations(range(L), N_f))
-    dim_fock = len(basis)
-    state_to_idx = {state: i for i, state in enumerate(basis)}
-    print(f"\n[+] Constructing limits for L={L} (Fock space dim: {dim_fock})")
+def main():
+    results = {L: {U: [] for U in U_vals} for L in L_modes}
     
-    for U in U_vals:
-        print(f"  -> Sweeping U = {U}")
-        start_u = time.time()
-        for idx, t in enumerate(t_vals):
-            D = get_D_matrix(t, L)
-            H_sparse = build_many_body_H_sparse(D, U, L, basis, state_to_idx)
-            
-            try:
-                evals, evecs = eigsh(H_sparse, k=1, which='SA')
-                psi_gs = evecs[:, 0]
-            except:
-                H_dense = H_sparse.toarray()
-                evals, evecs = la.eigh(H_dense)
-                psi_gs = evecs[:, 0]
+    for L in L_modes:
+        N_f = L // 2
+        basis = list(combinations(range(L), N_f))
+        dim_fock = len(basis)
+        state_to_idx = {state: i for i, state in enumerate(basis)}
+        print(f"\n[+] Constructing limits for L={L} (Fock space dim: {dim_fock})")
+        
+        for U in U_vals:
+            print(f"  -> Sweeping U = {U}")
+            start_u = time.time()
+            for idx, t in enumerate(t_vals):
+                D = get_D_matrix(t, L)
+                H_sparse = build_many_body_H_sparse(D, U, L, basis, state_to_idx)
                 
-            S = get_entanglement_entropy(psi_gs, L, N_f, basis)
-            results[L][U].append(S)
-            
-            if idx % 20 == 0:
-                print(f"     [t={t:.2f}] S={S:.4f}")
+                try:
+                    evals, evecs = eigsh(H_sparse, k=1, which='SA')
+                    psi_gs = evecs[:, 0]
+                except Exception:
+                    H_dense = H_sparse.toarray()
+                    evals, evecs = la.eigh(H_dense)
+                    psi_gs = evecs[:, 0]
+                    
+                S = get_entanglement_entropy(psi_gs, L, N_f, basis)
+                results[L][U].append(S)
                 
-        print(f"  -> U = {U} sweep completed in {time.time() - start_u:.2f}s")
-
-fig, axes = plt.subplots(1, len(L_modes), figsize=(14, 6))
-fig.patch.set_facecolor('#0b0b14')
-
-colors = ['#00f2fe', '#C4A6D1', '#ff0055']
-buhler_zeros = [5.1015, 5.5613, 6.0244, 6.4910, 6.9613]
-
-for ax_idx, L in enumerate(L_modes):
-    ax = axes[ax_idx] if len(L_modes) > 1 else axes
-    ax.set_facecolor('#141426')
-    ax.tick_params(colors='white')
-    ax.xaxis.label.set_color('white')
-    ax.yaxis.label.set_color('white')
-    ax.title.set_color('white')
-    for spine in ax.spines.values(): spine.set_edgecolor('#2a2b44')
-    ax.grid(True, linestyle='--', alpha=0.3, color='#555')
+                if idx % 20 == 0:
+                    print(f"     [t={t:.2f}] S={S:.4f}")
+                    
+            print(f"  -> U = {U} sweep completed in {time.time() - start_u:.2f}s")
     
-    for idx, U in enumerate(U_vals):
-        ax.plot(t_vals, results[L][U], color=colors[idx], linewidth=2.5, label=f'$U = {U}$')
+    fig, axes = plt.subplots(1, len(L_modes), figsize=(14, 6))
+    fig.patch.set_facecolor('#0b0b14')
+    
+    colors = ['#00f2fe', '#C4A6D1', '#ff0055']
+    buhler_zeros = [5.1015, 5.5613, 6.0244, 6.4910, 6.9613]
+    
+    for ax_idx, L in enumerate(L_modes):
+        ax = axes[ax_idx] if len(L_modes) > 1 else axes
+        ax.set_facecolor('#141426')
+        ax.tick_params(colors='white')
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.title.set_color('white')
+        for spine in ax.spines.values(): spine.set_edgecolor('#2a2b44')
+        ax.grid(True, linestyle='--', alpha=0.3, color='#555')
         
-    for idx, kz in enumerate(buhler_zeros):
-        ax.axvline(kz, color='white', linestyle=':', linewidth=1.0, alpha=0.5)
-        
-    ax.set_title(f"Modes: L={L}", color='white', fontsize=14)
-    ax.set_xlabel(r"Scaling Parameter $\lambda$ (Height $t$)", color='white', fontsize=12)
-    if ax_idx == 0:
-        ax.set_ylabel("von Neumann Entanglement Entropy $S$", color='white', fontsize=12)
-    ax.legend(facecolor='#141426', edgecolor='#2a2b44', labelcolor='white')
+        for idx, U in enumerate(U_vals):
+            ax.plot(t_vals, results[L][U], color=colors[idx], linewidth=2.5, label=f'$U = {U}$')
+            
+        for idx, kz in enumerate(buhler_zeros):
+            ax.axvline(kz, color='white', linestyle=':', linewidth=1.0, alpha=0.5)
+            
+        ax.set_title(f"Modes: L={L}", color='white', fontsize=14)
+        ax.set_xlabel(r"Scaling Parameter $\lambda$ (Height $t$)", color='white', fontsize=12)
+        if ax_idx == 0:
+            ax.set_ylabel("von Neumann Entanglement Entropy $S$", color='white', fontsize=12)
+        ax.legend(facecolor='#141426', edgecolor='#2a2b44', labelcolor='white')
+    
+    plt.tight_layout()
+    out = os.path.join(project_root, "figures", "entanglement_phase_transition_thermodynamic.png")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
+    plt.close()
+    print(f"\n[*] Plot saved to {out}")
+    print("=" * 70)
 
-plt.tight_layout()
-out = os.path.join(project_root, "figures", "entanglement_phase_transition_thermodynamic.png")
-os.makedirs(os.path.dirname(out), exist_ok=True)
-plt.savefig(out, dpi=300, facecolor=fig.get_facecolor())
-plt.close()
-print(f"\n[*] Plot saved to {out}")
-print("=" * 70)
+if __name__ == "__main__":
+    main()
