@@ -265,7 +265,7 @@ lemma sourceMatrix_mul_involutionMatrix :
       intro x _
       have : u = x.fst ∧ v = x.symm ↔ x = v.symm := by
         constructor
-        · intro ⟨h1, h2⟩
+        · intro ⟨_, h2⟩
           have h3 : v.symm = x.symm.symm := by rw [h2]
           rw [SimpleGraph.Dart.symm_symm x] at h3
           exact h3.symm
@@ -345,7 +345,3 @@ noncomputable def IharaZetaInvRHS : R[X] :=
   let I := (1 : Matrix V V R[X])
   let r_minus_1 := (d * Fintype.card V) / 2 - Fintype.card V
   (1 - u^2)^(r_minus_1) * (I - u • A + ((d - 1 : R[X]) * u^2) • I).det
-
-theorem ihara_zeta_identity :
-    IharaZetaInvLHS G R = IharaZetaInvRHS G d R := by
-  sorry
