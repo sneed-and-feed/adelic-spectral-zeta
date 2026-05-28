@@ -28,3 +28,6 @@ node_modules/
 charpoly_results.txt
 openalex_search.json
 
+# Pruned development scripts (kept locally, not tracked)
+scripts/
+scratch/
