@@ -59,6 +59,9 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
 * **Asymptotic Directed Gap Convergence** ([AsymptoticGap.lean](formalization/Formalization/AsymptoticGap.lean))
   * *Claim:* The primitive eigenvalue magnitude $2^{1/2^{n-1}}$ converges to $1$ as $n \to \infty$.
   * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
+* **Spectral Circle Theorem** ([SpectralCircle.lean](formalization/Formalization/SpectralCircle.lean))
+  * *Claim:* All eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{1/2^{n-1}}$. The proof wires together five sub-results: (1) the order of 3 in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is exactly $2^{n-2}$ (`order_three_mod_pow_two`), (2) the $\times 3$ orbits on odd residues form exactly 2 disjoint cycles of size $2^{n-2}$ whose union is all odd residues, (3) the orbit weight product $\prod_{k \in C}(1+\omega^{-k})$ has $|W|^2 = 2$ (`orbit_weight_magnitude_sq`), bridging to the cyclotomic identity in `CyclotomicProduct.lean`, (4) cyclic monomial eigenvalues have magnitude $|W|^{1/M}$, and (5) `AlgEquiv.spectrum_eq` converts between matrix and linear-map spectra.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 
 ---
 

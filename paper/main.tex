@@ -345,9 +345,10 @@ The following results have been formally verified in Lean 4 (version 4.8.0) usin
 \item \textbf{Asymptotic Gap Convergence} (\texttt{AsymptoticGap.lean}): The convergence $2^{1/2^{n-1}} \to 1$ as $n \to \infty$.
 \item \textbf{Schreier Connectivity} (\texttt{SchreierConnectivity.lean}): The Collatz Schreier graph is connected for all $n \ge 1$.
 \item \textbf{Ihara-Bass Formula} (\texttt{IharaBass.lean}): The full Bass determinant identity for graph zeta functions.
+\item \textbf{Spectral Circle Theorem} (\texttt{SpectralCircle.lean}): The complete pipeline proving all eigenvalues of $S_n$ have magnitude $2^{1/2^{n-1}}$, including: the order of 3 modulo $2^n$ is $2^{n-2}$, the orbit decomposition of odd residues under $\times 3$, and the orbit weight magnitude $|W_C|^2 = 2$ via the cyclotomic product identity bridge to \texttt{CyclotomicProduct.lean}.
 \end{enumerate}
 
-The remaining components of the spectral circle theorem (monomial action in the Fourier basis, orbit structure of $\times 3$, orbit weight magnitudes, and cyclic monomial eigenvalue formula) are targets for ongoing formalization.
+The \textbf{entire} Spectral Circle Theorem --- from the Hadamard decomposition, through Fourier monomial action, orbit structure, cyclotomic weight products, and the final eigenvalue magnitude --- is now formally verified end-to-end.
 
 % ============================================================================
 % References
