@@ -44,9 +44,21 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
 * **Rayleigh Quotient Lower Bound on 1D Chain** ([FourierIsomorphism.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/FourierIsomorphism.lean))
   * *Claim:* A lower bound showing that the Rayleigh quotient on the 1D Fourier chain is strictly positive.
   * *Status:* Fully formalized and proven (0-sorry).
-* **Ramanujan Tau Congruence Verification** ([RamanujanTau.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/RamanujanTau.lean))
+* **Ramanujan Tau Congruence Verification** ([RamanujanTau.lean](formalization/Formalization/RamanujanTau.lean))
   * *Claim:* The Ramanujan tau function satisfies the congruence modulo 691.
   * *Status:* Fully formalized and verified computationally (0-sorry, 0-axiom) for finite $n=1..4$.
+* **Directed Collatz Relation Matrix & Hadamard Decomposition** ([CollatzRelMatrix.lean](formalization/Formalization/CollatzRelMatrix.lean))
+  * *Claim:* The directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$ (generators $y = 3x$ and $y = 3x - 1$) commutes with the $\tau$-involution $\tau(x) = x + 2^{n-1}$, and decomposes under Hadamard conjugation into $W_n \oplus S_n$ where $W_n = D_{n-1}$ and $S_n$ is the twisted block. Therefore $\mathrm{spec}(D_n) = \mathrm{spec}(D_{n-1}) \cup \mathrm{spec}(S_n)$.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
+* **Cyclotomic Product Identity** ([CyclotomicProduct.lean](formalization/Formalization/CyclotomicProduct.lean))
+  * *Claim:* $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ where $\omega$ is a primitive $2^n$-th root of unity.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
+* **Discrete Fourier Transform Unitarity** ([DFT.lean](formalization/Formalization/DFT.lean))
+  * *Claim:* The DFT matrix constructed from Dirichlet characters is unitary: $FF^* = I$.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
+* **Asymptotic Directed Gap Convergence** ([AsymptoticGap.lean](formalization/Formalization/AsymptoticGap.lean))
+  * *Claim:* The primitive eigenvalue magnitude $2^{1/2^{n-1}}$ converges to $1$ as $n \to \infty$.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 
 ---
 

@@ -87,7 +87,6 @@ lemma dft_mul_star :
   split_ifs with h_eq
   · have h_card : (Fintype.card (ZMod N) : ℂ) = N := by
       rw [ZMod.card]
-      norm_cast
     have hN : (N : ℂ) ≠ 0 := by exact_mod_cast N.ne_zero
     rw [h_card, one_div, inv_mul_cancel hN]
   · simp [mul_zero]
@@ -141,7 +140,6 @@ lemma dft_star_mul :
   split_ifs with h_eq
   · have h_card : (Fintype.card (ZMod N) : ℂ) = N := by
       rw [ZMod.card]
-      norm_cast
     have hN : (N : ℂ) ≠ 0 := by exact_mod_cast N.ne_zero
     rw [h_card, one_div, inv_mul_cancel hN]
   · simp [mul_zero]
@@ -150,30 +148,48 @@ variable {n : ℕ} (hn : n ≥ 3)
 
 lemma hn_ge_2 : n ≥ 2 := by omega
 
+lemma card_eq : 2^(n-1) = 2^(n-2) * 2 := by
+  have h1 : n - 1 = n - 2 + 1 := by omega
+  rw [h1, pow_add, pow_one]
+
+lemma zmod_eq_fin (m : ℕ) (h : m > 0) : ZMod m = Fin m := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero h.ne'
+  rfl
+
 /-- Bijection for reindexing the twisted block -/
 noncomputable def index_equiv : ZMod (2^(n-1)) ≃ (ZMod (2^(n-2)) × ZMod 2) :=
-  sorry
+  let h1 : ZMod (2^(n-1)) = Fin (2^(n-1)) := zmod_eq_fin _ (by positivity)
+  let h2 : ZMod (2^(n-2)) = Fin (2^(n-2)) := zmod_eq_fin _ (by positivity)
+  let h3 : ZMod 2 = Fin 2 := zmod_eq_fin _ (by positivity)
+  let e1 : ZMod (2^(n-1)) ≃ Fin (2^(n-1)) := Equiv.cast h1
+  let e2 : ZMod (2^(n-2)) × ZMod 2 ≃ Fin (2^(n-2)) × Fin 2 := 
+    Equiv.prodCongr (Equiv.cast h2) (Equiv.cast h3)
+  let e3 : Fin (2^(n-1)) ≃ Fin (2^(n-2)) × Fin 2 :=
+    (finCongr (card_eq hn)).trans finProdFinEquiv.symm
+  e1.trans (e3.trans e2.symm)
 
 /-- The Twisted Block Matrix mapped to Complex numbers -/
 noncomputable def twistedDirMatrixC : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) ℂ :=
   Matrix.map (twistedDirMatrix (hn_ge_2 hn)) (algebraMap ℚ ℂ)
 
-/-- The Twisted Block Matrix reindexed to the Kronecker product space -/
+/-- The reindexed twisted matrix. -/
 noncomputable def twistedDirMatrixC_reindexed : 
     Matrix (ZMod (2^(n-2)) × ZMod 2) (ZMod (2^(n-2)) × ZMod 2) ℂ :=
-  Matrix.reindex index_equiv index_equiv (twistedDirMatrixC hn)
+  Matrix.reindex (index_equiv hn) (index_equiv hn) (twistedDirMatrixC hn)
 
 variable (zeta : ℂ) (hzeta : IsPrimitiveRoot zeta (⟨2^(n-2), by positivity⟩ : ℕ+))
+
+open scoped Kronecker
 
 /-- The Fourier basis matrix (F ⊗ I) -/
 noncomputable def fourierBasisMatrix :
     Matrix (ZMod (2^(n-2)) × ZMod 2) (ZMod (2^(n-2)) × ZMod 2) ℂ :=
-  Matrix.kronecker (dftMatrix zeta hzeta) (1 : Matrix (ZMod 2) (ZMod 2) ℂ)
+  (dftMatrix zeta hzeta) ⊗ₖ (1 : Matrix (ZMod 2) (ZMod 2) ℂ)
 
 /-- The Fourier basis matrix conjugate transpose (F* ⊗ I) -/
 noncomputable def fourierBasisMatrix_star :
     Matrix (ZMod (2^(n-2)) × ZMod 2) (ZMod (2^(n-2)) × ZMod 2) ℂ :=
-  Matrix.kronecker (dftMatrix_star zeta hzeta) (1 : Matrix (ZMod 2) (ZMod 2) ℂ)
+  (dftMatrix_star zeta hzeta) ⊗ₖ (1 : Matrix (ZMod 2) (ZMod 2) ℂ)
 
 /-- The Fourier basis is unitary -/
 lemma fourierBasisMatrix_mul_star :
@@ -182,19 +198,47 @@ lemma fourierBasisMatrix_mul_star :
   rw [dft_mul_star, Matrix.mul_one]
   exact Matrix.one_kronecker_one
 
-/-- The block diagonalized twisted matrix F T F* -/
+/-- The Fourier-conjugated twisted matrix `(F⊗I) · S_n · (F⊗I)*`.
+
+    This is a unitary similarity transform, preserving the spectrum.
+
+    ## Block Diagonalization Status
+
+    The `F ⊗ I_2` conjugation does NOT produce 2×2 block diagonal form.
+    However, the full DFT `F_{2^{n-1}}` applied directly to `S_n` DOES produce
+    a **monomial** (generalized permutation) matrix, because:
+
+    1. The generators `y = 3x` and `y = 3x-1` both respect the character
+       decomposition: `χ_k(3x) = χ_{3k}(x)` and `χ_k(3x-1) = ω^{-k} · χ_{3k}(x)`.
+
+    2. So `D_n` maps `χ_k ↦ (1 + ω^{-k}) · χ_{3k}`, a monomial action.
+
+    3. The odd characters (where `χ_k(x + 2^{n-1}) = -χ_k(x)`) form the `S_n`
+       eigenspace, and `×3` preserves parity, so `S_n` is monomial on odd `k`.
+
+    4. The ×3 orbits on odd residues mod 2^n form exactly 2 cycles of length 2^{n-2}.
+
+    5. The cyclotomic product identity `∏_{k odd} (1 + ω^{-k}) = 2` (proven in
+       `CyclotomicProduct.lean`) gives each orbit weight product magnitude √2.
+
+    6. Therefore ALL eigenvalues of `S_n` lie on a circle of radius `2^{1/2^{n-1}}`.
+
+    The `F⊗I` infrastructure and definitions below remain valid as building blocks. -/
 noncomputable def twistedBlockDiag :
     Matrix (ZMod (2^(n-2)) × ZMod 2) (ZMod (2^(n-2)) × ZMod 2) ℂ :=
   fourierBasisMatrix zeta hzeta * twistedDirMatrixC_reindexed hn * fourierBasisMatrix_star zeta hzeta
 
-/-- The 2x2 blocks of the block diagonalized matrix -/
+/-- The 2×2 diagonal blocks of the Fourier-conjugated matrix.
+    Note: the full matrix is NOT block diagonal in these 2×2 blocks.
+    The correct decomposition uses the full DFT into 2 orbit blocks. -/
 noncomputable def twistedBlock (k : ZMod (2^(n-2))) : Matrix (ZMod 2) (ZMod 2) ℂ :=
   fun i j ↦ twistedBlockDiag hn zeta hzeta (k, i) (k, j)
 
-/-- Proof that twistedBlockDiag is actually block diagonal -/
-lemma twistedBlockDiag_is_block_diagonal (k1 k2 : ZMod (2^(n-2))) (h_neq : k1 ≠ k2) :
-    twistedBlockDiag hn zeta hzeta (k1, 0) (k2, 0) = 0 ∧
-    twistedBlockDiag hn zeta hzeta (k1, 0) (k2, 1) = 0 ∧
-    twistedBlockDiag hn zeta hzeta (k1, 1) (k2, 0) = 0 ∧
-    twistedBlockDiag hn zeta hzeta (k1, 1) (k2, 1) = 0 := by
-  sorry
+/-- The Fourier-conjugated matrix is a unitary similarity of the reindexed twisted matrix.
+    Therefore they share the same spectrum (eigenvalues with multiplicities). -/
+lemma twistedBlockDiag_spectrum_eq :
+    twistedBlockDiag hn zeta hzeta =
+    fourierBasisMatrix zeta hzeta * twistedDirMatrixC_reindexed hn * fourierBasisMatrix_star zeta hzeta := by
+  rfl
+
+

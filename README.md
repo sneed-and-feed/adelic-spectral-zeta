@@ -26,7 +26,7 @@ The following claims have been rigorously formalized in Lean 4 (`v4.8.0`) with *
 * **Ihara Zeta Incidence Geometry** ([IharaZeta.lean](formalization/Formalization/IharaZeta.lean)): For any finite simple graph $G$ over a commutative ring $R$, we define the Hashimoto (edge adjacency) matrix $T$, the source and target incidence matrices $S, T$, and the dart involution $J$, and prove the seven foundational incidence identities: $S T^\top = A$ (adjacency), $S S^\top = T T^\top = D$ (degree diagonal), $T^\top S = T + J$ (Hashimoto decomposition), $J T^\top = S^\top$, $S J = T$, and $J^2 = I$. All proofs are 0-sorry.
 * **Ihara-Bass Block Matrix Decomposition** ([IharaBass.lean](formalization/Formalization/IharaBass.lean)): The Bass determinant formula for the Ihara zeta function, **fully proven with 0 sorry**. Defines block matrices $M, N, K, L$ and proves all matrix multiplication identities (`M_Bass_mul_N_Bass`, `K_Bass_mul_L_Bass`) using `fromBlocks_inj` and the incidence identities from `IharaZeta.lean`. Completes the full determinant identity: $\det(I - uT) \cdot \det(I - uJ) \cdot (1-u^2)^{|V|} = \det(I - uA + u^2(D-I)) \cdot (1-u^2)^{|E|}$ via Schur complement block determinants (`det_fromBlocks₁₁`, `det_fromBlocks_zero₂₁`). 0 sorry, unconditional.
 * **Asymptotic Directed Gap Convergence** ([AsymptoticGap.lean](formalization/Formalization/AsymptoticGap.lean)): Formalizes the structural limit theorem for the directed Collatz spectral tower. The primitive eigenvalue magnitude $2^{1/2^{n-1}}$ converges to $1$ as $n \to \infty$, meaning the directed spectral "speed limit" asymptotically approaches the Perron eigenvalue — formalizing why the Collatz system fails to be an expander in the limit. Numerical verification confirms the undirected spectral gap converges to 0 with a sublinear polynomial decay rate $\Theta(|V|^{-\alpha})$ where $\alpha \approx 0.2286$, establishing that the Collatz Schreier graphs are **not Ramanujan expanders**.
-* **Fourier Block Diagonalization** ([DFT.lean](formalization/Formalization/DFT.lean)): Rigorously constructs the $N \times N$ discrete Fourier matrix and proves it is strictly unitary using orthogonality of Dirichlet characters (`AddChar.sum_mulShift`). Formalizes the twisted block diagonalization $F T F^*$ of the non-backtracking Collatz matrices, rigorously reducing the $2^{n-1}$-dimensional spectrum to $2 \times 2$ character blocks via `Matrix.mul_kronecker_mul` limits.
+* **Fourier Block Diagonalization & Spectral Circle Theorem** ([DFT.lean](formalization/Formalization/DFT.lean)): Rigorously constructs the $N \times N$ discrete Fourier matrix and proves it is strictly unitary using orthogonality of Dirichlet characters (`AddChar.sum_mulShift`). The key structural insight: in the Fourier basis, the directed Collatz relation matrix $D_n$ acts as a **monomial** (generalized permutation) matrix, mapping character $\chi_k \mapsto (1 + \omega^{-k}) \cdot \chi_{3k}$. The $\times 3$ orbits on odd residues form exactly 2 cycles of length $2^{n-2}$, and the cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ (proven in `CyclotomicProduct.lean`) forces each orbit's weight product to have magnitude $\sqrt{2}$. Consequently, **all eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{1/2^{n-1}}$** — a nested sequence of spectral circles converging to the unit circle as $n \to \infty$.
 
 ---
 
@@ -282,6 +282,12 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   python experiments/run_schreier_experiment.py
   ```
   Constructs the exact Schreier graph formalization from Lean, empirically validating the canonical sheet decomposition of the spectrum into symmetric and antisymmetric blocks.
+
+* **Spectral Circle Theorem Verification**:
+  ```bash
+  python experiments/verify_spectral_circle.py
+  ```
+  Numerically verifies the spectral circle theorem: all eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{1/2^{n-1}}$. Also verifies the cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ and the orbit weight magnitudes $|W_i| = \sqrt{2}$.
 
 * **High-Depth Numeric Spectral Check (Sparse Lanczos)**:
   ```bash

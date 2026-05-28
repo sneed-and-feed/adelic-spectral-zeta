@@ -52,17 +52,24 @@ We prove Theorem \ref{thm:directed} using a novel discrete Fourier diagonalizati
 
 \section{Cyclotomic Twisted Blocks}
 
-The transition matrix $D_n$ factors recursively via a Schur complement into a lower-level graph $D_{n-1}$ and a novel \textit{twisted} block $S_n$. The block $S_n$ operates on the subspace of primitive Dirichlet characters.
+The transition matrix $D_n$ factors recursively via a Hadamard $\tau$-decomposition (the involution $\tau(x) = x + 2^{n-1}$ commutes with both generators) into a lower-level graph $D_{n-1}$ (the $\tau$-symmetric block) and a novel \textit{twisted} block $S_n$ (the $\tau$-antisymmetric block). In the Fourier basis, $S_n$ acts as a monomial matrix on the odd-character subspace.
 
 \begin{theorem}
 For any $n \ge 3$, the eigenvalues of the twisted block $S_n$ have magnitude $2^{1/2^{n-1}}$.
 \end{theorem}
 
 \begin{proof}
-By applying the discrete Fourier transform matrix $F_{jk} = \frac{1}{\sqrt{N}} \zeta^{j \cdot k}$ to the twisted block, we obtain a strictly $2 \times 2$ block diagonal matrix. The determinants of these $2 \times 2$ blocks satisfy the cyclotomic product identity:
-\[ \prod_{x \text{ odd}} (1 + \zeta^{-x}) = \Phi_{2^n}(1) = 2 \]
-This identity has been fully verified in Lean 4 without axioms.
+The directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$ is defined by $D(x,y) = 1$ if $y \equiv 3x$ or $y \equiv 3x - 1 \pmod{2^n}$, else $0$. In the Fourier basis of additive characters $\chi_k(x) = \zeta^{kx}$ (where $\zeta = e^{2\pi i / 2^n}$), the matrix $D_n$ acts as a \textit{monomial} (generalized permutation) matrix:
+\[ \hat{D}_n : \chi_k \mapsto (1 + \zeta^{-k}) \cdot \chi_{3k} \]
+This follows from the computation $\sum_y D(x,y)\chi_k(y) = \chi_k(3x) + \chi_k(3x-1) = \zeta^{3kx}(1 + \zeta^{-k}) = (1+\zeta^{-k})\chi_{3k}(x)$.
+
+The Hadamard $\tau$-decomposition (proven in Lean 4 without axioms) splits $\mathrm{spec}(D_n) = \mathrm{spec}(D_{n-1}) \cup \mathrm{spec}(S_n)$, where $S_n$ acts on the odd-character subspace $\{\chi_k : k \text{ odd}\}$. Since $3 \cdot \text{odd} = \text{odd}$, the $\times 3$ action preserves this subspace. For $n \ge 3$, the $\times 3$ orbits on odd residues mod $2^n$ form exactly two cycles, each of length $2^{n-2}$.
+
+For a cyclic monomial matrix with cycle weight product $W$ and cycle length $M$, the eigenvalues are the $M$-th roots of $W$, all with magnitude $|W|^{1/M}$. By the cyclotomic product identity (proven in Lean 4):
+\[ W_1 \cdot W_2 = \prod_{k \text{ odd}} (1 + \zeta^{-k}) = 2 \]
+The symmetry $C_2 = -C_1$ gives $|W_1| = |W_2|$, so $|W_i| = \sqrt{2}$. Therefore all eigenvalues of $S_n$ have magnitude $(\sqrt{2})^{1/2^{n-2}} = 2^{1/2^{n-1}}$.
 \end{proof}
+
 
 \section{Numerical Verification of the Undirected Gap}
 
