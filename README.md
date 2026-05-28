@@ -325,7 +325,7 @@ The repository contains pre-packaged experiments to verify the mathematical and 
   ```bash
   python experiments/run_correlation.py
   ```
-  Extracts 3D structural metrics from AlphaFold and maps amino acid mutations into a $p$-adic sequence space. Proves a strict Pearson correlation (0.967) between theoretical sequence $p$-adic distances and the physical 3D structural differences (RMSD), verifying that protein structural homology follows a deterministic Adèlic topography.
+  Extracts 3D structural metrics from AlphaFold and maps amino acid mutations into a $p$-adic sequence space. While the script generates a high Pearson correlation (0.967) between the theoretical Adèlic sequence distances and the physical 3D structural differences (RMSD), **empirical null models disprove the Adèlic claim**. Randomized property mappings yield an identical mean correlation (0.964, $p=0.378$), proving the correlation is a mathematically trivial byproduct of general sequence divergence, not a deterministic Adèlic topography.
 
 * **Ramanujan Partition Superconductor**:
   ```bash

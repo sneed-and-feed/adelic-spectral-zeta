@@ -25,6 +25,7 @@ dependencies = [
     "mpmath>=1.2.0",
     "matplotlib>=3.3.0",
     "tqdm>=4.67.3",
+    "biopython>=1.85",
 ]
 
 [project.urls]

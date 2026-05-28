@@ -12,3 +12,7 @@ import Formalization.ProfiniteTower
 import Formalization.SchreierSpectralGap
 import Formalization.AsymptoticGap
 import Formalization.DFT
+import Formalization.InductiveTower
+import Formalization.CollatzZeta
+import Formalization.RationalZeta
+import Formalization.MagnitudeProof
