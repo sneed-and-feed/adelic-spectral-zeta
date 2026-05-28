@@ -10,3 +10,4 @@ import Formalization.CollatzRelMatrix
 import Formalization.RamanujanTau
 import Formalization.ProfiniteTower
 import Formalization.SchreierSpectralGap
+import Formalization.AsymptoticGap
