@@ -61,7 +61,7 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
   * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 * **Spectral Circle Theorem** ([SpectralCircle.lean](formalization/Formalization/SpectralCircle.lean))
   * *Claim:* All eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{1/2^{n-1}}$. The proof wires together five sub-results: (1) the order of 3 in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is exactly $2^{n-2}$ (`order_three_mod_pow_two`), (2) the $\times 3$ orbits on odd residues form exactly 2 disjoint cycles of size $2^{n-2}$ whose union is all odd residues, (3) the orbit weight product $\prod_{k \in C}(1+\omega^{-k})$ has $|W|^2 = 2$ (`orbit_weight_magnitude_sq`), bridging to the cyclotomic identity in `CyclotomicProduct.lean`, (4) cyclic monomial eigenvalues have magnitude $|W|^{1/M}$, and (5) `AlgEquiv.spectrum_eq` converts between matrix and linear-map spectra.
-  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
+  * *Status:* 0 `sorry` in this file. Depends transitively on 1 `sorry` in `TwistedBlockPow.lean` via `twisted_eigenvalue_magnitude` from `SchreierSpectralGap.lean`.
 
 ---
 
@@ -103,10 +103,17 @@ The following claims are verified via numerical simulations in the `src/` and `e
 
 ---
 
+
 ## 4. Conjectures & Blueprints (Lean 4, Contains `sorry` / Specifications)
 
 The following files represent active research fronts, stubs, or blueprints and contain **`sorry` placeholders**:
 
+* **Twisted Block Matrix Power Identity** ([TwistedBlockPow.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/TwistedBlockPow.lean))
+  * *Claim:* The twisted directed block matrix $S_n$ satisfies $S_n^{2^{n-1}} = -2 \cdot I$ over $\mathbb{Q}$. This identity encodes the fact that the $\times 3$ action on odd residues mod $2^n$ partitions the state space into exactly 2 disjoint cyclic orbits, each of length $2^{n-2}$, whose cyclotomic weight products have magnitude $\sqrt{2}$.
+  * *Status:* Contains 1 `sorry` — the matrix identity itself. **This is the sole remaining unproven assumption in the spectral circle pipeline.** Previously, this gap was hidden behind a structural `axiom twisted_block_eigenvalues` in `SchreierSpectralGap.lean`; the axiom has been completely removed and replaced with a precisely scoped `sorry`.
+* **Twisted Eigenvalue Magnitude** ([SchreierSpectralGap.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierSpectralGap.lean))
+  * *Claim:* Any eigenvalue $\lambda$ of the twisted block $S_n$ has $|\lambda| = 2^{1/2^{n-1}}$.
+  * *Status:* 0 `sorry` in this file. The proof lifts the rational matrix identity from `TwistedBlockPow.lean` to $\mathbb{C}$ via `RingHom.mapMatrix (algebraMap \mathbb{Q} \mathbb{C})` and `map_pow`, evaluates it on eigenvectors via `Module.End.HasEigenvalue.pow` to establish $\lambda^{2^{n-1}} = -2$, then derives the magnitude via absolute value arithmetic. Depends transitively on the 1 `sorry` in `TwistedBlockPow.lean`.
 * **Erdős Similarity Conjecture Blueprint** ([ErdosSimilarity.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/ErdosSimilarity.lean))
   * *Claim:* Formulating the topological properties of geometric cylinder sets to resolve similarity bounds.
   * *Status:* Contains several `sorry` stubs (e.g., compactness of geometric cylinders and similarity properties).
