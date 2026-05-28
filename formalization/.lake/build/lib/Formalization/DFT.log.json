@@ -1,0 +1,23 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\DFT.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\DFT.olean -i .\\.\\.lake\\build\\lib\\Formalization\\DFT.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\DFT.c --json",
+   "level": "trace"},
+  {"message": ".\\.\\.\\.\\Formalization\\DFT.lean:90:6: no goals to be solved",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\DFT.lean:144:6: no goals to be solved",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\DFT.lean:154:18: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\DFT.lean:166:64: this tactic is never executed\nnote: this linter can be disabled with `set_option linter.unreachableTactic false`",
+   "level": "warning"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\DFT.lean:181:51: tactic 'rewrite' failed, did not find instance of the pattern in the target expression\n  kroneckerMap (fun x x_1 => x * x_1) ?A ?A' * kroneckerMap (fun x x_1 => x * x_1) ?B ?B'\nN : ℕ+\nzeta✝ : ℂ\nhzeta✝ : IsPrimitiveRoot zeta✝ ↑N\nn : ℕ\nhn : n ≥ 3\nzeta : ℂ\nhzeta : IsPrimitiveRoot zeta ↑⟨2 ^ (n - 2), ⋯⟩\n⊢ (dftMatrix zeta hzeta).kronecker 1 * (dftMatrix_star zeta hzeta).kronecker 1 = 1",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\DFT.lean:195:6: declaration uses 'sorry'",
+   "level": "warning"},
+  {"message": "Lean exited with code 1", "level": "error"}],
+ "depHash": "4977045033713685240"}

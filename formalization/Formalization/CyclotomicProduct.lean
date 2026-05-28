@@ -95,7 +95,7 @@ Surjectivity of the Galois permutation is left as a sorry for now.
 lemma W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n))) 
   (h_partition : Disjoint C_1 C_2) 
   (h_union : C_1 ∪ C_2 = {x : ZMod (2^n) | Odd x.val}.toFinset)
-  (h_neg : C_2 = C_1.image (fun x ↦ -x)) :
+  (_h_neg : C_2 = C_1.image (fun x ↦ -x)) :
   W_1 zeta C_1 * W_2 zeta C_2 = 2 := by
   have hn_ge_1 : 1 ≤ n := by omega
   have hpos : 0 < 2^n := by positivity
@@ -125,8 +125,40 @@ lemma W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n)))
       have heq3 : (-a) = (-b) := ZMod.val_injective (2^n) heq2
       exact neg_inj.mp heq3
     · intro μ hμ
-      sorry
-    · intro a ha
+      have h_neg_mu : -μ ∈ primitiveRoots (2^n) F := neg_mem_primitiveRoots zeta hzeta μ hn hμ
+      have h_prim_neg_mu : IsPrimitiveRoot (-μ) (2^n) := (mem_primitiveRoots hpos).mp h_neg_mu
+      obtain ⟨i, hi_lt, hi_eq⟩ := hzeta.eq_pow_of_pow_eq_one h_prim_neg_mu.pow_eq_one hpos
+      have hi_coprime : i.Coprime (2^n) := by
+        have h_pow_iff := hzeta.pow_iff_coprime hpos i
+        rw [hi_eq] at h_pow_iff
+        exact h_pow_iff.mp h_prim_neg_mu
+      have hi_odd : Odd i := by
+        rw [Nat.odd_iff_not_even]
+        intro heven
+        rcases heven with ⟨k, hk⟩
+        have h_dvd1 : 2 ∣ i := by
+          have h : i = 2 * k := by omega
+          rw [h]
+          exact dvd_mul_right 2 k
+        have h_dvd2 : 2 ∣ 2^n := dvd_pow_self 2 (by omega)
+        have h2 : 2 ∣ Nat.gcd i (2^n) := Nat.dvd_gcd h_dvd1 h_dvd2
+        rw [hi_coprime] at h2
+        revert h2
+        decide
+      let a : ZMod (2^n) := - (i : ZMod (2^n))
+      refine ⟨a, ?_, ?_⟩
+      · rw [Set.mem_toFinset, Set.mem_setOf_eq]
+        have h_val_i : (i : ZMod (2^n)).val = i := ZMod.val_natCast_of_lt hi_lt
+        have hd : Odd (i : ZMod (2^n)).val := by rwa [h_val_i]
+        exact neg_val_odd hn_ge_1 hd
+      · dsimp only
+        have h_val_i : (i : ZMod (2^n)).val = i := ZMod.val_natCast_of_lt hi_lt
+        have hd : (-a).val = i := by
+          change (- - (i : ZMod (2^n))).val = i
+          rw [neg_neg]
+          exact h_val_i
+        rw [hd, hi_eq, neg_neg]
+    · intro a _ha
       ring
   rw [h_bij]
   have h_prod2 := prod_one_sub_primitive_roots zeta hzeta

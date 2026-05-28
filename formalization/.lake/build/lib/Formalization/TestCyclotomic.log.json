@@ -1,0 +1,15 @@
+{"log":
+ [{"message":
+   ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\TestCyclotomic.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\TestCyclotomic.olean -i .\\.\\.lake\\build\\lib\\Formalization\\TestCyclotomic.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\TestCyclotomic.c --json",
+   "level": "trace"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCyclotomic.lean:10:6: 'odd_coprime_pow_two' has already been declared",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCyclotomic.lean:14:6: 'neg_val_odd' has already been declared",
+   "level": "error"},
+  {"message":
+   ".\\.\\.\\.\\Formalization\\TestCyclotomic.lean:70:27: rcases tactic failed: h_exists : 0 < 2 ^ n → ∃ i < 2 ^ n, zeta ^ i = -μ is not an inductive datatype",
+   "level": "error"},
+  {"message": "Lean exited with code 1", "level": "error"}],
+ "depHash": "9224686321956280505"}

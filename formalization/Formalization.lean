@@ -11,3 +11,4 @@ import Formalization.RamanujanTau
 import Formalization.ProfiniteTower
 import Formalization.SchreierSpectralGap
 import Formalization.AsymptoticGap
+import Formalization.DFT
