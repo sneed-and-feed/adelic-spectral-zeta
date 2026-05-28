@@ -1,17 +1,5 @@
 {"log":
  [{"message":
    ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\CyclotomicProduct.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\CyclotomicProduct.olean -i .\\.\\.lake\\build\\lib\\Formalization\\CyclotomicProduct.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\CyclotomicProduct.c --json",
-   "level": "trace"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CyclotomicProduct.lean:15:4: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CyclotomicProduct.lean:21:4: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CyclotomicProduct.lean:27:6: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CyclotomicProduct.lean:60:6: declaration uses 'sorry'",
-   "level": "warning"}],
- "depHash": "10111844423278631477"}
+   "level": "trace"}],
+ "depHash": "8832126628707095731"}

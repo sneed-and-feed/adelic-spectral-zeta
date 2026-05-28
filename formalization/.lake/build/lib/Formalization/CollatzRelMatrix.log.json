@@ -1,11 +1,5 @@
 {"log":
  [{"message":
    ".> LEAN_PATH=.\\.\\.lake/packages\\batteries\\.lake\\build\\lib;.\\.\\.lake/packages\\Qq\\.lake\\build\\lib;.\\.\\.lake/packages\\aesop\\.lake\\build\\lib;.\\.\\.lake/packages\\proofwidgets\\.lake\\build\\lib;.\\.\\.lake/packages\\Cli\\.lake\\build\\lib;.\\.\\.lake/packages\\importGraph\\.lake\\build\\lib;.\\.\\.lake/packages\\mathlib\\.lake\\build\\lib;.\\.\\.lake\\build\\lib PATH c:\\Users\\x\\.elan\\toolchains\\leanprover--lean4---v4.8.0\\bin\\lean.exe .\\.\\.\\.\\Formalization\\CollatzRelMatrix.lean -R .\\.\\.\\. -o .\\.\\.lake\\build\\lib\\Formalization\\CollatzRelMatrix.olean -i .\\.\\.lake\\build\\lib\\Formalization\\CollatzRelMatrix.ilean -c .\\.\\.lake\\build\\ir\\Formalization\\CollatzRelMatrix.c --json",
-   "level": "trace"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzRelMatrix.lean:358:37: unused variable `hn`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
-   "level": "warning"},
-  {"message":
-   ".\\.\\.\\.\\Formalization\\CollatzRelMatrix.lean:485:41: unused variable `hn`\nnote: this linter can be disabled with `set_option linter.unusedVariables false`",
-   "level": "warning"}],
- "depHash": "3272354879593598645"}
+   "level": "trace"}],
+ "depHash": "2375359164491263032"}

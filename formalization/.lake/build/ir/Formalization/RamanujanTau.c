@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: Formalization.RamanujanTau
-// Imports: Init Mathlib
+// Imports: Init Mathlib Mathlib.Algebra.Order.Ring.Defs
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -869,6 +869,7 @@ return x_3;
 }
 lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib(uint8_t builtin, lean_object*);
+lean_object* initialize_Mathlib_Algebra_Order_Ring_Defs(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_Formalization_RamanujanTau(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -878,6 +879,9 @@ res = initialize_Init(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib(builtin, lean_io_mk_world());
+if (lean_io_result_is_error(res)) return res;
+lean_dec_ref(res);
+res = initialize_Mathlib_Algebra_Order_Ring_Defs(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 l_Multiset_sum___at_divisor__sum__11___spec__6___closed__1 = _init_l_Multiset_sum___at_divisor__sum__11___spec__6___closed__1();

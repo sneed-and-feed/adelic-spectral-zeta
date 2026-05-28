@@ -1,6 +1,6 @@
 // Lean compiler output
 // Module: Formalization.CyclotomicProduct
-// Imports: Init Mathlib.Data.ZMod.Basic Mathlib.RingTheory.RootsOfUnity.Basic Mathlib.RingTheory.Polynomial.Cyclotomic.Eval Mathlib.Algebra.BigOperators.Group.Finset Mathlib.Algebra.BigOperators.Ring
+// Imports: Init Mathlib.Data.ZMod.Basic Mathlib.RingTheory.RootsOfUnity.Basic Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 #include <lean/lean.h>
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -26,9 +26,6 @@ LEAN_EXPORT lean_object* l_Finset_prod___at_W__1___spec__1(lean_object*);
 LEAN_EXPORT lean_object* l_Finset_prod___at_W__1___spec__1___rarg___boxed(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_NonUnitalNonAssocSemiring_toDistrib___rarg(lean_object*);
 lean_object* l_Semifield_toDivisionSemiring___rarg(lean_object*);
-LEAN_EXPORT lean_object* l_cycle__minus__one___boxed(lean_object*);
-lean_object* lean_sorry(uint8_t);
-LEAN_EXPORT lean_object* l_cycle__one___boxed(lean_object*);
 LEAN_EXPORT lean_object* l_Multiset_prod___at_W__1___spec__2___rarg(lean_object*, lean_object*);
 lean_object* l_NonUnitalNonAssocCommRing_toNonUnitalNonAssocCommSemiring___rarg(lean_object*);
 lean_object* l_Multiset_map___rarg(lean_object*, lean_object*);
@@ -37,10 +34,8 @@ LEAN_EXPORT lean_object* l_Multiset_prod___at_W__2___spec__2(lean_object*);
 LEAN_EXPORT lean_object* l_W__1___rarg___lambda__1(lean_object*, lean_object*, lean_object*, lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Finset_prod___at_W__2___spec__1___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Multiset_prod___at_W__2___spec__2___rarg(lean_object*, lean_object*);
-LEAN_EXPORT lean_object* l_cycle__one(lean_object*);
 lean_object* lean_nat_pow(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_W__2(lean_object*);
-LEAN_EXPORT lean_object* l_cycle__minus__one(lean_object*);
 lean_object* l_Monoid_toMulOneClass___rarg(lean_object*);
 LEAN_EXPORT lean_object* l_Finset_prod___at_W__1___spec__1___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_CommRing_toCommMonoid___rarg(lean_object*);
@@ -50,42 +45,6 @@ LEAN_EXPORT lean_object* l_Multiset_prod___at_W__1___spec__2___rarg___boxed(lean
 LEAN_EXPORT lean_object* l_W__2___rarg(lean_object*, lean_object*, lean_object*, lean_object*);
 lean_object* l_ZMod_val(lean_object*, lean_object*);
 LEAN_EXPORT lean_object* l_Finset_prod___at_W__2___spec__1(lean_object*);
-LEAN_EXPORT lean_object* l_cycle__one(lean_object* x_1) {
-_start:
-{
-uint8_t x_2; lean_object* x_3; 
-x_2 = 0;
-x_3 = lean_sorry(x_2);
-return x_3;
-}
-}
-LEAN_EXPORT lean_object* l_cycle__one___boxed(lean_object* x_1) {
-_start:
-{
-lean_object* x_2; 
-x_2 = l_cycle__one(x_1);
-lean_dec(x_1);
-return x_2;
-}
-}
-LEAN_EXPORT lean_object* l_cycle__minus__one(lean_object* x_1) {
-_start:
-{
-uint8_t x_2; lean_object* x_3; 
-x_2 = 0;
-x_3 = lean_sorry(x_2);
-return x_3;
-}
-}
-LEAN_EXPORT lean_object* l_cycle__minus__one___boxed(lean_object* x_1) {
-_start:
-{
-lean_object* x_2; 
-x_2 = l_cycle__minus__one(x_1);
-lean_dec(x_1);
-return x_2;
-}
-}
 LEAN_EXPORT lean_object* l_Multiset_prod___at_W__1___spec__2___rarg___lambda__1(lean_object* x_1, lean_object* x_2, lean_object* x_3) {
 _start:
 {
@@ -332,8 +291,6 @@ lean_object* initialize_Init(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_Data_ZMod_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_RingTheory_RootsOfUnity_Basic(uint8_t builtin, lean_object*);
 lean_object* initialize_Mathlib_RingTheory_Polynomial_Cyclotomic_Eval(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Algebra_BigOperators_Group_Finset(uint8_t builtin, lean_object*);
-lean_object* initialize_Mathlib_Algebra_BigOperators_Ring(uint8_t builtin, lean_object*);
 static bool _G_initialized = false;
 LEAN_EXPORT lean_object* initialize_Formalization_CyclotomicProduct(uint8_t builtin, lean_object* w) {
 lean_object * res;
@@ -349,12 +306,6 @@ res = initialize_Mathlib_RingTheory_RootsOfUnity_Basic(builtin, lean_io_mk_world
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 res = initialize_Mathlib_RingTheory_Polynomial_Cyclotomic_Eval(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Algebra_BigOperators_Group_Finset(builtin, lean_io_mk_world());
-if (lean_io_result_is_error(res)) return res;
-lean_dec_ref(res);
-res = initialize_Mathlib_Algebra_BigOperators_Ring(builtin, lean_io_mk_world());
 if (lean_io_result_is_error(res)) return res;
 lean_dec_ref(res);
 return lean_io_result_mk_ok(lean_box(0));

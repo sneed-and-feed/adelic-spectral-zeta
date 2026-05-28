@@ -1,5 +1,8 @@
 import Mathlib
-import Topology.Category.LightProfinite.Basic
+import Mathlib.Topology.Category.LightProfinite.Basic
+import Mathlib.CategoryTheory.Fintype
+import Mathlib.CategoryTheory.Limits.Basic
+import Mathlib.CategoryTheory.Opposite
 
 /-!
 # The 2-adic Profinite Tower
@@ -12,8 +15,9 @@ Schreier graph on which the Collatz relation is defined.
 -/
 
 open CategoryTheory
-open Limits
+open CategoryTheory.Limits
 open LightProfinite
+open Opposite
 
 namespace AdelicSpectral
 
@@ -27,7 +31,7 @@ def zmodTowerObj (d : ℕᵒᵖ) : FintypeCat :=
 
 /-- The transition maps `ZMod (2^d) → ZMod (2^c)` for `c ≤ d`. -/
 def zmodTowerMap {c d : ℕᵒᵖ} (h : c ⟶ d) : zmodTowerObj c ⟶ zmodTowerObj d :=
-  let hc : unop d ≤ unop c := h.unop
+  let hc : unop d ≤ unop c := leOfHom h.unop
   let hom := ZMod.castHom (pow_dvd_pow 2 hc) (ZMod (2^(unop d)))
   FintypeCat.ofHom hom
 
@@ -38,13 +42,9 @@ def zmodTower : ℕᵒᵖ ⥤ FintypeCat where
   map := zmodTowerMap
   map_id X := by
     ext x
-    dsimp [zmodTowerMap, zmodTowerObj]
-    -- For c = d, castHom is the identity
     exact ZMod.castHom_self x
   map_comp f g := by
     ext x
-    dsimp [zmodTowerMap, zmodTowerObj]
-    -- The composition of castHom is castHom
     rfl
 
 -- ============================================================================

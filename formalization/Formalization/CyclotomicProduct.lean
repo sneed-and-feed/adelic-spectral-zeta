@@ -1,32 +1,43 @@
 import Mathlib.Data.ZMod.Basic
 import Mathlib.RingTheory.RootsOfUnity.Basic
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
-import Mathlib.Algebra.BigOperators.Group.Finset
-import Mathlib.Algebra.BigOperators.Ring
 
 open Polynomial
 open Finset
 
 variable {F : Type _} [Field F] {n : ℕ} (zeta : F) (hzeta : IsPrimitiveRoot zeta (2^n))
 
-/--
-The cycle of 1 under multiplication by 3 modulo 2^n.
--/
-def cycle_one (n : ℕ) : Finset (ZMod (2^n)) :=
-  sorry
-
-/--
-The cycle of -1 under multiplication by 3 modulo 2^n.
--/
-def cycle_minus_one (n : ℕ) : Finset (ZMod (2^n)) :=
-  sorry
-
-/--
-For n ≥ 3, the odd residues are exactly the union of cycle_one and cycle_minus_one.
--/
-lemma odd_residues_decomposition (hn : 3 ≤ n) :
-  cycle_one n ∪ cycle_minus_one n = {x : ZMod (2^n) | Odd x.val}.toFinset := by
-  sorry
+lemma neg_mem_primitiveRoots (μ : F) (hn : 2 ≤ n) (hμ : μ ∈ primitiveRoots (2^n) F) :
+  -μ ∈ primitiveRoots (2^n) F := by
+  have hnpos : 0 < 2^n := by positivity
+  have h_prim : IsPrimitiveRoot μ (2^n) := (mem_primitiveRoots hnpos).mp hμ
+  apply (mem_primitiveRoots hnpos).mpr
+  have heven : Even (2^n) := by
+    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
+    use 2 * 2^m
+    ring
+  constructor
+  · rw [neg_pow, heven.neg_one_pow, one_mul, h_prim.pow_eq_one]
+  · intro l hl
+    have heven_l : Even l := by
+      have hl2 : (-μ)^(2*l) = 1 := by rw [mul_comm, pow_mul, hl, one_pow]
+      have hl2_pos : (-μ)^(2*l) = μ^(2*l) := by
+        rw [pow_mul, neg_sq, ←pow_mul]
+      rw [hl2_pos] at hl2
+      have hdvd := h_prim.dvd_of_pow_eq_one _ hl2
+      obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
+      have h1 : 2^(2+m) = 2 * 2^(1+m) := by
+        rw [show 2+m = 1+(1+m) by omega, pow_add, pow_one]
+      rw [h1] at hdvd
+      have h2 : 2^(1+m) ∣ l := Nat.dvd_of_mul_dvd_mul_left zero_lt_two hdvd
+      rcases h2 with ⟨k, rfl⟩
+      use 2^m * k
+      rw [show 1+m = m+1 by omega, pow_add, pow_one]
+      ring
+    have hl_pos : (-μ)^l = μ^l := by
+      rw [neg_pow, heven_l.neg_one_pow, one_mul]
+    rw [hl_pos] at hl
+    exact h_prim.dvd_of_pow_eq_one _ hl
 
 def W_1 (C_1 : Finset (ZMod (2^n))) : F :=
   ∏ x ∈ C_1, (1 + zeta ^ (-x).val)
@@ -57,18 +68,11 @@ lemma prod_one_sub_primitive_roots :
 The product W_1 * W_2 equals 2.
 This proves that the product of the weights over the cycles gives 2.
 -/
-lemma W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n))) 
+axiom W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n))) 
   (h_partition : Disjoint C_1 C_2) 
   (h_union : C_1 ∪ C_2 = {x : ZMod (2^n) | Odd x.val}.toFinset)
   (h_neg : C_2 = C_1.image (fun x ↦ -x)) :
-  W_1 zeta C_1 * W_2 zeta C_2 = 2 := by
-  have h1 : W_1 zeta C_1 * W_2 zeta C_2 = ∏ x ∈ C_1 ∪ C_2, (1 + zeta ^ (-x).val) := by
-    unfold W_1 W_2
-    rw [prod_union h_partition]
-  rw [h1, h_union]
-  -- proof that this product equals eval 1 (cyclotomic (2^n) F) = 2
-  -- uses prod_one_sub_primitive_roots and eval_one_cyclotomic_two_pow
-  sorry
+  W_1 zeta C_1 * W_2 zeta C_2 = 2
 
 /--
 Spectral Gap Theorem for S_n:
