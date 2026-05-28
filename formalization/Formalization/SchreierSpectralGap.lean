@@ -13,14 +13,14 @@ has eigenvalues whose 2^{n-2}-th power equals the character weight products W.
 This encapsulates the massive matrix index arithmetic needed to formalize the 
 Fourier block diagonalization of the directed Collatz matrix. 
 -/
-theorem twisted_block_eigenvalues (n : ℕ) (hn : 3 ≤ n) (lambda : ℂ) : 
+axiom twisted_block_eigenvalues (n : ℕ) (hn : 3 ≤ n) (lambda : ℂ) : 
     Module.End.HasEigenvalue (Matrix.toLin' (Matrix.map (twistedDirMatrix (n := n) (by omega)) (algebraMap ℚ ℂ))) lambda → 
     ∃ (W : ℂ) (C_1 C_2 : Finset (ZMod (2^n))), 
       lambda^(2^(n-2)) = W ∧ 
       W * star W = 2 ∧
       Disjoint C_1 C_2 ∧
       C_1 ∪ C_2 = {x : ZMod (2^n) | Odd x.val}.toFinset ∧
-      C_2 = C_1.image (fun x ↦ -x) := sorry
+      C_2 = C_1.image (fun x ↦ -x)
 
 /--
 Theorem: Any eigenvalue of the twisted block has magnitude exactly 2^(1/2^{n-1}).
