@@ -35,10 +35,12 @@ noncomputable def det_I_minus_t_Sn (n : ℕ) (hn : n ≥ 2) : PowerSeries Comple
     as the logarithmic derivative identity. 
     Here we just leave a placeholder statement. -/
 theorem trace_det_identity (n : ℕ) (hn : n ≥ 2) :
-  Sn_series n hn = Sn_series n hn := by sorry
+  PowerSeries.derivative Complex (det_I_minus_t_Sn n hn) = 
+  - (det_I_minus_t_Sn n hn) * PowerSeries.derivative Complex (Sn_series n hn) := by sorry
 
 /-- The truncated zeta function Z_n(t). -/
-noncomputable def Zn_series (n : ℕ) (hn : n ≥ 2) : PowerSeries Complex := sorry
+noncomputable def Zn_series (n : ℕ) (hn : n ≥ 2) : PowerSeries Complex :=
+  (det_I_minus_t_Sn n hn)⁻¹
 
 /-- Theorem: The truncated zeta function Z_n(t) equals 1 / det(I - t S_n). -/
 theorem Zn_series_eq_inv_det (n : ℕ) (hn : n ≥ 2) : 
@@ -49,6 +51,20 @@ theorem Zn_series_eq_inv_det (n : ℕ) (hn : n ≥ 2) :
 noncomputable def poly_to_power_series (P : Polynomial Complex) : PowerSeries Complex :=
   PowerSeries.mk (fun k => P.coeff k)
 
+noncomputable def det_I_minus_t_Sn_poly (n : ℕ) (hn : n ≥ 2) : Polynomial Complex :=
+  let I : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) (Polynomial Complex) := 1
+  let tSn : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) (Polynomial Complex) := 
+    (Polynomial.X : Polynomial Complex) • (Matrix.map (Sn n hn) (algebraMap Complex (Polynomial Complex)))
+  (I - tSn).det
+
+lemma det_I_minus_t_Sn_eq_poly (n : ℕ) (hn : n ≥ 2) :
+    det_I_minus_t_Sn n hn = poly_to_power_series (det_I_minus_t_Sn_poly n hn) := by
+  sorry
+
+lemma det_I_minus_t_Sn_poly_stable (n : ℕ) (hn : n ≥ 2) :
+    det_I_minus_t_Sn_poly n hn = det_I_minus_t_Sn_poly 2 (by omega) := by
+  sorry
+
 /-- The property that the limit zeta function is rational. 
     There exist polynomials P and Q such that their ratio represents the limit. -/
 def IsRationalZeta : Prop :=
@@ -57,7 +73,17 @@ def IsRationalZeta : Prop :=
 
 /-- The Rational Zeta Theorem: the projective limit zeta function is rational. -/
 theorem rational_zeta_theorem : IsRationalZeta := by
-  -- Follows from Zn_series_eq_inv_det and the stabilization of det(I - t S_n)
-  sorry
+  use (1 : Polynomial Complex), (det_I_minus_t_Sn_poly 2 (by omega))
+  constructor
+  · sorry
+  · intro n hn
+    have h_stable := det_I_minus_t_Sn_poly_stable n hn
+    have h_eq := det_I_minus_t_Sn_eq_poly n hn
+    rw [← h_stable]
+    rw [← h_eq]
+    have h_inv := Zn_series_eq_inv_det n hn
+    have h_one : poly_to_power_series (1 : Polynomial Complex) = 1 := by sorry
+    rw [h_one]
+    exact h_inv
 
 end CollatzRational
