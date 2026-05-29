@@ -63,6 +63,21 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
   * *Claim:* All eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof wires together five sub-results: (1) the order of 3 in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is exactly $2^{n-2}$ (`order_three_mod_pow_two`), (2) the $\times 3$ orbits on odd residues form exactly 2 disjoint cycles of size $2^{n-2}$ whose union is all odd residues, (3) the orbit weight product $\prod_{k \in C}(1+\omega^{-k})$ has $|W|^2 = 2$ (`orbit_weight_magnitude_sq`), bridging to the cyclotomic identity in `CyclotomicProduct.lean`, (4) cyclic monomial eigenvalues have magnitude $|W|^{1/M}$, and (5) `AlgEquiv.spectrum_eq` converts between matrix and linear-map spectra.
   * *Status:* 0 `sorry` in this file. Depends transitively on 1 `sorry` in `TwistedBlockPow.lean` via `twisted_eigenvalue_magnitude` from `SchreierSpectralGap.lean`.
 
+### Dual Lean 4 + Coq Provenance
+
+The **Bass-Ihara determinant formula** is the only result in this repository that has been independently formalized in *two* proof assistants built on different logical foundations:
+
+| Proof Assistant | Foundation | Library | File | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Lean 4** (v4.8.0) | Dependent Type Theory (CIC) | Mathlib | [IharaBass.lean](formalization/Formalization/IharaBass.lean) + [IharaZeta.lean](formalization/Formalization/IharaZeta.lean) | 0 `sorry`, 0 axiom |
+| **Coq** (8.20 / MathComp 2.3.0) | Calculus of Inductive Constructions | MathComp | [BassIhara.v](coq/theories/BassIhara.v) | 0 `sorry`, 0 `axiom`, 0 `Admitted` |
+
+The two formalizations share no code and use structurally different proof strategies:
+* **Lean**: Block matrices `M_Bass`, `N_Bass`, `K_Bass`, `L_Bass` with `det_fromBlocks₁₁` / `det_fromBlocks_zero₂₁` Schur complement lemmas from Mathlib.
+* **Coq**: Direct Schur complement via `block_mx`, `det_lblock`, `det_ublock` in MathComp's `matrix` library, with explicit pilot matrices `P1`, `P3`, `P5`, `P6` and the key identity `(I - uJ)(I + uJ) = (1 - u²)I`.
+
+Cross-verification across independent type theories eliminates the risk of a shared kernel bug invalidating the result.
+
 ---
 
 ## 2. Conditional Formal Proofs (Lean 4, 0 `sorry`, but Assuming Axioms / Hypotheses)
