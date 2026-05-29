@@ -186,7 +186,7 @@ Located in [`src/ultrametric_jax/`](src/ultrametric_jax/):
 - **Triton (NVIDIA):** Dynamic runtime block skipping via `tl.advance()` / `continue`. Handles imbalanced trees natively but may suffer CUDA thread divergence under heavy sparsity.
 - **Pallas (TPU):** Static memory tracing via XLA. The TPU physically provisions Inter-Chip Interconnect bandwidth before execution. More deterministic and scales to 10,000+ chip superpods without runtime stalling.
 
-**Built by 6 parallel Linter-Woods subagents** (3 per stack) with strict file-level isolation, operating under the Linter-Woods academic honesty protocol.
+
 
 ---
 
