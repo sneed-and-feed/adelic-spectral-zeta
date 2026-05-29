@@ -26,7 +26,7 @@ class UltrametricAttention(nn.Module):
         self.v_proj = nn.Linear(embed_dim, embed_dim)
         self.o_proj = nn.Linear(embed_dim, embed_dim)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, dynamic_mask: torch.Tensor = None, routing: torch.Tensor = None) -> torch.Tensor:
         batch_size, seq_len, _ = x.size()
         
         # Project Q, K, V
@@ -37,15 +37,21 @@ class UltrametricAttention(nn.Module):
         # Scaled dot-product attention
         scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.head_dim)
         
-        # Apply the Ultrametric Bruhat-Tits topological mask
-        # We cache this in a real implementation, but compute it dynamically for the PoC
-        mask = get_ultrametric_mask(seq_len, self.p).to(x.device)
-        
+        if dynamic_mask is not None:
+            mask = dynamic_mask.to(x.device)
+        else:
+            # Apply the Ultrametric Bruhat-Tits topological mask
+            # We cache this in a real implementation, but compute it dynamically for the PoC
+            mask = get_ultrametric_mask(seq_len, self.p).to(x.device)
+            
         # Invert mask: True means keep, False means drop (-inf)
         scores = scores.masked_fill(~mask, float('-inf'))
         
         attn_weights = F.softmax(scores, dim=-1)
         
+        if routing is not None:
+            attn_weights = attn_weights * routing
+            
         # Apply weights to values
         out = torch.matmul(attn_weights, v)
         
