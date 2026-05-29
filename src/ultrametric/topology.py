@@ -13,21 +13,21 @@ class DynamicTopologyRouter(nn.Module):
         self.embed_dim = embed_dim
         self.p = p
         self.levels = int(math.ceil(math.log(max(seq_len, 1), p)))
-        self.num_leaves = p ** self.levels
         self.tau = tau
         self.hard = hard
         
-        # Project continuous token embeddings to unnormalized log-probabilities over tree leaves
-        self.proj = nn.Linear(embed_dim, self.num_leaves)
+        # Project continuous token embeddings to unnormalized log-probabilities over each tree level
+        self.proj = nn.Linear(embed_dim, self.levels * self.p)
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         x: (batch, seq_len, embed_dim)
         Returns:
-            assignments: (batch, seq_len, num_leaves) soft or hard assignments
+            assignments: (batch, seq_len, levels, p) soft or hard assignments
         """
-        logits = self.proj(x)
-        # Gumbel-Softmax for differentiable discrete routing
+        batch_size, seq_len, _ = x.shape
+        logits = self.proj(x).view(batch_size, seq_len, self.levels, self.p)
+        # Gumbel-Softmax for differentiable discrete routing at every level of the tree
         assignments = F.gumbel_softmax(logits, tau=self.tau, hard=self.hard, dim=-1)
         return assignments
 
@@ -36,32 +36,21 @@ def get_dynamic_ultrametric_mask(assignments: torch.Tensor, p: int = 2, max_dist
     Generates a dynamic ultrametric mask based on learned token assignments.
     Two tokens attend to each other if their expected p-adic distance is within max_dist.
     """
-    batch_size, seq_len, num_leaves = assignments.shape
+    batch_size, seq_len, levels, p_dim = assignments.shape
     device = assignments.device
     
-    # Precompute pairwise distances between all tree leaves
-    leaf_dist = torch.zeros((num_leaves, num_leaves), dtype=torch.float32, device=device)
-    for i in range(num_leaves):
-        for j in range(num_leaves):
-            if i != j:
-                # Using the true tree distance for base p
-                diff_level = 0
-                temp_i, temp_j = i, j
-                level = 1
-                while temp_i != temp_j:
-                    if temp_i % p != temp_j % p:
-                        diff_level = level
-                    temp_i //= p
-                    temp_j //= p
-                    level += 1
-                leaf_dist[i, j] = diff_level
-
-    # Compute expected p-adic distance between tokens
-    expected_dist = torch.matmul(assignments, torch.matmul(leaf_dist, assignments.transpose(-2, -1)))
+    # M[b, i, j, l] is the probability token i and j take the same branch at level l
+    M = torch.einsum('bilp,bjlp->bijl', assignments, assignments)
+    
+    # expected_dist = levels - sum_{l=0}^{levels-1} prod_{m=l}^{levels-1} M_m
+    # We do a reversed cumulative product over levels
+    M_flipped = M.flip(dims=[-1])
+    P_flipped = M_flipped.cumprod(dim=-1)
+    sum_P = P_flipped.sum(dim=-1)
+    expected_dist = levels - sum_P
     
     if max_dist is None:
         # If not specified, default to half the max possible depth
-        levels = int(math.ceil(math.log(max(num_leaves, 1), p)))
         max_dist = levels // 2
 
     # Use a Straight-Through Estimator (STE) to make the hard mask differentiable

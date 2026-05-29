@@ -16,11 +16,13 @@ if HAS_TRITON:
         stride_kz, stride_kh, stride_kn, stride_kk,
         stride_vz, stride_vh, stride_vk, stride_vn,
         stride_oz, stride_oh, stride_om, stride_on,
-        stride_rz, stride_rh, stride_rm,
+        stride_rz, stride_rh, stride_rm, stride_rd,
+        req_depth,
         Z, H, N_CTX,
         BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr,
         BLOCK_N: tl.constexpr,
         P_ARY: tl.constexpr,
+        TREE_DEPTH: tl.constexpr,
     ):
         """
         True Hardware Block-Sparse Triton kernel for Ultrametric Attention.
@@ -60,8 +62,10 @@ if HAS_TRITON:
             order=(1, 0)
         )
         
-        # Load routing index for current Q block
-        m_routing_idx = tl.load(router_indices + r_offset + start_m * stride_rm)
+        # Load routing index vector for current Q block
+        depth_offsets = tl.arange(0, TREE_DEPTH)
+        m_router_ptrs = router_indices + r_offset + start_m * stride_rm + depth_offsets * stride_rd
+        m_routing_vec = tl.load(m_router_ptrs)
         
         q = tl.load(q_block_ptr, boundary_check=(0, 1), padding_option="zero")
         
@@ -92,10 +96,14 @@ if HAS_TRITON:
         num_n_blocks = tl.cdiv(N_CTX, BLOCK_N)
         
         for start_n_block in range(0, num_n_blocks):
-            n_routing_idx = tl.load(router_indices + r_offset + start_n_block * stride_rm)
+            n_router_ptrs = router_indices + r_offset + start_n_block * stride_rm + depth_offsets * stride_rd
+            n_routing_vec = tl.load(n_router_ptrs)
             
             # --- TOPOLOGICAL ROUTING LOGIC ---
-            if m_routing_idx != n_routing_idx:
+            # Verify that the blocks share the required ancestral depth in the tree vector
+            mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
+            
+            if tl.max(mismatch.to(tl.int32), axis=0) > 0:
                 k_block_ptr = tl.advance(k_block_ptr, (0, BLOCK_N))
                 v_block_ptr = tl.advance(v_block_ptr, (BLOCK_N, 0))
                 continue

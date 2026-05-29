@@ -44,7 +44,7 @@ class UltrametricTransformerBlock(nn.Module):
         
         # Pre-LN and Attention
         h = self.ln_1(x_full)
-        attn_out = self.attn(h, dynamic_mask=dynamic_mask, routing=routing)
+        attn_out = self.attn(h, num_interior=num_interior, dynamic_mask=dynamic_mask, routing=routing)
         x_full = x_full + attn_out
         
         # MLP
