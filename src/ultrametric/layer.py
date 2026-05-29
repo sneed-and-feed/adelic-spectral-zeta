@@ -470,7 +470,7 @@ class UltrametricAttention(nn.Module):
                 m_acc[:, :, row_start:row_end] = m_new
 
         # Normalize
-        out = out_acc / l_acc.unsqueeze(-1).clamp(min=1e-8)
+        out = (out_acc / l_acc.unsqueeze(-1).clamp(min=1e-8)).to(q.dtype)
 
         # Remove padding
         out = out[:, :, :S, :]
