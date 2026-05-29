@@ -31,3 +31,11 @@ openalex_search.json
 # Pruned development scripts (kept locally, not tracked)
 scripts/
 scratch/
+
+# Coq build artifacts
+*.vo
+*.vok
+*.vos
+*.glob
+.*.aux
+
