@@ -20,3 +20,7 @@ import Formalization.TerrasTrace
 import Formalization.SparsityBound
 import Formalization.OnlineSoftmax
 import Formalization.MemoryBound
+import Formalization.WeakIntegrability
+import Formalization.SpectralOracle
+import Formalization.ConjectureB
+import Formalization.OptimalRestrictedRewiring
