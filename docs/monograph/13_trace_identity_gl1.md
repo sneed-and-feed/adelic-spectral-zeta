@@ -12,13 +12,16 @@ Historically, several attempts have been made to define a spectral operator on t
 A common heuristic is to apply the Poisson Summation Formula to the idèle class group to obtain the prime-power sum of the Weil Explicit Formula. This is a category error:
 - **Poisson Summation (Tate's Thesis):** Tate's thesis uses Poisson summation on the idèles to prove the analytic continuation and functional equation of $L$-functions. The summation is taken over the entire set of non-zero rational numbers $\gamma \in \mathbb{Q}^*$.
 - **The Weil Explicit Formula:** The explicit formula relates the zeros of the Riemann zeta function to a sum over prime powers:
-  $$ \sum_{\rho} h(\rho) = I(h) - \sum_{p, k} \frac{\log p}{p^{k/2}} (h(k \log p) + h(-k \log p)) $$
+
+$$
+\sum_{\rho} h(\rho) = I(h) - \sum_{p, k} \frac{\log p}{p^{k/2}} (h(k \log p) + h(-k \log p))
+$$
   This sum is derived from the Euler product of $-\zeta'/\zeta$ via contour integration and the Hadamard product. 
 
 There is no natural geometric filtering on a commutative adèlic quotient that collapses the sum over all rational numbers $\mathbb{Q}^*$ to a sum exclusively over prime powers $p^k$. Composite rational numbers (such as $6 = 2 \cdot 3$) do not vanish under standard integration over the idèle class group.
 
 ### 2. The Archimedean Continuous Spectrum
-If we define the Archimedean operator $D_\infty = -x^2 \frac{d^2}{dx^2}$ on the symmetric space $GL(1, \mathbb{R}) / O(1) \cong \mathbb{R}_{>0}$, the change of variables $x = e^t$ transforms the operator into the standard Laplacian $-\frac{d^2}{dt^2}$ on $L^2(\mathbb{R}, dt)$. 
+If we define the Archimedean operator $`D_\infty = -x^2 \frac{d^2}{dx^2}`$ on the symmetric space $`GL(1, \mathbb{R}) / O(1) \cong \mathbb{R}_{\gt 0}`$, the change of variables $x = e^t$ transforms the operator into the standard Laplacian $-\frac{d^2}{dt^2}$ on $L^2(\mathbb{R}, dt)$. 
 The spectrum of this operator is **absolutely continuous** and is given by $[0, \infty)$. 
 
 Consequently:
@@ -31,23 +34,32 @@ To achieve a discrete spectrum and compact resolvents, one might restrict the gl
 It is topologically impossible to define a non-trivial differential operator $-x^2 d^2/dx^2$ on a two-point space. Thus, compactness (needed for discrete spectrum) and continuous differential operators (needed to represent the gamma factor) are mutually exclusive on commutative adèlic quotients.
 
 ### 4. Non-Archimedean Spectral Issues
-At the finite places, the Bruhat-Tits building for $GL(1, \mathbb{Q}_p)$ is simply a point. While the valuation filtration yields a copy of $\mathbb{Z}$ that represents the valuation sectors, there is no infinite tree structure. Attempting to define a local operator $T_p$ as a shift operator on the valuation lattices of $GL(1)$ results in a continuous spectrum on the unit circle in $\ell^2(\mathbb{Z})$ without a well-defined trace. The line-lattice or tree-based shift trace is a feature of $GL(2)$ and higher rank quotients, not $GL(1)$.
+At the finite places, the Bruhat-Tits building for $`GL(1, \mathbb{Q}_p)`$ is simply a point. While the valuation filtration yields a copy of $\mathbb{Z}$ that represents the valuation sectors, there is no infinite tree structure. Attempting to define a local operator $`T_p`$ as a shift operator on the valuation lattices of $GL(1)$ results in a continuous spectrum on the unit circle in $\ell^2(\mathbb{Z})$ without a well-defined trace. The line-lattice or tree-based shift trace is a feature of $GL(2)$ and higher rank quotients, not $GL(1)$.
 
 ---
 
 # 13.2 Alain Connes' Noncommutative Framework
 
 To resolve these obstructions, Alain Connes (1999) introduced a framework utilizing **noncommutative geometry**. Instead of working on the commutative adèlic quotient, Connes constructed the spectral realization on the noncommutative space of adèle classes:
-$$ X = \mathbb{A}_{\mathbb{Q}} / \mathbb{Q}^* $$
+
+$$
+X = \mathbb{A}_{\mathbb{Q}} / \mathbb{Q}^*
+$$
 This space is highly pathological from the perspective of classical topology, as the orbit of $0$ is dense, making the classical quotient space non-Hausdorff.
 
 Connes resolved this by representing the algebra of functions on $X$ as a noncommutative $C^*$-algebra crossed product:
-$$ \mathcal{A} = C_0(\mathbb{A}_{\mathbb{Q}}) \rtimes \mathbb{Q}^* $$
+
+$$
+\mathcal{A} = C_0(\mathbb{A}_{\mathbb{Q}}) \rtimes \mathbb{Q}^*
+$$
 In this setting:
 1. **Distributional Trace:** The trace formula is not computed as a standard resolvent trace of a compact operator, but as a **distributional trace** (the Weil distribution) on the noncommutative algebra.
 2. **Absorption Spectrum:** The zeros of the Riemann zeta function do not appear as eigenvalues of a self-adjoint operator, but rather as an **absorption spectrum** (missing spectral lines) in the continuous spectrum of the system, which corresponds to the classical dynamics on the adèle class space.
 3. **The Weil Distribution:** The geometric side of Connes' trace formula computes the trace of the action of the idele class group, which naturally yields the Weil explicit formula:
-   $$ \text{Tr}_{\text{distrib}}(h(D)) = \sum_{\text{zeros}} h(\gamma) = \text{Weil explicit formula} $$
+
+$$
+\text{Tr}_{\text{distrib}}(h(D)) = \sum_{\text{zeros}} h(\gamma) = \text{Weil explicit formula}
+$$
    Here, the prime powers emerge naturally from the closed orbits of the scaling flow on the adèle classes.
 
 ---
@@ -86,7 +98,10 @@ Furthermore:
 
 ### Concrete Example: The Ramanujan Delta Function
 To see this mismatch concretely, consider a holomorphic modular cusp form of weight 12, such as the Ramanujan discriminant function $\Delta(\tau) = q \prod_{n=1}^\infty (1-q^n)^{24}$ with $q = e^{2\pi i \tau}$. When evaluating the Eichler-Selberg trace formula for the Hecke operator $T(p)$, the geometric trace includes elliptic conjugacy class contributions of the form:
-$$ \sum_{d < 4p, d \equiv 0,1 \pmod 4} h(d) w(d) \frac{\lambda^{11} - \bar{\lambda}^{11}}{\lambda - \bar{\lambda}} $$
+
+$$
+\sum_{d \lt 4p, d \equiv 0,1 \pmod 4} h(d) w(d) \frac{\lambda^{11} - \bar{\lambda}^{11}}{\lambda - \bar{\lambda}}
+$$
 where $h(d)$ is the class number of the imaginary quadratic order of discriminant $d$, and $\lambda, \bar{\lambda}$ are the roots of $x^2 - t x + p = 0$ with $t^2 - 4p = d$. These class-number terms are purely geometric invariants of imaginary quadratic fields. They have no corresponding terms in the completed $L$-function $\Lambda(s, \Delta)$, which is defined analytically only by the Satake parameters at $p$. Proving Conjecture `(*)` for $GL(2)$ requires showing that these elliptic terms strictly cancel out or are absorbed, which remains a major open question in the theory of automorphic forms.
 
 ---

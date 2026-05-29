@@ -17,7 +17,7 @@ import Mathlib.NumberTheory.ArithmeticFunction
 ```
 
 ## 3. Physical Lattice and Parity Check Matrix
-The parity check matrix $H_{p,k}$ connects a qubit $k$ to a stabilizer $p$ if and only if $p$ divides $k$. We formalize this over the finite field $\mathbb{F}_2$ (represented via `ZMod 2`).
+The parity check matrix $`H_{p,k}`$ connects a qubit $k$ to a stabilizer $p$ if and only if $p$ divides $k$. We formalize this over the finite field $`\mathbb{F}_2`$ (represented via `ZMod 2`).
 ```lean
 -- Define the index sets for qubits and stabilizers
 def QubitLattice (N : ℕ) := {k : ℕ // 2 ≤ k ∧ k ≤ N}

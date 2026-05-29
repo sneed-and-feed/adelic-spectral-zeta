@@ -4,10 +4,12 @@
 
 The **Ramanujan Partition Superconductor** represents a profound structural mapping between condensed matter physics and additive number theory. 
 
-In conventional Bogoliubov-de Gennes (BdG) mean-field theory, the superconducting state is defined by a pairing Hamiltonian $H_{\text{pair}} = \sum_{i,j} \Delta_{ij} c_i^\dagger c_j^\dagger + \text{h.c.}$, where $\Delta_{ij}$ represents the Cooper pair binding potential between lattice sites $i$ and $j$. Typically, this potential is either purely local ($\delta_{ij}$) or decays exponentially with spatial separation due to screening.
+In conventional Bogoliubov-de Gennes (BdG) mean-field theory, the superconducting state is defined by a pairing Hamiltonian $`H_{\text{pair}} = \sum_{i,j} \Delta_{ij} c_i^\dagger c_j^\dagger + \text{h.c.}`$, where $`\Delta_{ij}`$ represents the Cooper pair binding potential between lattice sites $i$ and $j$. Typically, this potential is either purely local ($`\delta_{ij}`$) or decays exponentially with spatial separation due to screening.
 
 In the `build_ramanujan_superconductor_H_sparse` algorithm defined in `quantum.py`, the pairing interaction is rigorously overridden by Euler's integer partition function:
-$$ \Delta_{ij} = \Delta \cdot p(|i-j|) $$
+$$
+\Delta_{ij} = \Delta \cdot p(|i-j|)
+$$
 
 Because $p(n)$ exhibits sub-exponential *growth* given by the Hardy-Ramanujan asymptotic formula $p(n) \sim \frac{1}{4n\sqrt{3}} \exp\left(\pi \sqrt{\frac{2n}{3}}\right)$, this Hamiltonian models an extreme, long-range correlated macroscopic superconducting state. 
 
@@ -19,7 +21,7 @@ Crucially, Ramanujan's exact congruences:
 * $p(7k + 5) \equiv 0 \pmod 7$
 * $p(11k + 6) \equiv 0 \pmod{11}$
 
-impose strict arithmetic selection rules on the Cooper pairings. At specific lattice distances, the pairing strength becomes quantized under these moduli, fragmenting the Hamiltonian into exact topological sub-lattices governed by discrete gauge symmetries ($\mathbb{Z}_5$, $\mathbb{Z}_7$, $\mathbb{Z}_{11}$). The resulting macroscopic spectral gap $\Delta E = E_1 - E_0$ computed in `run_ramanujan_superconductor.py` is thereby rigorously bounded by these number-theoretic properties.
+impose strict arithmetic selection rules on the Cooper pairings. At specific lattice distances, the pairing strength becomes quantized under these moduli, fragmenting the Hamiltonian into exact topological sub-lattices governed by discrete gauge symmetries ($`\mathbb{Z}_5`$, $`\mathbb{Z}_7`$, $`\mathbb{Z}_{11}`$). The resulting macroscopic spectral gap $`\Delta E = E_1 - E_0`$ computed in `run_ramanujan_superconductor.py` is thereby rigorously bounded by these number-theoretic properties.
 
 ---
 
@@ -33,8 +35,8 @@ To compile this physical model into zero-`sorry` Lean 4 code, the formalization 
 3. **Embed Ramanujan Congruences**: Formalize $p(5k+4) \equiv 0 \pmod 5$ as a theorem bridging `ZMod 5` and `Nat.Partition`.
 
 ### Phase 2: Operator Algebra and Fock Space
-1. **Construct the 1D Fermionic Lattice**: Define the creation $c_i^\dagger$ and annihilation $c_i$ operators over a finite lattice `Fin L`.
-2. **Canonical Anticommutation Relations (CAR)**: Prove the strict CAR algebra $\{c_i, c_j^\dagger\} = \delta_{ij}$ using matrix tensor products or Clifford algebras over `EuclideanSpace`.
+1. **Construct the 1D Fermionic Lattice**: Define the creation $`c_i^\dagger`$ and annihilation $`c_i`$ operators over a finite lattice `Fin L`.
+2. **Canonical Anticommutation Relations (CAR)**: Prove the strict CAR algebra $`\{c_i, c_j^\dagger\} = \delta_{ij}`$ using matrix tensor products or Clifford algebras over `EuclideanSpace`.
 3. **BdG Matrix Construction**: Define the sparse Ramanujan BdG Hamiltonian as a symmetric linear map `H : FockSpace →ₗ[ℂ] FockSpace`, explicitly embedding the coefficients `Δ * p(|i - j|)`.
 
 ### Phase 3: Spectral Gap Strict Positivity

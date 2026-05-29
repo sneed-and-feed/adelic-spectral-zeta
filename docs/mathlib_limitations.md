@@ -23,7 +23,7 @@ By strictly adhering to a "0-sorry / 0-axiom / Truth Only" mandate, we successfu
 ## 3. Ramanujan Partition Superconductors
 **Target:** Formalizing the bridge between Euler's integer partitions $p(n)$ and Bogoliubov-de Gennes (BdG) macroscopic superconducting spectral gaps.
 **Missing Mathlib Foundations:**
-* **Combinatorics:** Hardy-Ramanujan asymptotic lower bounds for integer partitions and the Ramanujan congruences over $\mathbb{Z}_5, \mathbb{Z}_7, \mathbb{Z}_{11}$.
+* **Combinatorics:** Hardy-Ramanujan asymptotic lower bounds for integer partitions and the Ramanujan congruences over $`\mathbb{Z}_5, \mathbb{Z}_7, \mathbb{Z}_{11}`$.
 * **Operator Algebra:** Constructing the dynamically sized sparse Ramanujan BdG Hamiltonian matrix requires a bridging framework between `CliffordAlgebra` and a true Fermionic Fock lattice representation.
 * **Spectral Geometry:** Rayleigh quotient bounds and spectral gap existence theorems for the BdG matrix over the resulting Fock space.
 

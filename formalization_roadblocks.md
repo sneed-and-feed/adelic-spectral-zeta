@@ -13,12 +13,12 @@ This document outlines the definitive mathematical roadblocks encountered while 
 
 **Why It Failed:**
 1. **Missing Topological Limits:** While we successfully formalized the `IsAFAlgebra` definition via Category Theory and `DirectLimit`, `Mathlib` currently lacks the functional analysis infrastructure to prove that `Algebra.DirectLimit` preserves $C^*$-norms. It is impossible to formally complete the metric space to construct the AF-algebra limit without writing thousands of lines of foundational $C^*$-algebra theory.
-2. **Missing Bruhat-Tits Infrastructure:** `Mathlib` does not have unramified extensions of $\mathbb{Q}_p$ ($\mathbb{Q}_q$) or $p$-adic zeta functions natively defined.
+2. **Missing Bruhat-Tits Infrastructure:** `Mathlib` does not have unramified extensions of $`\mathbb{Q}_p`$ ($`\mathbb{Q}_q`$) or $p$-adic zeta functions natively defined.
 3. **Conceptual Mismatch:** The continuous correlators relying on ultrametric norms structurally do not map cleanly to the rigid, discrete $\{0, 1, -1\}$ cycle matrix without hallucinating invalid topological axioms.
 
 ## Angle 2: The Discrete Trace Formula (Finite Upper Half Planes)
 
-**Goal:** Use the finite upper half plane $H_q$ over $\mathbb{F}_q$ to evaluate the trace of the adjacency operator.
+**Goal:** Use the finite upper half plane $`H_q`$ over $`\mathbb{F}_q`$ to evaluate the trace of the adjacency operator.
 **Why It Failed:**
 1. **Spectral Mismatch:** The standard discrete trace formulas (like the Terras trace) yield *real* spectra because the graphs are symmetric and undirected. The `TwistedBlockPow` matrix corresponds to a *directed multigraph* with a purely *complex* spectrum. 
 2. **Ring vs. Field:** The trace formulas require evaluating over a finite field $\mathbb{F}_q$. The Collatz identity matrix requires evaluating dynamically over the ring $\mathbb{Z}/2^n\mathbb{Z}$.

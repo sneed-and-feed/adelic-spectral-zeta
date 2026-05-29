@@ -22,7 +22,7 @@ With the current framework fully scoped and boundaries mathematically secured, w
   - The repository's Adèlic Graphs map directly to **Bruhat-Tits trees** (the discrete bulk in p-adic AdS/CFT).
   - The framework's Dirac operators model bulk fields and string worldsheets.
   - The continuous trace evaluations directly model **holographic entanglement entropy** and partition functions.
-- **Mathlib 4 Readiness:** Excellent. Mathlib 4 already contains fully formalized definitions of $p$-adic numbers ($\mathbb{Q}_p, \mathbb{Z}_p$), the Adele ring (with local compactness proofs), and Bruhat-Tits trees. You will not have to build the foundational topology from scratch.
+- **Mathlib 4 Readiness:** Excellent. Mathlib 4 already contains fully formalized definitions of $p$-adic numbers ($`\mathbb{Q}_p, \mathbb{Z}_p`$), the Adele ring (with local compactness proofs), and Bruhat-Tits trees. You will not have to build the foundational topology from scratch.
 - **Projected Difficulty:** **3x to 4x Baseline Effort (Roughly 15–20 days).**
 - **The Roadblocks:** The primary challenge is not topological, but translational. You must formalize the "physics dictionary" (mapping bulk-boundary correlators into strict Lean theorems) and establish a global adèlic unification tensor product across all prime-adic spacetimes, which is an active edge-of-science research area.
 

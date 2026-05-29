@@ -8,7 +8,7 @@ To avoid any mischaracterization of this work: we do *not* claim a proof of the 
 
 ## The Adelic/Profinite Framework
 
-Our computational and theoretical work takes place in the inverse limit $\mathbb{Z}_2 = \lim_{\leftarrow} \mathbb{Z}/2^d\mathbb{Z}$. By considering the action of affine transformations $x \mapsto 3x+1$ and $x \mapsto x/2$ (modulo $2^d$), we construct Schreier graphs that encode the local behavior of these operations. 
+Our computational and theoretical work takes place in the inverse limit $`\mathbb{Z}_2 = \lim_{\leftarrow} \mathbb{Z}/2^d\mathbb{Z}`$. By considering the action of affine transformations $x \mapsto 3x+1$ and $x \mapsto x/2$ (modulo $2^d$), we construct Schreier graphs that encode the local behavior of these operations. 
 
 We computed the eigenvalues of the adjacency matrices of these graphs and observed a persistent spectral gap. In the context of random walks, an expander-like spectral gap implies rapid mixing: a random sequence of $3x+1$ and $x/2$ operations will quickly approach the uniform distribution on $\mathbb{Z}/2^d\mathbb{Z}$.
 

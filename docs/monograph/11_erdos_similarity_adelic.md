@@ -40,8 +40,12 @@ To ensure the logical bridge of the conjecture is mathematically watertight and 
 
 #### Mathematical Grounding: Bruhat-Tits Trees and Fourier Concentration
 
-To rigorously bind the Lean 4 formalization to standard analytic number theory, the Hilbert space is explicitly defined as the **restricted tensor product** relative to the spherical vectors $\mathbf{1}_{\mathbb{Z}_p}$:
-$$L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p < \infty}\nolimits' L^2(\mathbb{Q}_p)$$
+To rigorously bind the Lean 4 formalization to standard analytic number theory, the Hilbert space is explicitly defined as the **restricted tensor product** relative to the spherical vectors $`\mathbf{1}_{\mathbb{Z}_p}`$:
+
+$$
+L^2(\mathbb{A}) = L^2(\mathbb{R}) \otimes \bigotimes_{p \lt \infty}\nolimits' L^2(\mathbb{Q}_p)
+$$
+
 
 - **Discrete Optimization Heuristic**: Because continuous Fourier bounds universally collapse to trivial limits (e.g., continuity of translation in $L^1$), we transition to a discrete combinatorial analog. We compute the maximum density of finite subsets $A \subseteq \{1,\dots,N\}$ avoiding specific 4-point patterns using Integer Linear Programming (ILP).
 - **Szemerédi's Theorem**: For integer arithmetic progressions, Szemerédi's theorem guarantees the maximum density $\delta(N) \to 0$. Our ILP optimization maps the finite-$N$ regime of this decay, explicitly bound between the Behrend-Rankin lower bounds and Gowers upper bounds.

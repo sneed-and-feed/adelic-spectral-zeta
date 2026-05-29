@@ -6,13 +6,13 @@ This document presents a formal, rigorous mathematical proof of the existence of
 
 ## 1. Setup and Definition of Dynamics
 
-Let $\mathbb{Z}_2 = \varprojlim \mathbb{Z}/2^d\mathbb{Z}$ be the ring of 2-adic integers, equipped with the standard 2-adic valuation $v_2: \mathbb{Z}_2 \to \mathbb{Z} \cup \{\infty\}$ and the ultrametric:
+Let $`\mathbb{Z}_2 = \varprojlim \mathbb{Z}/2^d\mathbb{Z}`$ be the ring of 2-adic integers, equipped with the standard 2-adic valuation $`v_2: \mathbb{Z}_2 \to \mathbb{Z} \cup \{\infty\}`$ and the ultrametric:
 
 $$
 d_2(x, y) = |x - y|_2 = 2^{-v_2(x - y)}
 $$
 
-The shortcut Collatz map $T: \mathbb{Z}_2 \to \mathbb{Z}_2$ is defined by:
+The shortcut Collatz map $`T: \mathbb{Z}_2 \to \mathbb{Z}_2`$ is defined by:
 
 $$
 T(x) = \begin{cases} \frac{x}{2} & \text{if } x \equiv 0 \pmod{2} \\ \frac{3x+1}{2} & \text{if } x \equiv 1 \pmod{2} \end{cases}
@@ -30,10 +30,10 @@ $$
 *Proof.* 
 
 **Even Preimage:**
-Let $y_0 = 2x.$ Since $y_0$ is even, $T(y_0) = y_0/2 = x. Thus$y_0 \in T^{-1}(x) and is even.
+Let $`y_0 = 2x.`$ Since $`y_0`$ is even, $`T(y_0) = y_0/2 = x. Thus`$y_0 \in T^{-1}(x) and is even.
 
 **Odd Preimage:**
-Let $y_1 = (2x-1)/3.$ In $\mathbb{Z}_2,$3 is a unit (since $|3|_2 = 2^{-0} = 1),$ so $3^{-1} exists$ and is in $\mathbb{Z}_2,$ meaning $y_1 \in \mathbb{Z}_2. Evaluating$ modulo 2:
+Let $`y_1 = (2x-1)/3.`$ In $`\mathbb{Z}_2,`$3 is a unit (since $`|3|_2 = 2^{-0} = 1),`$ so $3^{-1} exists$ and is in $`\mathbb{Z}_2,`$ meaning $`y_1 \in \mathbb{Z}_2. Evaluating`$ modulo 2:
 
 $$
 3 y_1 = 2x-1 \equiv 1 \pmod{2} \implies 1 \cdot y_1 \equiv 1 \pmod{2} \implies y_1 \equiv 1 \pmod{2}
@@ -54,14 +54,14 @@ Any preimage $y must$ be even or odd. If $y$ is even, $y/2 = x \implies y = 2x. 
 
 ## 2. Metric Contraction of the Inverse Branches
 
-Let the inverse branches of $T$ be $g_0, g_1: \mathbb{Z}_2 \to \mathbb{Z}_2 defined$ by:
+Let the inverse branches of $T$ be $`g_0, g_1: \mathbb{Z}_2 \to \mathbb{Z}_2 defined`$ by:
 
 $$
 g_0(x) = 2x, \quad g_1(x) = \frac{2x-1}{3}
 $$
 
 ### Lemma 2: Lipschitz Contraction of Inverse Branches
-*For all $x, y \in \mathbb{Z}_2,$ the inverse branches $g_0$ and $g_1 satisfy:*$
+*For all $`x, y \in \mathbb{Z}_2,`$ the inverse branches $`g_0`$ and $`g_1 satisfy:*`$
 
 $$
 |g_0(x) - g_0(y)|_2 = \frac{1}{2} |x - y|_2
@@ -87,7 +87,7 @@ $$
 |g_1(x) - g_1(y)|_2 = \left| \frac{2x-1}{3} - \frac{2y-1}{3} \right|_2 = \left| \frac{2(x-y)}{3} \right|_2 = \frac{|2|_2}{|3|_2} |x - y|_2
 $$
 
-Since $3 \equiv 1 \pmod{2},$3 is not divisible by $2,$ so $v_2(3) = 0 \implies |3|_2 = 1. Thus:$
+Since $3 \equiv 1 \pmod{2},$3 is not divisible by $2,$ so $`v_2(3) = 0 \implies |3|_2 = 1. Thus:`$
 
 $$
 |g_1(x) - g_1(y)|_2 = \frac{1/2}{1} |x - y|_2 = \frac{1}{2} |x - y|_2
@@ -99,8 +99,8 @@ Both branches contract the 2-adic distance by exactly the factor $1/2$. $\square
 
 ## 3. The Lasota-Yorke Inequality
 
-Let $C(\mathbb{Z}_2)$ be the Banach space of continuous functions on $\mathbb{Z}_2$ under the supremum norm $\|f\|_\infty = \sup_{x \in \mathbb{Z}_2} |f(x)|.$
-For $\alpha \gt 0$, let $C^\alpha(\mathbb{Z}_2)$ be the space of $\alpha$-Hölder continuous functions on $\mathbb{Z}_2$ equipped with the norm:
+Let $`C(\mathbb{Z}_2)`$ be the Banach space of continuous functions on $`\mathbb{Z}_2`$ under the supremum norm $`\|f\|_\infty = \sup_{x \in \mathbb{Z}_2} |f(x)|.`$
+For $\alpha \gt 0$, let $`C^\alpha(\mathbb{Z}_2)`$ be the space of $\alpha$-Hölder continuous functions on $`\mathbb{Z}_2`$ equipped with the norm:
 
 $$
 \|f\|_\alpha = \|f\|_\infty + v_\alpha(f)
@@ -112,7 +112,7 @@ $$
 v_\alpha(f) = \sup_{x \neq y} \frac{|f(x) - f(y)|}{|x - y|_2^\alpha}
 $$
 
-The transfer operator $B: C(\mathbb{Z}_2) \to C(\mathbb{Z}_2)$ is:
+The transfer operator $`B: C(\mathbb{Z}_2) \to C(\mathbb{Z}_2)`$ is:
 
 $$
 (B f)(x) = \frac{1}{2} f(g_0(x)) + \frac{1}{2} f(g_1(x))
@@ -149,7 +149,7 @@ $$
 \frac{|(B f)(x) - (B f)(y)|}{|x - y|_2^\alpha} \le \frac{1}{2} 2^{-\alpha} v_\alpha(f) + \frac{1}{2} 2^{-\alpha} v_\alpha(f) = 2^{-\alpha} v_\alpha(f)
 $$
 
-Taking the supremum over all $x \neq y$, we establish $v_\alpha(B f) \le 2^{-\alpha} v_\alpha(f)$. $\square$
+Taking the supremum over all $x \neq y$, we establish $`v_\alpha(B f) \le 2^{-\alpha} v_\alpha(f)`$. $\square$
 
 ### Theorem 4: Lasota-Yorke Inequality
 *For all $f \in C^\alpha(\mathbb{Z}_2),$ we have:*
@@ -185,10 +185,10 @@ This is the standard Lasota-Yorke inequality with contraction coefficient $\thet
 To prove quasi-compactness, we use the classical Ionescu-Tulcea and Marinescu (ITM) theorem:
 
 ### Theorem (Ionescu-Tulcea & Marinescu)
-*Let $(V, \|\cdot\|_V)$ and $(W, \|\cdot\|_W)$ be two Banach spaces such that $V \subset W$ is a dense subspace and the injection $V \hookrightarrow W$ is a compact operator.*
+*Let $`(V, \|\cdot\|_V)`$ and $`(W, \|\cdot\|_W)`$ be two Banach spaces such that $V \subset W$ is a dense subspace and the injection $V \hookrightarrow W$ is a compact operator.*
 *Let $L: W \to W$ be a bounded linear operator such that $L(V) \subset V,$ and there exist constants $C \gt 0,$C' > 0, and $\theta \lt 1 such$ that:*
-1.  $\|L f\|_W \le C \|f\|_W *for$ all $f \in W.*$
-2.  $\|L f\|_V \le \theta \|f\|_V + C' \|f\|_W *for$ all $f \in V.*$
+1.  $`\|L f\|_W \le C \|f\|_W *for`$ all $f \in W.*$
+2.  $`\|L f\|_V \le \theta \|f\|_V + C' \|f\|_W *for`$ all $f \in V.*$
 
 *Then $L viewed$ as an operator on $V$ is quasi-compact: its essential spectral radius is bounded by $\theta,$ and the spectrum of $L on$V in the region $\{ z \in \mathbb{C} \mid |z| \gt \theta \} consists$ of a finite number of eigenvalues of finite multiplicity.*
 
@@ -199,14 +199,14 @@ $$
 r_{ess}(B) \le 2^{-\alpha} \lt 1
 $$
 
-*Proof.* We check the hypotheses of the ITM theorem with $V = C^\alpha(\mathbb{Z}_2)$ and $W = C(\mathbb{Z}_2):$
-1.  **Dense Embedding:** The space of locally constant functions on $\mathbb{Z}_2$ is dense in both $C^\alpha(\mathbb{Z}_2)$ and $C(\mathbb{Z}_2).$ Since it is a subspace of both, $C^\alpha(\mathbb{Z}_2)$ is dense in $C(\mathbb{Z}_2).$
-2.  **Compact Embedding:** $\mathbb{Z}_2$ is compact. By the ultrametric version of the Arzelà-Ascoli theorem, a subset of $C(\mathbb{Z}_2)$ is relatively compact if and only if it is bounded and equicontinuous. A bounded subset of $C^\alpha(\mathbb{Z}_2) satisfies$|f(x) - f(y)| \le M |x-y|_2^\alpha, which implies uniform equicontinuity. Thus, the unit ball of $C^\alpha(\mathbb{Z}_2)$ is relatively compact in $C(\mathbb{Z}_2),$ proving the embedding is compact.
+*Proof.* We check the hypotheses of the ITM theorem with $`V = C^\alpha(\mathbb{Z}_2)`$ and $`W = C(\mathbb{Z}_2):`$
+1.  **Dense Embedding:** The space of locally constant functions on $`\mathbb{Z}_2`$ is dense in both $`C^\alpha(\mathbb{Z}_2)`$ and $`C(\mathbb{Z}_2).`$ Since it is a subspace of both, $`C^\alpha(\mathbb{Z}_2)`$ is dense in $`C(\mathbb{Z}_2).`$
+2.  **Compact Embedding:** $`\mathbb{Z}_2`$ is compact. By the ultrametric version of the Arzelà-Ascoli theorem, a subset of $`C(\mathbb{Z}_2)`$ is relatively compact if and only if it is bounded and equicontinuous. A bounded subset of $`C^\alpha(\mathbb{Z}_2) satisfies`$|f(x) - f(y)| \le M |x-y|_2^\alpha, which implies uniform equicontinuity. Thus, the unit ball of $`C^\alpha(\mathbb{Z}_2)`$ is relatively compact in $`C(\mathbb{Z}_2),`$ proving the embedding is compact.
 3.  **Operator Bounds:**
-    *   $\|B f\|_\infty \le \|f\|_\infty (proven$ in Theorem 4, with $C = 1).$
-    *   $\|B f\|_\alpha \le 2^{-\alpha} \|f\|_\alpha + (1 - 2^{-\alpha}) \|f\|_\infty (proven$ in Theorem 4, with $\theta = 2^{-\alpha} \lt 1$ and $C' = 1 - 2^{-\alpha}).$
+    *   $`\|B f\|_\infty \le \|f\|_\infty (proven`$ in Theorem 4, with $C = 1).$
+    *   $`\|B f\|_\alpha \le 2^{-\alpha} \|f\|_\alpha + (1 - 2^{-\alpha}) \|f\|_\infty (proven`$ in Theorem 4, with $\theta = 2^{-\alpha} \lt 1$ and $C' = 1 - 2^{-\alpha}).$
 
-All conditions are satisfied. By the ITM theorem, $B$ is quasi-compact on $C^\alpha(\mathbb{Z}_2)$ and $r_{ess}(B) \le 2^{-\alpha}$. $\square$
+All conditions are satisfied. By the ITM theorem, $B$ is quasi-compact on $`C^\alpha(\mathbb{Z}_2)`$ and $`r_{ess}(B) \le 2^{-\alpha}`$. $\square$
 
 ---
 
@@ -227,7 +227,7 @@ $$
 v_\alpha(f) = v_\alpha(\lambda^{-n} B^n f) = v_\alpha(B^n f)
 $$
 
-By iterating Lemma 3, $v_\alpha(B^n f) \le 2^{-n\alpha} v_\alpha(f). Thus:$
+By iterating Lemma 3, $`v_\alpha(B^n f) \le 2^{-n\alpha} v_\alpha(f). Thus:`$
 
 $$
 v_\alpha(f) \le 2^{-n\alpha} v_\alpha(f) \quad \text{for all } n \ge 1
