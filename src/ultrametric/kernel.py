@@ -64,7 +64,7 @@ if HAS_TRITON:
         BLOCK_M: tl.constexpr,
         BLOCK_DMODEL: tl.constexpr,
         BLOCK_N: tl.constexpr,
-        P_ARY: tl.constexpr,
+        P_ARY: tl.constexpr,  # reserved for future p-ary branch comparison
         TREE_DEPTH_P2: tl.constexpr,
     ):
         """
@@ -222,6 +222,44 @@ def routing_to_block_indices(
     return router_indices.to(torch.int32)
 
 
+def _pytorch_fallback(
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    router_indices: torch.Tensor,
+    req_depth: int,
+    p: int = 2,
+) -> torch.Tensor:
+    """
+    Pure PyTorch fallback when Triton is unavailable.
+
+    Reconstructs a block-level boolean mask from router_indices and applies
+    standard scaled dot-product attention with the mask.
+    """
+    import torch.nn.functional as F
+
+    Z, H, N_CTX, DMODEL = q.shape
+    BLOCK = 128
+    num_blocks = router_indices.shape[2]
+
+    # Build block-level mask: blocks match if routing prefixes agree up to req_depth
+    # router_indices: (Z, H, num_blocks, depth)
+    r = router_indices[:, :, :, :req_depth]  # (Z, H, num_blocks, req_depth)
+    # Compare all pairs: (Z, H, num_blocks, 1, req_depth) vs (Z, H, 1, num_blocks, req_depth)
+    match = (r.unsqueeze(3) == r.unsqueeze(2)).all(dim=-1)  # (Z, H, num_blocks, num_blocks)
+
+    # Expand block-level mask to token-level mask
+    # match[z,h,i,j] = True means tokens in block i attend to tokens in block j
+    mask = match.repeat_interleave(BLOCK, dim=2).repeat_interleave(BLOCK, dim=3)
+    mask = mask[:, :, :N_CTX, :N_CTX]  # trim padding
+
+    scale = 1.0 / math.sqrt(DMODEL)
+    scores = torch.matmul(q, k.transpose(-2, -1)) * scale
+    scores = scores.masked_fill(~mask, float('-inf'))
+    attn = F.softmax(scores, dim=-1)
+    return torch.matmul(attn, v)
+
+
 def ultrametric_attention_triton(
     q: torch.Tensor,
     k: torch.Tensor,
@@ -246,16 +284,14 @@ def ultrametric_attention_triton(
             Each entry is an integer branch ID at the corresponding tree level.
         req_depth: required ancestral depth for block matching.
             Higher = sparser attention (more blocks skipped).
-            Must be <= tree_depth.
+            0 = all blocks attend (equivalent to dense). Must be <= tree_depth.
         p: tree arity (default: 2 for binary Bruhat-Tits tree)
 
     Returns:
         out: (batch, heads, seq_len, head_dim) float16 attention output
     """
     if not HAS_TRITON:
-        raise ImportError(
-            "Triton is not installed. Install with: pip install triton"
-        )
+        return _pytorch_fallback(q, k, v, router_indices, req_depth, p)
 
     assert q.dtype == torch.float16, f"Triton kernel requires float16, got {q.dtype}"
     assert q.is_cuda, "Triton kernel requires CUDA tensors"
@@ -269,8 +305,8 @@ def ultrametric_attention_triton(
     router_indices = router_indices.contiguous().to(torch.int32)
 
     TREE_DEPTH = router_indices.shape[-1]
-    assert req_depth <= TREE_DEPTH, (
-        f"req_depth ({req_depth}) must be <= tree_depth ({TREE_DEPTH})"
+    assert 0 <= req_depth <= TREE_DEPTH, (
+        f"req_depth ({req_depth}) must be in [0, {TREE_DEPTH}]"
     )
 
     # Triton requires tl.arange ranges to be powers of 2
