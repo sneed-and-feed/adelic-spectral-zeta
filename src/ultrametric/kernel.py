@@ -65,7 +65,7 @@ if HAS_TRITON:
         BLOCK_DMODEL: tl.constexpr,
         BLOCK_N: tl.constexpr,
         P_ARY: tl.constexpr,
-        TREE_DEPTH: tl.constexpr,
+        TREE_DEPTH_P2: tl.constexpr,
     ):
         """
         True Hardware Block-Sparse Triton kernel for Ultrametric Attention.
@@ -106,7 +106,8 @@ if HAS_TRITON:
         )
 
         # Load routing index vector for current Q block
-        depth_offsets = tl.arange(0, TREE_DEPTH)
+        # TREE_DEPTH_P2 is guaranteed power-of-2 for tl.arange compatibility
+        depth_offsets = tl.arange(0, TREE_DEPTH_P2)
         m_router_ptrs = (
             router_indices + r_offset + start_m * stride_rm + depth_offsets * stride_rd
         )
@@ -150,31 +151,28 @@ if HAS_TRITON:
             n_routing_vec = tl.load(n_router_ptrs)
 
             # --- TOPOLOGICAL ROUTING LOGIC ---
-            # Verify that the blocks share the required ancestral depth
+            # Check if blocks share required ancestral depth
+            # Extra padded depth levels are masked by depth_offsets < req_depth
             mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
+            has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
 
-            if tl.max(mismatch.to(tl.int32), axis=0) > 0:
-                k_block_ptr = tl.advance(k_block_ptr, (0, BLOCK_N))
-                v_block_ptr = tl.advance(v_block_ptr, (BLOCK_N, 0))
-                continue
+            # FIX: Triton does not support `continue` — use if-guard instead
+            if has_mismatch == 0:
+                k = tl.load(k_block_ptr, boundary_check=(0, 1), padding_option="zero")
+                v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
+
+                qk = tl.dot(q, k) * sm_scale
+
+                m_i_new = tl.maximum(m_i, tl.max(qk, 1))
+                alpha = tl.exp(m_i - m_i_new)
+                p = tl.exp(qk - m_i_new[:, None])
+
+                acc = acc * alpha[:, None] + tl.dot(p.to(tl.float16), v)
+                l_i = l_i * alpha + tl.sum(p, 1)
+                m_i = m_i_new
             # ---------------------------------
 
-            k = tl.load(k_block_ptr, boundary_check=(0, 1), padding_option="zero")
-            v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
-
-            qk = tl.dot(q, k)
-            qk = qk * sm_scale
-
-            m_i_new = tl.maximum(m_i, tl.max(qk, 1))
-            alpha = tl.exp(m_i - m_i_new)
-            p = tl.exp(qk - m_i_new[:, None])
-
-            acc = acc * alpha[:, None]
-            acc += tl.dot(p.to(tl.float16), v)
-
-            l_i = l_i * alpha + tl.sum(p, 1)
-            m_i = m_i_new
-
+            # Always advance pointers (cheap arithmetic, no SRAM load)
             k_block_ptr = tl.advance(k_block_ptr, (0, BLOCK_N))
             v_block_ptr = tl.advance(v_block_ptr, (BLOCK_N, 0))
 
@@ -275,6 +273,9 @@ def ultrametric_attention_triton(
         f"req_depth ({req_depth}) must be <= tree_depth ({TREE_DEPTH})"
     )
 
+    # Triton requires tl.arange ranges to be powers of 2
+    TREE_DEPTH_P2 = 1 << (TREE_DEPTH - 1).bit_length() if TREE_DEPTH > 1 else 1
+
     # Block size configuration
     # BLOCK_M/N = 128 is the sweet spot for A100/4090 SRAM capacity
     # BLOCK_DMODEL must exactly match head_dim for correctness
@@ -292,6 +293,15 @@ def ultrametric_attention_triton(
             device=router_indices.device,
         )
         router_indices = torch.cat([router_indices, pad], dim=2)
+
+    # Pad depth dimension to power-of-2 for tl.arange compatibility
+    if TREE_DEPTH < TREE_DEPTH_P2:
+        depth_pad = torch.zeros(
+            (*router_indices.shape[:-1], TREE_DEPTH_P2 - TREE_DEPTH),
+            dtype=torch.int32,
+            device=router_indices.device,
+        )
+        router_indices = torch.cat([router_indices, depth_pad], dim=-1)
 
     # Allocate output
     out = torch.empty_like(q)
@@ -344,7 +354,8 @@ def ultrametric_attention_triton(
         BLOCK_DMODEL=BLOCK_DMODEL,
         BLOCK_N=BLOCK_N,
         P_ARY=p,
-        TREE_DEPTH=TREE_DEPTH,
+        TREE_DEPTH_P2=TREE_DEPTH_P2,
     )
 
     return out
+
