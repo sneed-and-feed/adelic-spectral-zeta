@@ -17,7 +17,7 @@ theorem twisted_eigenvalue_magnitude (n : ℕ) (hn : 3 ≤ n) (lambda : ℂ) :
     Complex.abs lambda = (2 : ℝ) ^ ((1 : ℝ) / (2^(n-1) : ℝ)) := by
   intro h_eig
   have hn2 : n ≥ 2 := by omega
-  have h_base := twistedPow_eq_neg_two hn2
+  have h_base := twistedPow_eq_neg_two hn
   have h_eig_pow := Module.End.HasEigenvalue.pow h_eig (2^(n-1))
   have h_alg_pow : (Matrix.toLin' (Matrix.map (twistedDirMatrix hn2) (algebraMap ℚ ℂ))) ^ (2^(n-1)) = 
     Matrix.toLin' ((Matrix.map (twistedDirMatrix hn2) (algebraMap ℚ ℂ)) ^ (2^(n-1))) := by
