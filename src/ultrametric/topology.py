@@ -1,105 +1,244 @@
+"""
+Ultrametric AI — Dynamic Topology Router (PyTorch)
+
+Maps continuous token embeddings into discrete Bruhat-Tits tree branches
+via per-head factorized Gumbel-Softmax routing. Each attention head routes
+independently, enabling different heads to attend to different hierarchical
+sub-structures of the fractal tree.
+
+Includes auxiliary load-balancing loss to prevent routing collapse
+(Switch Transformer, Fedus et al. 2021).
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+from typing import Optional, Tuple
+
 
 class DynamicTopologyRouter(nn.Module):
     """
-    Learned Dynamic Topology router mapping continuous token embeddings 
-    into discrete Bruhat-Tits tree branches based on semantic meaning.
+    Multi-Head Dynamic Topology Router.
+
+    Projects token embeddings into per-head recursive p-adic tree paths.
+    Each head gets its own routing decision at every level of the Bruhat-Tits
+    tree, producing a genuinely nested hierarchical mask — not a flat partition.
+
+    Args:
+        embed_dim: token embedding dimension
+        seq_len: maximum sequence length (determines tree depth)
+        num_heads: number of independent routing heads
+        p: tree arity (2 = binary Bruhat-Tits tree)
+        tau: Gumbel-Softmax temperature (higher = softer routing)
+        hard: if True, use straight-through estimator for discrete routing
     """
-    def __init__(self, embed_dim: int, seq_len: int, p: int = 2, tau: float = 1.0, hard: bool = True):
+
+    def __init__(
+        self,
+        embed_dim: int,
+        seq_len: int,
+        num_heads: int = 1,
+        p: int = 2,
+        tau: float = 1.0,
+        hard: bool = True,
+    ):
         super().__init__()
         self.embed_dim = embed_dim
+        self.num_heads = num_heads
         self.p = p
-        self.levels = int(math.ceil(math.log(max(seq_len, 1), p)))
         self.tau = tau
         self.hard = hard
-        
-        # Project continuous token embeddings to unnormalized log-probabilities over each tree level
-        self.proj = nn.Linear(embed_dim, self.levels * self.p)
-        
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        self.levels = int(math.ceil(math.log(max(seq_len, 2), p)))
+
+        # Per-head routing: shared backbone, per-head projection heads
+        self.backbone = nn.Linear(embed_dim, embed_dim)
+        self.route_heads = nn.Linear(embed_dim, num_heads * self.levels * p)
+
+    def forward(
+        self, x: torch.Tensor, tau_override: Optional[float] = None
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        x: (batch, seq_len, embed_dim)
+        Args:
+            x: (batch, seq_len, embed_dim) token embeddings
+            tau_override: optional temperature override for annealing schedules
+
         Returns:
-            assignments: (batch, seq_len, levels, p) soft or hard assignments
+            assignments: (batch, num_heads, seq_len, levels, p) routing weights
+            load_balance_loss: scalar auxiliary loss for training stability
         """
         batch_size, seq_len, _ = x.shape
-        logits = self.proj(x).view(batch_size, seq_len, self.levels, self.p)
-        # Gumbel-Softmax for differentiable discrete routing at every level of the tree
-        assignments = F.gumbel_softmax(logits, tau=self.tau, hard=self.hard, dim=-1)
-        return assignments
+        tau = tau_override if tau_override is not None else self.tau
 
-def get_dynamic_ultrametric_mask(assignments: torch.Tensor, p: int = 2, max_dist: int = None) -> torch.Tensor:
+        # Shared feature extraction → per-head routing logits
+        h = F.gelu(self.backbone(x))  # (batch, seq_len, embed_dim)
+        logits = self.route_heads(h)  # (batch, seq_len, num_heads * levels * p)
+        logits = logits.view(batch_size, seq_len, self.num_heads, self.levels, self.p)
+        logits = logits.permute(0, 2, 1, 3, 4)  # (batch, heads, seq_len, levels, p)
+
+        if self.training:
+            # Flatten for gumbel_softmax, then reshape back
+            flat = logits.reshape(-1, self.p)
+            sampled = F.gumbel_softmax(flat, tau=tau, hard=self.hard, dim=-1)
+            assignments = sampled.view_as(logits)
+        else:
+            # Deterministic argmax at inference
+            indices = logits.argmax(dim=-1)
+            assignments = F.one_hot(indices, num_classes=self.p).float()
+
+        load_balance_loss = self.compute_load_balance_loss(assignments)
+        return assignments, load_balance_loss
+
+    @staticmethod
+    def compute_load_balance_loss(assignments: torch.Tensor) -> torch.Tensor:
+        """
+        Switch Transformer-style load balancing loss.
+
+        Penalizes routing imbalance to prevent all tokens collapsing to one
+        branch. Loss is minimized when tokens are uniformly distributed
+        across branches at every level.
+
+        L_balance = p * sum_i(f_i * P_i) per level, averaged over heads/batch.
+
+        Args:
+            assignments: (batch, num_heads, seq_len, levels, p) routing weights
+        Returns:
+            loss: scalar tensor
+        """
+        p = assignments.shape[-1]
+        # f_i: fraction of tokens routed to each branch (hard counts)
+        f = (assignments.detach() > 0.5).float().mean(dim=2)  # (B, H, L, p)
+        # P_i: mean routing probability to each branch (soft, differentiable)
+        P = assignments.mean(dim=2)  # (B, H, L, p)
+        # Dot product per level, scale by p so uniform distribution → loss = 1
+        loss = (f * P).sum(dim=-1).mean() * p
+        return loss
+
+    @staticmethod
+    def get_tau_schedule(
+        step: int,
+        warmup_steps: int = 2000,
+        tau_start: float = 2.0,
+        tau_end: float = 0.1,
+    ) -> float:
+        """
+        Cosine temperature annealing: soft routing → hard routing over training.
+
+        Args:
+            step: current training step
+            warmup_steps: total annealing steps
+            tau_start: initial temperature (soft)
+            tau_end: final temperature (hard)
+        Returns:
+            tau: current temperature value
+        """
+        if step >= warmup_steps:
+            return tau_end
+        progress = step / warmup_steps
+        return tau_end + 0.5 * (tau_start - tau_end) * (1 + math.cos(math.pi * progress))
+
+
+# ============================================================================
+# Ultrametric Mask Utilities
+# ============================================================================
+
+
+def get_dynamic_ultrametric_mask(
+    assignments: torch.Tensor, p: int = 2, max_dist: Optional[int] = None
+) -> torch.Tensor:
     """
-    Generates a dynamic ultrametric mask based on learned token assignments.
-    Two tokens attend to each other if their expected p-adic distance is within max_dist.
+    Generates a dynamic ultrametric mask from learned routing assignments.
+
+    Two tokens attend to each other if their expected p-adic distance
+    (height of lowest common ancestor in the Bruhat-Tits tree) ≤ max_dist.
+
+    Supports both shared routing (4D input) and per-head routing (5D input).
+
+    Args:
+        assignments: (batch, seq_len, levels, p) shared routing, OR
+                     (batch, heads, seq_len, levels, p) per-head routing
+        p: tree arity
+        max_dist: maximum p-adic distance for attention. Default: levels // 2
+
+    Returns:
+        mask: (batch, seq_len, seq_len) or (batch, heads, seq_len, seq_len)
     """
-    batch_size, seq_len, levels, p_dim = assignments.shape
-    device = assignments.device
-    
-    # M[b, i, j, l] is the probability token i and j take the same branch at level l
-    M = torch.einsum('bilp,bjlp->bijl', assignments, assignments)
-    
-    # expected_dist = levels - sum_{l=0}^{levels-1} prod_{m=l}^{levels-1} M_m
-    # We do a reversed cumulative product over levels
+    if assignments.dim() == 5:
+        B, H, S, L, P = assignments.shape
+        a_flat = assignments.reshape(B * H, S, L, P)
+        mask_flat = _compute_distance_mask(a_flat, L, max_dist)
+        return mask_flat.view(B, H, S, S)
+    else:
+        B, S, L, P = assignments.shape
+        return _compute_distance_mask(assignments, L, max_dist)
+
+
+def _compute_distance_mask(
+    assignments: torch.Tensor, levels: int, max_dist: Optional[int]
+) -> torch.Tensor:
+    """
+    Core p-adic distance mask computation via reversed cumulative product.
+
+    The expected p-adic distance between tokens i and j is:
+        d(i,j) = levels - sum_{l=0}^{levels-1} prod_{m=l}^{levels-1} M[i,j,m]
+    where M[i,j,l] is the probability that tokens i,j share branch l.
+    """
+    # M[b, i, j, l] = prob tokens i, j agree at level l
+    M = torch.einsum("bilp,bjlp->bijl", assignments, assignments)
+
+    # Reversed cumulative product for expected distance
     M_flipped = M.flip(dims=[-1])
     P_flipped = M_flipped.cumprod(dim=-1)
     sum_P = P_flipped.sum(dim=-1)
     expected_dist = levels - sum_P
-    
-    if max_dist is None:
-        # If not specified, default to half the max possible depth
-        max_dist = levels // 2
 
-    # Use a Straight-Through Estimator (STE) to make the hard mask differentiable
+    if max_dist is None:
+        max_dist = max(levels // 2, 1)
+
+    # Straight-Through Estimator: hard mask forward, soft gradient backward
     temperature = 0.5
     soft_mask = torch.sigmoid((max_dist - expected_dist) / temperature)
     hard_mask = (expected_dist <= max_dist).float()
-    
-    # mask forward is hard_mask, backward is soft_mask
     mask = hard_mask.detach() - soft_mask.detach() + soft_mask
     return mask
 
+
 def get_ultrametric_mask(seq_len: int, p: int = 2) -> torch.Tensor:
     """
-    Generates a boolean mask for an ultrametric (p-adic) attention layer.
-    
-    In a standard dense transformer, every token attends to every other token (or causal).
-    In an ultrametric Bruhat-Tits topology, tokens are leaves on a tree. 
+    Generates a static boolean mask for ultrametric (p-adic) attention.
+
+    In a standard dense transformer, every token attends to every other token.
+    In an ultrametric Bruhat-Tits topology, tokens are leaves on a tree.
     Tokens only strongly attend to tokens that share a deep common ancestor.
-    
-    This function generates a block-sparse mask where the density decreases 
-    as the p-adic distance increases, dropping connections that are topologically "far".
+
+    This function generates a block-sparse mask where the density decreases
+    as the p-adic distance increases, dropping connections that are
+    topologically "far".
+
+    Args:
+        seq_len: sequence length
+        p: tree arity (default: 2 for binary tree)
+    Returns:
+        mask: (seq_len, seq_len) boolean tensor
     """
-    # Ensure sequence length is a power of p for perfect tree mapping
-    levels = int(math.ceil(math.log(seq_len, p)))
-    pad_len = p ** levels
-    
-    # Initialize full mask
+    levels = int(math.ceil(math.log(max(seq_len, 2), p)))
+    pad_len = p**levels
+
     mask = torch.zeros((pad_len, pad_len), dtype=torch.bool)
-    
-    # Base heuristic: We keep local blocks fully dense, and progressively drop 
-    # out off-diagonal blocks to simulate the tree distance.
     for level in range(levels):
-        block_size = p ** level
-        # A simple fractal block-sparse pattern
+        block_size = p**level
         for i in range(0, pad_len, block_size):
-            # Tokens within the same block share a common ancestor at this level
-            # We keep the block dense
-            mask[i:i+block_size, i:i+block_size] = True
-            
+            mask[i : i + block_size, i : i + block_size] = True
+
     return mask[:seq_len, :seq_len]
+
 
 def compute_p_adic_distance(i: int, j: int, p: int = 2) -> int:
     """
     Computes the p-adic distance between two token indices.
-    This corresponds to the height of their lowest common ancestor in a p-ary tree.
+    Corresponds to the height of their lowest common ancestor in a p-ary tree.
     """
     if i == j:
         return 0
-    # The lowest common ancestor height in a complete p-ary tree
-    # is determined by the highest differing bit in base p.
     diff = i ^ j
     return int(math.floor(math.log(diff, p))) + 1

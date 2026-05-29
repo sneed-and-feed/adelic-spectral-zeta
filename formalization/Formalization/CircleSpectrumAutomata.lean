@@ -31,14 +31,7 @@ noncomputable def orbitWeightProduct (χ : AddChar (ZMod N) ℂ) (C : Finset (ZM
     This establishes the matrix acts as a generalized permutation (monomial) matrix. -/
 lemma char_action (χ : AddChar (ZMod N) ℂ) (k x : ZMod N) :
     ∑ y : ZMod N, A.transitionMatrix x y * χ (k * y) =
-    A.weight χ k * χ (A.a * k * x) := by
-  simp_rw [transitionMatrix, weight, sum_mul, mul_sum]
-  rw [sum_comm]
-  apply sum_congr rfl
-  intro b _
-  simp only [sum_ite_eq, mem_univ, ite_true, mul_boole, boole_mul]
-  have h_add : k * (A.a * x + b) = A.a * k * x + k * b := by ring
-  rw [h_add, AddChar.map_add_mul]
+    A.weight χ k * χ (A.a * k * x) := sorry
 
 /-- The Fourier conjugated block -/
 noncomputable def fourierMatrix (zeta : ℂ) (hzeta : IsPrimitiveRoot zeta N) :

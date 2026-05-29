@@ -62,6 +62,12 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
 * **Spectral Circle Theorem** ([SpectralCircle.lean](formalization/Formalization/SpectralCircle.lean))
   * *Claim:* All eigenvalues of the twisted block $`S_n`$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof wires together five sub-results: (1) the order of 3 in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is exactly $2^{n-2}$ (`order_three_mod_pow_two`), (2) the $\times 3$ orbits on odd residues form exactly 2 disjoint cycles of size $2^{n-2}$ whose union is all odd residues, (3) the orbit weight product $`\prod_{k \in C}(1+\omega^{-k})`$ has $|W|^2 = 2$ (`orbit_weight_magnitude_sq`), bridging to the cyclotomic identity in `CyclotomicProduct.lean`, (4) cyclic monomial eigenvalues have magnitude $|W|^{1/M}$, and (5) `AlgEquiv.spectrum_eq` converts between matrix and linear-map spectra.
   * *Status:* 0 `sorry` in this file. Depends transitively on 1 `sorry` in `TwistedBlockPow.lean` via `twisted_eigenvalue_magnitude` from `SchreierSpectralGap.lean`.
+* **Collatz Zeta Function Recursive Factorization** ([CoveringFactorization.lean](formalization/Formalization/CoveringFactorization.lean))
+  * *Claim:* The characteristic determinant of the directed Collatz transfer operator strictly factors as $\det(I-uT_n) = \det(I-uT_{n-1})\det(I-uS_n)$. The proof defines the Stark-Terras 2-cover graph involution and uses exact block-matrix diagonalization to split the operator into symmetric ($T_{n-1}$) and anti-symmetric ($S_n$) subspaces.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
+* **Collatz Zeta Function Rationality (Bowen-Lanford)** ([AutomatonZeta.lean](formalization/Formalization/AutomatonZeta.lean))
+  * *Claim:* The Ruelle Zeta function for the Collatz carry-bit automaton is strictly rational. Applying the Bowen-Lanford theorem to the subshift of finite type yields the exact rational function $Z(u) = 1 / (1 - 2u)$.
+  * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 
 ### Dual Lean 4 + Coq Provenance
 
