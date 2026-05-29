@@ -13,6 +13,7 @@ We formalize a conditional version of this program by defining a global adèlic 
 $$
 \mathcal{H}_{\text{glob}} = \widehat{\bigotimes_p} \mathcal{H}_p
 $$
+
 where the local spaces $\mathcal{H}_p$ are associated with the places of $\mathbb{Q}$.
 
 ### Theorem 12.1.1 (Conditional Spectral Determinant Realization)
@@ -24,6 +25,7 @@ We define the zeta-regularized spectral determinant of the global operator via t
 $$
 \mathfrak{D}_{\text{glob}}(z) = \exp\left(-\frac{\partial}{\partial w} \zeta_{D-z}(w) \Big|_{w=0}\right)
 $$
+
 By the standard analytic continuation of zeta determinants, the logarithmic derivative of the spectral determinant is equivalent to the trace of the resolvent operator:
 
 $$
@@ -35,11 +37,13 @@ We introduce the **Trace Formula Identity Conjecture (*)**, which posits that th
 $$
 \text{Tr}\left((D_{\text{glob}} - z\mathbb{I})^{-1}\right) \quad \stackrel{(*)}{=} \quad \frac{d}{dz} \log \Lambda(z, \pi)
 $$
+
 Assuming this identity holds, integrating with respect to $z$ yields:
 
 $$
 \mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z, \pi)
 $$
+
 where $\mathcal{C}$ is a non-zero constant. Thus, the complex zero-sets of the spectral determinant and the automorphic $L$-function are identical. $\blacksquare$
 
 ---
@@ -53,6 +57,7 @@ To relate this to the critical line, we parameterize the zeros as:
 $$
 z_n = 1/2 + i\gamma_n
 $$
+
 Under a suitable spectral realization, the eigenvalues of $`D_{\text{glob}}`$ correspond to the parameters $`\gamma_n`$. 
 
 ### Theorem 12.2.1 (Spectral Reality and the Critical Line)
@@ -64,12 +69,14 @@ Let $`D_{\text{glob}}`$ be a self-adjoint operator on a dense domain $`\text{Dom
 $$
 \sigma(D_{\text{glob}}) \subset \mathbb{R}
 $$
+
 By the spectral mapping established under Conjecture (*), the eigenvalues $`\lambda_n`$ of $`D_{\text{glob}}`$ are precisely the parameters $`\gamma_n`$. Since $`\lambda_n \in \sigma(D_{\text{glob}}) \subset \mathbb{R}`$, we have $`\gamma_n \in \mathbb{R}`$.
 Substituting this back into the parameterization of the zeros:
 
 $$
 \text{Re}(z_n) = \text{Re}(1/2 + i\gamma_n) = 1/2 - \text{Im}(\gamma_n) = 1/2
 $$
+
 Thus, all non-trivial zeros lie on the critical line $\text{Re}(z) = 1/2$. $\blacksquare$
 
 ### Comparison with the Hilbert-Pólya Conjecture

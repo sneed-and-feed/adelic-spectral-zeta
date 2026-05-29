@@ -39,7 +39,7 @@ E = mc^2
 $$
 ```
 
-*   Ensure there are blank lines before and after the `$$` block.
+*   Ensure there are blank lines before and after the `$$` block. **CRITICAL:** If you omit the blank line after the closing `$$`, the GFM parser may collapse the newline and merge the block delimiter directly into the subsequent paragraph, treating the entire display block as raw inline text and failing to compile/render the math.
 *   Do not put spaces between the `$$` delimiters and the math if they are on the same line, e.g. `$$E = mc^2$$` is acceptable but `$$ E = mc^2 $$` is prone to parsing errors. Keeping them on separate lines is always preferred.
 
 ### Prefer `$$` over ```` ```math ````

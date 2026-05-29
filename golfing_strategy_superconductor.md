@@ -7,6 +7,7 @@ The **Ramanujan Partition Superconductor** represents a profound structural mapp
 In conventional Bogoliubov-de Gennes (BdG) mean-field theory, the superconducting state is defined by a pairing Hamiltonian $`H_{\text{pair}} = \sum_{i,j} \Delta_{ij} c_i^\dagger c_j^\dagger + \text{h.c.}`$, where $`\Delta_{ij}`$ represents the Cooper pair binding potential between lattice sites $i$ and $j$. Typically, this potential is either purely local ($`\delta_{ij}`$) or decays exponentially with spatial separation due to screening.
 
 In the `build_ramanujan_superconductor_H_sparse` algorithm defined in `quantum.py`, the pairing interaction is rigorously overridden by Euler's integer partition function:
+
 $$
 \Delta_{ij} = \Delta \cdot p(|i-j|)
 $$

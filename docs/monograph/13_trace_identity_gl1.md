@@ -16,6 +16,7 @@ A common heuristic is to apply the Poisson Summation Formula to the idèle class
 $$
 \sum_{\rho} h(\rho) = I(h) - \sum_{p, k} \frac{\log p}{p^{k/2}} (h(k \log p) + h(-k \log p))
 $$
+
   This sum is derived from the Euler product of $-\zeta'/\zeta$ via contour integration and the Hadamard product. 
 
 There is no natural geometric filtering on a commutative adèlic quotient that collapses the sum over all rational numbers $\mathbb{Q}^*$ to a sum exclusively over prime powers $p^k$. Composite rational numbers (such as $6 = 2 \cdot 3$) do not vanish under standard integration over the idèle class group.
@@ -45,6 +46,7 @@ To resolve these obstructions, Alain Connes (1999) introduced a framework utiliz
 $$
 X = \mathbb{A}_{\mathbb{Q}} / \mathbb{Q}^*
 $$
+
 This space is highly pathological from the perspective of classical topology, as the orbit of $0$ is dense, making the classical quotient space non-Hausdorff.
 
 Connes resolved this by representing the algebra of functions on $X$ as a noncommutative $C^*$-algebra crossed product:
@@ -52,6 +54,7 @@ Connes resolved this by representing the algebra of functions on $X$ as a noncom
 $$
 \mathcal{A} = C_0(\mathbb{A}_{\mathbb{Q}}) \rtimes \mathbb{Q}^*
 $$
+
 In this setting:
 1. **Distributional Trace:** The trace formula is not computed as a standard resolvent trace of a compact operator, but as a **distributional trace** (the Weil distribution) on the noncommutative algebra.
 2. **Absorption Spectrum:** The zeros of the Riemann zeta function do not appear as eigenvalues of a self-adjoint operator, but rather as an **absorption spectrum** (missing spectral lines) in the continuous spectrum of the system, which corresponds to the classical dynamics on the adèle class space.
@@ -60,6 +63,7 @@ In this setting:
 $$
 \text{Tr}_{\text{distrib}}(h(D)) = \sum_{\text{zeros}} h(\gamma) = \text{Weil explicit formula}
 $$
+
    Here, the prime powers emerge naturally from the closed orbits of the scaling flow on the adèle classes.
 
 ---
@@ -102,6 +106,7 @@ To see this mismatch concretely, consider a holomorphic modular cusp form of wei
 $$
 \sum_{d \lt 4p, d \equiv 0,1 \pmod 4} h(d) w(d) \frac{\lambda^{11} - \bar{\lambda}^{11}}{\lambda - \bar{\lambda}}
 $$
+
 where $h(d)$ is the class number of the imaginary quadratic order of discriminant $d$, and $\lambda, \bar{\lambda}$ are the roots of $x^2 - t x + p = 0$ with $t^2 - 4p = d$. These class-number terms are purely geometric invariants of imaginary quadratic fields. They have no corresponding terms in the completed $L$-function $\Lambda(s, \Delta)$, which is defined analytically only by the Satake parameters at $p$. Proving Conjecture `(*)` for $GL(2)$ requires showing that these elliptic terms strictly cancel out or are absorbed, which remains a major open question in the theory of automorphic forms.
 
 ---

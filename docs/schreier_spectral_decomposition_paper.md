@@ -24,6 +24,7 @@ The adjacency matrix $`A_d`$ of $`\Gamma_d`$ acts on the Hilbert space $`L^2(V_d
 $$
 (A_d f)(v) = \sum_{s \in S} f(vs)
 $$
+
 Since $`\Gamma_d`$ is regular, the top eigenvalue is exactly $|S|$, corresponding to the constant function. The formal verification of the tower requires a rigorous encoding of these finite dimensional Hilbert spaces and the linear operators acting upon them, particularly emphasizing the lifting of functions from $`L^2(V_{d-1})`$ to $`L^2(V_d)`$.
 
 ### 2.3 Structural Symmetries
@@ -37,6 +38,7 @@ The involution $`\sigma_d`$ on the vertex set $`V_d`$ naturally induces an opera
 $$
 L^2(V_d) = \mathcal{V}_d^+ \oplus \mathcal{V}_d^-
 $$
+
 where $`\mathcal{V}_d^+`$ consists of functions symmetric under the involution (i.e., $`f(\sigma_d v) = f(v)`$), and $`\mathcal{V}_d^-`$ consists of antisymmetric functions (i.e., $`f(\sigma_d v) = -f(v)`$).
 
 ### 3.2 The Symmetric Block $M^+$
@@ -50,6 +52,7 @@ In the formal proof assistant, we define an explicit unitary transformation $`U_
 $$
 U_d^\dagger A_d U_d = \begin{pmatrix} M^+ & 0 \\ 0 & M^- \end{pmatrix}
 $$
+
 The verification of this decomposition relies on proving that $`A_d`$ and $`P_\sigma`$ commute, followed by an application of the spectral theorem for finite-dimensional commuting operators.
 
 ### 3.4 Formal Verification of the Orthogonal Decomposition
@@ -78,6 +81,7 @@ To mechanize this, we must verify the Rayleigh quotient bound for the second eig
 $$
 \lambda_1 \le \max_{x \perp \mathbf{1}, x \neq 0} \frac{x^T A_d x}{x^T x}
 $$
+
 Because the spectrum of $\Gamma_d$ is the union of the spectra of $M^+$ and $M^-$, bounding the spectral gap of the tower is equivalent to recursively bounding the top eigenvalues of the $M^-$ blocks.
 
 ### 4.3 Expander Mixing Lemma Implications
@@ -86,6 +90,7 @@ A formally verified bound on the spectral gap immediately yields a verified inst
 $$
 \left| E(X,Y) - \frac{|S| \cdot |X| \cdot |Y|}{|V_d|} \right| \le (|S| - \Delta_d) \sqrt{|X| |Y|}
 $$
+
 This provides a rigid combinatorial verification of the pseudo-random properties of the Schreier graphs entirely within the type-safe environment of the proof assistant.
 
 ## 5. Spectral Recursion Polynomials
@@ -96,6 +101,7 @@ Let $`P_d(x) = \det(xI - A_d)`$ be the characteristic polynomial of $`\Gamma_d`$
 $$
 P_d(x) = \det(xI - M^+) \det(xI - M^-)
 $$
+
 Since $M^+$ is equivalent to $`A_{d-1}`$, we have $`P_d(x) = P_{d-1}(x) Q_d(x)`$, where $`Q_d(x) = \det(xI - M^-)`$. This factorization demonstrates that the spectrum grows by incorporating the roots of the polynomials $`Q_d(x)`$ at each level.
 
 ### 5.2 The Chebyshev-like Recurrence Relation
@@ -106,6 +112,7 @@ The formalization defines the recurrence map $R(x)$, such that:
 $$
 \lambda \in \text{Spec}(A_{d-1}) \iff R(\lambda) \subset \text{Spec}(A_d)
 $$
+
 This algebraic constraint forces the eigenvalues to follow specific trajectories as $d \to \infty$.
 
 ### 5.3 Mechanized Proofs of Spectral Lifting
@@ -128,6 +135,7 @@ The dynamically scaled test vector length is defined as:
 $$
 L(d) = \lfloor d/2 \rfloor
 $$
+
 This choice balances the expressivity of the test vector (which must be long enough to capture the long-range combinatorial structure of the graph) with the computational overhead in the proof assistant (which scales exponentially with $L$).
 
 ### 6.3 Formal Proof of Bound Preservation under $L(d)$ Truncation
@@ -136,6 +144,7 @@ To verify that the dynamically scaled test vector provides a valid bound, we for
 $$
 \rho(M^-) \ge \frac{v_d^T M^- v_d}{v_d^T v_d}
 $$
+
 where $v_d$ is the truncated test vector of length $L(d)$.
 The formal proof requires establishing that $`v_d`$ lies entirely within the antisymmetric subspace $`\mathcal{V}_d^-`$ (i.e., $`P_\sigma v_d = -v_d`$) and that it is orthogonal to the all-ones vector. 
 

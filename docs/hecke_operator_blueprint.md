@@ -14,6 +14,7 @@ The existing `Mathlib.NumberTheory.ModularForms.Basic` API defines `ModularForm 
 $$
 (T_p f)(z) = p^{k/2 - 1} \sum_j (f |_k \gamma_j)(z)
 $$
+
   *(Note: Normalization conventions vary; some use $p^{k-1}$. The API should specify the chosen normalizer, commonly $p^{k-1}$ for integer coefficients.)*
 
 ## 3. Double Coset Decomposition
