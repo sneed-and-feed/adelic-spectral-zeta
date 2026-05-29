@@ -6,7 +6,7 @@
     ∑_y D(x,y) · χ(k·y) = (1 + χ(-k)) · χ(3k·x)
   
   This is the algebraic foundation of the Spectral Circle Theorem:
-  all eigenvalues of S_n lie on a circle of radius 2^{1/2^{n-1}}.
+  all eigenvalues of S_n lie on a circle of radius 2^{2^{-(n-1)}}.
 -/
 
 import Mathlib
@@ -480,13 +480,13 @@ lemma orbit_weight_magnitude_sq (n : ℕ) (hn : n ≥ 3)
 -- 5. SPECTRAL CIRCLE THEOREM (combining all ingredients)
 -- ============================================================================
 
-/-- All eigenvalues of the twisted block S_n have magnitude exactly 2^{1/2^{n-1}}.
+/-- All eigenvalues of the twisted block S_n have magnitude exactly 2^{2^{-(n-1)}}.
 
     Proof sketch:
     1. S_n restricted to odd characters is monomial (collatzDirMatrix_char_action)
     2. The ×3 orbits form 2 cycles of length 2^{n-2} (order_three_mod_pow_two)
     3. Each orbit weight has |W| = √2 (orbit_weight_magnitude_sq)
-    4. Cyclic monomial eigenvalues have magnitude |W|^{1/M} = (√2)^{1/2^{n-2}} = 2^{1/2^{n-1}}
+    4. Cyclic monomial eigenvalues have magnitude |W|^{1/M} = (√2)^{2^{-(n-2)}} = 2^{2^{-(n-1)}}
 -/
 theorem spectral_circle (n : ℕ) (hn : n ≥ 3)
     (μ : ℂ) (hμ : μ ∈ spectrum ℂ (Matrix.map (twistedDirMatrix (show n ≥ 2 by omega)) (algebraMap ℚ ℂ))) :

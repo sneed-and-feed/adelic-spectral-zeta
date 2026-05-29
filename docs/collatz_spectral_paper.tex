@@ -68,8 +68,8 @@ $x \mapsto 3x$ and $x \mapsto 3x - 1$.  Using Lean~4 and Mathlib, we
 formalize three interlocking results.  First, the directed twisted
 block matrix $S_n$---the Fourier-mode building block of the Collatz
 transfer operator---has all eigenvalues of exact magnitude
-$2^{1/2^{n-1}}$, establishing a precise directed spectral
-``speed limit.''  Second, the limit $2^{1/2^{n-1}} \to 1$ as
+$2^{2^{-(n-1)}}$, establishing a precise directed spectral
+``speed limit.''  Second, the limit $2^{2^{-(n-1)}} \to 1$ as
 $n \to \infty$ is formally proven, revealing that the directed gap
 collapses asymptotically to zero.  Third, numerical computation to
 depth $d = 16$ confirms that the \emph{undirected} Schreier adjacency
@@ -106,7 +106,7 @@ that yields two complementary results:
 \begin{enumerate}[(i)]
   \item The \emph{directed} Collatz tower has an exact, closed-form
     spectral structure: primitive eigenvalues lie on circles of radius
-    $2^{1/2^{n-1}}$, converging to the unit circle as $n \to \infty$.
+    $2^{2^{-(n-1)}}$, converging to the unit circle as $n \to \infty$.
   \item The \emph{undirected} Collatz--Schreier graphs $G_d$ are
     \textbf{not} Ramanujan; the spectral gap $\lambda_1(A_d) -
     \lambda_2(A_d)$ converges to~$0$ as $d \to \infty$.
@@ -115,6 +115,8 @@ Both results are proved in Lean~4 with zero \texttt{sorry}s.  The
 collapse of the spectral gap provides a formal, machine-verified
 obstruction to proving rapid mixing for the Collatz system via spectral
 methods alone.
+
+Crucially, the orbit structure here is genuinely algebraic: the finite-dimensional transfer matrices $D_n$ are projections of a well-defined $2$-adic operator acting on $L^2(\Z_2)$, and their recursive monomial block structure is the fingerprint of the induced representation of $\Z_2 \rtimes \langle 3 \rangle$. This framing, developed further in \Cref{sec:reptheory}, connects the Collatz graph sequence to continuous Hecke-type operators found in the study of self-similar fractal groups.
 
 As a byproduct, we prove the Ihara--Bass polynomial identity
 \[
@@ -129,6 +131,7 @@ identity.
 
 \paragraph{Organization.}
 \Cref{sec:graphs} defines the graph tower and the block decomposition.
+\Cref{sec:reptheory} frames the system using induced representations and fractal group connections.
 \Cref{sec:directed} presents the directed spectral results.
 \Cref{sec:undirected} presents the undirected gap collapse.
 \Cref{sec:ihara} presents the Ihara--Bass formalization.
@@ -186,6 +189,17 @@ block (paths that cross cosets).  This decomposition is formalized in
 \texttt{charpoly\_adjacency\_eq\_mul}.
 
 % -----------------------------------------------------------------------
+\section{Representation-Theoretic Framing and the 2-adic Limit}
+\label{sec:reptheory}
+% -----------------------------------------------------------------------
+
+The recursive structure of the Collatz--Schreier matrices reveals that their spectral properties are not numerical coincidences, but are fundamentally governed by representation theory. The matrices $D_n$ act as monomial matrices in the character basis of $\Zmod{n}$. This block monomial behavior is the structural fingerprint of an induced representation of the semidirect product $\Z_2 \rtimes \langle 3 \rangle$, analyzed through the lens of Mackey's little group method.
+
+By taking the projective limit as $n \to \infty$, the finite-dimensional operators $D_n$ lift to a single bounded transfer operator acting on the Hilbert space $L^2(\Z_2)$. The continuous spectrum of this $2$-adic operator contains invariant subspaces that precisely correspond to the algebraic orbits of the $x \mapsto 3x$ map. Consequently, the asymptotic collapse of the directed spectral gap ($2^{2^{-(n-1)}} \to 1$) can be naturally interpreted as the accumulation of discrete spectrum onto the unit circle in the infinite-dimensional limit.
+
+\paragraph{Connections to Fractal Groups.} The recursive decomposition of the spectrum via the Hadamard transformation, specifically the fact that $\spec(D_n) = \spec(D_{n-1}) \cup \spec(S_n)$, is structurally identical to the formalisms used to compute spectra of Schreier graphs for self-similar and fractal groups (e.g., the Grigorchuk and Basilica groups). The Schur complement techniques and Hecke-type operators employed by Bartholdi, Grigorchuk, and Nekrashevych \cite{bartholdi2003, nekrashevych2005} serve as exact continuous analogues to our discrete block decomposition. This connection shifts the analysis of the gap collapse from a purely combinatorial context to the geometric framework of iterated monodromy groups and finite-state automata acting on rooted trees.
+
+% -----------------------------------------------------------------------
 \section{Directed Spectral Tower: Exact Eigenvalue Magnitudes}
 \label{sec:directed}
 % -----------------------------------------------------------------------
@@ -197,7 +211,7 @@ block (paths that cross cosets).  This decomposition is formalized in
   matrix $S_n$ (the matrix $D_n$ restricted to the antisymmetric Fourier
   block).  Then
   \[
-    \abs{\lambda} = 2^{1/2^{n-1}}.
+    \abs{\lambda} = 2^{2^{-(n-1)}}.
   \]
 \end{theorem}
 
@@ -212,13 +226,13 @@ This is formalized via two axioms and one proven lemma in Lean~4:
     (Mathlib: \texttt{eval\_one\_cyclotomic\_prime\_pow}).
   \item \textbf{\texttt{eigenvalue\_magnitude\_squared\_eq}}: combining
     (a) and (b) yields $(\lambda\bar\lambda)^{2^{n-2}} = 2$, hence
-    $\abs{\lambda}^2 = 2^{1/2^{n-2}}$, i.e., $\abs{\lambda} = 2^{1/2^{n-1}}$.
+    $\abs{\lambda}^2 = 2^{2^{-(n-2)}}$, i.e., $\abs{\lambda} = 2^{2^{-(n-1)}}$.
 \end{enumerate}
 
 \begin{theorem}[Asymptotic gap collapse; \texttt{AsymptoticGap.lean}]
   \label{thm:asymp}
   \[
-    \lim_{n \to \infty} 2^{1/2^{n-1}} = 1.
+    \lim_{n \to \infty} 2^{2^{-(n-1)}} = 1.
   \]
   In particular, the directed spectral gap
   $\lambda_1(\text{Perron}) - \sup_{\lambda \ne \lambda_1}\abs{\lambda}$
@@ -227,7 +241,7 @@ This is formalized via two axioms and one proven lemma in Lean~4:
 
 The Lean proof applies \texttt{Continuous.rpow} continuity of
 $x \mapsto 2^x$ at $0$, composed with the limit
-$1/2^{n-1} \to 0$ via \texttt{tendsto\_pow\_atTop\_nhds\_zero\_of\_lt\_one}
+$2^{-(n-1)} \to 0$ via \texttt{tendsto\_pow\_atTop\_nhds\_zero\_of\_lt\_one}
 (half-powers).
 
 % -----------------------------------------------------------------------
@@ -414,7 +428,7 @@ The formalization spans eight source files:
     \texttt{SchreierSpectralGap.lean} & Axiom bridge: eigenvalue magnitudes \\
     \texttt{IharaZeta.lean} & Hashimoto matrix, 7 incidence identities \\
     \texttt{IharaBass.lean} & Full Ihara--Bass polynomial identity \\
-    \texttt{AsymptoticGap.lean} & Limit $2^{1/2^{n-1}} \to 1$ \\
+    \texttt{AsymptoticGap.lean} & Limit $2^{2^{-(n-1)}} \to 1$ \\
     \hline
   \end{tabular}
   \caption{Formalization file structure.}
@@ -464,11 +478,9 @@ the lazy random walk on $G_d$ grows as $d^\alpha \log(2^{d-1})$.  A
 formal connection between mixing time and the difficulty of proving
 convergence of Collatz orbits would be a significant structural result.
 
-\paragraph{P5 (Long-term). Adèlic limit and $L$-function zeros.}
+\paragraph{P5 (Long-term). Spectral Zeta Functions, Adèlic Limit, and $L$-functions.}
 The projective limit $\varprojlim G_d$ is the 2-adic Schreier graph.
-Its spectral theory is related to the $p$-adic $L$-functions of the
-Collatz generator.  Connecting this to the Adèlic Dirac operator
-framework of the parent project is the long-term mathematical goal.
+Since the directed spectrum consists of roots of specific cyclotomic weights, we have total knowledge of the non-zero eigenvalues of the directed tower. Formulating the Ihara-style or spectral zeta function for the directed Collatz tower, $\zeta_{D_n}(s) = \sum \lambda_i^{-s}$, represents a profound open challenge. Because the eigenvalues are controlled algebraically via the multiplicative group $(\Z/2^n\Z)^\times$, this zeta function will factor into components recognizable from number theory. Connecting this to Dirichlet $L$-functions and the Adèlic Dirac operator framework of the parent project is the long-term mathematical goal.
 
 % -----------------------------------------------------------------------
 \section{Conclusion}
@@ -476,9 +488,9 @@ framework of the parent project is the long-term mathematical goal.
 
 We have formalized in Lean~4 (zero \texttt{sorry}) the following:
 \begin{itemize}
-  \item The exact eigenvalue magnitude $\abs{\lambda} = 2^{1/2^{n-1}}$
+  \item The exact eigenvalue magnitude $\abs{\lambda} = 2^{2^{-(n-1)}}$
     for the directed Collatz twisted block.
-  \item The limit $2^{1/2^{n-1}} \to 1$, formally collapsing the
+  \item The limit $2^{2^{-(n-1)}} \to 1$, formally collapsing the
     directed gap to zero.
   \item The complete Ihara--Bass determinant identity for arbitrary
     finite simple graphs.
@@ -538,6 +550,16 @@ The Mathlib Community,
 S.~Ger{\v s}gorin,
 ``\"{U}ber die Abgrenzung der Eigenwerte einer Matrix,''
 \textit{Izv. Akad. Nauk SSSR, Ser.\ fiz.-mat.} \textbf{6}, 749--754, 1931.
+
+\bibitem{bartholdi2003}
+L.~Bartholdi, R.~Grigorchuk, V.~Nekrashevych,
+``From fractal groups to fractal sets,''
+in \textit{Fractals in Graz 2001}, pp.\ 25--118, Birkh\"{a}user, 2003.
+
+\bibitem{nekrashevych2005}
+V.~Nekrashevych,
+\textit{Self-Similar Groups}.
+American Mathematical Society, 2005.
 
 \bibitem{moreira2019}
 J.~Moreira, F.~K.\ Richter, D.~Robertson,

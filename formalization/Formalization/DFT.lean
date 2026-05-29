@@ -161,7 +161,7 @@ lemma fourierBasisMatrix_mul_star :
     5. The cyclotomic product identity `∏_{k odd} (1 + ω^{-k}) = 2` (proven in
        `CyclotomicProduct.lean`) gives each orbit weight product magnitude √2.
 
-    6. Therefore ALL eigenvalues of `S_n` lie on a circle of radius `2^{1/2^{n-1}}`.
+    6. Therefore ALL eigenvalues of `S_n` lie on a circle of radius `2^{2^{-(n-1)}}`.
 
     The `F⊗I` infrastructure and definitions below remain valid as building blocks. -/
 noncomputable def twistedBlockDiag :

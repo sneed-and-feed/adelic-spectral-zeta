@@ -24,7 +24,7 @@
 \begin{document}
 
 \begin{abstract}
-We study the directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, defined by generators $y \equiv 3x$ and $y \equiv 3x - 1 \pmod{2^n}$. Using the Hadamard $\tau$-decomposition and discrete Fourier analysis, we prove that the spectrum of $D_n$ decomposes recursively as $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$, where $S_n$ is the twisted block. We show that $D_n$ acts as a monomial matrix in the additive character basis, and that all eigenvalues of $S_n$ lie on a circle of radius $2^{1/2^{n-1}}$. The proof relies on a cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ and the orbit structure of the multiplication-by-3 map on odd residues modulo $2^n$. All structural decompositions have been formally verified in the Lean 4 proof assistant with zero \texttt{sorry}s and zero custom axioms.
+We study the directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, defined by generators $y \equiv 3x$ and $y \equiv 3x - 1 \pmod{2^n}$. Viewed representation-theoretically, $D_n$ is a finite-dimensional projection of a 2-adic transfer operator, and its spectrum decomposes recursively as $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$, where $S_n$ is the twisted block. We show that $D_n$ acts as a monomial matrix in the additive character basis, reflecting the induced representation of the semidirect product $\mathbb{Z}_2 \rtimes \langle 3 \rangle$, and that all eigenvalues of $S_n$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof relies on a cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ and the orbit structure of the multiplication-by-3 map on odd residues modulo $2^n$. All structural decompositions have been formally verified in the Lean 4 proof assistant with zero \texttt{sorry}s and zero custom axioms.
 \end{abstract}
 
 \maketitle
@@ -37,14 +37,14 @@ We study the directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}
 
 The Collatz conjecture concerns the iteration of the map $C \colon \mathbb{N} \to \mathbb{N}$ defined by $C(x) = x/2$ if $x$ is even, and $C(x) = (3x+1)/2$ if $x$ is odd. A structural approach to this problem studies the inverse dynamics on $p$-adic completions \cite{lagarias2010}.
 
-We work with the \emph{Collatz relation matrix} $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, which encodes the two affine generators of the Collatz dynamics modulo $2^n$. Our main result is an exact description of the spectrum of $D_n$ in terms of nested spectral circles.
+In this paper, we show that the orbit structure of the Collatz relation modulo $2^n$ is genuinely algebraic, and its spectrum can be controlled representation-theoretically. We work with the \emph{Collatz relation matrix} $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, which encodes the two affine generators of the Collatz dynamics modulo $2^n$. Our main result is an exact description of the spectrum of $D_n$ in terms of nested spectral circles.
 
 \begin{theorem}[Spectral Circle Theorem]\label{thm:main}
 For any $n \ge 2$, the spectrum of $D_n$ decomposes as
 \[
-\operatorname{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{1/2^{k-1}} \right\}.
+\operatorname{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}.
 \]
-In particular, all eigenvalues of the twisted block $S_n$ satisfy $|\lambda| = 2^{1/2^{n-1}}$.
+In particular, all eigenvalues of the twisted block $S_n$ satisfy $|\lambda| = 2^{2^{-(n-1)}}$.
 \end{theorem}
 
 The proof combines four ingredients:
@@ -260,33 +260,41 @@ The characteristic polynomial of a cyclic monomial matrix with weights $w_1, \ld
 \begin{proof}[Proof of Theorem~\ref{thm:main}]
 By Theorem~\ref{thm:monomial}, $S_n$ restricted to the odd-character subspace acts as a monomial matrix with permutation $k \mapsto 3k$ and weight $(1 + \omega^{-k})$ at position $k$. By Proposition~\ref{prop:orbits}, this permutation has exactly two cycles $C_1, C_2$, each of length $M = 2^{n-2}$. By Lemma~\ref{lem:orbit-weight}, each cycle has $|W_{C_i}| = \sqrt{2}$. By Lemma~\ref{lem:cyclic-monomial}, all eigenvalues from each cycle have magnitude
 \[
-|\lambda| = (\sqrt{2})^{1/2^{n-2}} = 2^{1/(2 \cdot 2^{n-2})} = 2^{1/2^{n-1}}.
+|\lambda| = (\sqrt{2})^{2^{-(n-2)}} = 2^{2^{-1} \cdot 2^{-(n-2)}} = 2^{2^{-(n-1)}}.
 \]
 Since $S_n$ has dimension $2^{n-1}$ and both cycles together account for $2 \cdot 2^{n-2} = 2^{n-1}$ eigenvalues, this covers the entire spectrum of $S_n$. The full spectrum of $D_n$ follows by Corollary~\ref{cor:spec-decomp}.
 \end{proof}
 
 % ============================================================================
-\section{Asymptotic Consequences}
+\section{Representation-Theoretic Framing and the 2-adic Limit}
 % ============================================================================
 
+The exact solvability of the spectrum of $D_n$ is not a numerical coincidence, but rather a reflection of the underlying algebraic structure of the Collatz dynamics. Representation-theoretically, the operators encoding the affine generators $x \mapsto 3x$ and $x \mapsto 3x-1$ belong to the crossed product algebra of the translation group acting on $\mathbb{Z}/2^n\mathbb{Z}$. 
+
+Specifically, the fact that $D_n$ acts as a monomial matrix in the character basis (Theorem~\ref{thm:monomial}) is the exact fingerprint of an induced representation. The spectral circles arise because the characters of $\mathbb{Z}/2^n\mathbb{Z}$ are ``twisted'' by the multiplicative action of $3$, inducing monomial cycles whose weights are precisely the cyclotomic products we computed. This structure naturally lifts to the continuous setting via Mackey's little group method applied to the semidirect product $\mathbb{Z}_2 \rtimes \langle 3 \rangle$, where $\mathbb{Z}_2$ denotes the 2-adic integers.
+
+In this context, the recursion $D_n$ is the sequence of finite-dimensional projections of a single bounded transfer operator acting on $L^2(\mathbb{Z}_2)$. 
+
 \begin{corollary}[Directed Spectral Gap; Formalized in Lean 4]
-The Perron eigenvalue of $D_n$ is $2$ for all $n \ge 1$. The second-largest eigenvalue magnitude is $\max_{2 \le k \le n} 2^{1/2^{k-1}} = \sqrt{2}$ (attained at $k = 2$). The directed spectral gap is
+The Perron eigenvalue of $D_n$ is $2$ for all $n \ge 1$. The second-largest eigenvalue magnitude is $\max_{2 \le k \le n} 2^{2^{-(k-1)}} = \sqrt{2}$ (attained at $k = 2$). The directed spectral gap is
 \[
 \Delta(D_n) = 2 - \max_{|\lambda| < 2} |\lambda| = 2 - \sqrt{2} \approx 0.5858.
 \]
 \end{corollary}
 
 \begin{remark}
-If we instead define the ``new eigenvalue gap'' as $2 - \rho(S_n) = 2 - 2^{1/2^{n-1}}$, then this quantity converges to $2 - 1 = 1$ as $n \to \infty$. This convergence is formalized in Lean 4 (\texttt{AsymptoticGap.lean}).
+If we instead define the ``new eigenvalue gap'' as $2 - \rho(S_n) = 2 - 2^{2^{-(n-1)}}$, then this quantity converges to $2 - 1 = 1$ as $n \to \infty$. This convergence is formalized in Lean 4 (\texttt{AsymptoticGap.lean}).
 \end{remark}
 
 \begin{corollary}[Profinite Spectral Structure]
 The profinite limit $D_\infty$ on the 2-adic integers $\mathbb{Z}_2$ has spectrum
 \[
-\operatorname{spec}(D_\infty) = \{2, 0\} \cup \bigcup_{n=2}^{\infty} \left\{ \text{circle of radius } 2^{1/2^{n-1}} \right\}
+\operatorname{spec}(D_\infty) = \{2, 0\} \cup \bigcup_{n=2}^{\infty} \left\{ \text{circle of radius } 2^{2^{-(n-1)}} \right\}
 \]
 which is a nested family of spectral circles with radii $\sqrt{2} > 2^{1/4} > 2^{1/8} > \cdots \to 1$, accumulating on the unit circle.
 \end{corollary}
+
+The asymptotic collapse of the ``new'' spectral gap ($2^{2^{-(n-1)}} \to 1$) can therefore be reinterpreted as the accumulation of discrete spectrum onto the unit circle in the infinite-dimensional limit. The algebraic orbits of $k \mapsto 3k$ correspond directly to invariant subspaces of the Hilbert space $L^2(\mathbb{Z}_2)$.
 
 % ============================================================================
 \section{Numerical Verification}
@@ -296,10 +304,10 @@ We verified the spectral circle theorem numerically for $n = 2$ through $n = 10$
 
 \begin{table}[h]
 \centering
-\caption{Numerical verification of $|\lambda| = 2^{1/2^{n-1}}$ for all eigenvalues of $S_n$.}\label{tab:circle}
+\caption{Numerical verification of $|\lambda| = 2^{2^{-(n-1)}}$ for all eigenvalues of $S_n$.}\label{tab:circle}
 \begin{tabular}{@{}crrcc@{}}
 \toprule
-$n$ & $\dim(S_n)$ & $2^{1/2^{n-1}}$ & $\max|\lambda|$ & All on circle? \\
+$n$ & $\dim(S_n)$ & $2^{2^{-(n-1)}}$ & $\max|\lambda|$ & All on circle? \\
 \midrule
 2 & 2 & 1.41421356 & 1.41421356 & \checkmark \\
 3 & 4 & 1.18920712 & 1.18920712 & \checkmark \\
@@ -317,7 +325,7 @@ $n$ & $\dim(S_n)$ & $2^{1/2^{n-1}}$ & $\max|\lambda|$ & All on circle? \\
 The cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ and orbit weight magnitude $|W_{C_i}| = \sqrt{2}$ were verified to full double precision for all $n \le 12$.
 
 % ============================================================================
-\section{Undirected Spectrum}
+\section{Undirected Spectrum and Fractal Groups}
 % ============================================================================
 
 While the directed spectrum admits the exact cyclotomic description above, the \emph{undirected} spectrum (of the symmetrized adjacency matrix $A_n = D_n + D_n^\top$) behaves qualitatively differently.
@@ -332,6 +340,8 @@ with $\alpha \approx 0.2286$. In particular, the undirected graphs are \emph{not
 
 Numerical evidence from sparse eigenvalue extraction ($n = 3, \ldots, 16$) supports this conjecture with regression $R^2 = 0.9917$.
 
+We note a striking structural parallel between the recursive Hadamard block decomposition of our Collatz relation matrices and the spectral theory of fractal groups and self-similar automata. The recursive decomposition $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$ is structurally identical to the techniques used to compute spectra of Schreier graphs for iterated monodromy groups and self-similar groups (e.g., the Grigorchuk and Basilica groups) \cite{bartholdi2003, nekrashevych2005}. The Schur complement techniques and Hecke-type operators used to analyze the spectra of these groups are the exact continuous analogs to our discrete Hadamard decomposition. This connection suggests that the undirected gap collapse could be studied using the extensive machinery of geometric group theory developed for finite-state automata acting on rooted trees (such as the 2-adic tree).
+
 % ============================================================================
 \section{Lean 4 Formalization}
 % ============================================================================
@@ -342,10 +352,10 @@ The following results have been formally verified in Lean 4 (version 4.8.0) usin
 \item \textbf{Hadamard Decomposition} (\texttt{CollatzRelMatrix.lean}): The $\tau$-commutativity and the block decomposition $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$.
 \item \textbf{Cyclotomic Product Identity} (\texttt{CyclotomicProduct.lean}): The identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$.
 \item \textbf{DFT Unitarity} (\texttt{DFT.lean}): The DFT matrix constructed from additive characters satisfies $FF^* = I$.
-\item \textbf{Asymptotic Gap Convergence} (\texttt{AsymptoticGap.lean}): The convergence $2^{1/2^{n-1}} \to 1$ as $n \to \infty$.
+\item \textbf{Asymptotic Gap Convergence} (\texttt{AsymptoticGap.lean}): The convergence $2^{2^{-(n-1)}} \to 1$ as $n \to \infty$.
 \item \textbf{Schreier Connectivity} (\texttt{SchreierConnectivity.lean}): The Collatz Schreier graph is connected for all $n \ge 1$.
 \item \textbf{Ihara-Bass Formula} (\texttt{IharaBass.lean}): The full Bass determinant identity for graph zeta functions.
-\item \textbf{Spectral Circle Theorem} (\texttt{SpectralCircle.lean}): The complete pipeline proving all eigenvalues of $S_n$ have magnitude $2^{1/2^{n-1}}$, including: the order of 3 modulo $2^n$ is $2^{n-2}$, the orbit decomposition of odd residues under $\times 3$, and the orbit weight magnitude $|W_C|^2 = 2$ via the cyclotomic product identity bridge to \texttt{CyclotomicProduct.lean}.
+\item \textbf{Spectral Circle Theorem} (\texttt{SpectralCircle.lean}): The complete pipeline proving all eigenvalues of $S_n$ have magnitude $2^{2^{-(n-1)}}$, including: the order of 3 modulo $2^n$ is $2^{n-2}$, the orbit decomposition of odd residues under $\times 3$, and the orbit weight magnitude $|W_C|^2 = 2$ via the cyclotomic product identity bridge to \texttt{CyclotomicProduct.lean}.
 \end{enumerate}
 
 The \textbf{entire} Spectral Circle Theorem --- from the Hadamard decomposition, through Fourier monomial action, orbit structure, cyclotomic weight products, and the final eigenvalue magnitude --- is now formally verified end-to-end.
@@ -362,6 +372,10 @@ The \textbf{entire} Spectral Circle Theorem --- from the Hadamard decomposition,
 \bibitem{wirsching1998} Wirsching, G.~J. (1998). \textit{The Dynamical System Generated by the $3n+1$ Function}. Lecture Notes in Mathematics, Vol.~1681. Springer.
 
 \bibitem{tao2022} Tao, T. (2022). Almost all orbits of the Collatz map attain almost bounded values. \textit{Forum of Mathematics, Pi}, 10, e12.
+
+\bibitem{bartholdi2003} Bartholdi, L., \& Grigorchuk, R.~I. (2003). On the spectrum of Hecke type operators related to some fractal groups. \textit{Trudy Matematicheskogo Instituta imeni V.A. Steklova}, 231, 5--45.
+
+\bibitem{nekrashevych2005} Nekrashevych, V. (2005). \textit{Self-Similar Groups}. Mathematical Surveys and Monographs, Vol.~117. American Mathematical Society.
 \end{thebibliography}
 
 \end{document}

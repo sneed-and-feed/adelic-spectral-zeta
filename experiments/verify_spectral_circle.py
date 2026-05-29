@@ -3,7 +3,7 @@ Spectral Circle Theorem: Numerical Verification
 =================================================
 
 Verifies that the eigenvalues of the twisted block S_n of the directed
-Collatz relation matrix lie on a circle of radius 2^{1/2^{n-1}}.
+Collatz relation matrix lie on a circle of radius 2^{2^{-(n-1)}}.
 
 The directed Collatz relation matrix D_n on ZMod(2^n) is defined by:
     D(x, y) = 1  if  y ≡ 3x (mod 2^n)  or  y ≡ 3x - 1 (mod 2^n)
@@ -16,7 +16,7 @@ for odd x). They are the two affine maps whose composition with division-by-2
 produces the Collatz dynamics. Every vertex has out-degree exactly 2.
 
 Results (verified n=2..12):
-    - All eigenvalues of S_n have |λ| = 2^{1/2^{n-1}}
+    - All eigenvalues of S_n have |λ| = 2^{2^{-(n-1)}}
     - The Fourier-domain matrix F D_n F^{-1} is monomial (1 nonzero per row)
     - The cyclotomic product ∏_{k odd} (1 + ω^{-k}) = 2
     - Each ×3 orbit on odd residues has weight product magnitude √2

@@ -86,8 +86,8 @@ Spectral Gap Theorem for S_n:
 If lambda is the eigenvalue associated with the cycle C_1 of length 2^{n-2},
 it satisfies lambda^(2^{n-2}) = W_1.
 By symmetry, the conjugate eigenvalue satisfies lambda_conj^(2^{n-2}) = W_2.
-Thus their product is 2, meaning the magnitude squared is 2^{1/2^{n-2}},
-yielding an exact magnitude of 2^{1/2^{n-1}}.
+Thus their product is 2, meaning the magnitude squared is 2^{2^{-(n-2)}},
+yielding an exact magnitude of 2^{2^{-(n-1)}}.
 -/
 lemma eigenvalue_magnitude_squared_eq (lambda lambda_conj : F)
   (C_1 C_2 : Finset (ZMod (2^n)))

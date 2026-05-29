@@ -57,10 +57,10 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
   * *Claim:* The DFT matrix constructed from Dirichlet characters is unitary: $FF^* = I$.
   * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 * **Asymptotic Directed Gap Convergence** ([AsymptoticGap.lean](formalization/Formalization/AsymptoticGap.lean))
-  * *Claim:* The primitive eigenvalue magnitude $2^{1/2^{n-1}}$ converges to $1$ as $n \to \infty$.
+  * *Claim:* The primitive eigenvalue magnitude $2^{2^{-(n-1)}}$ converges to $1$ as $n \to \infty$.
   * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 * **Spectral Circle Theorem** ([SpectralCircle.lean](formalization/Formalization/SpectralCircle.lean))
-  * *Claim:* All eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{1/2^{n-1}}$. The proof wires together five sub-results: (1) the order of 3 in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is exactly $2^{n-2}$ (`order_three_mod_pow_two`), (2) the $\times 3$ orbits on odd residues form exactly 2 disjoint cycles of size $2^{n-2}$ whose union is all odd residues, (3) the orbit weight product $\prod_{k \in C}(1+\omega^{-k})$ has $|W|^2 = 2$ (`orbit_weight_magnitude_sq`), bridging to the cyclotomic identity in `CyclotomicProduct.lean`, (4) cyclic monomial eigenvalues have magnitude $|W|^{1/M}$, and (5) `AlgEquiv.spectrum_eq` converts between matrix and linear-map spectra.
+  * *Claim:* All eigenvalues of the twisted block $S_n$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof wires together five sub-results: (1) the order of 3 in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is exactly $2^{n-2}$ (`order_three_mod_pow_two`), (2) the $\times 3$ orbits on odd residues form exactly 2 disjoint cycles of size $2^{n-2}$ whose union is all odd residues, (3) the orbit weight product $\prod_{k \in C}(1+\omega^{-k})$ has $|W|^2 = 2$ (`orbit_weight_magnitude_sq`), bridging to the cyclotomic identity in `CyclotomicProduct.lean`, (4) cyclic monomial eigenvalues have magnitude $|W|^{1/M}$, and (5) `AlgEquiv.spectrum_eq` converts between matrix and linear-map spectra.
   * *Status:* 0 `sorry` in this file. Depends transitively on 1 `sorry` in `TwistedBlockPow.lean` via `twisted_eigenvalue_magnitude` from `SchreierSpectralGap.lean`.
 
 ---
@@ -121,7 +121,7 @@ The following files represent active research fronts, stubs, or blueprints and c
   * *Claim:* The adèlic zero-modes of the Dirac Hamiltonian (forced by $L$-function zeros via `ManyBodyPhaseTransition.lean`) generate Quantum Many-Body Scar states that formally falsify the Strong Eigenstate Thermalization Hypothesis (Strong ETH). Specifically: the vacuum zero-mode state $|Z\rangle$ is a mid-spectrum eigenstate with Rényi-2 entropy $S^{(2)}_A = 0$ (pure product state, Area Law), strictly less than the Volume-Law thermal entropy. This proves `theorem adelic_zero_mode_is_scar : IsQuantumScar Z` and `theorem strong_eth_violation : ¬ StrongETH E`.
   * *Status:* Top-level theorems fully formalized with 0 sorry. Depends transitively on 1 `sorry` in the helper lemma `Z_purity` (Purity of the vacuum state = 1), blocked by absent dependent-type tensor product APIs for partial traces over `Subtype` bipartitions in Mathlib. See Section 4.
 * **Twisted Eigenvalue Magnitude** ([SchreierSpectralGap.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierSpectralGap.lean))
-  * *Claim:* Any eigenvalue $\lambda$ of the twisted block $S_n$ has $|\lambda| = 2^{1/2^{n-1}}$.
+  * *Claim:* Any eigenvalue $\lambda$ of the twisted block $S_n$ has $|\lambda| = 2^{2^{-(n-1)}}$.
   * *Status:* 0 `sorry` in this file. The proof lifts the rational matrix identity from `TwistedBlockPow.lean` to $\mathbb{C}$ via `RingHom.mapMatrix (algebraMap \mathbb{Q} \mathbb{C})` and `map_pow`, evaluates it on eigenvectors via `Module.End.HasEigenvalue.pow` to establish $\lambda^{2^{n-1}} = -2$, then derives the magnitude via absolute value arithmetic. Depends transitively on the 1 `sorry` in `TwistedBlockPow.lean`.
 * **Erdős Similarity Conjecture Blueprint** ([ErdosSimilarity.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/ErdosSimilarity.lean))
   * *Claim:* Formulating the topological properties of geometric cylinder sets to resolve similarity bounds.
