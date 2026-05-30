@@ -408,7 +408,7 @@ class UltrametricAttention(nn.Module):
             scores = scores.masked_fill(~mask, float("-inf"))
         else:
             scores = scores + torch.log(mask.clamp(min=1e-9))
-        attn_weights = F.softmax(scores, dim=-1)
+        attn_weights = F.softmax(scores, dim=-1).to(v.dtype)
         attn_weights = self.attn_dropout(attn_weights)
         out = torch.matmul(attn_weights, v)
         out = (
@@ -514,7 +514,7 @@ class UltrametricAttention(nn.Module):
                 p_block = torch.exp(scores_ij - m_new.unsqueeze(-1))  # (B, H, bs, bs)
 
                 out_acc[:, :, row_start:row_end, :] = (
-                    out_old * alpha.unsqueeze(-1)
+                    out_old * alpha.unsqueeze(-1).to(v_j.dtype)
                     + torch.matmul(p_block.to(v_j.dtype), v_j)
                 )
                 l_acc[:, :, row_start:row_end] = (
