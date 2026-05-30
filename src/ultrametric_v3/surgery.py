@@ -96,12 +96,13 @@ class SurgicalLlamaAttention(nn.Module):
         **kwargs,
     ):
         batch_size, seq_len, _ = hidden_states.size()
+        past_key_value = kwargs.get("past_key_value", past_key_values)
 
         tau = getattr(self.config, "surgical_tau", 1.0)
         curr_assignments, load_balance_loss = self.router(hidden_states, tau_override=tau)
         self.current_penalty = load_balance_loss
 
-        if past_key_values is None or seq_len > 1:
+        if past_key_value is None or seq_len > 1:
             self._cached_assignments = curr_assignments
             assignments = curr_assignments
         else:
@@ -135,7 +136,6 @@ class SurgicalLlamaAttention(nn.Module):
             cos, sin = self.rope(q)
             q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
-        past_key_value = kwargs.get("past_key_value", past_key_values)
         if past_key_value is not None:
             if hasattr(past_key_value, "update"):
                 cache_kwargs = {"sin": getattr(self, "_dummy", None), "cos": getattr(self, "_dummy", None)}
