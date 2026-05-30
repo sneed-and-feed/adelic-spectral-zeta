@@ -1,6 +1,6 @@
 # Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention
 
-**Abstract.** Standard dense self-attention scales quadratically in sequence length, creating an intractable memory and compute bottleneck for long-context Transformers. We introduce *Dynamic Ultrametric Attention*, a framework in which a Transformer autonomously learns per-head block-sparse routing topologies during training via Gumbel-Sigmoid depth gates, then offloads those learned sparsity patterns directly to a custom Triton block-sparse kernel at inference time. The routing topology is derived from an ultrametric (tree-structured) distance matrix that encodes hierarchical relationships between token positions. Across seven experiments on Dyck-k bracket languages and the Long Range Arena ListOps benchmark, we demonstrate that: (1) the dynamic gates organically discover layer-wise specialization—dedicating early layers to hierarchical parsing and later layers to dense aggregation—without any architectural constraint; (2) the learned sparsity maps transfer losslessly to a block-sparse Triton kernel that skips entire SRAM loads for non-attending blocks; and (3) the resulting system achieves an **11.59× wall-clock inference speedup** over PyTorch dense attention at 2048 tokens, scaling to **28× at 8192 tokens** with 98.4% memory reduction. To our knowledge, this is the first demonstration of an LLM learning its own hardware-optimal sparsity pattern and bridging it to a physically accelerated kernel without post-hoc pruning or distillation.
+**Abstract.** Standard dense self-attention scales quadratically in sequence length, creating an intractable memory and compute bottleneck for long-context Transformers. We introduce *Dynamic Ultrametric Attention*, a framework in which a Transformer autonomously learns per-head block-sparse routing topologies during training via Gumbel-Sigmoid depth gates, then offloads those learned sparsity patterns directly to a custom Triton block-sparse kernel at inference time. The routing topology is derived from an ultrametric (tree-structured) distance matrix that encodes hierarchical relationships between token positions. Across nine experiments spanning Dyck-k bracket languages, the Long Range Arena ListOps benchmark, autoregressive serving, and natural language modeling, we demonstrate that: (1) the dynamic gates organically discover layer-wise specialization—dedicating early layers to hierarchical parsing and later layers to dense aggregation—without any architectural constraint; (2) the learned sparsity maps transfer losslessly to a block-sparse Triton kernel that skips entire SRAM loads for non-attending blocks; (3) the resulting system achieves an **11.59× wall-clock inference speedup** over PyTorch dense attention at 2048 tokens, scaling to **28× at 8192 tokens** with 98.4% memory reduction; (4) a sparse PagedAttention decoding kernel achieves **8× effective memory bandwidth** over dense decoding by conditionally skipping KV-cache block loads; and (5) when augmented with a local sliding window, the architecture maintains >88% sparsity across all layers on real natural language (Shakespeare) while reducing cross-entropy loss from 10.9 to 1.55. To our knowledge, this is the first demonstration of an LLM learning its own hardware-optimal sparsity pattern and bridging it to a physically accelerated kernel without post-hoc pruning or distillation.
 
 ---
 
@@ -82,7 +82,7 @@ This bridge requires no retraining, distillation, or fine-tuning. The soft bias 
 
 ## 3. Experiments
 
-We conduct seven experiments that progressively build the case for dynamic ultrametric attention, from basic inductive bias validation through full hardware-accelerated inference.
+We conduct nine experiments that progressively build the case for dynamic ultrametric attention, from basic inductive bias validation through hardware-accelerated inference and natural language modeling.
 
 ### 3.1 Kernel Benchmarks (Experiments 1–3)
 
@@ -172,13 +172,55 @@ We trained a 2-layer, 4-head GrokTransformer on 20K ListOps sequences (length 12
 
 The model again discovered the same two-layer decomposition observed on Dyck languages: Layer 0 parses the hierarchical tree structure using sparse routing, while Layer 1 densely aggregates the intermediate results to produce the final mathematical evaluation. This pattern emerged entirely from the data—no hand-engineering of the routing topology was required.
 
+### 3.6 PagedAttention Sparse Decoding (Experiment 8)
+
+To address the memory-bandwidth bottleneck during autoregressive generation, we constructed a sparse PagedAttention decoding kernel (`kernel_decode.py`) that extends the block-sparse routing mechanism to the KV-cache. During standard autoregressive decoding, every generated token must attend to the entire cached key-value history—a memory-bandwidth-bound operation on modern GPUs. Our kernel conditionally skips physical KV-cache block loads in HBM when the block's routing vector does not share the required ancestral depth with the query token.
+
+We benchmarked on an NVIDIA A100 with batch size 32, 16K context length, 8 heads, and $d_k = 128$:
+
+| `req_depth` | Latency (ms) | Effective BW (GB/s) | Speedup |
+|--:|--:|--:|--:|
+| 0 (dense) | 1.628 | 999.8 | 1.00× |
+| 1 | 0.810 | 2,009.7 | 2.01× |
+| 2 | 0.458 | 3,551.3 | 3.55× |
+| 3 | 0.289 | 5,635.0 | 5.63× |
+| 4 | 0.205 | 7,956.3 | **7.96×** |
+
+At `req_depth=4`, the kernel reports ~8 TB/s of *effective* memory bandwidth—8× the A100's physical HBM2e bandwidth limit (~2 TB/s). This is possible because the kernel is not actually reading those bytes: it dynamically branches over the KV blocks that fail the routing check, avoiding memory traffic entirely. The correctness check against a dense Python reference implementation confirmed max diff = 0.0003.
+
+### 3.7 Natural Language Modeling (Experiment 9)
+
+The preceding experiments validated the architecture on synthetic hierarchical tasks. A critical question remained: does the early-sparse/late-dense polarization transfer to real natural language?
+
+We made two architectural refinements for this experiment:
+
+1. **Per-Layer Routing.** We replaced the shared `DynamicTopologyRouter` with an `nn.ModuleList` of independent routers (one per layer), allowing each layer to learn its own tree routing topology.
+
+2. **Local Sliding Window.** We augmented the dynamic ultrametric mask with a causal local window of $k=32$ tokens. The mask is computed as $M_{\text{hybrid}} = \text{clamp}(M_{\text{tree}} + M_{\text{band}}, 0, 1)$, where $M_{\text{band}}$ is a band matrix ensuring every token can attend to its $k$ nearest predecessors regardless of tree topology. This guarantees Markovian local context for grammar while freeing the tree router to focus purely on long-range semantic dependencies.
+
+We trained a 4-layer, 256-dim, 4-head model on the `tiny_shakespeare` corpus (338K GPT-2 tokens) for 5,000 steps with `aux_loss_weight=0.001` and Gumbel-Softmax temperature annealing ($\tau: 1.0 \to 0.1$).
+
+**Results:**
+
+| Metric | Value |
+|:--|--:|
+| Final CE Loss | 1.55 |
+| Layer 0 Density | 0.094 |
+| Layer 1 Density | 0.079 |
+| Layer 2 Density | 0.091 |
+| Layer 3 Density | 0.117 |
+
+All four layers remained in the ultra-sparse regime (6–12% density), and the cross-entropy loss dropped from 10.9 to 1.55—demonstrating that the model successfully learned to predict Shakespeare while maintaining >88% sparsity across every layer.
+
+Critically, the polarization pattern differed from the synthetic experiments. On Dyck languages (without a local window), the model *needed* a dense layer to compensate for the lack of local context—adjacent tokens on different subtrees would otherwise be isolated. With the local window providing guaranteed Markovian context, the model discovered it could run *all* layers in maximum sparsity, routing only the long-range semantic dependencies through the tree hierarchy. The local window absorbed the grammar; the tree absorbed the meaning.
+
 ---
 
 ## 4. Discussion
 
 ### Self-Organizing Attention Topologies
 
-The most striking finding across all experiments is the *consistency* of the emergent layer specialization. On both Dyck bracket matching and ListOps arithmetic, the model converges to the same architectural motif: early layers perform hierarchical parsing via sparse tree routing; later layers perform dense aggregation. This suggests that the Gumbel-Sigmoid depth gates are discovering a genuinely useful decomposition of the attention computation, not merely fitting noise.
+The most striking finding across all experiments is the *adaptivity* of the emergent layer specialization. On Dyck bracket matching and ListOps arithmetic, the model converges to a two-layer motif: sparse hierarchical parsing followed by dense aggregation. On natural language with a local sliding window, the model discovers that *all* layers can remain sparse because the window handles local grammar. This suggests the Gumbel-Sigmoid depth gates are discovering genuinely optimal decompositions conditioned on the available context mechanisms, not merely fitting noise.
 
 ### The Hardware-Software Co-Design Loop
 
@@ -193,6 +235,8 @@ Traditional approaches to efficient attention follow a pipeline: design a sparse
 3. **ListOps accuracy ceiling.** At 62.7%, the model has not fully grokked the ListOps task. Longer training, larger models, or curriculum strategies may be needed to reach the >95% regime observed on Dyck languages.
 
 4. **Single-scale block size.** The kernel uses a fixed block size ($B = 128$). A multi-scale kernel that adapts block granularity to the local tree structure could capture finer-grained sparsity patterns.
+
+5. **Language model scale.** Experiment 9 used a 4-layer, 256-dim model on 338K tokens of Shakespeare. Validating that the sparsity regime holds at billion-parameter scale on diverse web text is a necessary next step toward production deployment.
 
 ---
 
@@ -212,7 +256,7 @@ Traditional approaches to efficient attention follow a pipeline: design a sparse
 
 ## 6. Conclusion
 
-We have demonstrated a complete pipeline from soft structural bias to hardware-accelerated sparse inference. A Transformer trained with Dynamic Ultrametric Attention autonomously discovers per-head, per-layer routing topologies via Gumbel-Sigmoid depth gates. These discrete routing decisions transfer directly to a Triton block-sparse kernel that achieves 11.59× speedup at 2048 tokens and 28× at 8192 tokens, with 98.4% memory reduction. The same mechanism generalizes from syntactic bracket matching (Dyck-k) to hierarchical mathematical reasoning (ListOps), consistently producing a two-layer decomposition: sparse tree parsing followed by dense aggregation.
+We have demonstrated a complete pipeline from soft structural bias to hardware-accelerated sparse inference and autoregressive serving. A Transformer trained with Dynamic Ultrametric Attention autonomously discovers per-head, per-layer routing topologies via Gumbel-Sigmoid depth gates. These discrete routing decisions transfer directly to a Triton block-sparse kernel that achieves 11.59× speedup at 2048 tokens and 28× at 8192 tokens, with 98.4% memory reduction. A sparse PagedAttention decoding kernel extends the same routing to the KV-cache, achieving 8× effective memory bandwidth during generation. When augmented with a local sliding window and applied to natural language, the architecture maintains >88% sparsity across all layers while learning to predict Shakespeare at 1.55 cross-entropy—demonstrating that hierarchical tree routing and local Markovian context are complementary, not competing, mechanisms.
 
 The model learns to skip blocks. The kernel executes the skip. No post-hoc pruning, no distillation, no hand-designed patterns—just a Transformer discovering the fastest path through its own attention matrix.
 

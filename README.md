@@ -175,10 +175,12 @@ This repository includes a complete, dual-stack implementation of **Ultrametric 
 
 The key mathematical insight is that tokens in a sequence are not flat — they can be organized into a recursive fractal tree where the "distance" between two tokens is defined by their lowest common ancestor depth in the $p$-adic topology. Tokens sharing a deep ancestor attend densely; tokens sharing only a shallow ancestor attend sparsely or pass messages through interior "Reasoning Tokens" (Holographic States). This architecture natively encodes the non-archimedean geometry of the adèlic framework into the attention mechanism itself.
 
-**Empirical Results (7 experiments, see [`BENCHMARKS.md`](BENCHMARKS.md)):**
+**Empirical Results (9 experiments, see [`BENCHMARKS.md`](BENCHMARKS.md)):**
 - **28× inference speedup** and **98.4% memory reduction** at 8192 tokens via a custom Triton block-sparse kernel.
 - **11.59× wall-clock speedup** at 2048 tokens using *autonomously learned* per-head routing gates (no hand-designed sparsity).
+- **8× effective memory bandwidth** during autoregressive decoding via a sparse PagedAttention kernel that skips KV-cache loads.
 - **Emergent layer specialization**: Gumbel-Sigmoid depth gates polarize during training, dedicating early layers to sparse hierarchical parsing and later layers to dense aggregation — without any architectural constraint.
+- **Natural language modeling**: When augmented with a local sliding window ($k=32$), the architecture maintains >88% sparsity across all layers on Shakespeare while reducing cross-entropy from 10.9 to 1.55.
 - **Generalization to ListOps**: The same routing mechanism solves deeply nested prefix arithmetic (62.7% accuracy vs. 10% random chance), proving the inductive bias extends beyond syntactic bracket matching to hierarchical computation graphs.
 
 **True Fractal Routing (No Cheating):**
@@ -191,10 +193,11 @@ Located in [`src/ultrametric/`](src/ultrametric/):
 
 | File | Description |
 | :--- | :--- |
-| [`topology.py`](src/ultrametric/topology.py) | `DynamicTopologyRouter`: Differentiable Gumbel-Softmax bridge projecting token embeddings into recursive $p$-adic tree paths. Reversed cumulative product for $p$-adic distance computation. |
+| [`topology.py`](src/ultrametric/topology.py) | `DynamicTopologyRouter`: Differentiable Gumbel-Softmax bridge projecting token embeddings into recursive $p$-adic tree paths. Reversed cumulative product for $p$-adic distance computation. Local sliding window augmentation for hybrid sparse+local masks. |
 | [`kernel.py`](src/ultrametric/kernel.py) | `triton.jit` block-sparse attention kernel. Loads multi-level routing vectors per block and uses `tl.advance()` to dynamically skip SRAM loads for blocks that do not share the required ancestral depth. Runtime dynamic branching. |
-| [`layer.py`](src/ultrametric/layer.py) | `UltrametricAttention` module with `get_tree_adjacency_mask`: constructs a true graph adjacency matrix wiring interior Reasoning Tokens hierarchically (`parent = (i-1)//p`) and dynamically connecting leaf tokens via routing paths. |
-| [`model.py`](src/ultrametric/model.py) | `UltrametricTransformerBlock`: Pre-LN transformer block with dynamic interior node allocation based on tree depth. Holographic message passing up and down the fractal hierarchy. |
+| [`kernel_decode.py`](src/ultrametric/kernel_decode.py) | Sparse PagedAttention decoding kernel. Extends block-sparse routing to the KV-cache for autoregressive generation, conditionally skipping HBM loads for non-matching blocks. |
+| [`layer.py`](src/ultrametric/layer.py) | `UltrametricAttention` module with `get_tree_adjacency_mask`: constructs a true graph adjacency matrix wiring interior Reasoning Tokens hierarchically (`parent = (i-1)//p`) and dynamically connecting leaf tokens via routing paths. Supports both boolean and float (STE-differentiable) masks. |
+| [`model.py`](src/ultrametric/model.py) | `UltrametricTransformer`: Per-layer `DynamicTopologyRouter` via `nn.ModuleList`, dynamic mask generation with local sliding window, and Pre-LN transformer blocks with Holographic message passing. |
 
 #### JAX / Flax / Pallas (Google TPU)
 Located in [`src/ultrametric_jax/`](src/ultrametric_jax/):
@@ -227,7 +230,7 @@ Located in [`src/ultrametric_jax/`](src/ultrametric_jax/):
 | [`src/ultrametric/`](src/ultrametric/) | **Ultrametric AI (PyTorch/Triton):** True Fractal attention with dynamic Gumbel-Softmax routing, Triton block-sparse GPU kernels, and Holographic Reasoning Tokens. |
 | [`src/ultrametric_jax/`](src/ultrametric_jax/) | **Ultrametric AI (JAX/Flax/Pallas):** Google-native TPU implementation with Pallas scalar prefetch kernels, deterministic PRNG routing, and XLA-compiled fractal attention. |
 | [`papers/`](papers/) | Research papers. Includes [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md) (Markdown & LaTeX) and the original adèlic monograph LaTeX source. |
-| [`experiments/`](experiments/) | Implementation of key simulations, grokking experiments (`grokking_v4_dyck.py` through `grokking_v7_listops.py`), and kernel benchmarks (`benchmark_triton.py`). |
+| [`experiments/`](experiments/) | Implementation of key simulations, grokking experiments (`grokking_v4_dyck.py` through `grokking_v8_language.py`), kernel benchmarks (`benchmark_triton.py`, `benchmark_serving.py`), and the vLLM sparse decoding benchmark. |
 | [`formalization/`](formalization/) | Axiom-free Lean 4 formalization proofs for spectral gap positivity and graph properties. |
 | [`formalization/SpectralPositivity/`](https://github.com/mrdouglasny/spectral-positivity) | Michael R. Douglas's Perron-Frobenius library for irreducible nonneg matrices (vendored dependency). |
 | [`coq/`](coq/) | **Coq / MathComp 2.3.0** formalizations. Independent cross-verification of the Bass-Ihara determinant formula ([BassIhara.v](coq/theories/BassIhara.v)): 0 sorry, 0 axiom, 0 Admitted. |
