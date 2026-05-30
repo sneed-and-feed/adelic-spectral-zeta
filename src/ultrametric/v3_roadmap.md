@@ -2,6 +2,12 @@
 
 This roadmap formalizes the third generation of the Dynamic Ultrametric Attention architecture. Having established 11.5x to 28x speedups via block-sparse Triton kernels and Multi-Prime Adèlic routing in V1 and V2, V3 targets zero-overhead self-speculation, $O(\log N)$ context compression, deterministic MoE routing, continuous sparsification of dense LLMs, and multi-dimensional spatial hierarchies for vision models.
 
+## The Core Philosophy: A Compiler for Learned Structure
+
+While V1 and V2 focused heavily on the specific geometry of ultrametric trees, the true breakthrough of this architecture is broader: **differentiable topology discovery compiled directly into hardware execution**. 
+
+The $p$-adic tree is merely one instance of a routing topology. By relaxing discrete routing choices into a continuous Gumbel-Sigmoid manifold, polarizing them into hard binary masks, and mapping those masks directly into $O(N \log N)$ block-sparse Triton coordinate lists, we have built a framework where a neural network dynamically writes its own optimal hardware execution graph at runtime. Whether the underlying structure is an adèlic tree, a learned graph neighborhood, or a spatial Quad-Tree, the compiler remains identical: the model learns the shape of the data, and the hardware dynamically conforms to that shape.
+
 ---
 
 ## 1. Llama Surgery (Continual Sparsification)
