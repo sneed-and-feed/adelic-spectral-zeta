@@ -277,6 +277,14 @@ This ablation provides definitive evidence that custom kernels are not merely an
 
 The most striking finding across all experiments is the *adaptivity* of the emergent layer specialization. On Dyck bracket matching and ListOps arithmetic *without* a local sliding window, the model converges to a two-layer motif: sparse hierarchical parsing followed by dense aggregation. On natural language with a local sliding window, and subsequently on ListOps with the same augmentation (Section 3.5.1), the model discovers that *all* layers can remain sparse because the window handles local grammar. This suggests the Gumbel-Sigmoid depth gates are discovering genuinely optimal decompositions conditioned on the available context mechanisms, not merely fitting noise.
 
+### Sparse Backward Pass: Asymptotic vs. Hardware Reality
+
+We implemented a custom `torch.autograd.Function` (`CurriculumSparseAttention`) that dispatches to Triton block-sparse backward kernels during the final 20% of training, after the Gumbel-Sigmoid gates have polarized. The backward kernels (`_ultrametric_bwd_dq_kernel`, `_ultrametric_bwd_dk_dv_kernel`) use precomputed block coordinate lists to iterate only over active block pairs, reducing the asymptotic backward FLOP count from $O(N^2)$ to $O(N \log N)$.
+
+However, benchmarking on an A100-SXM4-40GB at 8192 tokens revealed that the sparse backward kernels are **slower** than the dense baseline (FlashAttention-2) at this sequence length. The root cause is an IO-bound bottleneck: FlashAttention-2 achieves peak hardware bandwidth by leveraging the A100's Tensor Memory Accelerator (TMA) for linear, contiguous SRAM tile loads. Our block-sparse kernel performs indirect memory gathers (loading K/V blocks at dynamically computed offsets), which disables TMA and forces scalar global memory loads. At 8192 tokens with 64 blocks of size 128, the FLOP savings from skipping ~60 of 64 blocks are overwhelmed by the per-block memory access overhead.
+
+This result identifies a critical crossover point: block-sparse backward passes become wall-clock competitive only when the sequence length is large enough that the computation is **compute-bound** rather than **IO-bound** — likely in the 32K–64K+ regime where the $O(N^2)$ matrix multiplication cost dominates the memory controller latency. Alternatively, future GPU architectures with hardware support for sparse TMA instructions (indirect block loads without bandwidth penalties) would eliminate the IO bottleneck entirely.
+
 The local sliding window result is particularly instructive. Without it, the model sacrifices an entire layer to dense attention—not because the task requires global context, but because adjacent tokens on different tree subtrees are otherwise isolated. The dense layer is compensating for a *topological gap* in the tree bias, not performing a fundamentally different computation. Once the gap is filled by the local window, the model immediately reroutes that layer to sparse execution. This implies that the dense-layer fallback observed in early experiments was an artifact of incomplete inductive bias, not an intrinsic limitation of the architecture.
 
 ### The Hardware-Software Co-Design Loop
@@ -289,7 +297,7 @@ Experiment 10 (Section 3.8) provides definitive evidence that the block-sparse t
 
 ### Limitations
 
-1. **No backward pass for the Triton kernel.** Training still uses dense PyTorch attention for gradient computation. Writing a backward Triton kernel would enable sparse training as well as sparse inference.
+1. **Sparse backward pass is IO-bound at moderate context lengths.** We implemented Triton block-sparse backward kernels that reduce the asymptotic gradient FLOP count from $O(N^2)$ to $O(N \log N)$. However, at 8192 tokens on an A100, the sparse kernels are slower than FlashAttention-2's dense backward pass due to indirect memory gather overhead (see Discussion). The sparse backward pass is expected to become wall-clock competitive at longer contexts (32K–64K+) where matrix multiplication cost dominates memory latency, or on future hardware with sparse TMA support.
 
 2. **Binary tree assumption.** The current tree bias assumes a perfect binary tree. Real hierarchical data (e.g., natural language syntax trees) has variable branching factors. Extending to arbitrary tree topologies is an important direction.
 
