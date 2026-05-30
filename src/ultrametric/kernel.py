@@ -31,91 +31,39 @@ if HAS_TRITON:
 
     @triton.jit
     def _ultrametric_fwd_kernel(
-        Q,
-        K,
-        V,
-        sm_scale,
-        router_indices,
-        Out,
-        L,
-        stride_qz,
-        stride_qh,
-        stride_qm,
-        stride_qk,
-        stride_kz,
-        stride_kh,
-        stride_kn,
-        stride_kk,
-        stride_vz,
-        stride_vh,
-        stride_vk,
-        stride_vn,
-        stride_oz,
-        stride_oh,
-        stride_om,
-        stride_on,
-        stride_rz,
-        stride_rh,
-        stride_rm,
-        stride_rd,
-        stride_lz,
-        stride_lh,
-        stride_lm,
-        req_depth,
-        Z,
-        H,
-        N_CTX,
-        BLOCK_M: tl.constexpr,
-        BLOCK_DMODEL: tl.constexpr,
-        BLOCK_N: tl.constexpr,
-        P_ARY: tl.constexpr,  # reserved for future p-ary branch comparison
-        TREE_DEPTH_P2: tl.constexpr,
+        Q, K, V, sm_scale,
+        q_to_k_indices, num_active_k,
+        Out, L,
+        stride_qz, stride_qh, stride_qm, stride_qk,
+        stride_kz, stride_kh, stride_kn, stride_kk,
+        stride_vz, stride_vh, stride_vk, stride_vn,
+        stride_oz, stride_oh, stride_om, stride_on,
+        stride_idx_z, stride_idx_h, stride_idx_m, stride_idx_n,
+        stride_act_z, stride_act_h, stride_act_m,
+        stride_lz, stride_lh, stride_lm,
+        Z, H, N_CTX,
+        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr,
     ):
-        """
-        True Hardware Block-Sparse Triton kernel for Ultrametric Attention.
-
-        Uses explicit block pointers (tl.make_block_ptr) to load memory.
-        Dynamically reads routing indices to determine phylogenetic ancestors
-        in the Bruhat-Tits tree, skipping SRAM loads for blocks that do not
-        share an immediate ancestor.
-        """
         start_m = tl.program_id(0)
         off_hz = tl.program_id(1)
         off_z = off_hz // H
         off_h = off_hz % H
 
-        # Base pointers
         q_offset = off_z * stride_qz + off_h * stride_qh
         k_offset = off_z * stride_kz + off_h * stride_kh
         v_offset = off_z * stride_vz + off_h * stride_vh
         o_offset = off_z * stride_oz + off_h * stride_oh
-        r_offset = off_z * stride_rz + off_h * stride_rh
+        idx_offset = off_z * stride_idx_z + off_h * stride_idx_h + start_m * stride_idx_m
+        act_offset = off_z * stride_act_z + off_h * stride_act_h + start_m * stride_act_m
 
         q_block_ptr = tl.make_block_ptr(
-            base=Q + q_offset,
-            shape=(N_CTX, BLOCK_DMODEL),
-            strides=(stride_qm, stride_qk),
-            offsets=(start_m * BLOCK_M, 0),
-            block_shape=(BLOCK_M, BLOCK_DMODEL),
-            order=(1, 0),
+            base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
+            offsets=(start_m * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0),
         )
-
         o_block_ptr = tl.make_block_ptr(
-            base=Out + o_offset,
-            shape=(N_CTX, BLOCK_DMODEL),
-            strides=(stride_om, stride_on),
-            offsets=(start_m * BLOCK_M, 0),
-            block_shape=(BLOCK_M, BLOCK_DMODEL),
-            order=(1, 0),
+            base=Out + o_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_om, stride_on),
+            offsets=(start_m * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0),
         )
-
-        # Load routing index vector for current Q block
-        # TREE_DEPTH_P2 is guaranteed power-of-2 for tl.arange compatibility
-        depth_offsets = tl.arange(0, TREE_DEPTH_P2)
-        m_router_ptrs = (
-            router_indices + r_offset + start_m * stride_rm + depth_offsets * stride_rd
-        )
-        m_routing_vec = tl.load(m_router_ptrs)
 
         q = tl.load(q_block_ptr, boundary_check=(0, 1), padding_option="zero")
 
@@ -123,62 +71,32 @@ if HAS_TRITON:
         l_i = tl.zeros([BLOCK_M], dtype=tl.float32)
         acc = tl.zeros([BLOCK_M, BLOCK_DMODEL], dtype=tl.float32)
 
-        # K transposed
-        k_block_ptr = tl.make_block_ptr(
-            base=K + k_offset,
-            shape=(BLOCK_DMODEL, N_CTX),
-            strides=(stride_kk, stride_kn),
-            offsets=(0, 0),
-            block_shape=(BLOCK_DMODEL, BLOCK_N),
-            order=(0, 1),
-        )
+        num_act = tl.load(num_active_k + act_offset)
 
-        # V
-        v_block_ptr = tl.make_block_ptr(
-            base=V + v_offset,
-            shape=(N_CTX, BLOCK_DMODEL),
-            strides=(stride_vk, stride_vn),
-            offsets=(0, 0),
-            block_shape=(BLOCK_N, BLOCK_DMODEL),
-            order=(1, 0),
-        )
+        for idx in range(num_act):
+            start_n_block = tl.load(q_to_k_indices + idx_offset + idx * stride_idx_n)
 
-        num_n_blocks = tl.cdiv(N_CTX, BLOCK_N)
-
-        for start_n_block in range(0, num_n_blocks):
-            n_router_ptrs = (
-                router_indices
-                + r_offset
-                + start_n_block * stride_rm
-                + depth_offsets * stride_rd
+            k_block_ptr = tl.make_block_ptr(
+                base=K + k_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_kk, stride_kn),
+                offsets=(0, start_n_block * BLOCK_N), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1),
             )
-            n_routing_vec = tl.load(n_router_ptrs)
+            v_block_ptr = tl.make_block_ptr(
+                base=V + v_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_vk, stride_vn),
+                offsets=(start_n_block * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0),
+            )
 
-            # --- TOPOLOGICAL ROUTING LOGIC ---
-            # Check if blocks share required ancestral depth
-            # Extra padded depth levels are masked by depth_offsets < req_depth
-            mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
-            has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
+            k = tl.load(k_block_ptr, boundary_check=(0, 1), padding_option="zero")
+            v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
 
-            # FIX: Triton does not support `continue` — use if-guard instead
-            if has_mismatch == 0:
-                k = tl.load(k_block_ptr, boundary_check=(0, 1), padding_option="zero")
-                v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
+            qk = tl.dot(q, k) * sm_scale
 
-                qk = tl.dot(q, k) * sm_scale
+            m_i_new = tl.maximum(m_i, tl.max(qk, 1))
+            alpha = tl.exp(m_i - m_i_new)
+            p = tl.exp(qk - m_i_new[:, None])
 
-                m_i_new = tl.maximum(m_i, tl.max(qk, 1))
-                alpha = tl.exp(m_i - m_i_new)
-                p = tl.exp(qk - m_i_new[:, None])
-
-                acc = acc * alpha[:, None] + tl.dot(p.to(tl.float16), v)
-                l_i = l_i * alpha + tl.sum(p, 1)
-                m_i = m_i_new
-            # ---------------------------------
-
-            # Always advance pointers (cheap arithmetic, no SRAM load)
-            k_block_ptr = tl.advance(k_block_ptr, (0, BLOCK_N))
-            v_block_ptr = tl.advance(v_block_ptr, (BLOCK_N, 0))
+            acc = acc * alpha[:, None] + tl.dot(p.to(tl.float16), v)
+            l_i = l_i * alpha + tl.sum(p, 1)
+            m_i = m_i_new
 
         acc = acc / l_i[:, None]
         tl.store(o_block_ptr, acc.to(tl.float16), boundary_check=(0, 1))
@@ -188,6 +106,28 @@ if HAS_TRITON:
         offs_m = start_m * BLOCK_M + tl.arange(0, BLOCK_M)
         l_ptrs = L + l_offset + offs_m
         tl.store(l_ptrs, L_i, mask=offs_m < N_CTX)
+
+
+def compute_block_sparse_indices(router_indices: torch.Tensor, req_depth: int):
+    """
+    Computes precomputed active block coordinate lists for the Triton kernels.
+    """
+    Z, H, num_blocks, tree_depth = router_indices.shape
+    if req_depth == 0:
+        match = torch.ones((Z, H, num_blocks, num_blocks), dtype=torch.bool, device=router_indices.device)
+    else:
+        r = router_indices[:, :, :, :req_depth]
+        match = (r.unsqueeze(3) == r.unsqueeze(2)).all(dim=-1)
+    
+    _, q_to_k_indices = match.sort(dim=-1, descending=True)
+    num_active_k = match.sum(dim=-1, dtype=torch.int32)
+    q_to_k_indices = q_to_k_indices.to(torch.int32)
+    
+    _, k_to_q_indices = match.transpose(2, 3).sort(dim=-1, descending=True)
+    num_active_q = match.transpose(2, 3).sum(dim=-1, dtype=torch.int32)
+    k_to_q_indices = k_to_q_indices.to(torch.int32)
+    
+    return q_to_k_indices, num_active_k, k_to_q_indices, num_active_q
 
 
 def routing_to_block_indices(
@@ -235,17 +175,16 @@ def routing_to_block_indices(
 if HAS_TRITON:
     @triton.jit
     def _ultrametric_bwd_dq_kernel(
-        Q, K, V, sm_scale, router_indices,
-        dO, dQ,
-        L, D,
+        Q, K, V, sm_scale, q_to_k_indices, num_active_k,
+        dO, dQ, L, D,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
         stride_vz, stride_vh, stride_vk, stride_vn,
         stride_oz, stride_oh, stride_om, stride_on,
-        stride_rz, stride_rh, stride_rm, stride_rd,
-        req_depth, Z, H, N_CTX,
-        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr,
-        TREE_DEPTH_P2: tl.constexpr
+        stride_idx_z, stride_idx_h, stride_idx_m, stride_idx_n,
+        stride_act_z, stride_act_h, stride_act_m,
+        Z, H, N_CTX,
+        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr
     ):
         start_m = tl.program_id(0)
         off_hz = tl.program_id(1)
@@ -257,7 +196,8 @@ if HAS_TRITON:
         v_offset = off_z * stride_vz + off_h * stride_vh
         do_offset = off_z * stride_oz + off_h * stride_oh
         dq_offset = off_z * stride_qz + off_h * stride_qh
-        r_offset = off_z * stride_rz + off_h * stride_rh
+        idx_offset = off_z * stride_idx_z + off_h * stride_idx_h + start_m * stride_idx_m
+        act_offset = off_z * stride_act_z + off_h * stride_act_h + start_m * stride_act_m
 
         q_block_ptr = tl.make_block_ptr(
             base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
@@ -272,10 +212,6 @@ if HAS_TRITON:
             offsets=(start_m * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
         )
 
-        depth_offsets = tl.arange(0, TREE_DEPTH_P2)
-        m_router_ptrs = router_indices + r_offset + start_m * stride_rm + depth_offsets * stride_rd
-        m_routing_vec = tl.load(m_router_ptrs)
-
         q = tl.load(q_block_ptr, boundary_check=(0, 1), padding_option="zero")
         do = tl.load(do_block_ptr, boundary_check=(0, 1), padding_option="zero")
 
@@ -285,61 +221,51 @@ if HAS_TRITON:
         l_i = tl.load(l_ptrs, mask=offs_m < N_CTX, other=0.0)
         D_i = tl.load(d_ptrs, mask=offs_m < N_CTX, other=0.0)
 
-        k_ptr = tl.make_block_ptr(
-            base=K + k_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_kk, stride_kn),
-            offsets=(0, 0), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1)
-        )
-        v_T_ptr = tl.make_block_ptr(
-            base=V + v_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_vk, stride_vn),
-            offsets=(0, 0), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1)
-        )
-        k_norm_ptr = tl.make_block_ptr(
-            base=K + k_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_kn, stride_kk),
-            offsets=(0, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
-        )
-
-        num_n_blocks = tl.cdiv(N_CTX, BLOCK_N)
         dq = tl.zeros([BLOCK_M, BLOCK_DMODEL], dtype=tl.float32)
+        num_act = tl.load(num_active_k + act_offset)
 
-        for start_n_block in range(0, num_n_blocks):
-            n_router_ptrs = router_indices + r_offset + start_n_block * stride_rm + depth_offsets * stride_rd
-            n_routing_vec = tl.load(n_router_ptrs)
+        for idx in range(num_act):
+            start_n_block = tl.load(q_to_k_indices + idx_offset + idx * stride_idx_n)
 
-            mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
-            has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
+            k_ptr = tl.make_block_ptr(
+                base=K + k_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_kk, stride_kn),
+                offsets=(0, start_n_block * BLOCK_N), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1)
+            )
+            v_T_ptr = tl.make_block_ptr(
+                base=V + v_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_vk, stride_vn),
+                offsets=(0, start_n_block * BLOCK_N), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1)
+            )
+            k_norm_ptr = tl.make_block_ptr(
+                base=K + k_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_kn, stride_kk),
+                offsets=(start_n_block * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
+            )
 
-            if has_mismatch == 0:
-                k = tl.load(k_ptr, boundary_check=(0, 1), padding_option="zero")
-                qk = tl.dot(q, k) * sm_scale
-                p = tl.exp(qk - l_i[:, None])
+            k = tl.load(k_ptr, boundary_check=(0, 1), padding_option="zero")
+            qk = tl.dot(q, k) * sm_scale
+            p = tl.exp(qk - l_i[:, None])
 
-                v_T = tl.load(v_T_ptr, boundary_check=(0, 1), padding_option="zero")
-                dp = tl.dot(do, v_T)
-                
-                ds = p * (dp - D_i[:, None]) * sm_scale
-                
-                k_n = tl.load(k_norm_ptr, boundary_check=(0, 1), padding_option="zero")
-                dq += tl.dot(ds.to(tl.float16), k_n)
-
-            k_ptr = tl.advance(k_ptr, (0, BLOCK_N))
-            v_T_ptr = tl.advance(v_T_ptr, (0, BLOCK_N))
-            k_norm_ptr = tl.advance(k_norm_ptr, (BLOCK_N, 0))
+            v_T = tl.load(v_T_ptr, boundary_check=(0, 1), padding_option="zero")
+            dp = tl.dot(do, v_T)
+            
+            ds = p * (dp - D_i[:, None]) * sm_scale
+            
+            k_n = tl.load(k_norm_ptr, boundary_check=(0, 1), padding_option="zero")
+            dq += tl.dot(ds.to(tl.float16), k_n)
 
         tl.store(dq_block_ptr, dq.to(tl.float16), boundary_check=(0, 1))
 
     @triton.jit
     def _ultrametric_bwd_dk_dv_kernel(
-        Q, K, V, sm_scale, router_indices,
-        dO, dK, dV,
-        L, D,
+        Q, K, V, sm_scale, k_to_q_indices, num_active_q,
+        dO, dK, dV, L, D,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
         stride_vz, stride_vh, stride_vk, stride_vn,
         stride_oz, stride_oh, stride_om, stride_on,
-        stride_rz, stride_rh, stride_rm, stride_rd,
-        req_depth, Z, H, N_CTX,
-        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr,
-        TREE_DEPTH_P2: tl.constexpr
+        stride_idx_z, stride_idx_h, stride_idx_m, stride_idx_n,
+        stride_act_z, stride_act_h, stride_act_m,
+        Z, H, N_CTX,
+        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr
     ):
         start_n = tl.program_id(0)
         off_hz = tl.program_id(1)
@@ -352,7 +278,8 @@ if HAS_TRITON:
         do_offset = off_z * stride_oz + off_h * stride_oh
         dk_offset = off_z * stride_kz + off_h * stride_kh
         dv_offset = off_z * stride_vz + off_h * stride_vh
-        r_offset = off_z * stride_rz + off_h * stride_rh
+        idx_offset = off_z * stride_idx_z + off_h * stride_idx_h + start_n * stride_idx_m
+        act_offset = off_z * stride_act_z + off_h * stride_act_h + start_n * stride_act_m
 
         k_block_ptr = tl.make_block_ptr(
             base=K + k_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_kn, stride_kk),
@@ -371,56 +298,45 @@ if HAS_TRITON:
             offsets=(start_n * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
         )
 
-        depth_offsets = tl.arange(0, TREE_DEPTH_P2)
-        n_router_ptrs = router_indices + r_offset + start_n * stride_rm + depth_offsets * stride_rd
-        n_routing_vec = tl.load(n_router_ptrs)
-
         k = tl.load(k_block_ptr, boundary_check=(0, 1), padding_option="zero")
         v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
 
-        q_norm_ptr = tl.make_block_ptr(
-            base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
-            offsets=(0, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
-        )
-        do_norm_ptr = tl.make_block_ptr(
-            base=dO + do_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_om, stride_on),
-            offsets=(0, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
-        )
-
-        num_m_blocks = tl.cdiv(N_CTX, BLOCK_M)
         dk = tl.zeros([BLOCK_N, BLOCK_DMODEL], dtype=tl.float32)
         dv = tl.zeros([BLOCK_N, BLOCK_DMODEL], dtype=tl.float32)
 
-        for start_m_block in range(0, num_m_blocks):
-            m_router_ptrs = router_indices + r_offset + start_m_block * stride_rm + depth_offsets * stride_rd
-            m_routing_vec = tl.load(m_router_ptrs)
+        num_act = tl.load(num_active_q + act_offset)
 
-            mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
-            has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
+        for idx in range(num_act):
+            start_m_block = tl.load(k_to_q_indices + idx_offset + idx * stride_idx_n)
 
-            if has_mismatch == 0:
-                q_n = tl.load(q_norm_ptr, boundary_check=(0, 1), padding_option="zero")
-                qk = tl.dot(q_n, tl.trans(k)) * sm_scale
-                
-                offs_m = start_m_block * BLOCK_M + tl.arange(0, BLOCK_M)
-                l_ptrs = L + off_hz * N_CTX + offs_m
-                d_ptrs = D + off_hz * N_CTX + offs_m
-                l_i = tl.load(l_ptrs, mask=offs_m < N_CTX, other=0.0)
-                D_i = tl.load(d_ptrs, mask=offs_m < N_CTX, other=0.0)
+            q_norm_ptr = tl.make_block_ptr(
+                base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
+                offsets=(start_m_block * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+            )
+            do_norm_ptr = tl.make_block_ptr(
+                base=dO + do_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_om, stride_on),
+                offsets=(start_m_block * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+            )
 
-                p = tl.exp(qk - l_i[:, None])
+            q_n = tl.load(q_norm_ptr, boundary_check=(0, 1), padding_option="zero")
+            qk = tl.dot(q_n, tl.trans(k)) * sm_scale
+            
+            offs_m = start_m_block * BLOCK_M + tl.arange(0, BLOCK_M)
+            l_ptrs = L + off_hz * N_CTX + offs_m
+            d_ptrs = D + off_hz * N_CTX + offs_m
+            l_i = tl.load(l_ptrs, mask=offs_m < N_CTX, other=0.0)
+            D_i = tl.load(d_ptrs, mask=offs_m < N_CTX, other=0.0)
 
-                do = tl.load(do_norm_ptr, boundary_check=(0, 1), padding_option="zero")
-                
-                dv += tl.dot(tl.trans(p).to(tl.float16), do)
+            p = tl.exp(qk - l_i[:, None])
 
-                dp = tl.dot(do, tl.trans(v))
-                ds = p * (dp - D_i[:, None]) * sm_scale
+            do = tl.load(do_norm_ptr, boundary_check=(0, 1), padding_option="zero")
+            
+            dv += tl.dot(tl.trans(p).to(tl.float16), do)
 
-                dk += tl.dot(tl.trans(ds).to(tl.float16), q_n)
+            dp = tl.dot(do, tl.trans(v))
+            ds = p * (dp - D_i[:, None]) * sm_scale
 
-            q_norm_ptr = tl.advance(q_norm_ptr, (BLOCK_M, 0))
-            do_norm_ptr = tl.advance(do_norm_ptr, (BLOCK_M, 0))
+            dk += tl.dot(tl.trans(ds).to(tl.float16), q_n)
 
         tl.store(dk_block_ptr, dk.to(tl.float16), boundary_check=(0, 1))
         tl.store(dv_block_ptr, dv.to(tl.float16), boundary_check=(0, 1))
@@ -513,12 +429,7 @@ def ultrametric_attention_triton(
         f"req_depth ({req_depth}) must be in [0, {TREE_DEPTH}]"
     )
 
-    # Triton requires tl.arange ranges to be powers of 2
-    TREE_DEPTH_P2 = 1 << (TREE_DEPTH - 1).bit_length() if TREE_DEPTH > 1 else 1
-
     # Block size configuration
-    # BLOCK_M/N = 128 is the sweet spot for A100/4090 SRAM capacity
-    # BLOCK_DMODEL must exactly match head_dim for correctness
     BLOCK_M = min(128, N_CTX)
     BLOCK_N = min(128, N_CTX)
     BLOCK_DMODEL = DMODEL
@@ -534,14 +445,8 @@ def ultrametric_attention_triton(
         )
         router_indices = torch.cat([router_indices, pad], dim=2)
 
-    # Pad depth dimension to power-of-2 for tl.arange compatibility
-    if TREE_DEPTH < TREE_DEPTH_P2:
-        depth_pad = torch.zeros(
-            (*router_indices.shape[:-1], TREE_DEPTH_P2 - TREE_DEPTH),
-            dtype=torch.int32,
-            device=router_indices.device,
-        )
-        router_indices = torch.cat([router_indices, depth_pad], dim=-1)
+    # Precompute coordinate lists
+    q_to_k_indices, num_active_k, _, _ = compute_block_sparse_indices(router_indices, req_depth)
 
     # Allocate output
     out = torch.empty_like(q)
@@ -555,53 +460,16 @@ def ultrametric_attention_triton(
     L = torch.empty((Z, H, N_CTX), device=q.device, dtype=torch.float32)
 
     _ultrametric_fwd_kernel[grid](
-        q,
-        k,
-        v,
-        sm_scale,
-        router_indices,
-        out,
-        L,
-        # Q strides: (batch, head, seq, dim)
-        q.stride(0),
-        q.stride(1),
-        q.stride(2),
-        q.stride(3),
-        # K strides
-        k.stride(0),
-        k.stride(1),
-        k.stride(2),
-        k.stride(3),
-        # V strides
-        v.stride(0),
-        v.stride(1),
-        v.stride(2),
-        v.stride(3),
-        # Output strides
-        out.stride(0),
-        out.stride(1),
-        out.stride(2),
-        out.stride(3),
-        # Router strides: (batch, heads, blocks, depth)
-        router_indices.stride(0),
-        router_indices.stride(1),
-        router_indices.stride(2),
-        router_indices.stride(3),
-        # L strides
-        L.stride(0),
-        L.stride(1),
-        L.stride(2),
-        # Scalar args
-        req_depth,
-        Z,
-        H,
-        N_CTX,
-        # Compile-time constants
-        BLOCK_M=BLOCK_M,
-        BLOCK_DMODEL=BLOCK_DMODEL,
-        BLOCK_N=BLOCK_N,
-        P_ARY=p,
-        TREE_DEPTH_P2=TREE_DEPTH_P2,
+        q, k, v, sm_scale, q_to_k_indices, num_active_k, out, L,
+        q.stride(0), q.stride(1), q.stride(2), q.stride(3),
+        k.stride(0), k.stride(1), k.stride(2), k.stride(3),
+        v.stride(0), v.stride(1), v.stride(2), v.stride(3),
+        out.stride(0), out.stride(1), out.stride(2), out.stride(3),
+        q_to_k_indices.stride(0), q_to_k_indices.stride(1), q_to_k_indices.stride(2), q_to_k_indices.stride(3),
+        num_active_k.stride(0), num_active_k.stride(1), num_active_k.stride(2),
+        L.stride(0), L.stride(1), L.stride(2),
+        Z, H, N_CTX,
+        BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
     )
 
     return out, L
@@ -651,40 +519,48 @@ class CurriculumSparseAttention(torch.autograd.Function):
         BLOCK_M = min(128, N_CTX)
         BLOCK_N = min(128, N_CTX)
         BLOCK_DMODEL = DMODEL
-        TREE_DEPTH = router_indices.shape[-1]
-        TREE_DEPTH_P2 = 1 << (TREE_DEPTH - 1).bit_length() if TREE_DEPTH > 1 else 1
+
+        num_blocks_needed = triton.cdiv(N_CTX, BLOCK_M)
+        num_blocks_have = router_indices.shape[2]
+        if num_blocks_have < num_blocks_needed:
+            pad = torch.zeros(
+                (Z, H, num_blocks_needed - num_blocks_have, router_indices.shape[-1]),
+                dtype=torch.int32,
+                device=router_indices.device,
+            )
+            router_indices = torch.cat([router_indices, pad], dim=2)
+
+        q_to_k_indices, num_active_k, k_to_q_indices, num_active_q = compute_block_sparse_indices(router_indices, req_depth)
 
         # D_i = sum(do_i * o_i)
         D = (do * o).to(torch.float32).sum(dim=-1).contiguous()
 
         grid_q = (triton.cdiv(N_CTX, BLOCK_M), Z * H)
         _ultrametric_bwd_dq_kernel[grid_q](
-            q, k, v, sm_scale, router_indices,
-            do, dq,
-            L, D,
+            q, k, v, sm_scale, q_to_k_indices, num_active_k,
+            do, dq, L, D,
             q.stride(0), q.stride(1), q.stride(2), q.stride(3),
             k.stride(0), k.stride(1), k.stride(2), k.stride(3),
             v.stride(0), v.stride(1), v.stride(2), v.stride(3),
             o.stride(0), o.stride(1), o.stride(2), o.stride(3),
-            router_indices.stride(0), router_indices.stride(1), router_indices.stride(2), router_indices.stride(3),
-            req_depth, Z, H, N_CTX,
+            q_to_k_indices.stride(0), q_to_k_indices.stride(1), q_to_k_indices.stride(2), q_to_k_indices.stride(3),
+            num_active_k.stride(0), num_active_k.stride(1), num_active_k.stride(2),
+            Z, H, N_CTX,
             BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
-            TREE_DEPTH_P2=TREE_DEPTH_P2,
         )
 
         grid_k = (triton.cdiv(N_CTX, BLOCK_N), Z * H)
         _ultrametric_bwd_dk_dv_kernel[grid_k](
-            q, k, v, sm_scale, router_indices,
-            do, dk, dv,
-            L, D,
+            q, k, v, sm_scale, k_to_q_indices, num_active_q,
+            do, dk, dv, L, D,
             q.stride(0), q.stride(1), q.stride(2), q.stride(3),
             k.stride(0), k.stride(1), k.stride(2), k.stride(3),
             v.stride(0), v.stride(1), v.stride(2), v.stride(3),
             o.stride(0), o.stride(1), o.stride(2), o.stride(3),
-            router_indices.stride(0), router_indices.stride(1), router_indices.stride(2), router_indices.stride(3),
-            req_depth, Z, H, N_CTX,
+            k_to_q_indices.stride(0), k_to_q_indices.stride(1), k_to_q_indices.stride(2), k_to_q_indices.stride(3),
+            num_active_q.stride(0), num_active_q.stride(1), num_active_q.stride(2),
+            Z, H, N_CTX,
             BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
-            TREE_DEPTH_P2=TREE_DEPTH_P2,
         )
 
         return dq, dk, dv, None, None, None, None
