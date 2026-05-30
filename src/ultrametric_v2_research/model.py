@@ -311,12 +311,15 @@ class UltrametricTransformer(nn.Module):
             self.layer_routings.append(routing_assignments)
             
             # Use dynamic mask with local window for all non-triton modes
-            dyn_masks = []
-            for p_arity, ra_g in zip(self.prime_arities, routing_assignments):
-                dm = get_dynamic_ultrametric_mask(
-                    ra_g, p=p_arity, local_window=32
-                ).to(x.device)
-                dyn_masks.append(dm * layer_causal)
+            if self.attn_mode == "triton":
+                dyn_masks = None
+            else:
+                dyn_masks = []
+                for p_arity, ra_g in zip(self.prime_arities, routing_assignments):
+                    dm = get_dynamic_ultrametric_mask(
+                        ra_g, p=p_arity, local_window=32
+                    ).to(x.device)
+                    dyn_masks.append(dm * layer_causal)
             
             x = block(
                 x,

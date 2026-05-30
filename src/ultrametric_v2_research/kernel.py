@@ -140,7 +140,7 @@ if HAS_TRITON:
             order=(1, 0),
         )
 
-        num_n_blocks = tl.cdiv(N_CTX, BLOCK_N)
+        num_n_blocks = start_m + 1
         
         # Token indices for causal and region masking
         offs_m = start_m * BLOCK_M + tl.arange(0, BLOCK_M)
@@ -354,6 +354,9 @@ def ultrametric_attention_triton(
             device=router_indices.device,
         )
         router_indices = torch.cat([router_indices, depth_pad], dim=-1)
+
+    # Ensure contiguous after padding
+    router_indices = router_indices.contiguous()
 
     # Allocate output
     out = torch.empty_like(q)
