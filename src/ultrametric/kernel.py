@@ -37,6 +37,7 @@ if HAS_TRITON:
         sm_scale,
         router_indices,
         Out,
+        L,
         stride_qz,
         stride_qh,
         stride_qm,
@@ -560,6 +561,7 @@ def ultrametric_attention_triton(
         sm_scale,
         router_indices,
         out,
+        L,
         # Q strides: (batch, head, seq, dim)
         q.stride(0),
         q.stride(1),
