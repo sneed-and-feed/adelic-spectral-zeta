@@ -35,7 +35,7 @@ def _ultrametric_fwd_kernel(
     stride_vz, stride_vh, stride_vk, stride_vn,
     stride_oz, stride_oh, stride_om, stride_on,
     stride_rz, stride_rh, stride_rm, stride_rd,
-    req_depth, Z, H, N_CTX,
+    req_depth_ptr, Z, H, N_CTX,
     BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr,
     BLOCK_N: tl.constexpr, P_ARY: tl.constexpr,
     TREE_DEPTH_P2: tl.constexpr,
@@ -62,6 +62,9 @@ def _ultrametric_fwd_kernel(
         strides=(stride_om, stride_on),
         offsets=(start_m * BLOCK_M, 0),
         block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0))
+
+    # Load per-head depth
+    head_depth = tl.load(req_depth_ptr + off_h)
 
     # TREE_DEPTH_P2 is guaranteed power-of-2 for tl.arange
     depth_offsets = tl.arange(0, TREE_DEPTH_P2)
@@ -93,8 +96,8 @@ def _ultrametric_fwd_kernel(
         n_routing_vec = tl.load(n_router_ptrs)
 
         # Check if blocks share required ancestral depth
-        # Only compare levels [0, req_depth) — extra padded levels are masked out
-        mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
+        # Only compare levels [0, head_depth) — extra padded levels are masked out
+        mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < head_depth)
         has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
 
         # FIX: use if-guard instead of `continue` (unsupported in Triton)
@@ -158,6 +161,12 @@ def triton_attention(q, k, v, router_indices, req_depth, tree_depth_p2, p=2):
 
     q, k, v = q.contiguous(), k.contiguous(), v.contiguous()
     router_indices = router_indices.contiguous()
+    
+    if isinstance(req_depth, int):
+        req_depth_tensor = torch.full((H,), req_depth, dtype=torch.int32, device=q.device)
+    else:
+        req_depth_tensor = req_depth.to(dtype=torch.int32, device=q.device).contiguous()
+
     out = torch.empty_like(q)
     sm_scale = 1.0 / math.sqrt(DMODEL)
 
@@ -171,7 +180,7 @@ def triton_attention(q, k, v, router_indices, req_depth, tree_depth_p2, p=2):
         out.stride(0), out.stride(1), out.stride(2), out.stride(3),
         router_indices.stride(0), router_indices.stride(1),
         router_indices.stride(2), router_indices.stride(3),
-        req_depth, Z, H, N_CTX,
+        req_depth_tensor, Z, H, N_CTX,
         BLOCK_M=BLOCK_M, BLOCK_DMODEL=DMODEL, BLOCK_N=BLOCK_N,
         P_ARY=p, TREE_DEPTH_P2=tree_depth_p2)
     return out

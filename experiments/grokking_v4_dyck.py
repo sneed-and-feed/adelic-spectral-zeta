@@ -1,25 +1,8 @@
 """
-Grokking v3: Dynamic Ultrametric Attention + Polynomial Evaluation
+Grokking v4: Dynamic Ultrametric Attention on Complex Dyck-k Languages
 
-Tests the cracked anon's suggestion:
-  1. Dynamic req_depth via self-attention (input-dependent tree bias)
-  2. Polynomial evaluation task (hierarchical Horner's method)
-
-Task: Degree-3 polynomial in Horner's form
-  p(x) = a₀ + x·(a₁ + x·(a₂ + x·a₃))  mod 11
-
-Sequence: [a₃, x, a₂, x, a₁, x, a₀, =]  (8 tokens)
-
-The binary tree over 8 positions PERFECTLY mirrors Horner's nesting:
-  Depth 2: {a₃,x} {a₂,x} {a₁,x} {a₀,=}  — each multiply pair groups!
-  Depth 1: {a₃,x,a₂,x} {a₁,x,a₀,=}      — inner nest vs outer nest
-  Depth 0: all attend
-
-4-way comparison:
-  1. Dense (standard softmax)
-  2. Static ultrametric (fixed tree bias, same as v2)
-  3. Dynamic ultrametric (self-attention-regulated depth per head per position)
-  4. Linear (no softmax baseline)
+Tests the inductive bias of ultrametric (hierarchical) attention on a pure
+hierarchical task: Next-Token Prediction of deeply nested Dyck-k brackets.
 
 Colab A100: ~15-20 min.
 """
@@ -30,7 +13,66 @@ import torch.nn.functional as F
 import math
 import json
 import time
-from itertools import product as cart_product
+import random
+
+# ============================================================
+# DYCK-K DATASET GENERATOR
+# ============================================================
+K = 2
+VOCAB_SIZE = 2 * K + 1
+SEQ_LEN = 32
+
+def generate_dyck_string(k, max_depth, current_depth=0):
+    if current_depth >= max_depth:
+        return []
+    result = []
+    num_siblings = random.randint(1, 3) if current_depth == 0 else random.randint(0, 2)
+    for _ in range(num_siblings):
+        bracket_type = random.randint(1, k)
+        inner = generate_dyck_string(k, max_depth, current_depth + 1)
+        result.extend([bracket_type] + inner + [bracket_type + k])
+    return result
+
+def make_dyck_dataset(k=K, num_samples=20000, seq_len=SEQ_LEN, max_depth=12, frac_train=0.8, seed=42):
+    random.seed(seed)
+    torch.manual_seed(seed)
+    seqs = []
+    labels = []
+    attempts = 0
+    while len(seqs) < num_samples:
+        attempts += 1
+        if attempts > num_samples * 100:
+            break
+        full_string = generate_dyck_string(k, max_depth)
+        if len(full_string) < 2:
+            continue
+        closing_positions = []
+        stack = []
+        for i, token in enumerate(full_string):
+            if 1 <= token <= k:
+                stack.append(token)
+            elif k + 1 <= token <= 2 * k:
+                if not stack: break
+                expected_close = stack.pop() + k
+                assert token == expected_close
+                closing_positions.append((i, expected_close))
+        if not closing_positions:
+            continue
+        pos, target = random.choice(closing_positions)
+        prefix = full_string[:pos]
+        if len(prefix) > seq_len:
+            prefix = prefix[-seq_len:]
+        else:
+            prefix = [0] * (seq_len - len(prefix)) + prefix
+        seqs.append(prefix)
+        labels.append(target)
+    seqs_t = torch.tensor(seqs, dtype=torch.long)
+    labels_t = torch.tensor(labels, dtype=torch.long)
+    perm = torch.randperm(len(seqs_t))
+    split = int(len(seqs_t) * frac_train)
+    train_idx, test_idx = perm[:split], perm[split:]
+    print(f"  Dataset Dyck-{k}: {len(seqs_t):,} samples | Max Depth {max_depth}")
+    return seqs_t[train_idx], labels_t[train_idx], seqs_t[test_idx], labels_t[test_idx]
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Device: {DEVICE}")
@@ -41,84 +83,17 @@ if DEVICE.type == 'cuda':
 # CONFIG
 # ============================================================
 
-P = 11              # prime modulus  (11⁵ = 161K triples)
-DEGREE = 3          # polynomial degree
-FRAC_TRAIN = 0.3
+FRAC_TRAIN = 0.8
 EMBED_DIM = 128
 NUM_HEADS = 4
 NUM_LAYERS = 2
 LR = 1e-3
-WD = 0.8            # from sweep: high enough to push toward grokking
-STEPS = 60_000
-BATCH_SIZE = 4096
+WD = 0.1            # relaxed weight decay for bracket matching
+STEPS = 20_000      # shorter steps needed for Dyck
+BATCH_SIZE = 512
 LOG_EVERY = 200
 GROK_THRESHOLD = 0.95
 SEED = 42
-SEQ_LEN = 2 * (DEGREE + 1)  # [a₃,x, a₂,x, a₁,x, a₀,=] = 8
-
-# Vocab: 0..P-1 = numbers, P = '=' token
-VOCAB_SIZE = P + 1
-TOK_EQ = P
-
-
-# ============================================================
-# DATA: Horner's form polynomial
-# ============================================================
-
-def horner_eval(coeffs, x, p):
-    """Evaluate polynomial via Horner's method: a₀ + x(a₁ + x(a₂ + x·a₃))."""
-    result = 0
-    for c in reversed(coeffs):
-        result = (result * x + c) % p
-    return result
-
-
-def make_dataset(p=P, degree=DEGREE, frac_train=FRAC_TRAIN, seed=SEED):
-    """
-    All (a₀, a₁, ..., a_d, x) tuples → polynomial mod p.
-    Sequence in Horner's form: [a_d, x, a_{d-1}, x, ..., a₁, x, a₀, =]
-    """
-    torch.manual_seed(seed)
-
-    n_vars = degree + 2  # d+1 coefficients + x
-    vals = list(range(p))
-
-    # Generate all tuples: (a₀, a₁, ..., a_d, x)
-    all_tuples = list(cart_product(vals, repeat=n_vars))
-    n = len(all_tuples)
-    print(f"  Dataset: {n:,} total | {degree}rd-degree poly mod {p}")
-
-    tuples_t = torch.tensor(all_tuples)
-    # tuples_t[:, :degree+1] = coefficients a₀..a_d
-    # tuples_t[:, -1] = x
-    coeffs = tuples_t[:, :degree+1]  # (N, d+1)
-    x_vals = tuples_t[:, -1]         # (N,)
-
-    # Compute labels via Horner's method
-    labels = torch.zeros(n, dtype=torch.long)
-    for i in range(n):
-        labels[i] = horner_eval(coeffs[i].tolist(), x_vals[i].item(), p)
-
-    # Build sequences in Horner's form: [a_d, x, a_{d-1}, x, ..., a₁, x, a₀, =]
-    seqs = torch.zeros(n, SEQ_LEN, dtype=torch.long)
-    for j in range(degree + 1):
-        coeff_idx = degree - j  # go from a_d down to a_0
-        pos = 2 * j
-        if pos < SEQ_LEN - 1:
-            seqs[:, pos] = coeffs[:, coeff_idx]
-            if j < degree:
-                seqs[:, pos + 1] = x_vals  # x interleaved
-            else:
-                seqs[:, pos + 1] = TOK_EQ  # = at the end
-
-    # Split
-    perm = torch.randperm(n)
-    split = int(n * frac_train)
-    train_idx, test_idx = perm[:split], perm[split:]
-
-    return (seqs[train_idx], labels[train_idx],
-            seqs[test_idx], labels[test_idx])
-
 
 # ============================================================
 # TREE DISTANCE BIAS
@@ -167,7 +142,7 @@ class DenseAttention(nn.Module):
 
 
 class StaticUltrametricAttention(nn.Module):
-    """Fixed tree-distance bias (same as v2)."""
+    """Fixed tree-distance bias."""
     def __init__(self, embed_dim, num_heads, tree_bias):
         super().__init__()
         self.num_heads = num_heads
@@ -195,15 +170,7 @@ class StaticUltrametricAttention(nn.Module):
 
 class DynamicUltrametricAttention(nn.Module):
     """
-    Self-attention-regulated tree depth.
-
-    Each query position gets a per-head "depth gate" in [0, 1] that
-    controls how strongly the tree bias is applied.
-      gate → 0: ignore tree (dense attention)
-      gate → 1: full tree bias (maximally hierarchical)
-
-    The gate is computed from the input via a small self-attention:
-      depth_attn(x) → per-position, per-head depth gate
+    Self-attention-regulated tree depth with Gumbel-Sigmoid regularization.
     """
     def __init__(self, embed_dim, num_heads, tree_bias):
         super().__init__()
@@ -214,11 +181,9 @@ class DynamicUltrametricAttention(nn.Module):
         self.register_buffer('tree_bias', tree_bias)
 
         # Depth controller: self-attention → per-position per-head gate
-        # Small 1-head self-attention + projection
         self.depth_q = nn.Linear(embed_dim, embed_dim // 4)
         self.depth_k = nn.Linear(embed_dim, embed_dim // 4)
         self.depth_proj = nn.Linear(embed_dim // 4, num_heads)
-        # Learnable base scale (how strong tree bias is when gate=1)
         self.bias_amplitude = nn.Parameter(torch.ones(num_heads) * 0.5)
 
     def forward(self, x):
@@ -243,7 +208,6 @@ class DynamicUltrametricAttention(nn.Module):
         else:
             depth_gate = (depth_logits > 0).float()
 
-
         # === Main attention ===
         qkv = self.qkv(x).reshape(B, S, 3, self.num_heads, self.head_dim)
         q, k, v = qkv.unbind(2)
@@ -252,11 +216,9 @@ class DynamicUltrametricAttention(nn.Module):
         scores = torch.matmul(q, k.transpose(-2, -1)) * scale  # (B, H, S, S)
 
         # === Dynamic tree bias ===
-        # gate: (B, S, H) → (B, H, S, 1) — per-query depth
         gate = depth_gate.permute(0, 2, 1).unsqueeze(-1)  # (B, H, S, 1)
         amp = self.bias_amplitude.view(1, self.num_heads, 1, 1)
         bias = self.tree_bias[:S, :S].unsqueeze(0).unsqueeze(0)  # (1, 1, S, S)
-        # Each query position i applies tree bias scaled by its own gate
         scores = scores + bias * gate * amp
 
         attn = F.softmax(scores, dim=-1)
@@ -337,7 +299,7 @@ class GrokTransformer(nn.Module):
             x = x + h
             x = x + layer['mlp'](layer['ln2'](x))
         x = self.ln_final(x)
-        return self.unembed(x[:, -1, :])  # predict at = position
+        return self.unembed(x[:, -1, :])  # predict next token at end
 
 
 # ============================================================
@@ -346,7 +308,11 @@ class GrokTransformer(nn.Module):
 
 def train_model(mode, tree_bias=None, steps=STEPS, seed=SEED):
     torch.manual_seed(seed)
-    train_seqs, train_labels, test_seqs, test_labels = make_dataset()
+    
+    # Use the Dyck dataset instead of the polynomial one
+    train_seqs, train_labels, test_seqs, test_labels = make_dyck_dataset(
+        k=K, num_samples=20000, seq_len=SEQ_LEN, frac_train=FRAC_TRAIN, seed=seed
+    )
     train_seqs = train_seqs.to(DEVICE)
     train_labels = train_labels.to(DEVICE)
     test_seqs = test_seqs.to(DEVICE)
@@ -466,20 +432,15 @@ def train_model(mode, tree_bias=None, steps=STEPS, seed=SEED):
 # ============================================================
 
 def main():
-    total = P ** (DEGREE + 2)
     print("=" * 80)
-    print(f"  GROKKING v3: Degree-{DEGREE} Polynomial mod {P} (Horner's Form)")
-    print(f"  p(x) = a₀ + x·(a₁ + x·(a₂ + x·a₃))")
-    print(f"  Sequence: [a₃, x, a₂, x, a₁, x, a₀, =]  ({SEQ_LEN} tokens)")
-    print(f"  {total:,} total | {FRAC_TRAIN:.0%} train | "
-          f"embed={EMBED_DIM} | heads={NUM_HEADS} | wd={WD}")
+    print(f"  GROKKING v4: Complex Dyck-{K} Language (Next-Token Prediction)")
+    print(f"  Sequence length: {SEQ_LEN} tokens")
+    print(f"  {FRAC_TRAIN:.0%} train | embed={EMBED_DIM} | heads={NUM_HEADS} | wd={WD}")
     print(f"  Device: {DEVICE}")
     print("=" * 80)
 
     tree_bias = tree_distance_matrix(SEQ_LEN).to(DEVICE)
-    print(f"\n  Tree bias ({SEQ_LEN}×{SEQ_LEN}):")
-    print(f"    Depth 2: {{a₃,x}} {{a₂,x}} {{a₁,x}} {{a₀,=}}")
-    print(f"    Depth 1: {{a₃,x,a₂,x}} {{a₁,x,a₀,=}}")
+    print(f"\n  Tree bias ({SEQ_LEN}×{SEQ_LEN}) ready.")
 
     modes = ['dense', 'static_ultra', 'dynamic_ultra', 'linear']
     results = {}
@@ -503,7 +464,7 @@ def main():
 
     # Summary
     print("\n" + "=" * 85)
-    print(f"  GROKKING v3: Degree-{DEGREE} Polynomial mod {P}")
+    print(f"  GROKKING v4: Complex Dyck-{K} Language")
     print("=" * 85)
     print(f"  {'Mode':<18} | {'Grok':>8} | {'Stable':>8} | "
           f"{'Test Acc':>9} | {'% Stable':>9} | {'Time':>7}")
@@ -538,9 +499,9 @@ def main():
         }
         if r.get('gate_stats'):
             save[mode]['gate_stats'] = r['gate_stats']
-    with open("grokking_v3_results.json", "w") as f:
+    with open("grokking_v4_dyck_results.json", "w") as f:
         json.dump(save, f, indent=2)
-    print(f"\n✅ Saved to grokking_v3_results.json")
+    print(f"\n✅ Saved to grokking_v4_dyck_results.json")
 
     # Plot
     try:
@@ -560,7 +521,7 @@ def main():
                         label=mode, linewidth=1.5, alpha=0.8)
         axes[0].set_xlabel('Steps')
         axes[0].set_ylabel('Test Accuracy')
-        axes[0].set_title(f'Grokking: Degree-{DEGREE} Poly mod {P}')
+        axes[0].set_title(f'Dyck-{K} Next-Token Prediction')
         axes[0].legend()
         axes[0].set_ylim(-0.05, 1.05)
         axes[0].axhline(y=GROK_THRESHOLD, color='gray', linestyle=':', alpha=0.5)
@@ -591,14 +552,13 @@ def main():
             axes[2].set_ylim(-0.05, 1.05)
             axes[2].grid(True, alpha=0.3)
 
-        plt.suptitle(f'Dynamic Ultrametric Attention — p(x) mod {P}',
+        plt.suptitle(f'Dynamic Ultrametric Attention — Dyck-{K}',
                      fontsize=14, fontweight='bold')
         plt.tight_layout()
-        plt.savefig('grokking_v3_curves.png', dpi=150, bbox_inches='tight')
-        print("📊 Saved grokking_v3_curves.png")
+        plt.savefig('grokking_v4_dyck_curves.png', dpi=150, bbox_inches='tight')
+        print("📊 Saved grokking_v4_dyck_curves.png")
     except ImportError:
         print("(matplotlib not available — skipping plot)")
-
 
 if __name__ == "__main__":
     main()
