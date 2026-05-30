@@ -7,6 +7,17 @@ from typing import Optional
 from src.ultrametric.layer import RotaryPositionEmbedding, apply_rotary_pos_emb
 from src.ultrametric.topology import get_ultrametric_mask
 
+def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
+    """
+    Equiv to torch.repeat_interleave(x, dim=1, repeats=n_rep)
+    hidden_states: (batch, num_key_value_heads, seqlen, head_dim) -> (batch, num_attention_heads, seqlen, head_dim)
+    """
+    batch, num_key_value_heads, slen, head_dim = hidden_states.shape
+    if n_rep == 1:
+        return hidden_states
+    hidden_states = hidden_states[:, :, None, :, :].expand(batch, num_key_value_heads, n_rep, slen, head_dim)
+    return hidden_states.reshape(batch, num_key_value_heads * n_rep, slen, head_dim)
+
 class MultiPrimeTopologyRouter(nn.Module):
     """
     Continuous sparsification router for Llama Surgery.
@@ -75,6 +86,10 @@ class SurgicalLlamaAttention(nn.Module):
         self.num_heads = config.num_attention_heads
         self.head_dim = self.embed_dim // self.num_heads
         
+        # GQA compliance
+        self.num_key_value_heads = getattr(config, "num_key_value_heads", self.num_heads)
+        self.num_key_value_groups = self.num_heads // self.num_key_value_heads
+        
         # Get surgery-specific config params, default to some values if not present
         self.p = getattr(config, "surgical_p", 2)
         self.alpha = getattr(config, "surgical_alpha", 10000.0)
@@ -83,10 +98,10 @@ class SurgicalLlamaAttention(nn.Module):
 
         assert self.head_dim * self.num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
 
-        self.q_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
-        self.k_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
-        self.v_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
-        self.o_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
+        self.q_proj = nn.Linear(self.embed_dim, self.num_heads * self.head_dim, bias=getattr(config, "attention_bias", False))
+        self.k_proj = nn.Linear(self.embed_dim, self.num_key_value_heads * self.head_dim, bias=getattr(config, "attention_bias", False))
+        self.v_proj = nn.Linear(self.embed_dim, self.num_key_value_heads * self.head_dim, bias=getattr(config, "attention_bias", False))
+        self.o_proj = nn.Linear(self.num_heads * self.head_dim, self.embed_dim, bias=getattr(config, "attention_bias", False))
 
         max_pos_embeddings = getattr(config, "max_position_embeddings", 8192)
         self.rope = RotaryPositionEmbedding(self.head_dim, max_pos_embeddings)
@@ -111,8 +126,8 @@ class SurgicalLlamaAttention(nn.Module):
 
         # Project Q, K, V
         q = self.q_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
-        k = self.k_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
-        v = self.v_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(hidden_states).view(batch_size, seq_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(hidden_states).view(batch_size, seq_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
 
         # Apply RoPE
         if position_embeddings is not None:
@@ -120,6 +135,10 @@ class SurgicalLlamaAttention(nn.Module):
         else:
             cos, sin = self.rope(q)
         q, k = apply_rotary_pos_emb(q, k, cos, sin)
+
+        # Broadcast KV for GQA before attention computation
+        k = repeat_kv(k, self.num_key_value_groups)
+        v = repeat_kv(v, self.num_key_value_groups)
 
         # Raw attention scores
         scores = torch.matmul(q, k.transpose(-2, -1)) * self.scale
