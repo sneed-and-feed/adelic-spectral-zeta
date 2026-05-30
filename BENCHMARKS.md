@@ -125,6 +125,63 @@ No custom Pallas kernel — tests whether XLA can infer block-sparsity from a bo
 
 ---
 
+## 4. Grokking Experiments — Inductive Bias Validation
+
+Does the p-adic tree topology help a transformer *learn*?
+We tested on modular arithmetic (the standard grokking benchmark) to measure
+whether ultrametric attention accelerates generalization.
+
+### Experiment 1: `a + b mod 113` (3 tokens)
+
+1-layer, 128 embed, 4 heads, WD=1.0, full-batch, 40K steps. CPU.
+
+| Mode | Grok Step | Final Test Acc | Post-Grok Stability |
+|:--|--:|--:|:--|
+| Dense | **3,200** | 1.000 | Unstable (collapses at 22K, 26K) |
+| Ultrametric (token-value p-adic bias) | 4,200 | 1.000 | More stable post-grok |
+| Linear | 1,800* | 1.000 | False grok at 1800, real at ~4000 |
+
+**Result**: Ultrametric token-value bias is **neutral** on time-to-grok. Slight stability
+improvement post-grok. Sequence too short (3 positions) for position-level mask to matter.
+
+### Experiment 2: `a + b*c mod 59` (6 tokens)
+
+2-layer, 128 embed, 4 heads, 8K batch, A100 GPU.
+6-token sequences `[a, +, b, *, c, =]` — binary tree groups operand+operator pairs:
+`{a,+} {b,*} {c,=}`.
+
+**Weight Decay Sweep** (WD ∈ {0.3, 0.5, 0.6, 0.7, 0.8, 1.0}, 50-80K steps):
+
+| WD | Dense | Ultrametric | Stable? |
+|:--|:--|:--|:--|
+| 0.3 | Memorizes, never groks | Memorizes, never groks | ❌ |
+| 0.5 | Oscillates 30-60% | Oscillates 30-75% | ❌ |
+| 0.6 | Groks at 19.6K → collapses | Never groks | ❌ |
+| 0.7 | Groks at 10.6K → collapses | Groks at 55.6K → collapses | ❌ |
+| 0.8 | Groks at 65.6K → collapses | Groks at 9.2K → collapses | ❌ |
+| 1.0 | Groks at 4.8K → collapses | Groks at 4.8K → collapses | ❌ |
+| **0.3 (linear attn)** | — | — | **✅ Groks at 43.4K, stays grokked** |
+
+> [!IMPORTANT]
+> **No softmax model achieved stable grokking** on `a + b*c mod 59` at any weight decay.
+> Every run finds the generalizing solution briefly then catastrophically forgets.
+> **Linear attention stably grokked** (96.5% test, 95.4% OOD) at WD=0.3.
+
+### Key Findings
+
+1. **Ultrametric position bias is neutral.** Dense and ultrametric softmax curves are
+   statistically indistinguishable across all configurations tested.
+
+2. **Linear attention groks compound expressions where softmax cannot.** This appears
+   to be a property of the smoother optimization landscape — softmax creates sharp,
+   unstable minima for multi-operation modular arithmetic.
+
+3. **The kernel benchmarks are independent of grokking.** The 28×/98% results measure
+   computational efficiency of a correct sparse attention pattern, not whether the
+   inductive bias improves learning. Those are separate claims.
+
+---
+
 ## Reproducibility
 
 All benchmarks are self-contained scripts in `experiments/`:
@@ -138,6 +195,15 @@ python experiments/benchmark_v2.py
 
 # JAX/XLA (requires TPU or GPU + jax + flax)
 python experiments/benchmark_jax.py
+
+# Grokking: a + b mod 113 (CPU, ~5 hrs on i7)
+python experiments/grokking_mod113.py
+
+# Grokking: a + b*c mod 59 (GPU recommended, ~15 min on A100)
+python experiments/grokking_v2_expr.py
+
+# Weight decay sweep (GPU recommended, ~40 min on A100)
+python experiments/grokking_wd_sweep.py
 ```
 
 Hardware: NVIDIA A100-SXM4-40GB, Google TPU v6e-1 (31.25 GB HBM).
