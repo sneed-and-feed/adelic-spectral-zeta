@@ -1,0 +1,139 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+from typing import Optional
+
+from src.ultrametric.layer import RotaryPositionEmbedding, apply_rotary_pos_emb
+from src.ultrametric.topology import get_ultrametric_mask
+
+class MultiPrimeTopologyRouter(nn.Module):
+    """
+    Continuous sparsification router for Llama Surgery.
+    Replaces token-level routing with a single structural scalar per head.
+    """
+    def __init__(self, num_heads: int, init_val: float = -5.0):
+        super().__init__()
+        self.num_heads = num_heads
+        # Learnable logit per head, initialized to strongly prefer dense execution
+        self.z = nn.Parameter(torch.full((num_heads,), init_val))
+
+    def forward(self, tau: float) -> torch.Tensor:
+        """
+        Samples routing gates.
+        Returns: g_h of shape (num_heads,) \\in [0, 1]
+        """
+        if self.training:
+            # Sample Gumbel noise
+            u1 = torch.rand_like(self.z)
+            u2 = torch.rand_like(self.z)
+            gumbel_noise = -torch.log(-torch.log(u1 + 1e-8) + 1e-8)
+            # Continuous relaxation of discrete routing
+            g_h = torch.sigmoid((self.z + gumbel_noise) / tau)
+        else:
+            # Deterministic evaluation (extracted structure)
+            g_h = (self.z > 0).float()
+        
+        return g_h
+
+class SurgeryLossRamp(nn.Module):
+    """
+    Computes auxiliary loss for Llama Surgery to encourage sparsity.
+    """
+    def __init__(self, lambda_init: float = 0.0, lambda_max: float = 1.0, ramp_steps: int = 1000):
+        super().__init__()
+        self.lambda_init = lambda_init
+        self.lambda_max = lambda_max
+        self.ramp_steps = ramp_steps
+
+    def get_lambda(self, step: int) -> float:
+        if step >= self.ramp_steps:
+            return self.lambda_max
+        return self.lambda_init + (self.lambda_max - self.lambda_init) * (step / self.ramp_steps)
+
+    def forward(self, g_h: torch.Tensor, step: int) -> torch.Tensor:
+        """
+        g_h: Tensor of shape (num_heads,)
+        Loss penalizes dense execution (g_h \approx 0).
+        """
+        lambda_t = self.get_lambda(step)
+        # Average over heads
+        sparsity_penalty = (1.0 - g_h).mean()
+        return lambda_t * sparsity_penalty
+
+class SurgicalLlamaAttention(nn.Module):
+    """
+    Llama Attention modified for Continuous Sparsification (Surgery).
+    Integrates the per-head routing gate to interpolate between dense and sparse topology.
+    """
+    def __init__(
+        self,
+        embed_dim: int,
+        num_heads: int,
+        p: int = 2,
+        max_seq_len: int = 8192,
+        dropout: float = 0.0,
+        alpha: float = 10000.0
+    ):
+        super().__init__()
+        self.embed_dim = embed_dim
+        self.num_heads = num_heads
+        self.head_dim = embed_dim // num_heads
+        self.p = p
+        self.scale = 1.0 / math.sqrt(self.head_dim)
+        self.alpha = alpha
+
+        assert self.head_dim * num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
+
+        self.q_proj = nn.Linear(embed_dim, embed_dim, bias=False)
+        self.k_proj = nn.Linear(embed_dim, embed_dim, bias=False)
+        self.v_proj = nn.Linear(embed_dim, embed_dim, bias=False)
+        self.o_proj = nn.Linear(embed_dim, embed_dim, bias=False)
+
+        self.rope = RotaryPositionEmbedding(self.head_dim, max_seq_len)
+        self.attn_dropout = nn.Dropout(dropout)
+
+    def forward(self, x: torch.Tensor, g_h: torch.Tensor) -> torch.Tensor:
+        """
+        x: (batch, seq_len, embed_dim)
+        g_h: (num_heads,) \\in [0, 1] per-head routing gate
+        """
+        batch_size, seq_len, _ = x.size()
+
+        # Project Q, K, V
+        q = self.q_proj(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+
+        # Apply RoPE
+        cos, sin = self.rope(q)
+        q, k = apply_rotary_pos_emb(q, k, cos, sin)
+
+        # Raw attention scores
+        scores = torch.matmul(q, k.transpose(-2, -1)) * self.scale
+
+        # Causal masking
+        causal_mask = torch.triu(torch.ones(seq_len, seq_len, dtype=torch.bool, device=x.device), diagonal=1)
+        scores = scores.masked_fill(causal_mask, float('-inf'))
+
+        # Continuous Sparsification: Broadcast T_ij mask and blend using g_h
+        # get_ultrametric_mask gives True for kept connections, False for pruned
+        um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(x.device)
+        T_ij = um_mask_bool.float() - 1.0  # 0.0 for True (keep), -1.0 for False (prune)
+        
+        # Expand shapes for broadcasting
+        T_ij = T_ij.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, seq_len)
+        g_h_exp = g_h.view(1, self.num_heads, 1, 1) # (1, num_heads, 1, 1)
+
+        # Apply surgical mask: 
+        # Dense (g_h=0): scores + 0
+        # Sparse (g_h=1): scores - alpha on pruned connections
+        scores = scores + g_h_exp * self.alpha * T_ij
+
+        attn_weights = F.softmax(scores, dim=-1)
+        attn_weights = self.attn_dropout(attn_weights)
+
+        out = torch.matmul(attn_weights, v)
+        out = out.transpose(1, 2).contiguous().view(batch_size, seq_len, self.embed_dim)
+        
+        return self.o_proj(out)
