@@ -213,14 +213,31 @@ def get_dynamic_ultrametric_mask(
     Returns:
         mask: (batch, seq_len, seq_len) or (batch, heads, seq_len, seq_len)
     """
+    from torch.utils.checkpoint import checkpoint
+
     if assignments.dim() == 5:
         B, H, S, L, P = assignments.shape
-        a_flat = assignments.reshape(B * H, S, L, P)
-        mask_flat = _compute_distance_mask(a_flat, L, max_dist, local_window)
+        assign_flat = assignments.view(B * H, S, L, P)
+        
+        def _wrapper(assign):
+            return _compute_distance_mask(assign, L, max_dist, local_window)
+            
+        if assignments.requires_grad:
+            mask_flat = checkpoint(_wrapper, assign_flat, use_reentrant=False)
+        else:
+            mask_flat = _wrapper(assign_flat)
+            
         return mask_flat.view(B, H, S, S)
     else:
         B, S, L, P = assignments.shape
-        return _compute_distance_mask(assignments, L, max_dist, local_window)
+        
+        def _wrapper(assign):
+            return _compute_distance_mask(assign, L, max_dist, local_window)
+            
+        if assignments.requires_grad:
+            return checkpoint(_wrapper, assignments, use_reentrant=False)
+        else:
+            return _wrapper(assignments)
 
 
 def _compute_distance_mask(
