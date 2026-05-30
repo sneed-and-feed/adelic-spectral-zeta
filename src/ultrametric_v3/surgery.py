@@ -5,7 +5,7 @@ import math
 from typing import Optional
 
 from src.ultrametric.layer import RotaryPositionEmbedding, apply_rotary_pos_emb
-from src.ultrametric.topology import get_ultrametric_mask
+from src.ultrametric.topology import DynamicTopologyRouter, get_dynamic_ultrametric_mask
 
 def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
     """
@@ -18,34 +18,7 @@ def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
     hidden_states = hidden_states[:, :, None, :, :].expand(batch, num_key_value_heads, n_rep, slen, head_dim)
     return hidden_states.reshape(batch, num_key_value_heads * n_rep, slen, head_dim)
 
-class MultiPrimeTopologyRouter(nn.Module):
-    """
-    Continuous sparsification router for Llama Surgery.
-    Replaces token-level routing with a single structural scalar per head.
-    """
-    def __init__(self, num_heads: int, init_val: float = 0.0):
-        super().__init__()
-        self.num_heads = num_heads
-        # Learnable logit per head, initialized on the boundary (0.0) so it can easily be pruned
-        self.z = nn.Parameter(torch.full((num_heads,), init_val))
 
-    def forward(self, tau: float) -> torch.Tensor:
-        """
-        Samples routing gates.
-        Returns: g_h of shape (num_heads,) \\in [0, 1]
-        """
-        if self.training:
-            # Sample Gumbel noise
-            u1 = torch.rand_like(self.z)
-            u2 = torch.rand_like(self.z)
-            gumbel_noise = -torch.log(-torch.log(u1 + 1e-8) + 1e-8)
-            # Continuous relaxation of discrete routing
-            g_h = torch.sigmoid((self.z + gumbel_noise) / tau)
-        else:
-            # Deterministic evaluation (extracted structure)
-            g_h = (self.z > 0).float()
-        
-        return g_h
 
 class SurgeryLossRamp(nn.Module):
     """
@@ -107,7 +80,12 @@ class SurgicalLlamaAttention(nn.Module):
         self.rope = RotaryPositionEmbedding(self.head_dim, max_pos_embeddings)
         self.attn_dropout = nn.Dropout(getattr(config, "attention_dropout", 0.0))
         
-        self.router = MultiPrimeTopologyRouter(self.num_heads)
+        self.router = DynamicTopologyRouter(
+            embed_dim=self.embed_dim,
+            seq_len=max_pos_embeddings,
+            num_heads=self.num_heads,
+            p=self.p
+        )
 
     def forward(
         self,
@@ -120,7 +98,19 @@ class SurgicalLlamaAttention(nn.Module):
         batch_size, seq_len, _ = hidden_states.size()
 
         tau = getattr(self.config, "surgical_tau", 1.0)
-        g_h = self.router(tau)
+        curr_assignments, load_balance_loss = self.router(hidden_states, tau_override=tau)
+        self.current_penalty = load_balance_loss
+
+        if past_key_values is None or seq_len > 1:
+            self._cached_assignments = curr_assignments
+            assignments = curr_assignments
+        else:
+            if hasattr(self, '_cached_assignments') and self._cached_assignments is not None:
+                assignments = torch.cat([self._cached_assignments, curr_assignments], dim=2)
+                self._cached_assignments = assignments
+            else:
+                assignments = curr_assignments
+                self._cached_assignments = assignments
 
         # Accumulate sparsity penalty during forward pass (REMOVED for gradient checkpointing safety)
 
@@ -145,6 +135,17 @@ class SurgicalLlamaAttention(nn.Module):
             cos, sin = self.rope(q)
             q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
+        if past_key_values is not None:
+            if hasattr(past_key_values, "update"):
+                cache_kwargs = {"sin": getattr(self, "_dummy", None), "cos": getattr(self, "_dummy", None)}
+                k, v = past_key_values.update(k, v, self.layer_idx, cache_kwargs)
+            elif isinstance(past_key_values, tuple):
+                # tuple format: (past_k, past_v)
+                k = torch.cat([past_key_values[0], k], dim=-2)
+                v = torch.cat([past_key_values[1], v], dim=-2)
+                # Note: modifying a tuple in-place isn't possible, the caller updates it if needed, 
+                # but legacy HF models return updated cache. Since this is an internal function, we just concat.
+
         # Broadcast KV for GQA before attention computation
         k = repeat_kv(k, self.num_key_value_groups)
         v = repeat_kv(v, self.num_key_value_groups)
@@ -161,30 +162,19 @@ class SurgicalLlamaAttention(nn.Module):
             causal_mask = torch.triu(torch.ones(seq_len, seq_len, dtype=torch.bool, device=hidden_states.device), diagonal=1)
             scores = scores.masked_fill(causal_mask, float('-inf'))
 
-        # Continuous Sparsification: Interpolate at the probability level!
+        # Dynamic Sparsification
         L = k.shape[-2]
+        full_mask = get_dynamic_ultrametric_mask(assignments, p=self.p).to(hidden_states.device)
+        um_mask_bool = full_mask > 0.5  # Shape: (B, H, S_full, L) or (B, H, L, L)
+        
         if seq_len == 1 and L > 1:
-            # We are decoding! Extract the row for the current absolute token index
-            full_mask = get_ultrametric_mask(L, self.p).to(hidden_states.device)
-            um_mask_bool = full_mask[-1:, :] # Shape (1, L)
-        else:
-            um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(hidden_states.device)
+            # Decode phase: extract the row for the current absolute token index
+            um_mask_bool = um_mask_bool[:, :, -1:, :]
             
-        # Expand shapes for broadcasting
-        um_mask_bool = um_mask_bool.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, L)
-        g_h_exp = g_h.to(q.dtype).view(1, self.num_heads, 1, 1) # (1, num_heads, 1, 1)
-
-        # 1. Compute Pure Dense Probabilities
-        dense_weights = F.softmax(scores, dim=-1, dtype=torch.float32)
-
-        # 2. Compute Pure Sparse Probabilities
         sparse_scores = scores.masked_fill(~um_mask_bool, float('-inf'))
-        sparse_weights = F.softmax(sparse_scores, dim=-1, dtype=torch.float32)
-        # Handle rows where the entire mask is False (prevent NaNs)
-        sparse_weights = torch.nan_to_num(sparse_weights, 0.0)
+        attn_weights = F.softmax(sparse_scores, dim=-1, dtype=torch.float32)
+        attn_weights = torch.nan_to_num(attn_weights, 0.0)
 
-        # 3. Smoothly Interpolate!
-        attn_weights = (1.0 - g_h_exp) * dense_weights + g_h_exp * sparse_weights
         attn_weights = attn_weights.to(v.dtype)
         attn_weights = self.attn_dropout(attn_weights)
 

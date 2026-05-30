@@ -48,23 +48,25 @@ class SurgeryTrainer(Trainer):
             # Save past state if it exists
             loss = outputs["loss"] if isinstance(outputs, dict) else outputs[0]
 
-        from src.ultrametric_v3.surgery import MultiPrimeTopologyRouter
+        from src.ultrametric_v3.surgery import SurgicalLlamaAttention
         
-        # Process auxiliary losses directly from routers to survive gradient checkpointing
-        tau = getattr(unwrapped_model.config, "surgical_tau", 1.0)
+        # Process auxiliary load balancing losses directly from attention layers
         aux_losses = []
         for module in unwrapped_model.modules():
-            if isinstance(module, MultiPrimeTopologyRouter):
-                g_h = module(tau)
-                aux_losses.append((1.0 - g_h).mean())
+            if isinstance(module, SurgicalLlamaAttention):
+                if hasattr(module, 'current_penalty') and module.current_penalty is not None:
+                    aux_losses.append(module.current_penalty)
         
         if aux_losses:
-            # Compute total sparsity penalty
-            total_sparsity_penalty = sum(aux_losses) / len(aux_losses)
+            # Compute total load balancing penalty
+            total_load_balance_loss = sum(aux_losses) / len(aux_losses)
             
-            # Scale by lambda ramp
-            lambda_t = self.loss_ramp.get_lambda(self.state.global_step)
-            surgery_loss = lambda_t * total_sparsity_penalty
+            # The surgery_lambda_max can act as the load balancing coefficient (e.g. 0.01)
+            # Remove the ramp if desired, but we can just use a fixed coefficient here.
+            # Following standard MoE practices, we apply a small coefficient.
+            # Assuming loss_ramp.lambda_max is the coefficient.
+            coef = self.loss_ramp.lambda_max
+            surgery_loss = coef * total_load_balance_loss
             
             loss = loss + surgery_loss
 
