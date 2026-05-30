@@ -179,6 +179,7 @@ The key mathematical insight is that tokens in a sequence are not flat — they 
 - **28× inference speedup** and **98.4% memory reduction** at 8192 tokens via a custom Triton block-sparse kernel.
 - **11.59× wall-clock speedup** at 2048 tokens using *autonomously learned* per-head routing gates (no hand-designed sparsity).
 - **8× effective memory bandwidth** during autoregressive decoding via a sparse PagedAttention kernel that skips KV-cache loads.
+- **Sparse backward pass implemented**: `CurriculumSparseAttention` (`torch.autograd.Function`) dispatches to Triton block-sparse backward kernels during the final 20% of training, reducing asymptotic gradient FLOPs from $O(N^2)$ to $O(N \log N)$. At 8192 tokens on A100, the sparse kernels are IO-bound (indirect memory gathers disable TMA), with wall-clock competitiveness predicted at 32K–64K+ contexts. See the [paper Discussion](papers/learning_to_skip_blocks.md#sparse-backward-pass-asymptotic-vs-hardware-reality) for details.
 - **Emergent layer specialization**: Gumbel-Sigmoid depth gates polarize during training, dedicating early layers to sparse hierarchical parsing and later layers to dense aggregation — without any architectural constraint. On tasks without a local window, the model converges to a hybrid topology (sparse + dense layers); with the local window, all layers remain fully sparse.
 - **Natural language modeling**: When augmented with a local sliding window ($k=32$), the architecture maintains >88% sparsity across all layers on Shakespeare while reducing cross-entropy from 10.9 to 1.55.
 - **Generalization to ListOps**: The same routing mechanism solves deeply nested prefix arithmetic (60–63% accuracy vs. 10% random chance). Without a local window, the model falls back to a hybrid topology (Layer 1 dense); with `local_window=32`, Layer 1 polarizes to 100% sparse, validating the 28× speedup claim end-to-end.
@@ -195,7 +196,7 @@ Located in [`src/ultrametric/`](src/ultrametric/):
 | File | Description |
 | :--- | :--- |
 | [`topology.py`](src/ultrametric/topology.py) | `DynamicTopologyRouter`: Differentiable Gumbel-Softmax bridge projecting token embeddings into recursive $p$-adic tree paths. Reversed cumulative product for $p$-adic distance computation. Local sliding window augmentation for hybrid sparse+local masks. |
-| [`kernel.py`](src/ultrametric/kernel.py) | `triton.jit` block-sparse attention kernel. Loads multi-level routing vectors per block and uses `tl.advance()` to dynamically skip SRAM loads for blocks that do not share the required ancestral depth. Runtime dynamic branching. |
+| [`kernel.py`](src/ultrametric/kernel.py) | `triton.jit` block-sparse attention kernel with forward and backward passes. Uses precomputed block coordinate lists (`q_to_k_indices`, `k_to_q_indices`) with `tl.constexpr` loop bounds to iterate only over active blocks. Includes `CurriculumSparseAttention` (`torch.autograd.Function`) for phase-transition training: dense FlashAttention during 0–80%, sparse Triton backward during 80–100%. |
 | [`kernel_decode.py`](src/ultrametric/kernel_decode.py) | Sparse PagedAttention decoding kernel. Extends block-sparse routing to the KV-cache for autoregressive generation, conditionally skipping HBM loads for non-matching blocks. |
 | [`layer.py`](src/ultrametric/layer.py) | `UltrametricAttention` module with `get_tree_adjacency_mask`: constructs a true graph adjacency matrix wiring interior Reasoning Tokens hierarchically (`parent = (i-1)//p`) and dynamically connecting leaf tokens via routing paths. Supports both boolean and float (STE-differentiable) masks. |
 | [`model.py`](src/ultrametric/model.py) | `UltrametricTransformer`: Per-layer `DynamicTopologyRouter` via `nn.ModuleList`, dynamic mask generation with local sliding window, and Pre-LN transformer blocks with Holographic message passing. |
@@ -211,7 +212,7 @@ Located in [`src/ultrametric_jax/`](src/ultrametric_jax/):
 | [`model.py`](src/ultrametric_jax/model.py) | `UltrametricTransformerBlock` as a `flax.linen.Module`. Dynamic interior node allocation via `math.log`/`math.ceil` at trace time. Sequence expansion via `jnp.concatenate`. |
 
 **Hardware Trade-offs:**
-- **Triton (NVIDIA):** Dynamic runtime block skipping via `tl.advance()` / `continue`. Handles imbalanced trees natively but may suffer CUDA thread divergence under heavy sparsity.
+- **Triton (NVIDIA):** Precomputed block coordinate lists with `tl.constexpr` loop bounds for compiler-friendly sparse iteration. Forward kernel achieves 28× speedup over dense attention at 8K tokens. Backward kernels are asymptotically $O(N \log N)$ but currently IO-bound at moderate context lengths due to indirect memory gathers disabling TMA; wall-clock competitiveness predicted at 32K–64K+.
 - **Pallas (TPU):** Static memory tracing via XLA. The TPU physically provisions Inter-Chip Interconnect bandwidth before execution. More deterministic and scales to 10,000+ chip superpods without runtime stalling.
 
 
