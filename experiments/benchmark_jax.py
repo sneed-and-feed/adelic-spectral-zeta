@@ -166,6 +166,37 @@ class DenseBlock(nn.Module):
         x = x + h2
         return x
 
+class HybridModel(nn.Module):
+    embed_dim: int
+    num_heads: int
+    p: int = 2
+
+    @nn.compact
+    def __call__(self, x, mask=None):
+        x = UltrametricBlock(self.embed_dim, self.num_heads, self.p)(x, mask)
+        x = DenseBlock(self.embed_dim, self.num_heads)(x)
+        return x
+
+class DenseModel(nn.Module):
+    embed_dim: int
+    num_heads: int
+
+    @nn.compact
+    def __call__(self, x):
+        x = DenseBlock(self.embed_dim, self.num_heads)(x)
+        x = DenseBlock(self.embed_dim, self.num_heads)(x)
+        return x
+
+class UltraModel(nn.Module):
+    embed_dim: int
+    num_heads: int
+    p: int = 2
+
+    @nn.compact
+    def __call__(self, x, mask=None):
+        x = UltrametricBlock(self.embed_dim, self.num_heads, self.p)(x, mask)
+        x = UltrametricBlock(self.embed_dim, self.num_heads, self.p)(x, mask)
+        return x
 
 # ============================================================
 # BENCHMARK
@@ -343,11 +374,67 @@ def main():
 
         del x, mask, d_params, u_params
 
+    # ---- Part 4: Hybrid Architecture (2-Layer Models) ----
+    print(f"\n📊 Part 4: Hybrid Architecture (2-Layer Models)")
+    print("-" * 80)
+
+    results_hybrid = []
+    for sl in seq_lengths:
+        key = jax.random.PRNGKey(42)
+        x = jax.random.normal(key, (batch, sl, embed_dim), dtype=jnp.float32)
+        mask = get_ultrametric_mask(sl, p)
+        sparsity = 1.0 - mask.astype(jnp.float32).mean().item()
+
+        dense_model = DenseModel(embed_dim=embed_dim, num_heads=num_heads)
+        ultra_model = UltraModel(embed_dim=embed_dim, num_heads=num_heads, p=p)
+        hybrid_model = HybridModel(embed_dim=embed_dim, num_heads=num_heads, p=p)
+
+        d_params = dense_model.init(key, x)
+        u_params = ultra_model.init(key, x, mask)
+        h_params = hybrid_model.init(key, x, mask)
+
+        dense_fn = jax.jit(dense_model.apply)
+        ultra_fn = jax.jit(ultra_model.apply, static_argnames=())
+        hybrid_fn = jax.jit(hybrid_model.apply, static_argnames=())
+
+        try:
+            d_ms = bench_jax(lambda: dense_fn(d_params, x))
+        except Exception as e:
+            d_ms = float('inf')
+            print(f"  Dense error at seq={sl}: {e}")
+
+        try:
+            u_ms = bench_jax(lambda: ultra_fn(u_params, x, mask))
+        except Exception as e:
+            u_ms = float('inf')
+            print(f"  Ultra error at seq={sl}: {e}")
+
+        try:
+            h_ms = bench_jax(lambda: hybrid_fn(h_params, x, mask))
+        except Exception as e:
+            h_ms = float('inf')
+            print(f"  Hybrid error at seq={sl}: {e}")
+
+        ultra_ratio = d_ms / u_ms if u_ms > 0 and u_ms != float('inf') else 0
+        hybrid_ratio = d_ms / h_ms if h_ms > 0 and h_ms != float('inf') else 0
+        row = {
+            "seq_len": sl, "sparsity": f"{sparsity:.0%}",
+            "dense_ms": round(d_ms, 2), "ultra_ms": round(u_ms, 2), "hybrid_ms": round(h_ms, 2),
+            "ultra_ratio": f"{ultra_ratio:.2f}x", "hybrid_ratio": f"{hybrid_ratio:.2f}x"
+        }
+        results_hybrid.append(row)
+        print(f"  seq={sl:>5} | sparse={sparsity:>4.0%}"
+              f" | dense={d_ms:>7.2f}ms | ultra={u_ms:>7.2f}ms | hybrid={h_ms:>7.2f}ms"
+              f" | ultra_speed={ultra_ratio:>5.2f}x | hybrid_speed={hybrid_ratio:>5.2f}x")
+
+        del x, mask, d_params, u_params, h_params
+
     # Save
     all_results = {
         "raw_attention": results_raw,
         "full_block": results_block,
         "gradient": results_grad,
+        "hybrid": results_hybrid,
     }
     with open("benchmark_jax_results.json", "w") as f:
         json.dump(all_results, f, indent=2)

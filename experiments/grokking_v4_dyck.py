@@ -99,7 +99,7 @@ SEED = 42
 # TREE DISTANCE BIAS
 # ============================================================
 
-def tree_distance_matrix(n):
+def tree_distance_matrix(n, local_window=32):
     """Binary tree pairwise similarity for n positions."""
     depth = math.ceil(math.log2(max(n, 2)))
     dist = torch.zeros(n, n)
@@ -112,6 +112,15 @@ def tree_distance_matrix(n):
                 if (i >> k) == (j >> k):
                     dist[i, j] = depth - k
                     break
+    
+    # NEW: Add local sliding window
+    if local_window > 0:
+        half_win = local_window // 2
+        for i in range(n):
+            for j in range(n):
+                if abs(i - j) <= half_win:
+                    dist[i, j] = depth
+                    
     dist = (dist - dist.mean()) / (dist.std() + 1e-8)
     return dist
 

@@ -184,6 +184,18 @@ class DenseBlock(nn.Module):
         x = x + self.mlp(self.ln2(x))
         return x
 
+class ModelStack(nn.Module):
+    def __init__(self, layers):
+        super().__init__()
+        self.layers = nn.ModuleList(layers)
+    def forward(self, x, mask=None, mode='dense'):
+        for layer in self.layers:
+            if isinstance(layer, Block):
+                x = layer(x, mask, mode=mode)
+            else:
+                x = layer(x)
+        return x
+
 # ============================================================
 # BENCHMARK HARNESS
 # ============================================================
@@ -233,40 +245,40 @@ def main():
         mask = get_ultrametric_mask(sl, p).to(device)
         sp = 1.0 - mask.float().mean().item()
 
-        # Build models with SHARED weights
-        ultra = Block(embed_dim, num_heads, p).to(device).half().eval()
-        dense = DenseBlock(embed_dim, num_heads).to(device).half().eval()
-        # Copy weights
-        dense.q_proj.load_state_dict(ultra.attn.q_proj.state_dict())
-        dense.k_proj.load_state_dict(ultra.attn.k_proj.state_dict())
-        dense.v_proj.load_state_dict(ultra.attn.v_proj.state_dict())
-        dense.o_proj.load_state_dict(ultra.attn.o_proj.state_dict())
-        dense.ln1.load_state_dict(ultra.ln1.state_dict())
-        dense.ln2.load_state_dict(ultra.ln2.state_dict())
-        dense.mlp.load_state_dict(ultra.mlp.state_dict())
+        # Build 2-layer stacks
+        dense_stack = ModelStack([DenseBlock(embed_dim, num_heads), DenseBlock(embed_dim, num_heads)]).to(device).half().eval()
+        sparse_stack = ModelStack([Block(embed_dim, num_heads, p), Block(embed_dim, num_heads, p)]).to(device).half().eval()
+        hybrid_stack = ModelStack([Block(embed_dim, num_heads, p), DenseBlock(embed_dim, num_heads)]).to(device).half().eval()
 
         x = torch.randn(batch, sl, embed_dim, device=device, dtype=torch.float16)
 
         # 1. Dense baseline (no mask at all)
         try:
-            d_ms, d_mb = benchmark(lambda: dense(x))
+            d_ms, d_mb = benchmark(lambda: dense_stack(x))
         except torch.cuda.OutOfMemoryError:
             d_ms, d_mb = float('inf'), float('inf')
             print("  Dense: OOM!")
 
-        # 2. Masked-dense (v1 — compute full N², then mask)
+        # 2. Masked-dense (v1) on sparse_stack
         try:
-            md_ms, md_mb = benchmark(lambda: ultra(x, mask, mode='dense'))
+            md_ms, md_mb = benchmark(lambda: sparse_stack(x, mask, mode='dense'))
         except torch.cuda.OutOfMemoryError:
             md_ms, md_mb = float('inf'), float('inf')
             print("  Masked-Dense: OOM!")
 
-        # 3. Chunked-sparse (v2 — skip masked blocks)
+        # 3. Chunked-sparse (v2) on sparse_stack
         try:
-            ch_ms, ch_mb = benchmark(lambda: ultra(x, mask, mode='chunked'))
+            ch_ms, ch_mb = benchmark(lambda: sparse_stack(x, mask, mode='chunked'))
         except torch.cuda.OutOfMemoryError:
             ch_ms, ch_mb = float('inf'), float('inf')
             print("  Chunked: OOM!")
+
+        # 4. Chunked-hybrid (v2) on hybrid_stack
+        try:
+            hybrid_ms, hybrid_mb = benchmark(lambda: hybrid_stack(x, mask, mode='chunked'))
+        except torch.cuda.OutOfMemoryError:
+            hybrid_ms, hybrid_mb = float('inf'), float('inf')
+            print("  Hybrid: OOM!")
 
         row = {
             "seq_len": sl,
@@ -277,27 +289,30 @@ def main():
             "masked_mb": round(md_mb, 1),
             "chunked_ms": round(ch_ms, 2),
             "chunked_mb": round(ch_mb, 1),
-            "chunked_vs_dense_speed": f"{d_ms/ch_ms:.2f}x" if ch_ms > 0 else "N/A",
-            "chunked_vs_dense_mem": f"{(1-ch_mb/d_mb)*100:.1f}%" if d_mb > 0 else "N/A",
+            "hybrid_ms": round(hybrid_ms, 2),
+            "hybrid_mb": round(hybrid_mb, 1),
+            "chunked_vs_dense_speed": f"{d_ms/ch_ms:.2f}x" if ch_ms > 0 and ch_ms != float('inf') else "N/A",
+            "chunked_vs_dense_mem": f"{(1-ch_mb/d_mb)*100:.1f}%" if d_mb > 0 and d_mb != float('inf') else "N/A",
         }
         results.append(row)
         print(f"  Dense      : {d_ms:8.2f} ms | {d_mb:8.1f} MB")
         print(f"  Masked-Den : {md_ms:8.2f} ms | {md_mb:8.1f} MB")
         print(f"  Chunked-Sp : {ch_ms:8.2f} ms | {ch_mb:8.1f} MB")
+        print(f"  Hybrid-Sp  : {hybrid_ms:8.2f} ms | {hybrid_mb:8.1f} MB")
         print(f"  Sparsity={sp:.0%} | Chunked vs Dense: speed={row['chunked_vs_dense_speed']}, mem={row['chunked_vs_dense_mem']}")
 
-        del ultra, dense, x, mask
+        del sparse_stack, dense_stack, hybrid_stack, x, mask
         torch.cuda.empty_cache()
 
     # Summary
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 90)
     print("  RESULTS SUMMARY")
-    print("=" * 80)
-    hdr = f"{'SeqLen':>7} | {'Sparse':>7} | {'Dense ms':>9} | {'Masked ms':>10} | {'Chunked ms':>11} | {'Dense MB':>9} | {'Chunk MB':>9} | {'Speed':>7} | {'MemSave':>8}"
+    print("=" * 90)
+    hdr = f"{'SeqLen':>7} | {'Sparse':>7} | {'Dense ms':>9} | {'Masked ms':>10} | {'Chunked ms':>11} | {'Hybrid ms':>10} | {'Dense MB':>9} | {'Chunk MB':>9} | {'Speed':>7} | {'MemSave':>8}"
     print(hdr)
     print("-" * len(hdr))
     for r in results:
-        print(f"{r['seq_len']:>7} | {r['sparsity']:>7} | {r['dense_ms']:>9} | {r['masked_ms']:>10} | {r['chunked_ms']:>11} | {r['dense_mb']:>9} | {r['chunked_mb']:>9} | {r['chunked_vs_dense_speed']:>7} | {r['chunked_vs_dense_mem']:>8}")
+        print(f"{r['seq_len']:>7} | {r['sparsity']:>7} | {r['dense_ms']:>9} | {r['masked_ms']:>10} | {r['chunked_ms']:>11} | {r['hybrid_ms']:>10} | {r['dense_mb']:>9} | {r['chunked_mb']:>9} | {r['chunked_vs_dense_speed']:>7} | {r['chunked_vs_dense_mem']:>8}")
 
     with open("benchmark_v2_results.json", "w") as f:
         json.dump(results, f, indent=2)
