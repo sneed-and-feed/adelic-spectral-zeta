@@ -20,7 +20,7 @@ import math
 from typing import Optional, Literal
 
 from .topology import get_ultrametric_mask
-from .kernel import HAS_TRITON, ultrametric_attention_triton, routing_to_block_indices, CurriculumSparseAttention
+from .kernel import HAS_TRITON, ultrametric_attention_triton, routing_to_block_indices
 
 
 # ============================================================================
@@ -215,6 +215,7 @@ class UltrametricAttention(nn.Module):
         embed_dim: int,
         num_heads: int,
         p: int = 2,
+        prime_arities: Optional[list[int]] = None,
         max_seq_len: int = 8192,
         dropout: float = 0.0,
     ):
@@ -223,11 +224,15 @@ class UltrametricAttention(nn.Module):
         self.num_heads = num_heads
         self.head_dim = embed_dim // num_heads
         self.p = p
+        self.prime_arities = prime_arities if prime_arities is not None else [p]
+        self.num_groups = len(self.prime_arities)
         self.scale = 1.0 / math.sqrt(self.head_dim)
 
         assert (
             self.head_dim * num_heads == self.embed_dim
         ), "embed_dim must be divisible by num_heads"
+        assert num_heads % self.num_groups == 0, "num_heads must be divisible by number of prime arities"
+        self.heads_per_group = num_heads // self.num_groups
 
         self.q_proj = nn.Linear(embed_dim, embed_dim)
         self.k_proj = nn.Linear(embed_dim, embed_dim)
@@ -241,18 +246,19 @@ class UltrametricAttention(nn.Module):
         self,
         x: torch.Tensor,
         num_interior: int = 0,
-        dynamic_mask: Optional[torch.Tensor] = None,
-        routing: Optional[torch.Tensor] = None,
-        routing_assignments: Optional[torch.Tensor] = None,
+        dynamic_mask: Optional[torch.Tensor | list[torch.Tensor]] = None,
+        routing: Optional[torch.Tensor | list[torch.Tensor]] = None,
+        routing_assignments: Optional[torch.Tensor | list[torch.Tensor]] = None,
         mode: Literal["auto", "dense", "chunked", "triton"] = "auto",
+        shift_size: int = 0,
     ) -> torch.Tensor:
         """
         Args:
             x: (batch, total_len, embed_dim) where total_len = num_interior + seq_len
             num_interior: number of interior Reasoning Tokens prepended to x
-            dynamic_mask: (batch, total_len, total_len) pre-computed attention mask
-            routing: (batch, seq_len, levels, p) or (batch, seq_len, levels) for tree mask
-            routing_assignments: (batch, heads, seq_len, levels, p) for Triton path
+            dynamic_mask: (batch, total_len, total_len) pre-computed attention mask (or list for multi-prime)
+            routing: (batch, seq_len, levels, p) or (batch, seq_len, levels) for tree mask (or list)
+            routing_assignments: (batch, heads, seq_len, levels, p) for Triton path (or list)
             mode: execution mode selection
 
         Returns:
@@ -306,21 +312,61 @@ class UltrametricAttention(nn.Module):
             else:
                 mode = "dense"
 
-        # Dispatch to the appropriate attention path
-        if mode == "triton" and HAS_TRITON and routing_assignments is not None:
-            return self._triton_attention(
-                q, k, v, routing_assignments, batch_size, total_len
-            )
-        elif mode == "chunked":
-            mask = self._resolve_mask(
-                batch_size, total_len, seq_len, num_interior, dynamic_mask, routing, x.device
-            )
-            return self._chunked_sparse_attention(q, k, v, mask, batch_size, total_len)
-        else:
-            mask = self._resolve_mask(
-                batch_size, total_len, seq_len, num_interior, dynamic_mask, routing, x.device
-            )
-            return self._dense_attention(q, k, v, mask, batch_size, total_len)
+        # Dispatch to the appropriate attention path per prime group
+        out_groups = []
+        
+        q_groups = torch.split(q, self.heads_per_group, dim=1)
+        k_groups = torch.split(k, self.heads_per_group, dim=1)
+        v_groups = torch.split(v, self.heads_per_group, dim=1)
+
+        for i, p_arity in enumerate(self.prime_arities):
+            # Extract group-specific arguments
+            q_g = q_groups[i]
+            k_g = k_groups[i]
+            v_g = v_groups[i]
+            
+            ra_g = routing_assignments[i] if isinstance(routing_assignments, list) else routing_assignments
+            dm_g = dynamic_mask[i] if isinstance(dynamic_mask, list) else dynamic_mask
+            rt_g = routing[i] if isinstance(routing, list) else routing
+            
+            # Re-resolve execution mode if auto (since HAS_TRITON conditions might vary)
+            group_mode = mode
+            if mode == "auto":
+                if (
+                    HAS_TRITON
+                    and x.is_cuda
+                    and seq_len >= 256
+                    and ra_g is not None
+                    and num_interior == 0
+                ):
+                    group_mode = "triton"
+                elif seq_len >= 128:
+                    group_mode = "chunked"
+                else:
+                    group_mode = "dense"
+
+            if group_mode == "triton" and HAS_TRITON and ra_g is not None:
+                out_g = self._triton_attention(
+                    q_g, k_g, v_g, ra_g, batch_size, total_len, p=p_arity, shift_size=shift_size
+                )
+            elif group_mode == "chunked":
+                mask = self._resolve_mask(
+                    batch_size, total_len, seq_len, num_interior, dm_g, rt_g, x.device, p_arity
+                )
+                out_g = self._chunked_sparse_attention(q_g, k_g, v_g, mask, batch_size, total_len)
+            else:
+                mask = self._resolve_mask(
+                    batch_size, total_len, seq_len, num_interior, dm_g, rt_g, x.device, p_arity
+                )
+                out_g = self._dense_attention(q_g, k_g, v_g, mask, batch_size, total_len)
+            
+            out_groups.append(out_g)
+        
+        # Concatenate head outputs: each out_g is (batch, total_len, heads_per_group * head_dim)
+        # Wait, the helper functions return the final projected output! Let's modify them to return unprojected!
+        # Actually, let's fix the helper functions so they don't call self.o_proj
+        out = torch.cat(out_groups, dim=-1)
+        return self.o_proj(out)
 
     def _resolve_mask(
         self,
@@ -331,10 +377,11 @@ class UltrametricAttention(nn.Module):
         dynamic_mask: Optional[torch.Tensor],
         routing: Optional[torch.Tensor],
         device: torch.device,
+        p_arity: int = 2,
     ) -> torch.Tensor:
         """Build the attention mask from routing or dynamic_mask input."""
         if routing is not None:
-            mask = get_tree_adjacency_mask(routing, num_interior, seq_len, self.p)
+            mask = get_tree_adjacency_mask(routing, num_interior, seq_len, p_arity)
             mask = mask.unsqueeze(1)  # (batch, 1, total_len, total_len)
         elif dynamic_mask is not None:
             mask = dynamic_mask.to(device)
@@ -342,7 +389,7 @@ class UltrametricAttention(nn.Module):
                 mask = mask.unsqueeze(1)
         else:
             # Fallback: use static ultrametric mask on the sequence portion
-            static_mask = get_ultrametric_mask(total_len, self.p).to(device)
+            static_mask = get_ultrametric_mask(total_len, p_arity).to(device)
             mask = static_mask.unsqueeze(0).unsqueeze(0)
         return mask
 
@@ -361,15 +408,15 @@ class UltrametricAttention(nn.Module):
             scores = scores.masked_fill(~mask, float("-inf"))
         else:
             scores = scores + torch.log(mask.clamp(min=1e-9))
-        attn_weights = F.softmax(scores, dim=-1)
+        attn_weights = F.softmax(scores, dim=-1).to(v.dtype)
         attn_weights = self.attn_dropout(attn_weights)
         out = torch.matmul(attn_weights, v)
         out = (
             out.transpose(1, 2)
             .contiguous()
-            .view(batch_size, total_len, self.embed_dim)
+            .view(batch_size, total_len, -1)
         )
-        return self.o_proj(out)
+        return out
 
     def _chunked_sparse_attention(
         self,
@@ -467,7 +514,7 @@ class UltrametricAttention(nn.Module):
                 p_block = torch.exp(scores_ij - m_new.unsqueeze(-1))  # (B, H, bs, bs)
 
                 out_acc[:, :, row_start:row_end, :] = (
-                    out_old * alpha.unsqueeze(-1)
+                    out_old * alpha.unsqueeze(-1).to(v_j.dtype)
                     + torch.matmul(p_block.to(v_j.dtype), v_j)
                 )
                 l_acc[:, :, row_start:row_end] = (
@@ -484,9 +531,9 @@ class UltrametricAttention(nn.Module):
         out = (
             out.transpose(1, 2)
             .contiguous()
-            .view(batch_size, total_len, self.embed_dim)
+            .view(batch_size, total_len, -1)
         )
-        return self.o_proj(out)
+        return out
 
     def _triton_attention(
         self,
@@ -496,6 +543,8 @@ class UltrametricAttention(nn.Module):
         routing_assignments: torch.Tensor,
         batch_size: int,
         total_len: int,
+        p: int = 2,
+        shift_size: int = 0,
     ) -> torch.Tensor:
         """
         Triton hardware-accelerated block-sparse attention.
@@ -516,8 +565,8 @@ class UltrametricAttention(nn.Module):
         k_half = k.half() if k.dtype != torch.float16 else k
         v_half = v.half() if v.dtype != torch.float16 else v
 
-        out = CurriculumSparseAttention.apply(
-            q_half, k_half, v_half, router_indices, req_depth, self.p, True
+        out = ultrametric_attention_triton(
+            q_half, k_half, v_half, router_indices, req_depth=req_depth, shift_size=shift_size, p=p
         )
 
         # Cast back if input wasn't float16
@@ -528,6 +577,6 @@ class UltrametricAttention(nn.Module):
         out = (
             out.transpose(1, 2)
             .contiguous()
-            .view(batch_size, total_len, self.embed_dim)
+            .view(batch_size, total_len, -1)
         )
-        return self.o_proj(out)
+        return out

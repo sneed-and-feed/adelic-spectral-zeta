@@ -44,24 +44,13 @@ Hierarchical block-sparse routing creates a mathematical conflict with strict 1D
 
 ---
 
-## 4. The Sparse Backward Pass — ✅ IMPLEMENTED
+## 4. The Sparse Backward Pass
 
 Training currently uses dense $O(N^2)$ attention because the Gumbel-Softmax gates are soft and gradients must flow through all possible paths.
 
 **The Strategy:** Implement a "phase-transition" training curriculum. As $\tau \to 0$, the Gumbel gates polarize. In the final 20% of training, we can transition to a block-sparse backward pass to save massive FLOPs.
 
-### Implementation Status
-*   ✅ **Phase Transition Curriculum:** `CurriculumSparseAttention` (`torch.autograd.Function`) dispatches to dense FlashAttention during Phase 1 (0–80%) and to Triton block-sparse kernels during Phase 2 (80–100%).
-*   ✅ **Triton Backward Kernels:** `_ultrametric_bwd_dq_kernel` and `_ultrametric_bwd_dk_dv_kernel` implemented in `kernel.py`. They use precomputed block coordinate lists (`q_to_k_indices`, `k_to_q_indices`) with `tl.constexpr` loop bounds to iterate only over active blocks.
-*   ✅ **PyTorch Autograd Wrapper:** `CurriculumSparseAttention.apply(q, k, v, router_indices, req_depth, p, use_sparse_backend=True)` seamlessly wraps the forward/backward dispatch.
-
-### A100 Benchmark Results
-
-| Phase | Execution Time (ms) | Description |
-|:------|--------------------:|:------------|
-| Phase 1 (Dense) | 5.95 | PyTorch `F.scaled_dot_product_attention` (FlashAttention-2) |
-| Phase 2 (Sparse) | 133.43 | Triton block-sparse with precomputed coordinate lists |
-
-**Finding: IO-Bound Bottleneck.** The sparse backward kernels are asymptotically superior ($O(N \log N)$ FLOPs vs. $O(N^2)$) but are **slower** at 8192 tokens on the A100. The root cause is that FlashAttention-2 leverages the A100's Tensor Memory Accelerator (TMA) for peak-bandwidth linear SRAM tile loads, while our block-sparse kernel performs indirect memory gathers at dynamically computed offsets, disabling TMA and forcing scalar global memory loads. At 64 blocks of size 128, the FLOP savings from skipping ~60 of 64 blocks are overwhelmed by the per-block memory access overhead.
-
-**Predicted Crossover.** The sparse backward pass is expected to become wall-clock competitive at context lengths in the 32K–64K+ regime, where matrix multiplication compute strictly dominates memory controller latency. Alternatively, future GPU architectures with hardware support for sparse TMA instructions would eliminate the IO bottleneck entirely.
+### Implementation Roadmap
+*   **Phase Transition Curriculum:** At 80% of training, apply a hard threshold to the gates (`gates > 0.5`) using a Straight-Through Estimator.
+*   **Triton Backward Kernel:** Write a custom `triton_block_sparse_bwd` kernel that only loads and accumulates gradients ($\nabla Q, \nabla K, \nabla V$) for the active blocks indicated by the polarized gates.
+*   **PyTorch Autograd Wrapper:** Wrap the forward and backward kernels in a custom `torch.autograd.Function`. During the first 80%, it dispatches to dense FlashAttention. During the final 20%, it dispatches to the Triton sparse backward kernel, bypassing the $O(N^2)$ gradient bottleneck entirely. (Validated by literature such as AdaSplash-2 and RAT+).
