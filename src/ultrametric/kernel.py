@@ -57,6 +57,9 @@ if HAS_TRITON:
         stride_rh,
         stride_rm,
         stride_rd,
+        stride_lz,
+        stride_lh,
+        stride_lm,
         req_depth,
         Z,
         H,
@@ -179,6 +182,12 @@ if HAS_TRITON:
         acc = acc / l_i[:, None]
         tl.store(o_block_ptr, acc.to(tl.float16), boundary_check=(0, 1))
 
+        L_i = m_i + tl.math.log(l_i)
+        l_offset = off_z * stride_lz + off_h * stride_lh
+        offs_m = start_m * BLOCK_M + tl.arange(0, BLOCK_M)
+        l_ptrs = L + l_offset + offs_m
+        tl.store(l_ptrs, L_i, mask=offs_m < N_CTX)
+
 
 def routing_to_block_indices(
     assignments: torch.Tensor,
@@ -220,6 +229,200 @@ def routing_to_block_indices(
     router_indices = branch_ids[:, :, :, 0, :]  # (B, H, num_blocks, L)
 
     return router_indices.to(torch.int32)
+
+
+if HAS_TRITON:
+    @triton.jit
+    def _ultrametric_bwd_dq_kernel(
+        Q, K, V, sm_scale, router_indices,
+        dO, dQ,
+        L, D,
+        stride_qz, stride_qh, stride_qm, stride_qk,
+        stride_kz, stride_kh, stride_kn, stride_kk,
+        stride_vz, stride_vh, stride_vk, stride_vn,
+        stride_oz, stride_oh, stride_om, stride_on,
+        stride_rz, stride_rh, stride_rm, stride_rd,
+        req_depth, Z, H, N_CTX,
+        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr,
+        TREE_DEPTH_P2: tl.constexpr
+    ):
+        start_m = tl.program_id(0)
+        off_hz = tl.program_id(1)
+        off_z = off_hz // H
+        off_h = off_hz % H
+
+        q_offset = off_z * stride_qz + off_h * stride_qh
+        k_offset = off_z * stride_kz + off_h * stride_kh
+        v_offset = off_z * stride_vz + off_h * stride_vh
+        do_offset = off_z * stride_oz + off_h * stride_oh
+        dq_offset = off_z * stride_qz + off_h * stride_qh
+        r_offset = off_z * stride_rz + off_h * stride_rh
+
+        q_block_ptr = tl.make_block_ptr(
+            base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
+            offsets=(start_m * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+        )
+        do_block_ptr = tl.make_block_ptr(
+            base=dO + do_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_om, stride_on),
+            offsets=(start_m * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+        )
+        dq_block_ptr = tl.make_block_ptr(
+            base=dQ + dq_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
+            offsets=(start_m * BLOCK_M, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+        )
+
+        depth_offsets = tl.arange(0, TREE_DEPTH_P2)
+        m_router_ptrs = router_indices + r_offset + start_m * stride_rm + depth_offsets * stride_rd
+        m_routing_vec = tl.load(m_router_ptrs)
+
+        q = tl.load(q_block_ptr, boundary_check=(0, 1), padding_option="zero")
+        do = tl.load(do_block_ptr, boundary_check=(0, 1), padding_option="zero")
+
+        offs_m = start_m * BLOCK_M + tl.arange(0, BLOCK_M)
+        l_ptrs = L + off_hz * N_CTX + offs_m
+        d_ptrs = D + off_hz * N_CTX + offs_m
+        l_i = tl.load(l_ptrs, mask=offs_m < N_CTX, other=0.0)
+        D_i = tl.load(d_ptrs, mask=offs_m < N_CTX, other=0.0)
+
+        k_ptr = tl.make_block_ptr(
+            base=K + k_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_kk, stride_kn),
+            offsets=(0, 0), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1)
+        )
+        v_T_ptr = tl.make_block_ptr(
+            base=V + v_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_vk, stride_vn),
+            offsets=(0, 0), block_shape=(BLOCK_DMODEL, BLOCK_N), order=(0, 1)
+        )
+        k_norm_ptr = tl.make_block_ptr(
+            base=K + k_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_kn, stride_kk),
+            offsets=(0, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
+        )
+
+        num_n_blocks = tl.cdiv(N_CTX, BLOCK_N)
+        dq = tl.zeros([BLOCK_M, BLOCK_DMODEL], dtype=tl.float32)
+
+        for start_n_block in range(0, num_n_blocks):
+            n_router_ptrs = router_indices + r_offset + start_n_block * stride_rm + depth_offsets * stride_rd
+            n_routing_vec = tl.load(n_router_ptrs)
+
+            mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
+            has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
+
+            if has_mismatch == 0:
+                k = tl.load(k_ptr, boundary_check=(0, 1), padding_option="zero")
+                qk = tl.dot(q, k) * sm_scale
+                p = tl.exp(qk - l_i[:, None])
+
+                v_T = tl.load(v_T_ptr, boundary_check=(0, 1), padding_option="zero")
+                dp = tl.dot(do, v_T)
+                
+                ds = p * (dp - D_i[:, None]) * sm_scale
+                
+                k_n = tl.load(k_norm_ptr, boundary_check=(0, 1), padding_option="zero")
+                dq += tl.dot(ds.to(tl.float16), k_n)
+
+            k_ptr = tl.advance(k_ptr, (0, BLOCK_N))
+            v_T_ptr = tl.advance(v_T_ptr, (0, BLOCK_N))
+            k_norm_ptr = tl.advance(k_norm_ptr, (BLOCK_N, 0))
+
+        tl.store(dq_block_ptr, dq.to(tl.float16), boundary_check=(0, 1))
+
+    @triton.jit
+    def _ultrametric_bwd_dk_dv_kernel(
+        Q, K, V, sm_scale, router_indices,
+        dO, dK, dV,
+        L, D,
+        stride_qz, stride_qh, stride_qm, stride_qk,
+        stride_kz, stride_kh, stride_kn, stride_kk,
+        stride_vz, stride_vh, stride_vk, stride_vn,
+        stride_oz, stride_oh, stride_om, stride_on,
+        stride_rz, stride_rh, stride_rm, stride_rd,
+        req_depth, Z, H, N_CTX,
+        BLOCK_M: tl.constexpr, BLOCK_DMODEL: tl.constexpr, BLOCK_N: tl.constexpr,
+        TREE_DEPTH_P2: tl.constexpr
+    ):
+        start_n = tl.program_id(0)
+        off_hz = tl.program_id(1)
+        off_z = off_hz // H
+        off_h = off_hz % H
+
+        q_offset = off_z * stride_qz + off_h * stride_qh
+        k_offset = off_z * stride_kz + off_h * stride_kh
+        v_offset = off_z * stride_vz + off_h * stride_vh
+        do_offset = off_z * stride_oz + off_h * stride_oh
+        dk_offset = off_z * stride_kz + off_h * stride_kh
+        dv_offset = off_z * stride_vz + off_h * stride_vh
+        r_offset = off_z * stride_rz + off_h * stride_rh
+
+        k_block_ptr = tl.make_block_ptr(
+            base=K + k_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_kn, stride_kk),
+            offsets=(start_n * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
+        )
+        v_block_ptr = tl.make_block_ptr(
+            base=V + v_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_vn, stride_vk),
+            offsets=(start_n * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
+        )
+        dk_block_ptr = tl.make_block_ptr(
+            base=dK + dk_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_kn, stride_kk),
+            offsets=(start_n * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
+        )
+        dv_block_ptr = tl.make_block_ptr(
+            base=dV + dv_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_vn, stride_vk),
+            offsets=(start_n * BLOCK_N, 0), block_shape=(BLOCK_N, BLOCK_DMODEL), order=(1, 0)
+        )
+
+        depth_offsets = tl.arange(0, TREE_DEPTH_P2)
+        n_router_ptrs = router_indices + r_offset + start_n * stride_rm + depth_offsets * stride_rd
+        n_routing_vec = tl.load(n_router_ptrs)
+
+        k = tl.load(k_block_ptr, boundary_check=(0, 1), padding_option="zero")
+        v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
+
+        q_norm_ptr = tl.make_block_ptr(
+            base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
+            offsets=(0, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+        )
+        do_norm_ptr = tl.make_block_ptr(
+            base=dO + do_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_om, stride_on),
+            offsets=(0, 0), block_shape=(BLOCK_M, BLOCK_DMODEL), order=(1, 0)
+        )
+
+        num_m_blocks = tl.cdiv(N_CTX, BLOCK_M)
+        dk = tl.zeros([BLOCK_N, BLOCK_DMODEL], dtype=tl.float32)
+        dv = tl.zeros([BLOCK_N, BLOCK_DMODEL], dtype=tl.float32)
+
+        for start_m_block in range(0, num_m_blocks):
+            m_router_ptrs = router_indices + r_offset + start_m_block * stride_rm + depth_offsets * stride_rd
+            m_routing_vec = tl.load(m_router_ptrs)
+
+            mismatch = (m_routing_vec != n_routing_vec) & (depth_offsets < req_depth)
+            has_mismatch = tl.max(mismatch.to(tl.int32), axis=0)
+
+            if has_mismatch == 0:
+                q_n = tl.load(q_norm_ptr, boundary_check=(0, 1), padding_option="zero")
+                qk = tl.dot(q_n, tl.trans(k)) * sm_scale
+                
+                offs_m = start_m_block * BLOCK_M + tl.arange(0, BLOCK_M)
+                l_ptrs = L + off_hz * N_CTX + offs_m
+                d_ptrs = D + off_hz * N_CTX + offs_m
+                l_i = tl.load(l_ptrs, mask=offs_m < N_CTX, other=0.0)
+                D_i = tl.load(d_ptrs, mask=offs_m < N_CTX, other=0.0)
+
+                p = tl.exp(qk - l_i[:, None])
+
+                do = tl.load(do_norm_ptr, boundary_check=(0, 1), padding_option="zero")
+                
+                dv += tl.dot(tl.trans(p).to(tl.float16), do)
+
+                dp = tl.dot(do, tl.trans(v))
+                ds = p * (dp - D_i[:, None]) * sm_scale
+
+                dk += tl.dot(tl.trans(ds).to(tl.float16), q_n)
+
+            q_norm_ptr = tl.advance(q_norm_ptr, (BLOCK_M, 0))
+            do_norm_ptr = tl.advance(do_norm_ptr, (BLOCK_M, 0))
+
+        tl.store(dk_block_ptr, dk.to(tl.float16), boundary_check=(0, 1))
+        tl.store(dv_block_ptr, dv.to(tl.float16), boundary_check=(0, 1))
 
 
 def _pytorch_fallback(
@@ -348,6 +551,8 @@ def ultrametric_attention_triton(
     # Grid: one program per (query_block, batch*head)
     grid = (triton.cdiv(N_CTX, BLOCK_M), Z * H)
 
+    L = torch.empty((Z, H, N_CTX), device=q.device, dtype=torch.float32)
+
     _ultrametric_fwd_kernel[grid](
         q,
         k,
@@ -380,6 +585,10 @@ def ultrametric_attention_triton(
         router_indices.stride(1),
         router_indices.stride(2),
         router_indices.stride(3),
+        # L strides
+        L.stride(0),
+        L.stride(1),
+        L.stride(2),
         # Scalar args
         req_depth,
         Z,
@@ -393,5 +602,88 @@ def ultrametric_attention_triton(
         TREE_DEPTH_P2=TREE_DEPTH_P2,
     )
 
-    return out
+    return out, L
+
+
+class CurriculumSparseAttention(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, q, k, v, router_indices, req_depth=2, p=2, use_sparse_backend=False):
+        if use_sparse_backend and HAS_TRITON:
+            o, L = ultrametric_attention_triton(q, k, v, router_indices, req_depth, p)
+            ctx.save_for_backward(q, k, v, o, L, router_indices)
+            ctx.req_depth = req_depth
+            ctx.p = p
+            ctx.use_sparse_backend = True
+            return o
+        else:
+            # Fallback path requires gradient tracking to be maintained automatically
+            # since we won't execute custom backward.
+            # So if not using sparse backend, we should not wrap in autograd if possible, 
+            # but since we are in autograd.Function, we must return a tensor that has grad_fn.
+            # Actually, standard PyTorch allows calling operations in forward that we manually differentiate.
+            # If use_sparse_backend=False, we compute the PyTorch fallback here and rely on PyTorch Autograd.
+            # But autograd.Function overrides it. 
+            # We'll just do the computation. Wait, if we return a tensor computed with PyTorch ops, 
+            # its grad_fn is ignored because it's inside autograd.Function.
+            # We must compute backward manually! 
+            # To avoid this, CurriculumSparseAttention should ONLY be used when use_sparse_backend=True.
+            raise NotImplementedError("CurriculumSparseAttention should only be called for use_sparse_backend=True")
+
+    @staticmethod
+    def backward(ctx, do):
+        if not ctx.use_sparse_backend:
+            raise NotImplementedError("Dense fallback backward not implemented in autograd.Function")
+
+        q, k, v, o, L, router_indices = ctx.saved_tensors
+        req_depth = ctx.req_depth
+        p = ctx.p
+
+        do = do.contiguous()
+        dq = torch.empty_like(q)
+        dk = torch.empty_like(k)
+        dv = torch.empty_like(v)
+        
+        Z, H, N_CTX, DMODEL = q.shape
+        sm_scale = 1.0 / math.sqrt(DMODEL)
+
+        BLOCK_M = min(128, N_CTX)
+        BLOCK_N = min(128, N_CTX)
+        BLOCK_DMODEL = DMODEL
+        TREE_DEPTH = router_indices.shape[-1]
+        TREE_DEPTH_P2 = 1 << (TREE_DEPTH - 1).bit_length() if TREE_DEPTH > 1 else 1
+
+        # D_i = sum(do_i * o_i)
+        D = (do * o).to(torch.float32).sum(dim=-1).contiguous()
+
+        grid_q = (triton.cdiv(N_CTX, BLOCK_M), Z * H)
+        _ultrametric_bwd_dq_kernel[grid_q](
+            q, k, v, sm_scale, router_indices,
+            do, dq,
+            L, D,
+            q.stride(0), q.stride(1), q.stride(2), q.stride(3),
+            k.stride(0), k.stride(1), k.stride(2), k.stride(3),
+            v.stride(0), v.stride(1), v.stride(2), v.stride(3),
+            o.stride(0), o.stride(1), o.stride(2), o.stride(3),
+            router_indices.stride(0), router_indices.stride(1), router_indices.stride(2), router_indices.stride(3),
+            req_depth, Z, H, N_CTX,
+            BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
+            TREE_DEPTH_P2=TREE_DEPTH_P2,
+        )
+
+        grid_k = (triton.cdiv(N_CTX, BLOCK_N), Z * H)
+        _ultrametric_bwd_dk_dv_kernel[grid_k](
+            q, k, v, sm_scale, router_indices,
+            do, dk, dv,
+            L, D,
+            q.stride(0), q.stride(1), q.stride(2), q.stride(3),
+            k.stride(0), k.stride(1), k.stride(2), k.stride(3),
+            v.stride(0), v.stride(1), v.stride(2), v.stride(3),
+            o.stride(0), o.stride(1), o.stride(2), o.stride(3),
+            router_indices.stride(0), router_indices.stride(1), router_indices.stride(2), router_indices.stride(3),
+            req_depth, Z, H, N_CTX,
+            BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
+            TREE_DEPTH_P2=TREE_DEPTH_P2,
+        )
+
+        return dq, dk, dv, None, None, None, None
 

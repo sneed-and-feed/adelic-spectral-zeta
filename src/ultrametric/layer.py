@@ -20,7 +20,7 @@ import math
 from typing import Optional, Literal
 
 from .topology import get_ultrametric_mask
-from .kernel import HAS_TRITON, ultrametric_attention_triton, routing_to_block_indices
+from .kernel import HAS_TRITON, ultrametric_attention_triton, routing_to_block_indices, CurriculumSparseAttention
 
 
 # ============================================================================
@@ -516,8 +516,8 @@ class UltrametricAttention(nn.Module):
         k_half = k.half() if k.dtype != torch.float16 else k
         v_half = v.half() if v.dtype != torch.float16 else v
 
-        out = ultrametric_attention_triton(
-            q_half, k_half, v_half, router_indices, req_depth=req_depth, p=self.p
+        out = CurriculumSparseAttention.apply(
+            q_half, k_half, v_half, router_indices, req_depth, self.p, True
         )
 
         # Cast back if input wasn't float16
