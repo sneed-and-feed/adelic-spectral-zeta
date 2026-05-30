@@ -170,10 +170,17 @@ class SurgicalLlamaAttention(nn.Module):
         if seq_len == 1 and L > 1:
             # Decode phase: extract the row for the current absolute token index
             um_mask_bool = um_mask_bool[:, :, -1:, :]
+            full_mask = full_mask[:, :, -1:, :]
             
         sparse_scores = scores.masked_fill(~um_mask_bool, float('-inf'))
         attn_weights = F.softmax(sparse_scores, dim=-1, dtype=torch.float32)
         attn_weights = torch.nan_to_num(attn_weights, 0.0)
+
+        # CRITICAL FIX: Multiply by the differentiable soft mask!
+        # The boolean mask blocked gradients to the router. By multiplying by the STE full_mask,
+        # the language modeling loss can successfully backpropagate into the routing assignments!
+        attn_weights = attn_weights * full_mask
+        attn_weights = attn_weights / (attn_weights.sum(dim=-1, keepdim=True) + 1e-8)
 
         attn_weights = attn_weights.to(v.dtype)
         attn_weights = self.attn_dropout(attn_weights)
