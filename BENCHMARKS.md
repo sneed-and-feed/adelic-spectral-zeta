@@ -167,16 +167,44 @@ improvement post-grok. Sequence too short (3 positions) for position-level mask 
 > Every run finds the generalizing solution briefly then catastrophically forgets.
 > **Linear attention stably grokked** (96.5% test, 95.4% OOD) at WD=0.3.
 
+### Experiment 3: Degree-3 Polynomial mod 11 (8 tokens, dynamic depth)
+
+2-layer, 128 embed, 4 heads, WD=0.8, 60K steps, A100 GPU.
+Horner's form: `p(x) = a₀ + x·(a₁ + x·(a₂ + x·a₃))` mod 11.
+8-token sequence `[a₃, x, a₂, x, a₁, x, a₀, =]`.
+
+New architecture: **Dynamic ultrametric attention** — self-attention-regulated
+per-head per-position depth gate that controls tree bias strength.
+
+| Mode | Tree | Grok | Final Test | Final Train |
+|:--|:--|:--|--:|--:|
+| Dense | — | NEVER | 14.7% | 42% |
+| Static ultrametric | Binary (p=2) | NEVER | 14.5% | 40% |
+| Dynamic ultrametric | Binary (p=2) | NEVER | 14.5% | 44% |
+| Static ultrametric | Ternary (p=3) | NEVER | 14.9% | 37% |
+| Dynamic ultrametric | Ternary (p=3) | NEVER | 14.3% | 44% |
+| Linear | — | NEVER | 16.6% | 17% |
+
+Random chance = 1/11 = 9.1%. No model exceeded 44% *train* accuracy.
+
+> [!NOTE]
+> The degree-3 polynomial is too complex for a 400K-param transformer to memorize,
+> so grokking (which requires memorization first) cannot occur. The dynamic depth
+> gates converged to 0.49 ± 0.04 — the model learned to ignore the tree entirely.
+
 ### Key Findings
 
-1. **Ultrametric position bias is neutral.** Dense and ultrametric softmax curves are
-   statistically indistinguishable across all configurations tested.
+1. **Ultrametric position bias is neutral.** Across 4 experiments, 20+ configurations,
+   binary and ternary trees, static and dynamic gating — dense and ultrametric
+   softmax curves are statistically indistinguishable.
 
-2. **Linear attention groks compound expressions where softmax cannot.** This appears
-   to be a property of the smoother optimization landscape — softmax creates sharp,
-   unstable minima for multi-operation modular arithmetic.
+2. **Linear attention groks compound expressions where softmax cannot** (`a + b*c mod 59`).
+   This appears to be a property of the smoother optimization landscape.
 
-3. **The kernel benchmarks are independent of grokking.** The 28×/98% results measure
+3. **Dynamic depth gates converge to neutral.** The self-attention depth controller
+   finds no benefit from the tree structure and learns to disable it.
+
+4. **The kernel benchmarks are independent of grokking.** The 28×/98% results measure
    computational efficiency of a correct sparse attention pattern, not whether the
    inductive bias improves learning. Those are separate claims.
 
@@ -204,6 +232,12 @@ python experiments/grokking_v2_expr.py
 
 # Weight decay sweep (GPU recommended, ~40 min on A100)
 python experiments/grokking_wd_sweep.py
+
+# Polynomial + dynamic ultrametric, binary tree (GPU, ~15 min on A100)
+python experiments/grokking_v3_poly.py
+
+# Polynomial + dynamic ultrametric, ternary tree (GPU, ~15 min on A100)
+python experiments/grokking_v3_ternary.py
 ```
 
 Hardware: NVIDIA A100-SXM4-40GB, Google TPU v6e-1 (31.25 GB HBM).
