@@ -185,15 +185,17 @@ class UltrametricTransformer(nn.Module):
         self.tok_emb = nn.Embedding(vocab_size, embed_dim)
         self.emb_dropout = nn.Dropout(dropout)
 
-        # Dynamic routing (shared across layers, routes once per forward pass)
-        self.router = DynamicTopologyRouter(
-            embed_dim=embed_dim,
-            seq_len=max_seq_len,
-            num_heads=num_heads,
-            p=p,
-            tau=1.0,
-            hard=True,
-        )
+        # Dynamic routing (one per layer)
+        self.routers = nn.ModuleList([
+            DynamicTopologyRouter(
+                embed_dim=embed_dim,
+                seq_len=max_seq_len,
+                num_heads=num_heads,
+                p=p,
+                tau=1.0,
+                hard=True,
+            ) for _ in range(num_layers)
+        ])
 
         # Transformer blocks
         self.blocks = nn.ModuleList(
@@ -264,10 +266,6 @@ class UltrametricTransformer(nn.Module):
         x = self.tok_emb(input_ids)  # (batch, seq_len, embed_dim)
         x = self.emb_dropout(x)
 
-        # Compute routing once, share across all layers
-        routing_assignments, aux_loss = self.router(x, tau_override=tau_override)
-        # routing_assignments: (batch, heads, seq_len, levels, p)
-
         # Build causal + ultrametric mask
         # The ultrametric mask is combined with the causal mask
         causal = torch.tril(
@@ -280,8 +278,15 @@ class UltrametricTransformer(nn.Module):
         combined_mask = causal & ultra_mask  # (seq_len, seq_len)
         combined_mask = combined_mask.unsqueeze(0).unsqueeze(0)  # (1, 1, S, S)
 
+        total_aux_loss = 0.0
+        self.layer_routings = []
+
         # Pass through transformer blocks
-        for block in self.blocks:
+        for router, block in zip(self.routers, self.blocks):
+            routing_assignments, layer_aux_loss = router(x, tau_override=tau_override)
+            total_aux_loss = total_aux_loss + layer_aux_loss
+            self.layer_routings.append(routing_assignments)
+            
             x = block(
                 x,
                 mask=combined_mask,
@@ -289,6 +294,8 @@ class UltrametricTransformer(nn.Module):
                 mode=self.attn_mode,
                 use_interior=self.use_interior,
             )
+
+        aux_loss = total_aux_loss
 
         x = self.ln_f(x)
         logits = self.lm_head(x)  # (batch, seq_len, vocab_size)

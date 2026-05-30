@@ -23,7 +23,7 @@ try:
     import triton.language as tl
 
     HAS_TRITON = True
-except ImportError:
+except (ImportError, RuntimeError):
     HAS_TRITON = False
 
 
