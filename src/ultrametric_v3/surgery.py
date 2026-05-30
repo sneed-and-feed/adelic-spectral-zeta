@@ -161,18 +161,31 @@ class SurgicalLlamaAttention(nn.Module):
             causal_mask = torch.triu(torch.ones(seq_len, seq_len, dtype=torch.bool, device=hidden_states.device), diagonal=1)
             scores = scores.masked_fill(causal_mask, float('-inf'))
 
-        # Continuous Sparsification: Broadcast T_ij mask and blend using g_h
-        um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(hidden_states.device)
-        T_ij = um_mask_bool.to(q.dtype) - 1.0  # 0.0 for True (keep), -1.0 for False (prune)
-        
+        # Continuous Sparsification: Interpolate at the probability level!
+        L = k.shape[-2]
+        if seq_len == 1 and L > 1:
+            # We are decoding! Extract the row for the current absolute token index
+            full_mask = get_ultrametric_mask(L, self.p).to(hidden_states.device)
+            um_mask_bool = full_mask[-1:, :] # Shape (1, L)
+        else:
+            um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(hidden_states.device)
+            
         # Expand shapes for broadcasting
-        T_ij = T_ij.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, seq_len)
+        um_mask_bool = um_mask_bool.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, L)
         g_h_exp = g_h.to(q.dtype).view(1, self.num_heads, 1, 1) # (1, num_heads, 1, 1)
 
-        # Apply surgical mask
-        scores = scores + g_h_exp * self.alpha * T_ij
+        # 1. Compute Pure Dense Probabilities
+        dense_weights = F.softmax(scores, dim=-1, dtype=torch.float32)
 
-        attn_weights = F.softmax(scores, dim=-1, dtype=torch.float32).to(v.dtype)
+        # 2. Compute Pure Sparse Probabilities
+        sparse_scores = scores.masked_fill(~um_mask_bool, float('-inf'))
+        sparse_weights = F.softmax(sparse_scores, dim=-1, dtype=torch.float32)
+        # Handle rows where the entire mask is False (prevent NaNs)
+        sparse_weights = torch.nan_to_num(sparse_weights, 0.0)
+
+        # 3. Smoothly Interpolate!
+        attn_weights = (1.0 - g_h_exp) * dense_weights + g_h_exp * sparse_weights
+        attn_weights = attn_weights.to(v.dtype)
         attn_weights = self.attn_dropout(attn_weights)
 
         out = torch.matmul(attn_weights, v)
