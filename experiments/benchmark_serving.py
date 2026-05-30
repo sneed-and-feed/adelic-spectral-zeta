@@ -80,7 +80,7 @@ def run_benchmark():
     tree_depth = 16
     max_context = 16384
     
-    num_blocks = 50000
+    num_blocks = 8192
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type != "cuda":
@@ -89,9 +89,9 @@ def run_benchmark():
         
     torch.manual_seed(42)
     
-    Q = torch.randn((batch_size, num_heads, head_dim), device=device, dtype=torch.float32)
-    K_cache = torch.randn((num_blocks, num_heads, block_size, head_dim), device=device, dtype=torch.float32)
-    V_cache = torch.randn((num_blocks, num_heads, block_size, head_dim), device=device, dtype=torch.float32)
+    Q = torch.randn((batch_size, num_heads, head_dim), device=device, dtype=torch.float16)
+    K_cache = torch.randn((num_blocks, num_heads, block_size, head_dim), device=device, dtype=torch.float16)
+    V_cache = torch.randn((num_blocks, num_heads, block_size, head_dim), device=device, dtype=torch.float16)
     
     context_lens = torch.randint(max_context // 2, max_context, (batch_size,), device=device, dtype=torch.int32)
     max_logical_blocks = (max_context + block_size - 1) // block_size
@@ -115,7 +115,7 @@ def run_benchmark():
     
     max_diff = (out_triton - out_fallback).abs().max().item()
     print(f"Max diff: {max_diff}")
-    assert max_diff < 1e-3, f"Correctness check failed! Max diff: {max_diff}"
+    assert max_diff < 1e-2, f"Correctness check failed! Max diff: {max_diff}"
     print("Correctness check passed.")
     
     # Benchmark
@@ -134,8 +134,8 @@ def run_benchmark():
         for b in range(batch_size):
             total_blocks_processed += (context_lens[b].item() + block_size - 1) // block_size
             
-        # For each block: K and V, each block_size * head_dim * 4 bytes
-        bytes_per_block = block_size * head_dim * 4 * 2
+        # For each block: K and V, each block_size * head_dim * 2 bytes (float16)
+        bytes_per_block = block_size * head_dim * 2 * 2
         total_dense_bytes = total_blocks_processed * num_heads * bytes_per_block
         
         eff_bw = total_dense_bytes / (ms * 1e-3) / 1e9
