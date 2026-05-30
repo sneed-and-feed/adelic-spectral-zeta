@@ -206,6 +206,9 @@ def _compute_distance_mask(
         band = (torch.abs(idx.unsqueeze(0) - idx.unsqueeze(1)) <= local_window).float()
         hard_mask = torch.clamp(hard_mask + band, max=1.0)
         
+    # CRITICAL: Attention Sink! Always keep the first token visible so Softmax doesn't collapse
+    hard_mask[..., :, 0] = 1.0
+        
     mask = hard_mask.detach() - soft_mask.detach() + soft_mask
     return mask
 
