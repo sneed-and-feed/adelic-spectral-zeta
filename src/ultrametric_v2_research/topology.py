@@ -233,13 +233,22 @@ def _compute_distance_mask(
         d(i,j) = levels - sum_{l=0}^{levels-1} prod_{m=l}^{levels-1} M[i,j,m]
     where M[i,j,l] is the probability that tokens i,j share branch l.
     """
-    # M[b, i, j, l] = prob tokens i, j agree at level l
-    M = torch.einsum("bilp,bjlp->bijl", assignments, assignments)
+    # Compute expected distance iteratively to save memory (avoids B*S*S*L tensor)
+    # Expected distance = levels - sum_{l=0}^{levels-1} prod_{m=l}^{levels-1} M[i,j,m]
+    # We compute this by iterating from l = levels-1 down to 0
+    B, S, L, P = assignments.shape
+    sum_P = torch.zeros(B, S, S, device=assignments.device, dtype=assignments.dtype)
+    current_P = torch.ones(B, S, S, device=assignments.device, dtype=assignments.dtype)
+    
+    for l in reversed(range(L)):
+        # Probability tokens i, j agree at level l
+        # M_l shape: (B, S, S)
+        A_l = assignments[:, :, l, :]
+        M_l = torch.bmm(A_l, A_l.transpose(-1, -2))
+        
+        current_P = current_P * M_l
+        sum_P = sum_P + current_P
 
-    # Reversed cumulative product for expected distance
-    M_flipped = M.flip(dims=[-1])
-    P_flipped = M_flipped.cumprod(dim=-1)
-    sum_P = P_flipped.sum(dim=-1)
     expected_dist = levels - sum_P
 
     if max_dist is None:
