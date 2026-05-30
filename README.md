@@ -169,9 +169,17 @@ This proves a direct arithmetic origin for ergodicity breaking: **the distributi
 
 ### 9. Ultrametric AI: Non-Archimedean Neural Attention on Bruhat-Tits Trees
 
+> **Paper:** [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex))
+
 This repository includes a complete, dual-stack implementation of **Ultrametric AI** — a fundamentally new neural attention architecture that replaces the dense $O(N^2)$ self-attention matrix of standard Transformers with a hierarchical $O(N \log N)$ block-sparse mask derived from the $p$-adic metric on the Bruhat-Tits tree.
 
 The key mathematical insight is that tokens in a sequence are not flat — they can be organized into a recursive fractal tree where the "distance" between two tokens is defined by their lowest common ancestor depth in the $p$-adic topology. Tokens sharing a deep ancestor attend densely; tokens sharing only a shallow ancestor attend sparsely or pass messages through interior "Reasoning Tokens" (Holographic States). This architecture natively encodes the non-archimedean geometry of the adèlic framework into the attention mechanism itself.
+
+**Empirical Results (7 experiments, see [`BENCHMARKS.md`](BENCHMARKS.md)):**
+- **28× inference speedup** and **98.4% memory reduction** at 8192 tokens via a custom Triton block-sparse kernel.
+- **11.59× wall-clock speedup** at 2048 tokens using *autonomously learned* per-head routing gates (no hand-designed sparsity).
+- **Emergent layer specialization**: Gumbel-Sigmoid depth gates polarize during training, dedicating early layers to sparse hierarchical parsing and later layers to dense aggregation — without any architectural constraint.
+- **Generalization to ListOps**: The same routing mechanism solves deeply nested prefix arithmetic (62.7% accuracy vs. 10% random chance), proving the inductive bias extends beyond syntactic bracket matching to hierarchical computation graphs.
 
 **True Fractal Routing (No Cheating):**
 A naïve implementation would assign each token to a single flat bucket (equivalent to K-Means clustering or the Routing Transformer), producing a trivial block-diagonal matrix. We explicitly reject this. Instead, the `DynamicTopologyRouter` outputs a **recursive multi-level phylogenetic path** `(batch, seq_len, levels, p)` via a factorized Gumbel-Softmax bridge applied independently at every level of the tree. This ensures the attention mask is a genuinely *nested* hierarchical block-diagonal matrix, not a flat partition.
@@ -218,13 +226,14 @@ Located in [`src/ultrametric_jax/`](src/ultrametric_jax/):
 | [`src/adelic_spectral_zeta/erdos_similarity.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/erdos_similarity.py) | Adèlic sequence lifting, porous Cantor set construction, idelic Laplacians, and attractive Schrödinger eigensolvers for Erdős similarity. |
 | [`src/ultrametric/`](src/ultrametric/) | **Ultrametric AI (PyTorch/Triton):** True Fractal attention with dynamic Gumbel-Softmax routing, Triton block-sparse GPU kernels, and Holographic Reasoning Tokens. |
 | [`src/ultrametric_jax/`](src/ultrametric_jax/) | **Ultrametric AI (JAX/Flax/Pallas):** Google-native TPU implementation with Pallas scalar prefetch kernels, deterministic PRNG routing, and XLA-compiled fractal attention. |
-| [`experiments/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/experiments) | Implementation of key simulations: `simulation.py`, `erdos_similarity_spectra.py`, `theta_functional_equation.py`, etc. |
-| [`formalization/`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization) | Axiom-free Lean 4 formalization proofs for spectral gap positivity and graph properties. |
+| [`papers/`](papers/) | Research papers. Includes [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md) (Markdown & LaTeX) and the original adèlic monograph LaTeX source. |
+| [`experiments/`](experiments/) | Implementation of key simulations, grokking experiments (`grokking_v4_dyck.py` through `grokking_v7_listops.py`), and kernel benchmarks (`benchmark_triton.py`). |
+| [`formalization/`](formalization/) | Axiom-free Lean 4 formalization proofs for spectral gap positivity and graph properties. |
 | [`formalization/SpectralPositivity/`](https://github.com/mrdouglasny/spectral-positivity) | Michael R. Douglas's Perron-Frobenius library for irreducible nonneg matrices (vendored dependency). |
 | [`coq/`](coq/) | **Coq / MathComp 2.3.0** formalizations. Independent cross-verification of the Bass-Ihara determinant formula ([BassIhara.v](coq/theories/BassIhara.v)): 0 sorry, 0 axiom, 0 Admitted. |
-| [`docs/unified_monograph.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/unified_monograph.md) | The unified monograph detailing the rigorous mathematical proofs and physical mappings. |
-| [`docs/collatz_gauge_geometry.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/collatz_gauge_geometry.md) | Formal mathematical framework representing the Collatz map as a gauge-covariant connection on the 2-adic tree. |
-| [`docs/commutator_rank_kernel_note.md`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/docs/commutator_rank_kernel_note.md) | Technical note resolving the exact commutator rank, kernel dimension, covering graph, and spectral recursion. |
+| [`docs/unified_monograph.md`](docs/unified_monograph.md) | The unified monograph detailing the rigorous mathematical proofs and physical mappings. |
+| [`docs/collatz_gauge_geometry.md`](docs/collatz_gauge_geometry.md) | Formal mathematical framework representing the Collatz map as a gauge-covariant connection on the 2-adic tree. |
+| [`docs/commutator_rank_kernel_note.md`](docs/commutator_rank_kernel_note.md) | Technical note resolving the exact commutator rank, kernel dimension, covering graph, and spectral recursion. |
 
 ---
 
