@@ -130,7 +130,7 @@ class UltrametricAttentionV2(nn.Module):
                 l_acc[:,:,rs:re] = l_acc[:,:,rs:re] * alpha + p_blk.sum(dim=-1)
                 m_acc[:,:,rs:re] = m_new
 
-        out = out / l_acc.unsqueeze(-1).clamp(min=1e-8)
+        out = (out / l_acc.unsqueeze(-1).clamp(min=1e-8)).to(q.dtype)
         out = out[:,:,:S]
         return self.o_proj(out.transpose(1,2).contiguous().view(B, S, self.embed_dim))
 
