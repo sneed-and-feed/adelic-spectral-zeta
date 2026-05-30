@@ -175,13 +175,14 @@ This repository includes a complete, dual-stack implementation of **Ultrametric 
 
 The key mathematical insight is that tokens in a sequence are not flat — they can be organized into a recursive fractal tree where the "distance" between two tokens is defined by their lowest common ancestor depth in the $p$-adic topology. Tokens sharing a deep ancestor attend densely; tokens sharing only a shallow ancestor attend sparsely or pass messages through interior "Reasoning Tokens" (Holographic States). This architecture natively encodes the non-archimedean geometry of the adèlic framework into the attention mechanism itself.
 
-**Empirical Results (9 experiments, see [`BENCHMARKS.md`](BENCHMARKS.md)):**
+**Empirical Results (10 experiments, see [`BENCHMARKS.md`](BENCHMARKS.md)):**
 - **28× inference speedup** and **98.4% memory reduction** at 8192 tokens via a custom Triton block-sparse kernel.
 - **11.59× wall-clock speedup** at 2048 tokens using *autonomously learned* per-head routing gates (no hand-designed sparsity).
 - **8× effective memory bandwidth** during autoregressive decoding via a sparse PagedAttention kernel that skips KV-cache loads.
-- **Emergent layer specialization**: Gumbel-Sigmoid depth gates polarize during training, dedicating early layers to sparse hierarchical parsing and later layers to dense aggregation — without any architectural constraint.
+- **Emergent layer specialization**: Gumbel-Sigmoid depth gates polarize during training, dedicating early layers to sparse hierarchical parsing and later layers to dense aggregation — without any architectural constraint. On tasks without a local window, the model converges to a hybrid topology (sparse + dense layers); with the local window, all layers remain fully sparse.
 - **Natural language modeling**: When augmented with a local sliding window ($k=32$), the architecture maintains >88% sparsity across all layers on Shakespeare while reducing cross-entropy from 10.9 to 1.55.
-- **Generalization to ListOps**: The same routing mechanism solves deeply nested prefix arithmetic (62.7% accuracy vs. 10% random chance), proving the inductive bias extends beyond syntactic bracket matching to hierarchical computation graphs.
+- **Generalization to ListOps**: The same routing mechanism solves deeply nested prefix arithmetic (60–63% accuracy vs. 10% random chance). Without a local window, the model falls back to a hybrid topology (Layer 1 dense); with `local_window=32`, Layer 1 polarizes to 100% sparse, validating the 28× speedup claim end-to-end.
+- **Custom kernels are necessary (Experiment 10)**: Native PyTorch block iteration achieves 94.9% memory savings but is 83× *slower* than dense attention due to Python loop overhead. JAX/XLA static compilation crashes the NVIDIA PTX assembler (`error code 2`) when attempting to compile the block-sparse routing logic. Only the custom Triton kernel achieves both memory savings *and* speed gains.
 
 **True Fractal Routing (No Cheating):**
 A naïve implementation would assign each token to a single flat bucket (equivalent to K-Means clustering or the Routing Transformer), producing a trivial block-diagonal matrix. We explicitly reject this. Instead, the `DynamicTopologyRouter` outputs a **recursive multi-level phylogenetic path** `(batch, seq_len, levels, p)` via a factorized Gumbel-Softmax bridge applied independently at every level of the tree. This ensures the attention mask is a genuinely *nested* hierarchical block-diagonal matrix, not a flat partition.
