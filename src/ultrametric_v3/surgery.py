@@ -132,9 +132,18 @@ class SurgicalLlamaAttention(nn.Module):
         # Apply RoPE
         if position_embeddings is not None:
             cos, sin = position_embeddings
+            # HF position_embeddings can be 3D or 4D depending on version
+            if cos.dim() == 3:
+                cos = cos.unsqueeze(1)
+                sin = sin.unsqueeze(1)
+            def rotate_half(x):
+                x1, x2 = x[..., : x.shape[-1] // 2], x[..., x.shape[-1] // 2 :]
+                return torch.cat((-x2, x1), dim=-1)
+            q = (q * cos) + (rotate_half(q) * sin)
+            k = (k * cos) + (rotate_half(k) * sin)
         else:
             cos, sin = self.rope(q)
-        q, k = apply_rotary_pos_emb(q, k, cos, sin)
+            q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
         # Broadcast KV for GQA before attention computation
         k = repeat_kv(k, self.num_key_value_groups)
