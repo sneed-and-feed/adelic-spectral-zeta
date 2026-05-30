@@ -163,16 +163,16 @@ class SurgicalLlamaAttention(nn.Module):
 
         # Continuous Sparsification: Broadcast T_ij mask and blend using g_h
         um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(hidden_states.device)
-        T_ij = um_mask_bool.float() - 1.0  # 0.0 for True (keep), -1.0 for False (prune)
+        T_ij = um_mask_bool.to(q.dtype) - 1.0  # 0.0 for True (keep), -1.0 for False (prune)
         
         # Expand shapes for broadcasting
         T_ij = T_ij.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, seq_len)
-        g_h_exp = g_h.view(1, self.num_heads, 1, 1) # (1, num_heads, 1, 1)
+        g_h_exp = g_h.to(q.dtype).view(1, self.num_heads, 1, 1) # (1, num_heads, 1, 1)
 
         # Apply surgical mask
         scores = scores + g_h_exp * self.alpha * T_ij
 
-        attn_weights = F.softmax(scores, dim=-1)
+        attn_weights = F.softmax(scores, dim=-1, dtype=torch.float32).to(v.dtype)
         attn_weights = self.attn_dropout(attn_weights)
 
         out = torch.matmul(attn_weights, v)
