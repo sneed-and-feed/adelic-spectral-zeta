@@ -101,7 +101,10 @@ def train(args):
         shift_targets = targets[:, 1:].contiguous()
         
         ce_loss = loss_fn(shift_logits.view(-1, vocab_size), shift_targets.view(-1))
-        loss = ce_loss + aux_loss
+        
+        # Scale down aux_loss so it balances the tree without overriding the language modeling task
+        aux_loss_weight = 0.01
+        loss = ce_loss + (aux_loss_weight * aux_loss)
         
         optimizer.zero_grad()
         loss.backward()
