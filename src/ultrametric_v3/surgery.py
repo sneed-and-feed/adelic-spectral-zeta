@@ -135,16 +135,16 @@ class SurgicalLlamaAttention(nn.Module):
             cos, sin = self.rope(q)
             q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
-        if past_key_values is not None:
-            if hasattr(past_key_values, "update"):
+        past_key_value = kwargs.get("past_key_value", past_key_values)
+        if past_key_value is not None:
+            if hasattr(past_key_value, "update"):
                 cache_kwargs = {"sin": getattr(self, "_dummy", None), "cos": getattr(self, "_dummy", None)}
-                k, v = past_key_values.update(k, v, self.layer_idx, cache_kwargs)
-            elif isinstance(past_key_values, tuple):
+                k, v = past_key_value.update(k, v, self.layer_idx, cache_kwargs)
+            elif isinstance(past_key_value, tuple):
                 # tuple format: (past_k, past_v)
-                k = torch.cat([past_key_values[0], k], dim=-2)
-                v = torch.cat([past_key_values[1], v], dim=-2)
-                # Note: modifying a tuple in-place isn't possible, the caller updates it if needed, 
-                # but legacy HF models return updated cache. Since this is an internal function, we just concat.
+                k = torch.cat([past_key_value[0], k], dim=-2)
+                v = torch.cat([past_key_value[1], v], dim=-2)
+                past_key_value = (k, v)
 
         # Broadcast KV for GQA before attention computation
         k = repeat_kv(k, self.num_key_value_groups)
@@ -190,5 +190,5 @@ class SurgicalLlamaAttention(nn.Module):
         
         out = self.o_proj(out)
         
-        return out, attn_weights
+        return out, attn_weights, past_key_value
 
