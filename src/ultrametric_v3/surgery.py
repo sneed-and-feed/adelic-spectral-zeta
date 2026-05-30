@@ -66,68 +66,82 @@ class SurgicalLlamaAttention(nn.Module):
     Llama Attention modified for Continuous Sparsification (Surgery).
     Integrates the per-head routing gate to interpolate between dense and sparse topology.
     """
-    def __init__(
-        self,
-        embed_dim: int,
-        num_heads: int,
-        p: int = 2,
-        max_seq_len: int = 8192,
-        dropout: float = 0.0,
-        alpha: float = 10000.0
-    ):
+    def __init__(self, config, layer_idx: Optional[int] = None):
         super().__init__()
-        self.embed_dim = embed_dim
-        self.num_heads = num_heads
-        self.head_dim = embed_dim // num_heads
-        self.p = p
+        self.config = config
+        self.layer_idx = layer_idx
+        
+        self.embed_dim = config.hidden_size
+        self.num_heads = config.num_attention_heads
+        self.head_dim = self.embed_dim // self.num_heads
+        
+        # Get surgery-specific config params, default to some values if not present
+        self.p = getattr(config, "surgical_p", 2)
+        self.alpha = getattr(config, "surgical_alpha", 10000.0)
+        
         self.scale = 1.0 / math.sqrt(self.head_dim)
-        self.alpha = alpha
 
-        assert self.head_dim * num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
+        assert self.head_dim * self.num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
 
-        self.q_proj = nn.Linear(embed_dim, embed_dim, bias=False)
-        self.k_proj = nn.Linear(embed_dim, embed_dim, bias=False)
-        self.v_proj = nn.Linear(embed_dim, embed_dim, bias=False)
-        self.o_proj = nn.Linear(embed_dim, embed_dim, bias=False)
+        self.q_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
+        self.k_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
+        self.v_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
+        self.o_proj = nn.Linear(self.embed_dim, self.embed_dim, bias=False)
 
-        self.rope = RotaryPositionEmbedding(self.head_dim, max_seq_len)
-        self.attn_dropout = nn.Dropout(dropout)
+        max_pos_embeddings = getattr(config, "max_position_embeddings", 8192)
+        self.rope = RotaryPositionEmbedding(self.head_dim, max_pos_embeddings)
+        self.attn_dropout = nn.Dropout(getattr(config, "attention_dropout", 0.0))
+        
+        self.router = MultiPrimeTopologyRouter(self.num_heads)
 
-    def forward(self, x: torch.Tensor, g_h: torch.Tensor) -> torch.Tensor:
-        """
-        x: (batch, seq_len, embed_dim)
-        g_h: (num_heads,) \\in [0, 1] per-head routing gate
-        """
-        batch_size, seq_len, _ = x.size()
+    def forward(
+        self,
+        hidden_states: torch.Tensor,
+        position_embeddings: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
+        attention_mask: Optional[torch.Tensor] = None,
+        past_key_values = None,
+        **kwargs,
+    ):
+        batch_size, seq_len, _ = hidden_states.size()
+
+        tau = getattr(self.config, "surgical_tau", 1.0)
+        g_h = self.router(tau)
+
+        # Accumulate sparsity penalty during forward pass (REMOVED for gradient checkpointing safety)
 
         # Project Q, K, V
-        q = self.q_proj(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
-        k = self.k_proj(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
-        v = self.v_proj(x).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        q = self.q_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
 
         # Apply RoPE
-        cos, sin = self.rope(q)
+        if position_embeddings is not None:
+            cos, sin = position_embeddings
+        else:
+            cos, sin = self.rope(q)
         q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
         # Raw attention scores
         scores = torch.matmul(q, k.transpose(-2, -1)) * self.scale
 
-        # Causal masking
-        causal_mask = torch.triu(torch.ones(seq_len, seq_len, dtype=torch.bool, device=x.device), diagonal=1)
-        scores = scores.masked_fill(causal_mask, float('-inf'))
+        # Base causal masking (simplified, since HF usually passes attention_mask)
+        # HF passes attention_mask as (batch_size, 1, tgt_len, src_len) with -inf for masked
+        if attention_mask is not None:
+            # Handle possible broadcast shapes
+            scores = scores + attention_mask
+        else:
+            causal_mask = torch.triu(torch.ones(seq_len, seq_len, dtype=torch.bool, device=hidden_states.device), diagonal=1)
+            scores = scores.masked_fill(causal_mask, float('-inf'))
 
         # Continuous Sparsification: Broadcast T_ij mask and blend using g_h
-        # get_ultrametric_mask gives True for kept connections, False for pruned
-        um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(x.device)
+        um_mask_bool = get_ultrametric_mask(seq_len, self.p).to(hidden_states.device)
         T_ij = um_mask_bool.float() - 1.0  # 0.0 for True (keep), -1.0 for False (prune)
         
         # Expand shapes for broadcasting
         T_ij = T_ij.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, seq_len)
         g_h_exp = g_h.view(1, self.num_heads, 1, 1) # (1, num_heads, 1, 1)
 
-        # Apply surgical mask: 
-        # Dense (g_h=0): scores + 0
-        # Sparse (g_h=1): scores - alpha on pruned connections
+        # Apply surgical mask
         scores = scores + g_h_exp * self.alpha * T_ij
 
         attn_weights = F.softmax(scores, dim=-1)
@@ -136,4 +150,7 @@ class SurgicalLlamaAttention(nn.Module):
         out = torch.matmul(attn_weights, v)
         out = out.transpose(1, 2).contiguous().view(batch_size, seq_len, self.embed_dim)
         
-        return self.o_proj(out)
+        out = self.o_proj(out)
+        
+        return out, attn_weights
+
