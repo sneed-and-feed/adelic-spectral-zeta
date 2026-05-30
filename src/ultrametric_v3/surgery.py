@@ -23,10 +23,10 @@ class MultiPrimeTopologyRouter(nn.Module):
     Continuous sparsification router for Llama Surgery.
     Replaces token-level routing with a single structural scalar per head.
     """
-    def __init__(self, num_heads: int, init_val: float = -5.0):
+    def __init__(self, num_heads: int, init_val: float = 0.0):
         super().__init__()
         self.num_heads = num_heads
-        # Learnable logit per head, initialized to strongly prefer dense execution
+        # Learnable logit per head, initialized on the boundary (0.0) so it can easily be pruned
         self.z = nn.Parameter(torch.full((num_heads,), init_val))
 
     def forward(self, tau: float) -> torch.Tensor:
