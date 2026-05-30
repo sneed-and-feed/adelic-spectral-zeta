@@ -190,5 +190,5 @@ class SurgicalLlamaAttention(nn.Module):
         
         out = self.o_proj(out)
         
-        return out, attn_weights, past_key_value
+        return out, attn_weights
 
