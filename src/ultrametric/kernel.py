@@ -32,7 +32,7 @@ if HAS_TRITON:
     @triton.jit
     def _ultrametric_fwd_kernel(
         Q, K, V, sm_scale,
-        q_to_k_indices, num_active_k,
+        q_to_k_indices, num_active_k, max_active_k,
         Out, L,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
@@ -73,8 +73,10 @@ if HAS_TRITON:
 
         num_act = tl.load(num_active_k + act_offset)
 
-        for idx in range(num_act):
-            start_n_block = tl.load(q_to_k_indices + idx_offset + idx * stride_idx_n)
+        for idx in range(max_active_k):
+            mask = idx < num_act
+            safe_idx = tl.where(mask, idx, 0)
+            start_n_block = tl.load(q_to_k_indices + idx_offset + safe_idx * stride_idx_n)
 
             k_block_ptr = tl.make_block_ptr(
                 base=K + k_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_kk, stride_kn),
@@ -89,6 +91,7 @@ if HAS_TRITON:
             v = tl.load(v_block_ptr, boundary_check=(0, 1), padding_option="zero")
 
             qk = tl.dot(q, k) * sm_scale
+            qk = tl.where(mask, qk, float('-inf'))
 
             m_i_new = tl.maximum(m_i, tl.max(qk, 1))
             alpha = tl.exp(m_i - m_i_new)
@@ -122,12 +125,14 @@ def compute_block_sparse_indices(router_indices: torch.Tensor, req_depth: int):
     _, q_to_k_indices = match.sort(dim=-1, descending=True)
     num_active_k = match.sum(dim=-1, dtype=torch.int32)
     q_to_k_indices = q_to_k_indices.to(torch.int32)
+    max_active_k = num_active_k.max().item()
     
     _, k_to_q_indices = match.transpose(2, 3).sort(dim=-1, descending=True)
     num_active_q = match.transpose(2, 3).sum(dim=-1, dtype=torch.int32)
     k_to_q_indices = k_to_q_indices.to(torch.int32)
+    max_active_q = num_active_q.max().item()
     
-    return q_to_k_indices, num_active_k, k_to_q_indices, num_active_q
+    return q_to_k_indices, num_active_k, max_active_k, k_to_q_indices, num_active_q, max_active_q
 
 
 def routing_to_block_indices(
@@ -175,7 +180,7 @@ def routing_to_block_indices(
 if HAS_TRITON:
     @triton.jit
     def _ultrametric_bwd_dq_kernel(
-        Q, K, V, sm_scale, q_to_k_indices, num_active_k,
+        Q, K, V, sm_scale, q_to_k_indices, num_active_k, max_active_k,
         dO, dQ, L, D,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
@@ -224,8 +229,10 @@ if HAS_TRITON:
         dq = tl.zeros([BLOCK_M, BLOCK_DMODEL], dtype=tl.float32)
         num_act = tl.load(num_active_k + act_offset)
 
-        for idx in range(num_act):
-            start_n_block = tl.load(q_to_k_indices + idx_offset + idx * stride_idx_n)
+        for idx in range(max_active_k):
+            mask = idx < num_act
+            safe_idx = tl.where(mask, idx, 0)
+            start_n_block = tl.load(q_to_k_indices + idx_offset + safe_idx * stride_idx_n)
 
             k_ptr = tl.make_block_ptr(
                 base=K + k_offset, shape=(BLOCK_DMODEL, N_CTX), strides=(stride_kk, stride_kn),
@@ -242,12 +249,14 @@ if HAS_TRITON:
 
             k = tl.load(k_ptr, boundary_check=(0, 1), padding_option="zero")
             qk = tl.dot(q, k) * sm_scale
+            qk = tl.where(mask, qk, float('-inf'))
             p = tl.exp(qk - l_i[:, None])
 
             v_T = tl.load(v_T_ptr, boundary_check=(0, 1), padding_option="zero")
             dp = tl.dot(do, v_T)
             
             ds = p * (dp - D_i[:, None]) * sm_scale
+            ds = tl.where(mask, ds, 0.0)
             
             k_n = tl.load(k_norm_ptr, boundary_check=(0, 1), padding_option="zero")
             dq += tl.dot(ds.to(tl.float16), k_n)
@@ -256,7 +265,7 @@ if HAS_TRITON:
 
     @triton.jit
     def _ultrametric_bwd_dk_dv_kernel(
-        Q, K, V, sm_scale, k_to_q_indices, num_active_q,
+        Q, K, V, sm_scale, k_to_q_indices, num_active_q, max_active_q,
         dO, dK, dV, L, D,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
@@ -306,8 +315,10 @@ if HAS_TRITON:
 
         num_act = tl.load(num_active_q + act_offset)
 
-        for idx in range(num_act):
-            start_m_block = tl.load(k_to_q_indices + idx_offset + idx * stride_idx_n)
+        for idx in range(max_active_q):
+            mask = idx < num_act
+            safe_idx = tl.where(mask, idx, 0)
+            start_m_block = tl.load(k_to_q_indices + idx_offset + safe_idx * stride_idx_n)
 
             q_norm_ptr = tl.make_block_ptr(
                 base=Q + q_offset, shape=(N_CTX, BLOCK_DMODEL), strides=(stride_qm, stride_qk),
@@ -320,6 +331,7 @@ if HAS_TRITON:
 
             q_n = tl.load(q_norm_ptr, boundary_check=(0, 1), padding_option="zero")
             qk = tl.dot(q_n, tl.trans(k)) * sm_scale
+            qk = tl.where(mask, qk, float('-inf'))
             
             offs_m = start_m_block * BLOCK_M + tl.arange(0, BLOCK_M)
             l_ptrs = L + off_hz * N_CTX + offs_m
@@ -331,10 +343,12 @@ if HAS_TRITON:
 
             do = tl.load(do_norm_ptr, boundary_check=(0, 1), padding_option="zero")
             
-            dv += tl.dot(tl.trans(p).to(tl.float16), do)
+            p_masked = tl.where(mask, p, 0.0)
+            dv += tl.dot(tl.trans(p_masked).to(tl.float16), do)
 
             dp = tl.dot(do, tl.trans(v))
             ds = p * (dp - D_i[:, None]) * sm_scale
+            ds = tl.where(mask, ds, 0.0)
 
             dk += tl.dot(tl.trans(ds).to(tl.float16), q_n)
 
@@ -446,7 +460,7 @@ def ultrametric_attention_triton(
         router_indices = torch.cat([router_indices, pad], dim=2)
 
     # Precompute coordinate lists
-    q_to_k_indices, num_active_k, _, _ = compute_block_sparse_indices(router_indices, req_depth)
+    q_to_k_indices, num_active_k, max_active_k, _, _, _ = compute_block_sparse_indices(router_indices, req_depth)
 
     # Allocate output
     out = torch.empty_like(q)
@@ -460,7 +474,7 @@ def ultrametric_attention_triton(
     L = torch.empty((Z, H, N_CTX), device=q.device, dtype=torch.float32)
 
     _ultrametric_fwd_kernel[grid](
-        q, k, v, sm_scale, q_to_k_indices, num_active_k, out, L,
+        q, k, v, sm_scale, q_to_k_indices, num_active_k, max_active_k, out, L,
         q.stride(0), q.stride(1), q.stride(2), q.stride(3),
         k.stride(0), k.stride(1), k.stride(2), k.stride(3),
         v.stride(0), v.stride(1), v.stride(2), v.stride(3),
@@ -530,14 +544,14 @@ class CurriculumSparseAttention(torch.autograd.Function):
             )
             router_indices = torch.cat([router_indices, pad], dim=2)
 
-        q_to_k_indices, num_active_k, k_to_q_indices, num_active_q = compute_block_sparse_indices(router_indices, req_depth)
+        q_to_k_indices, num_active_k, max_active_k, k_to_q_indices, num_active_q, max_active_q = compute_block_sparse_indices(router_indices, req_depth)
 
         # D_i = sum(do_i * o_i)
         D = (do * o).to(torch.float32).sum(dim=-1).contiguous()
 
         grid_q = (triton.cdiv(N_CTX, BLOCK_M), Z * H)
         _ultrametric_bwd_dq_kernel[grid_q](
-            q, k, v, sm_scale, q_to_k_indices, num_active_k,
+            q, k, v, sm_scale, q_to_k_indices, num_active_k, max_active_k,
             do, dq, L, D,
             q.stride(0), q.stride(1), q.stride(2), q.stride(3),
             k.stride(0), k.stride(1), k.stride(2), k.stride(3),
@@ -551,7 +565,7 @@ class CurriculumSparseAttention(torch.autograd.Function):
 
         grid_k = (triton.cdiv(N_CTX, BLOCK_N), Z * H)
         _ultrametric_bwd_dk_dv_kernel[grid_k](
-            q, k, v, sm_scale, k_to_q_indices, num_active_q,
+            q, k, v, sm_scale, k_to_q_indices, num_active_q, max_active_q,
             do, dk, dv, L, D,
             q.stride(0), q.stride(1), q.stride(2), q.stride(3),
             k.stride(0), k.stride(1), k.stride(2), k.stride(3),
