@@ -27,8 +27,8 @@ SEQ_LEN = 256
 BATCH_SIZE = 8
 LR = 5e-4
 WD = 0.1
-STEPS = 500
-AUX_LOSS_WEIGHT = 0.01
+STEPS = 5000
+AUX_LOSS_WEIGHT = 0.001
 
 def main():
     print("=" * 80)

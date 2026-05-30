@@ -266,30 +266,29 @@ class UltrametricTransformer(nn.Module):
         x = self.tok_emb(input_ids)  # (batch, seq_len, embed_dim)
         x = self.emb_dropout(x)
 
-        # Build causal + ultrametric mask
-        # The ultrametric mask is combined with the causal mask
+        # Build causal mask
         causal = torch.tril(
-            torch.ones(seq_len, seq_len, dtype=torch.bool, device=x.device)
-        )
-        # Static ultrametric structure
-        from .topology import get_ultrametric_mask
-        ultra_mask = get_ultrametric_mask(seq_len, self.p).to(x.device)
-        # Combined: attend only if both causal AND ultrametrically close
-        combined_mask = causal & ultra_mask  # (seq_len, seq_len)
-        combined_mask = combined_mask.unsqueeze(0).unsqueeze(0)  # (1, 1, S, S)
+            torch.ones(seq_len, seq_len, dtype=torch.float32, device=x.device)
+        ).unsqueeze(0).unsqueeze(0) # (1, 1, S, S)
 
         total_aux_loss = 0.0
         self.layer_routings = []
+        from .topology import get_dynamic_ultrametric_mask
 
-        # Pass through transformer blocks
         for router, block in zip(self.routers, self.blocks):
             routing_assignments, layer_aux_loss = router(x, tau_override=tau_override)
             total_aux_loss = total_aux_loss + layer_aux_loss
             self.layer_routings.append(routing_assignments)
             
+            # Use dynamic mask with local window for all non-triton modes
+            dyn_mask = get_dynamic_ultrametric_mask(
+                routing_assignments, p=self.p, local_window=32
+            ).to(x.device)
+            layer_mask = dyn_mask * causal
+            
             x = block(
                 x,
-                mask=combined_mask,
+                mask=layer_mask,
                 routing_assignments=routing_assignments,
                 mode=self.attn_mode,
                 use_interior=self.use_interior,

@@ -357,7 +357,10 @@ class UltrametricAttention(nn.Module):
     ) -> torch.Tensor:
         """Standard dense attention with masking. O(N²) compute and memory."""
         scores = torch.matmul(q, k.transpose(-2, -1)) * self.scale
-        scores = scores.masked_fill(~mask.bool(), float("-inf"))
+        if mask.dtype == torch.bool:
+            scores = scores.masked_fill(~mask, float("-inf"))
+        else:
+            scores = scores + torch.log(mask.clamp(min=1e-9))
         attn_weights = F.softmax(scores, dim=-1)
         attn_weights = self.attn_dropout(attn_weights)
         out = torch.matmul(attn_weights, v)
@@ -442,7 +445,10 @@ class UltrametricAttention(nn.Module):
                     i * block_size : (i + 1) * block_size,
                     j * block_size : (j + 1) * block_size,
                 ]
-                scores_ij = scores_ij.masked_fill(~token_mask, float("-inf"))
+                if token_mask.dtype == torch.bool:
+                    scores_ij = scores_ij.masked_fill(~token_mask, float("-inf"))
+                else:
+                    scores_ij = scores_ij + torch.log(token_mask.clamp(min=1e-9))
 
                 # Online softmax update for this block
                 row_start = i * block_size

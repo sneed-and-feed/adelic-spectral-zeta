@@ -144,7 +144,7 @@ class DynamicTopologyRouter(nn.Module):
 
 
 def get_dynamic_ultrametric_mask(
-    assignments: torch.Tensor, p: int = 2, max_dist: Optional[int] = None
+    assignments: torch.Tensor, p: int = 2, max_dist: Optional[int] = None, local_window: int = 0
 ) -> torch.Tensor:
     """
     Generates a dynamic ultrametric mask from learned routing assignments.
@@ -166,15 +166,15 @@ def get_dynamic_ultrametric_mask(
     if assignments.dim() == 5:
         B, H, S, L, P = assignments.shape
         a_flat = assignments.reshape(B * H, S, L, P)
-        mask_flat = _compute_distance_mask(a_flat, L, max_dist)
+        mask_flat = _compute_distance_mask(a_flat, L, max_dist, local_window)
         return mask_flat.view(B, H, S, S)
     else:
         B, S, L, P = assignments.shape
-        return _compute_distance_mask(assignments, L, max_dist)
+        return _compute_distance_mask(assignments, L, max_dist, local_window)
 
 
 def _compute_distance_mask(
-    assignments: torch.Tensor, levels: int, max_dist: Optional[int]
+    assignments: torch.Tensor, levels: int, max_dist: Optional[int], local_window: int = 0
 ) -> torch.Tensor:
     """
     Core p-adic distance mask computation via reversed cumulative product.
@@ -199,6 +199,13 @@ def _compute_distance_mask(
     temperature = 0.5
     soft_mask = torch.sigmoid((max_dist - expected_dist) / temperature)
     hard_mask = (expected_dist <= max_dist).float()
+    
+    if local_window > 0:
+        S = expected_dist.shape[-1]
+        idx = torch.arange(S, device=expected_dist.device)
+        band = (torch.abs(idx.unsqueeze(0) - idx.unsqueeze(1)) <= local_window).float()
+        hard_mask = torch.clamp(hard_mask + band, max=1.0)
+        
     mask = hard_mask.detach() - soft_mask.detach() + soft_mask
     return mask
 
