@@ -32,7 +32,7 @@ if HAS_TRITON:
     @triton.jit
     def _ultrametric_fwd_kernel(
         Q, K, V, sm_scale,
-        q_to_k_indices, num_active_k, max_active_k,
+        q_to_k_indices, num_active_k, max_active_k: tl.constexpr,
         Out, L,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
@@ -180,7 +180,7 @@ def routing_to_block_indices(
 if HAS_TRITON:
     @triton.jit
     def _ultrametric_bwd_dq_kernel(
-        Q, K, V, sm_scale, q_to_k_indices, num_active_k, max_active_k,
+        Q, K, V, sm_scale, q_to_k_indices, num_active_k, max_active_k: tl.constexpr,
         dO, dQ, L, D,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
@@ -265,7 +265,7 @@ if HAS_TRITON:
 
     @triton.jit
     def _ultrametric_bwd_dk_dv_kernel(
-        Q, K, V, sm_scale, k_to_q_indices, num_active_q, max_active_q,
+        Q, K, V, sm_scale, k_to_q_indices, num_active_q, max_active_q: tl.constexpr,
         dO, dK, dV, L, D,
         stride_qz, stride_qh, stride_qm, stride_qk,
         stride_kz, stride_kh, stride_kn, stride_kk,
