@@ -74,7 +74,7 @@ def train(args):
             num_heads=num_heads,
             prime_arities=[2, 2], # Base-2 hierarchy matches Dyck-2 branching
             max_seq_len=args.seq_len,
-            attn_mode="auto"
+            attn_mode="dense" # Force dense mode for full continuous gradients during training
         ).to(device)
         
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
