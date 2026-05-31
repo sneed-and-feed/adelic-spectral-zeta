@@ -182,6 +182,11 @@ class SurgicalLlamaAttention(nn.Module):
             full_mask = full_mask[:, :, -1:, :]
             
         sparse_scores = scores.masked_fill(~um_mask_bool, float('-inf'))
+        
+        # CRITICAL FIX: Prevent softmax NaN from all -inf rows (e.g. padded tokens getting fully masked)
+        is_all_neg_inf = (sparse_scores == float('-inf')).all(dim=-1, keepdim=True)
+        sparse_scores = sparse_scores.masked_fill(is_all_neg_inf, 0.0)
+        
         attn_weights = F.softmax(sparse_scores, dim=-1, dtype=torch.float32)
         attn_weights = torch.nan_to_num(attn_weights, 0.0)
 
