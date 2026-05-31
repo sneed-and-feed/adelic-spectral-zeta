@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adèlic Spectral Geometry & Ultrametric AI — Interactive Map</title>
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Mermaid.js for Vector Diagram Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                background: '#0b0f19',
+                primaryColor: '#10b981',
+                primaryTextColor: '#f3f4f6',
+                lineColor: '#6b7280',
+                fontSize: '14px',
+                fontFamily: 'Inter, sans-serif'
+            }
+        });
+    </script>
+
+    <style>
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-base: #070a13;
+            --bg-surface: rgba(15, 23, 42, 0.75);
+            --bg-card: rgba(30, 41, 59, 0.4);
+            --border-glow: rgba(16, 185, 129, 0.15);
+            --border-glow-purple: rgba(139, 92, 246, 0.15);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --color-emerald: #10b981;
+            --color-violet: #8b5cf6;
+            --color-cyan: #06b6d4;
+            --color-rose: #f43f5e;
+            --font-display: 'Outfit', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        aside {
+            background-color: rgba(10, 15, 30, 0.85);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-violet));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-family: var(--font-display);
+            color: var(--bg-base);
+        }
+
+        .brand-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+        }
+
+        .nav-item a:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active a {
+            color: var(--color-emerald);
+            background-color: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.15);
+            box-shadow: 0 4px 20px -5px rgba(16, 185, 129, 0.2);
+        }
+
+        .aside-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        main {
+            padding: 3rem 4rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            overflow-y: auto;
+        }
+
+        header {
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-purple {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--color-violet);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            font-weight: 400;
+            max-width: 800px;
+        }
+
+        section {
+            margin-bottom: 4.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::after {
+            content: '';
+            height: 1px;
+            flex-grow: 1;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent);
+            margin-left: 1rem;
+        }
+
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-premium);
+            transition: var(--transition-smooth);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card.glow-emerald { border-left: 4px solid var(--color-emerald); }
+        .glass-card.glow-purple { border-left: 4px solid var(--color-violet); }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .metric-card {
+            background: rgba(30, 41, 59, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .metric-card:hover {
+            background: rgba(30, 41, 59, 0.4);
+            border-color: rgba(255, 255, 255, 0.07);
+            transform: translateY(-2px);
+        }
+
+        .metric-value {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-value.emerald {
+            background: linear-gradient(to right, #ffffff, var(--color-emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-value.purple {
+            background: linear-gradient(to right, #ffffff, var(--color-violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .metric-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            color: #ffffff;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-emerald);
+            box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.3);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+            width: 16px;
+            height: 16px;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .filter-tag:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .filter-tag.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-emerald);
+            border-color: rgba(16, 185, 129, 0.25);
+            box-shadow: 0 2px 10px -2px rgba(16, 185, 129, 0.15);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            background: rgba(10, 15, 30, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1rem 1.25rem;
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            letter-spacing: 0.02em;
+        }
+
+        td {
+            padding: 1.15rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            vertical-align: middle;
+            color: var(--text-secondary);
+            transition: var(--transition-smooth);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr.table-row-item { cursor: pointer; }
+        tr.table-row-item:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: #ffffff;
+        }
+
+        .file-name-cell {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #ffffff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-icon { font-size: 1rem; }
+
+        .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.45rem;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .tag-geometry { background: rgba(6, 182, 212, 0.1); color: var(--color-cyan); border: 1px solid rgba(6, 182, 212, 0.15); }
+        .tag-ultrametric { background: rgba(16, 185, 129, 0.1); color: var(--color-emerald); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .tag-jax { background: rgba(244, 63, 94, 0.1); color: var(--color-rose); border: 1px solid rgba(244, 63, 94, 0.15); }
+        .tag-surgery { background: rgba(139, 92, 246, 0.1); color: var(--color-violet); border: 1px solid rgba(139, 92, 246, 0.15); }
+
+        .list-symbols {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            list-style: none;
+        }
+
+        .symbol-item {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: #d1d5db;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -550px;
+            bottom: 0;
+            width: 500px;
+            background: #0d1325;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+            z-index: 101;
+            padding: 3rem 2.5rem;
+            overflow-y: auto;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .drawer.active { right: 0; }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.5rem;
+        }
+
+        .drawer-title-group h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.35rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .close-btn:hover { color: #ffffff; }
+
+        .drawer-section { margin-bottom: 2rem; }
+
+        .drawer-section h4 {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .drawer-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .dep-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .dep-item {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .dep-icon-out { color: var(--color-rose); }
+        .dep-icon-in { color: var(--color-emerald); }
+
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container { grid-template-columns: 1fr; }
+            aside { display: none; }
+            .mapping-grid { grid-template-columns: 1fr; }
+            main { padding: 2rem; }
+        }
+
+        .mermaid-container {
+            background: rgba(10, 15, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        pre {
+            background: rgba(7, 10, 19, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #d1d5db;
+        }
+
+        .math-block {
+            background: rgba(139, 92, 246, 0.03);
+            border-left: 3px solid var(--color-violet);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Navigation Sidebar -->
+    <aside>
+        <div>
+            <div class="brand">
+                <div class="brand-logo">Δ</div>
+                <div class="brand-title">Adèlic & Ultrametric Map</div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" id="nav-item-overview"><a href="#overview">Overview</a></li>
+                <li class="nav-item" id="nav-item-files"><a href="#file-map">File Linkages</a></li>
+                <li class="nav-item" id="nav-item-pipelines"><a href="#pipelines">Data Pipelines</a></li>
+                <li class="nav-item" id="nav-item-theory"><a href="#theory">Theoretical Mappings</a></li>
+            </ul>
+        </div>
+        <div class="aside-footer">
+            Adèlic Spectral Triple<br>v1.0.0
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+        <header id="overview">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="badge">Adèlic Triple Framework</span>
+                <span class="badge badge-purple">Triton Block-Sparse Stack</span>
+            </div>
+            <h1>Adèlic Spectral Geometry & Ultrametric AI</h1>
+            <p class="subtitle">An interactive, file-level map outlining dependencies, modular logic, and mathematical formulations across the codebase.</p>
+        </header>
+
+        <section>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-value emerald">28×</span>
+                    <span class="metric-label">Inference Speedup</span>
+                    <span class="metric-desc">Triton block-sparse kernel vs dense attention at 8K tokens.</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value purple">98.4%</span>
+                    <span class="metric-label">KV VRAM Reduction</span>
+                    <span class="metric-desc">Sparsity pruning at depth-3 tree level limits cache load overhead.</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">17.6×</span>
+                    <span class="metric-label">V2 VRAM Optimization</span>
+                    <span class="metric-desc">Shifted Swin-style causal tree masks compared to standard PyTorch.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive File Linkages Section -->
+        <section id="file-map">
+            <h2 class="section-title">Interactive File Linkages</h2>
+            <div class="glass-card">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                    Browse files under the source tree. Click on any file to open the details pane showing its exports, outgoing imports, and incoming dependencies.
+                </p>
+                
+                <div class="controls-bar">
+                    <div class="search-wrapper">
+                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="search-bar" class="search-input" placeholder="Search files, symbols, or roles...">
+                    </div>
+                    <div class="filter-tags" id="module-filters">
+                        <span class="filter-tag active" data-filter="all">All Modules</span>
+                        <span class="filter-tag" data-filter="geometry">Spectral Geometry</span>
+                        <span class="filter-tag" data-filter="ultrametric">Ultrametric Core</span>
+                        <span class="filter-tag" data-filter="jax">JAX/TPU</span>
+                        <span class="filter-tag" data-filter="surgery">LLM Surgery (V3)</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Category</th>
+                                <th>Key Exported Symbols / Modules</th>
+                                <th>Core Functional Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linkage-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Pipelines Section -->
+        <section id="pipelines">
+            <h2 class="section-title">Data Flow & Execution Pipelines</h2>
+            
+            <div class="glass-card glow-emerald">
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="color: var(--color-emerald);">■</span> Forward Pass & Triton Compilation Pipeline
+                </h3>
+                <div class="mermaid-container">
+                    <div class="mermaid">
+                    graph TD
+                        X[Token Embeddings X] --> Router[DynamicTopologyRouter]
+                        Router -->|Gumbel-Softmax| Weights[Routing Weights assignments]
+                        Weights -->|routing_to_block_indices| Indices[Block Coordinate Indices]
+                        Indices -->|max_active_k coordinate lists| Kernel[Triton FWD Kernel]
+                        
+                        Q[Query Projector Q] --> Kernel
+                        K[Key Projector K] --> Kernel
+                        V[Value Projector V] --> Kernel
+                        
+                        Kernel -->|Skip SRAM load for mismatched coordinates| Out[Sparse Attention Output]
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; font-size: 0.9rem;">
+                    During training, token embeddings are projected into branching paths on a Bruhat-Tits tree. The coordinate indices mapping branch matches are sorted and sent as indices to the Triton hardware kernel, avoiding the materialization of the full O(N²) attention scores in HBM.
+                </p>
+            </div>
+
+            <div class="glass-card glow-purple">
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="color: var(--color-violet);">■</span> Llama Surgery (Continuous Logit Homotopy)
+                </h3>
+                <div class="mermaid-container">
+                    <div class="mermaid">
+                    stateDiagram-v2
+                        [*] --> SurgicalInit : inject_surgery()
+                        SurgicalInit --> Step0 : Initialize z_bias = -5.0
+                        Step0 --> HomotopyCurriculum : assignments near 0 (Zero Shock)
+                        state HomotopyCurriculum {
+                            [*] --> AnnealTemp : Temp tau decay (1.0 -> 0.1)
+                            AnnealTemp --> RampLoss : Ramping auxiliary loss penalty
+                            RampLoss --> SoftPruning : Multiply softmax by STE mask
+                            SoftPruning --> [*]
+                        }
+                        HomotopyCurriculum --> PolarizedMasks : Routing gates snap to {0, 1}
+                        PolarizedMasks --> TritonSpeedup : Export block sparse coordinates
+                        TritonSpeedup --> [*]
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; font-size: 0.9rem;">
+                    To sparsify pre-trained dense LLMs without destroying world knowledge, we deploy a Continuous Logit Homotopy. Router projection weights are initialized negative to match the pre-trained dense manifold exactly, before annealing and Gumbel-temperature curves gradually polarize attention heads into discrete, hardware-efficient block-sparse subtrees.
+                </p>
+            </div>
+        </section>
+
+        <!-- Theoretical Mappings Section -->
+        <section id="theory">
+            <h2 class="section-title">Theoretical Mappings</h2>
+            <div class="glass-card">
+                <div class="mapping-grid">
+                    <div>
+                        <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 1rem; color: #ffffff;">
+                            1. From p-adic Distance to Differentiable Masks
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                            In the adèlic library, the $p$-adic distance matrix is computed using prime valuations ($v_p$). The distance decreases as the power of the prime dividing the coordinate differences increases:
+                        </p>
+                        <div class="math-block">
+                            <code style="color: var(--color-cyan);">d_p(x, y) = p^{-v_p(x - y)}</code>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                            In the transformer router, this is replaced by the differentiable expectation of tree distance based on path matching probabilities across levels:
+                        </p>
+                        <div class="math-block">
+                            <code style="color: var(--color-emerald);">expected_dist = levels - sum(cumprod(agreement_probs))</code>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-bottom: 1rem; color: #ffffff;">
+                            2. Adèlic Product Formula & Multi-Prime Routing
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                            The adèlic product formula connects all prime places to reconstruct global algebraic spaces:
+                        </p>
+                        <div class="math-block">
+                            <code style="color: var(--color-violet);">A_Q = R x \prod_p Q_p</code>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                            The V2 research module implements this by grouping the attention heads and assigning co-prime arities (e.g. $p=2$ and $p=3$ concurrently). The intersection of their local tree structures covers the sequence, replicating the global properties of adèlic numbers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Drawer / Detail Sidebar Drawer (Floating) -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="drawer">
+    <div class="drawer-header">
+        <div class="drawer-title-group">
+            <h3 id="drawer-title">file_name.py</h3>
+            <span class="tag tag-geometry" id="drawer-badge">Category</span>
+        </div>
+        <button class="close-btn" id="close-drawer-btn">&times;</button>
+    </div>
+    
+    <div class="drawer-section">
+        <h4>Core Functional Role</h4>
+        <p class="drawer-text" id="drawer-description">Detailed description of what this file compiles to and how it integrates.</p>
+    </div>
+
+    <div class="drawer-section">
+        <h4>Exported Symbols</h4>
+        <ul class="list-symbols" id="drawer-symbols">
+            <!-- Populated via JS -->
+        </ul>
+    </div>
+
+    <div class="drawer-section">
+        <h4>Direct Dependencies (Imports)</h4>
+        <ul class="dep-list" id="drawer-imports">
+            <!-- Populated via JS -->
+        </ul>
+    </div>
+
+    <div class="drawer-section">
+        <h4>Inbound References (Depended on by)</h4>
+        <ul class="dep-list" id="drawer-inbound">
+            <!-- Populated via JS -->
+        </ul>
+    </div>
+</div>
+
+<script>
+    // File Linkage dataset mapping
+    const fileData = [
+        {
+            name: "src/adelic_spectral_zeta/core.py",
+            category: "geometry",
+            exports: ["get_tau", "get_phase_sym3", "Z_sym3_batch", "get_phase_sym4", "Z_sym4_batch"],
+            imports: ["src/adelic_spectral_zeta/primes.py"],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "src/adelic_spectral_zeta/universality.py"],
+            role: "Computes Ramanujan tau coefficients using pentagonal FFT repeated squaring and scans Hardy Z-functions (Sym³, Sym⁴) via truncated Dirichlet series."
+        },
+        {
+            name: "src/adelic_spectral_zeta/primes.py",
+            category: "geometry",
+            exports: ["sieve_primes"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/core.py"],
+            role: "Provides the standard Sieve of Eratosthenes used to collect prime coefficients for degree-N symmetric power automorphic representations."
+        },
+        {
+            name: "src/adelic_spectral_zeta/determinant.py",
+            category: "geometry",
+            exports: ["compute_eigenvalues", "weierstrass_determinant", "unperturbed_determinant", "bare_krein_determinant", "verify_entireness", "compare_with_completed_L"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "experiments/simulation.py"],
+            role: "Implements Weierstrass canonical products, regularized pole cancellations, and numerical matching against the analytical completed L-function."
+        },
+        {
+            name: "src/adelic_spectral_zeta/universality.py",
+            category: "geometry",
+            exports: ["simulate_universality", "compute_resolvent_trace_diff", "compute_perturbation_bound", "compute_frobenius_gap"],
+            imports: ["src/adelic_spectral_zeta/core.py"],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "experiments/gl_n_universality_test.py"],
+            role: "Constructs GL(3) and GL(4) spectral triples to evaluate rank-1 vs rank-N perturbation boundaries, measuring eigenvalue variances via Hoffman-Wielandt metrics."
+        },
+        {
+            name: "src/adelic_spectral_zeta/quantum.py",
+            category: "geometry",
+            exports: ["build_many_body_H", "build_many_body_H_sparse", "get_entanglement_entropy", "solve_ground_state_entanglement_sparse", "build_ramanujan_superconductor_H_sparse"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "experiments/interacting_fermions.py"],
+            role: "Assembles Fermionic Fock spaces and diagonalizes interacting lattice models to compute Von Neumann bipartite entanglement entropy spikes near zeta zeros."
+        },
+        {
+            name: "src/adelic_spectral_zeta/spectral_gap.py",
+            category: "geometry",
+            exports: ["construct_B3", "construct_B2", "construct_restricted_operator", "compute_restricted_spectral_gap", "construct_gauge_twisted_B", "get_schreier_graph", "get_schreier_blocks"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "experiments/collatz_dynamics.py"],
+            role: "Calculates modular transfer operators, 2-adic valuations, and adjacency matrices for Collatz Schreier graph towers, separating symmetric and antisymmetric blocks."
+        },
+        {
+            name: "src/adelic_spectral_zeta/adelic_dirac.py",
+            category: "geometry",
+            exports: ["construct_D0", "construct_omega2", "construct_D_cov", "construct_D_artin", "construct_xi_and_P", "sweep_eigenvalues"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py"],
+            role: "Defines the physical Dirac operators, boundary-covariant twists, and the rank-1 singular perturbation matrices representing completed automorphic L-functions."
+        },
+        {
+            name: "src/adelic_spectral_zeta/erdos_similarity.py",
+            category: "geometry",
+            exports: ["construct_adelic_sequence", "construct_adelic_set", "compute_correlation", "construct_idelic_laplacian", "solve_schrodinger_spectrum"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "experiments/erdos_similarity_spectra.py"],
+            role: "Executes adèlic sequence liftings onto Cantor sets and builds idèlic Laplacians to solve Schrödinger eigenvalues for the Erdős Similarity Conjecture."
+        },
+        {
+            name: "src/adelic_spectral_zeta/p_adic_biology.py",
+            category: "geometry",
+            exports: ["p_adic_valuation", "sequence_p_adic_distance", "parse_mmcif_sequence", "calculate_3d_rmsd"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py"],
+            role: "Correlates biochemical properties of amino acids (size, charge, hydrophobicity) under p-adic distance places against physical 3D RMSD structures."
+        },
+        {
+            name: "src/adelic_spectral_zeta/cryptography.py",
+            category: "geometry",
+            exports: ["padic_norm", "adelic_distance", "build_factorization_hamiltonian", "build_adelic_driver_hamiltonian", "bipartite_entanglement_entropy_xy"],
+            imports: [],
+            inbound: ["src/adelic_spectral_zeta/__init__.py", "experiments/cryptographic_phase_transition.py"],
+            role: "Builds diagonal cost Hamiltonians for integer factorization and configures adèlic quantum drivers weighted by prime valuations to speed up tunneling."
+        },
+        {
+            name: "src/ultrametric/topology.py",
+            category: "ultrametric",
+            exports: ["DynamicTopologyRouter", "get_dynamic_ultrametric_mask", "get_ultrametric_mask", "compute_p_adic_distance"],
+            imports: [],
+            inbound: ["src/ultrametric/__init__.py", "src/ultrametric/layer.py", "src/ultrametric/model.py", "src/ultrametric_v3/surgery.py"],
+            role: "Multi-head topology router converting continuous sequence embeddings into discrete branching coordinates on the Bruhat-Tits tree using Gumbel-Softmax."
+        },
+        {
+            name: "src/ultrametric/layer.py",
+            category: "ultrametric",
+            exports: ["UltrametricAttention", "RotaryPositionEmbedding", "apply_rotary_pos_emb", "get_tree_adjacency_mask"],
+            imports: ["src/ultrametric/topology.py", "src/ultrametric/kernel.py"],
+            inbound: ["src/ultrametric/__init__.py", "src/ultrametric/model.py", "src/ultrametric_v3/surgery.py"],
+            role: "Ultrametric attention layer which routes keys and queries. Includes standard dense fallback, chunked block-sparse iteration, and Triton CUDA routes."
+        },
+        {
+            name: "src/ultrametric/kernel.py",
+            category: "ultrametric",
+            exports: ["HAS_TRITON", "ultrametric_attention_triton", "CurriculumSparseAttention", "routing_to_block_indices"],
+            imports: [],
+            inbound: ["src/ultrametric/__init__.py", "src/ultrametric/layer.py"],
+            role: "Triton block-sparse forward and backward attention kernels. Processes precomputed block-level coordinate indices directly in SRAM to bypass dense loading."
+        },
+        {
+            name: "src/ultrametric/model.py",
+            category: "ultrametric",
+            exports: ["UltrametricTransformerBlock", "UltrametricTransformer"],
+            imports: ["src/ultrametric/layer.py", "src/ultrametric/topology.py"],
+            inbound: ["src/ultrametric/__init__.py"],
+            role: "Full trainable transformer block and causal language model. Implements dynamic routing gates and hooks for interior Holographic reasoning nodes."
+        },
+        {
+            name: "src/ultrametric_jax/kernel.py",
+            category: "jax",
+            exports: ["PrefetchScalarGridSpec", "Pallas TPU kernels"],
+            imports: [],
+            inbound: ["src/ultrametric_jax/layer.py"],
+            role: "Pallas TPU kernels written to load routing paths via scalar prefetch into SMEM before execution grid steps, compiling with XLA."
+        },
+        {
+            name: "src/ultrametric_jax/model.py",
+            category: "jax",
+            exports: ["UltrametricTransformerBlock Flax"],
+            imports: ["src/ultrametric_jax/topology.py", "src/ultrametric_jax/layer.py"],
+            inbound: [],
+            role: "Modular Flax implementation of the causal transformer block configured for TPU superpods."
+        },
+        {
+            name: "src/ultrametric_v2_research/topology.py",
+            category: "ultrametric",
+            exports: ["MultiPrimeTopologyRouter", "get_dynamic_ultrametric_mask"],
+            imports: [],
+            inbound: ["src/ultrametric_v2_research/layer.py"],
+            role: "Extends V1 routing to co-prime head groups (dyadic and triadic subtrees) and utilizes checkpointed memory buffers."
+        },
+        {
+            name: "src/ultrametric_v2_research/model.py",
+            category: "ultrametric",
+            exports: ["UltrametricTransformer V2"],
+            imports: ["src/ultrametric_v2_research/topology.py", "src/ultrametric_v2_research/layer.py"],
+            inbound: [],
+            role: "Transformer framework incorporating Swin-style cyclic position shifts and causal validation masks to resolve static branch cuts."
+        },
+        {
+            name: "src/ultrametric_v3/surgery.py",
+            category: "surgery",
+            exports: ["SurgicalLlamaAttention", "SurgeryLossRamp"],
+            imports: ["src/ultrametric/layer.py", "src/ultrametric/topology.py"],
+            inbound: ["src/ultrametric_v3/llama_patcher.py", "src/ultrametric_v3/surgery_trainer.py"],
+            role: "Patches pre-trained attention modules to support Grouped-Query Attention (GQA) and soft routing gates to enable continuous sparsification gradients."
+        },
+        {
+            name: "src/ultrametric_v3/llama_patcher.py",
+            category: "surgery",
+            exports: ["inject_surgery"],
+            imports: ["src/ultrametric_v3/surgery.py"],
+            inbound: [],
+            role: "Utility to traverse pre-trained HF models, converting standard dense modules to Surgical Llama Attention while copying weights."
+        },
+        {
+            name: "src/ultrametric_v3/surgery_trainer.py",
+            category: "surgery",
+            exports: ["SurgeryTrainer", "TauAnnealingCallback"],
+            imports: ["src/ultrametric_v3/surgery.py"],
+            inbound: [],
+            role: "Custom HuggingFace Trainer that monitors attention penalties and ramps up auxiliary load-balancing losses during training."
+        }
+    ];
+
+    const tableBody = document.getElementById("linkage-table-body");
+    
+    function populateTable(data) {
+        tableBody.innerHTML = "";
+        data.forEach((file) => {
+            const tr = document.createElement("tr");
+            tr.className = "table-row-item";
+            tr.onclick = () => openDrawer(file);
+            
+            let tagClass = "tag-geometry";
+            let tagLabel = "Spectral Geometry";
+            if (file.category === "ultrametric") {
+                tagClass = "tag-ultrametric";
+                tagLabel = "Ultrametric Core";
+            } else if (file.category === "jax") {
+                tagClass = "tag-jax";
+                tagLabel = "JAX/TPU";
+            } else if (file.category === "surgery") {
+                tagClass = "tag-surgery";
+                tagLabel = "LLM Surgery";
+            }
+            
+            const symbolsList = file.exports.map(sym => `<li class="symbol-item">${sym}</li>`).join("");
+            
+            tr.innerHTML = `
+                <td class="file-name-cell"><span class="file-icon">📄</span>${file.name.split('/').pop()}</td>
+                <td><span class="tag ${tagClass}">${tagLabel}</span></td>
+                <td><ul class="list-symbols">${symbolsList}</ul></td>
+                <td>${file.role.substring(0, 75)}...</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    populateTable(fileData);
+
+    const searchBar = document.getElementById("search-bar");
+    const filterTags = document.querySelectorAll("#module-filters .filter-tag");
+    let currentFilter = "all";
+
+    function filterData() {
+        const query = searchBar.value.toLowerCase().trim();
+        const filtered = fileData.filter(file => {
+            const matchesSearch = file.name.toLowerCase().includes(query) || 
+                                   file.role.toLowerCase().includes(query) ||
+                                   file.exports.some(s => s.toLowerCase().includes(query));
+            const matchesFilter = currentFilter === "all" || file.category === currentFilter;
+            return matchesSearch && matchesFilter;
+        });
+        populateTable(filtered);
+    }
+
+    searchBar.oninput = filterData;
+
+    filterTags.forEach(tag => {
+        tag.onclick = () => {
+            filterTags.forEach(t => t.classList.remove("active"));
+            tag.classList.add("active");
+            currentFilter = tag.getAttribute("data-filter");
+            filterData();
+        };
+    });
+
+    window.addEventListener('scroll', () => {
+        const sections = ['overview', 'file-map', 'pipelines', 'theory'];
+        let activeSec = 'overview';
+        
+        sections.forEach(sec => {
+            const el = document.getElementById(sec);
+            if (el && window.scrollY >= el.offsetTop - 120) {
+                activeSec = sec;
+            }
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.getElementById(`nav-item-${activeSec === 'file-map' ? 'files' : activeSec}`).classList.add('active');
+    });
+
+    const drawer = document.getElementById("drawer");
+    const drawerOverlay = document.getElementById("drawer-overlay");
+    const closeDrawerBtn = document.getElementById("close-drawer-btn");
+
+    function openDrawer(file) {
+        document.getElementById("drawer-title").innerText = file.name.split('/').pop();
+        document.getElementById("drawer-description").innerText = file.role;
+        
+        const exportsContainer = document.getElementById("drawer-symbols");
+        exportsContainer.innerHTML = file.exports.length > 0 
+            ? file.exports.map(sym => `<li class="symbol-item">${sym}</li>`).join("")
+            : `<span style="color: var(--text-muted); font-size: 0.85rem;">None</span>`;
+
+        const badge = document.getElementById("drawer-badge");
+        badge.innerText = file.category.toUpperCase();
+        badge.className = `tag tag-${file.category}`;
+        
+        const importsContainer = document.getElementById("drawer-imports");
+        importsContainer.innerHTML = file.imports.length > 0
+            ? file.imports.map(imp => `<li class="dep-item"><span class="dep-icon-out">⮞</span> ${imp.split('/').pop()}</li>`).join("")
+            : `<span style="color: var(--text-muted); font-size: 0.85rem;">None</span>`;
+
+        const inboundContainer = document.getElementById("drawer-inbound");
+        inboundContainer.innerHTML = file.inbound.length > 0
+            ? file.inbound.map(inb => `<li class="dep-item"><span class="dep-icon-in">⮜</span> ${inb.split('/').pop()}</li>`).join("")
+            : `<span style="color: var(--text-muted); font-size: 0.85rem;">None</span>`;
+
+        drawer.classList.add("active");
+        drawerOverlay.classList.add("active");
+    }
+
+    function closeDrawer() {
+        drawer.classList.remove("active");
+        drawerOverlay.classList.remove("active");
+    }
+
+    closeDrawerBtn.onclick = closeDrawer;
+    drawerOverlay.onclick = closeDrawer;
+</script>
+
+</body>
+</html>
