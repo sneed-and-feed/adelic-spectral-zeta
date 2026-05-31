@@ -55,6 +55,17 @@ class DynamicTopologyRouter(nn.Module):
         self.backbone = nn.Linear(embed_dim, embed_dim)
         self.route_heads = nn.Linear(embed_dim, num_heads * self.levels * p)
 
+        # Deterministic Collapse Initialization for Continuous Logit Homotopy
+        with torch.no_grad():
+            nn.init.zeros_(self.route_heads.weight)
+            # Initialize bias such that Child 0 has logit +5.0, others have -5.0
+            b = torch.full((self.num_heads * self.levels * self.p,), -5.0)
+            for h in range(self.num_heads):
+                for l in range(self.levels):
+                    idx = (h * self.levels * self.p) + (l * self.p) + 0
+                    b[idx] = 5.0
+            self.route_heads.bias.copy_(b)
+
     def forward(
         self, x: torch.Tensor, tau_override: Optional[float] = None
     ) -> Tuple[torch.Tensor, torch.Tensor]:

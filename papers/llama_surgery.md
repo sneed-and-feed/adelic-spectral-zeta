@@ -6,7 +6,7 @@
 
 ## Abstract
 
-We present *Llama Surgery*, a method for injecting learned block-sparse attention topologies into pre-trained dense language models without retraining from scratch, distillation, or post-hoc pruning. Starting from a frozen Llama 3.1 8B, we surgically replace each attention layer with a *Dynamic Topology Router* that maps token embeddings onto the branches of a Bruhat-Tits p-adic tree via factorized Gumbel-Softmax routing. A *Continuous Logit Homotopy* guarantees that at initialization the injected topology bias is identically zero, preserving the pre-trained manifold exactly. Over training, temperature annealing polarizes the soft routing assignments into hard binary masks, and a Switch Transformer-style load-balancing loss prevents routing collapse. We identify and resolve two critical failure modes: (1) gradient collapse through discrete masking operations, solved by a Straight-Through Estimator bridge that decouples the hard forward mask from the soft backward gradient; and (2) *Attention Sink* instability, where hard-masking the initial token causes softmax entropy collapse and syntactic degeneration, solved by permanently anchoring Token 0 in the visibility set. The resulting architecture is validated on Llama 3.1 8B fine-tuned on WikiText-2, achieving stable convergence and producing coherent, mathematically sophisticated text while maintaining dynamic block-sparse routing across all 32 transformer layers. A custom Triton forward kernel with Attention Sink and Local Window support, pipelined for Ampere and Hopper architectures (`num_warps=4`, `num_stages=3`), executes the block-sparse prefill phase at O(N) theoretical complexity. To our knowledge, this is the first demonstration of differentiable ultrametric topology injection into a production-scale pre-trained LLM.
+We present *Llama Surgery*, a method for injecting learned block-sparse attention topologies into pre-trained dense language models without retraining from scratch, distillation, or post-hoc pruning. Starting from a frozen Llama 3.1 8B, we surgically replace each attention layer with a *Dynamic Topology Router* that maps token embeddings onto the branches of a Bruhat-Tits p-adic tree via factorized Gumbel-Softmax routing. A *Deterministic Collapse Initialization* to achieve a *Continuous Logit Homotopy* guarantees that at step 0 the injected topology mask is identically dense, preserving the pre-trained manifold exactly. Over training, temperature annealing polarizes the soft routing assignments into hard binary masks, and a Switch Transformer-style load-balancing loss prevents routing collapse. We identify and resolve two critical failure modes: (1) gradient collapse through discrete masking operations, solved by a Straight-Through Estimator bridge that decouples the hard forward mask from the soft backward gradient; and (2) *Attention Sink* instability, where hard-masking the initial token causes softmax entropy collapse and syntactic degeneration, solved by permanently anchoring Token 0 in the visibility set. The resulting architecture is validated on Llama 3.1 8B fine-tuned on WikiText-2, achieving stable convergence and producing coherent, mathematically sophisticated text while maintaining dynamic block-sparse routing across all 32 transformer layers. A custom Triton forward kernel with Attention Sink and Local Window support, pipelined for Ampere and Hopper architectures (`num_warps=4`, `num_stages=3`), executes the block-sparse prefill phase at O(N) theoretical complexity. To our knowledge, this is the first demonstration of differentiable ultrametric topology injection into a production-scale pre-trained LLM.
 
 ---
 
@@ -20,7 +20,7 @@ In the companion paper *Learning to Skip Blocks*, we demonstrated that small Tra
 
 This paper resolves all three. We introduce *Llama Surgery*: a procedure for injecting a *Dynamic Topology Router*—one that routes based on token *content*, not position—into each attention layer of a frozen pre-trained Llama 3.1 8B model. The key technical contributions are:
 
-1. **Continuous Logit Homotopy** (Section 2.3). A surgical initialization scheme that guarantees the injected router contributes identically zero bias at step 0, preserving the pre-trained manifold.
+1. **Continuous Logit Homotopy via Deterministic Collapse** (Section 2.3). A surgical initialization scheme that mathematically guarantees the injected routing mask is identically dense at step 0, preserving the pre-trained manifold.
 2. **Straight-Through Estimator Bridge** (Section 2.4). A gradient pathway that maintains differentiability through the discrete topology mask.
 3. **Attention Sink Stabilization** (Section 2.5). The discovery that hard-masking Token 0 causes catastrophic softmax entropy collapse, and a permanent fix.
 4. **Triton V3 Kernel** (Section 3). A block-sparse forward kernel upgraded with Attention Sink visibility, Local Grammar Windows, and Hopper-specific pipelining.
@@ -68,13 +68,13 @@ where sg[·] denotes stop-gradient. In the forward pass, m_{ij} evaluates to the
 
 ### 2.3 Continuous Logit Homotopy
 
-Naïve injection of a randomly initialized router into a pre-trained model catastrophically disrupts the learned attention distribution at step 0. We eliminate this shock via a *Continuous Logit Homotopy*: the bias of the router's projection layer is initialized to a large negative value μ_init << 0 (e.g., -5.0). At this operating point, the Gumbel-Softmax output approaches a uniform distribution over branches:
+Naïve injection of a randomly initialized router into a pre-trained model catastrophically disrupts the learned attention distribution at step 0 by arbitrarily suppressing valid attention blocks. We eliminate this shock via a *Deterministic Collapse Initialization* to achieve a *Continuous Logit Homotopy*. 
 
-```
-lim_{μ → -∞} E[g(μ)] → 1/p  ⟹  d_p(i,j) ≈ 0  ∀ i,j
-```
+Instead of a uniform distribution (which forces tokens into disparate branches and maximizes expected $p$-adic distance), the weights of the router's projection layer are initialized exactly to 0. The bias is explicitly set such that the logit for the 0-th child branch at every tree level is massive (e.g., +5.0), while all other branches are suppressed (e.g., -5.0). 
 
-Thus m_{ij} ≈ 1 for all token pairs at initialization, and the injected topology is *identically* the pre-trained dense attention pattern. Over training, the router logits increase from their negative initialization, causing the mask to gradually sparsify.
+At this deterministic initialization point, every single token is routed identically to the 0-th branch. Because all tokens collapse into the exact same localized sub-tree, the expected $p$-adic distance between *any* two tokens is $0$. Since $0 \le d_{\max}$, the resulting hard boolean mask is exactly $1.0$ (identically dense) everywhere. The pre-trained attention manifold is preserved with zero degradation at step 0. 
+
+As training progresses, the Switch Transformer-style load-balancing auxiliary loss forces the tree to naturally "grow". The load-balancing penalty overpowers the initialization bias, smoothly distributing tokens across the newly discovered branches and transitioning the architecture from fully dense to topologically sparse.
 
 ### 2.4 Straight-Through Estimator Bridge
 
@@ -253,7 +253,7 @@ The dense PyTorch path fails to allocate at all sequence lengths due to the O(N�
 
 ### 4.6 Long-Context Perplexity
 
-We evaluate the surgically injected model's perplexity on 100,000 tokens from the WikiText-103 test set (Merity et al., 2017), processed in non-overlapping 8,192-token windows with the Triton sparse kernel active.
+We evaluate the surgically injected model's perplexity on 100,000 unseen test tokens from the WikiText-103 test set (Merity et al., 2017) (a completely unseen dataset far larger than the 367-sample WikiText-2 subset used for router training), processed in non-overlapping 8,192-token windows with the Triton sparse kernel active.
 
 | Model | Perplexity |
 |-------|------------|
