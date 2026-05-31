@@ -12,18 +12,21 @@ class AdelicCache(DynamicCache):
         super().__init__()
         self.max_capacity = max_capacity
         self.local_window = local_window
-        # We need to manually track the true position for RoPE, which is handled
-        # by DynamicCache's internal `_seen_tokens` variable in newer versions,
-        # but we ensure it explicitly here.
+        self.key_cache = []
+        self.value_cache = []
         self._true_seen_tokens = 0
 
     def update(self, key_states: torch.Tensor, value_states: torch.Tensor, layer_idx: int, cache_kwargs=None):
-        # Update the true seen tokens count (only on the first layer to avoid double counting)
         if layer_idx == 0:
             self._true_seen_tokens += key_states.shape[-2]
 
-        # Standard append
-        super().update(key_states, value_states, layer_idx, cache_kwargs)
+        # Expand cache arrays if necessary
+        if len(self.key_cache) <= layer_idx:
+            self.key_cache.append(key_states)
+            self.value_cache.append(value_states)
+        else:
+            self.key_cache[layer_idx] = torch.cat([self.key_cache[layer_idx], key_states], dim=-2)
+            self.value_cache[layer_idx] = torch.cat([self.value_cache[layer_idx], value_states], dim=-2)
 
         current_length = self.key_cache[layer_idx].shape[-2]
         
