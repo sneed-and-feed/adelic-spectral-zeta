@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llama-surgery"
-version = "1.0.0"
+version = "1.1.0"
 description = "Hardware-accelerated, differentiable block-sparse routing for Llama via Continuous Logit Homotopy."
 readme = "README.md"
 requires-python = ">=3.9"
