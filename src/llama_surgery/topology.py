@@ -200,7 +200,9 @@ def _compute_distance_mask(
 
     # Reversed cumulative product for expected distance
     M_flipped = M.flip(dims=[-1])
-    P_flipped = M_flipped.cumprod(dim=-1)
+    # CRITICAL FIX: cumprod backward produces NaNs if any input is exactly 0.0. 
+    # Since we use hard=True, M contains exact 0s. Clamp it to prevent exploding gradients.
+    P_flipped = M_flipped.clamp(min=1e-6).cumprod(dim=-1)
     sum_P = P_flipped.sum(dim=-1)
     expected_dist = levels - sum_P
 
