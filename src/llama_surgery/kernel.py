@@ -238,3 +238,20 @@ def ultrametric_attention_triton(
     )
 
     return out
+
+class CurriculumSparseAttention(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, q, k, v, router_indices, req_depth=2, p=2, use_sparse_backend=False):
+        if use_sparse_backend and HAS_TRITON:
+            o = ultrametric_attention_triton(q, k, v, router_indices, req_depth=req_depth, p=p)
+            ctx.save_for_backward(q, k, v, o, router_indices)
+            ctx.req_depth = req_depth
+            ctx.p = p
+            ctx.use_sparse_backend = True
+            return o
+        else:
+            raise NotImplementedError("Fallback not supported in autograd wrapper")
+
+    @staticmethod
+    def backward(ctx, do):
+        raise NotImplementedError("Backward pass not implemented for V3 Triton kernel yet")
