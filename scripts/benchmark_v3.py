@@ -106,8 +106,8 @@ def benchmark_perplexity(model, tokenizer, dataset_name="pg19", max_tokens=10000
     prev_end_loc = 0
     
     # Use sliding window evaluate
-    # Max length set to 16384 to avoid 40GB A100 OOM limits on FFN activations
-    max_length = 16384
+    # Max length set to 8192 to avoid 40GB A100 OOM on the massive 128k vocab logits tensor
+    max_length = 8192
     
     # Let's chunk the evaluation by context size since feeding 100k tokens in one pass might OOM
     # depending on VRAM, even with O(N) memory.
@@ -172,8 +172,8 @@ def main():
     print(f"Hardware results saved to {args.output}")
     
     # Run Perplexity
-    # Evaluates 100k tokens in 16k independent context chunks
-    benchmark_perplexity(model, tokenizer, dataset_name=args.dataset, max_tokens=100000, stride=16384)
+    # Evaluates 100k tokens in 8k independent context chunks
+    benchmark_perplexity(model, tokenizer, dataset_name=args.dataset, max_tokens=100000, stride=8192)
 
 if __name__ == "__main__":
     main()
