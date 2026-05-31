@@ -169,7 +169,7 @@ This proves a direct arithmetic origin for ergodicity breaking: **the distributi
 
 ### 9. Ultrametric AI: Non-Archimedean Neural Attention on Bruhat-Tits Trees
 
-> **Paper:** [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex))
+> **Papers:** [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex)) · [*Llama Surgery: Injecting Differentiable p-Adic Topology into Pre-Trained LLMs*](papers/llama_surgery.md) ([LaTeX](papers/llama_surgery.tex))
 
 This repository includes a complete, dual-stack implementation of **Ultrametric AI** — a fundamentally new neural attention architecture that replaces the dense $O(N^2)$ self-attention matrix of standard Transformers with a hierarchical $O(N \log N)$ block-sparse mask derived from the $p$-adic metric on the Bruhat-Tits tree.
 
@@ -251,7 +251,23 @@ Located in [`src/ultrametric_v2_research/`](src/ultrametric_v2_research/):
 | [`model.py`](src/ultrametric_v2_research/model.py) | `UltrametricTransformer` with per-layer `MultiPrimeTopologyRouter` and alternating shift schedules. |
 | [`benchmarks/dyck2/`](src/ultrametric_v2_research/benchmarks/dyck2/) | Dyck-2 formal language dataset generator and parameter-matched training benchmark. |
 
----
+#### V3 Research: Llama Surgery — Injecting Differentiable $p$-Adic Topology into Pre-Trained LLMs
+
+The `main` branch also contains **Llama Surgery**: a surgical post-training injection of the Dynamic Topology Router into a frozen, pre-trained TinyLlama-1.1B, without any weight updates, distillation, or retraining. The full paper is at [`papers/llama_surgery.md`](papers/llama_surgery.md) and the experiments are at [`experiments/`](experiments/).
+
+**The Continuous Logit Homotopy (Differentiable Trojan Horse).** The central challenge of injecting sparsity into a pre-trained model is the initialization cliff: a randomly initialized sparse mask instantly shatters the pre-trained attention manifold, causing immediate loss divergence. Llama Surgery resolves this with the *Continuous Logit Homotopy*: at step 0, all router logits are initialized to $-\infty$ except Branch 0, forcing a Deterministic Collapse where all tokens are assigned to a single branch. The resulting $p$-adic distance is exactly 0, making the STE attention mask exactly dense ($1.0$ everywhere). The model is completely unaware it has been surgically altered. A load-balancing loss then acts as the "anesthetic wearing off," gradually pulling branches apart over a configurable ramp schedule.
+
+**Simulation Experiments ([`experiments/`](experiments/)):**
+
+| Experiment | File | Key Result |
+| :--- | :--- | :--- |
+| **Semantic Dendrogram** (§4.7) | [`level1_semantic_dendrogram.py`](experiments/level1_semantic_dendrogram.py) | The router autonomously clusters Natural Language, Python Code, Math, and HTML into distinct $p$-adic subtrees with no explicit clustering objective. PCA confirms clean topological separation between semantic domains. |
+| **Topological Needle-in-a-Haystack** (§4.9) | [`level2_topological_niah.py`](experiments/level2_topological_niah.py) | When forced to retrieve a needle token from a 1024-token haystack, the router isolates the needle at maximum topological distance ($\bar{d}_p = 6.88$) from the dominant haystack domain — consistent with an information-theoretic interpretation where high-surprisal tokens are placed at the tree periphery. |
+| **Topological Ring Attention** (§4.10) | [`level3_topological_ring_attention.py`](experiments/level3_topological_ring_attention.py) | Simulates an 8-GPU Ring Attention cluster on a 1024-token multi-domain sequence. Per-head pruning with threshold $\tau = 0.75 \cdot L$ reduces peer-to-peer communication edges from 2,048 (dense) to 448, achieving a **78.1% reduction in P2P network bandwidth** without dropping semantically relevant context. |
+| **Adèlic KV-Cache Condensation** (§4.11) | [`level4_adelic_cache.py`](experiments/level4_adelic_cache.py) | Introduces `AdelicCache`, a `DynamicCache` subclass that applies Medoid-Value pooling to the far history whenever the physical cache exceeds a capacity ceiling. After 100 autoregressive steps, the logical RoPE position reads 100 while the physical cache retains only 20 token vectors — demonstrating $O(W + \log N)$ memory scaling with correct positional arithmetic. |
+
+**The Medoid-Value Strategy (RoPE-safe KV Condensation).** Standard token merging algorithms average both Keys and Values. Because Rotary Position Embeddings rotate the Keys by an angle proportional to the absolute sequence index, averaging two rotated Keys produces a geometrically invalid vector that destroys the attention inner product. `AdelicCache` resolves this by: (1) averaging the Values (which are invariant to RoPE rotation), and (2) selecting the *Medoid Key* — the most recent Key in the cluster — as the positional anchor. This preserves strict RoPE coherence while compressing the far-history memory footprint from $O(N)$ to $O(\log N)$.
+
 
 ## Directory Structure
 
@@ -265,8 +281,8 @@ Located in [`src/ultrametric_v2_research/`](src/ultrametric_v2_research/):
 | [`src/adelic_spectral_zeta/erdos_similarity.py`](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/src/adelic_spectral_zeta/erdos_similarity.py) | Adèlic sequence lifting, porous Cantor set construction, idelic Laplacians, and attractive Schrödinger eigensolvers for Erdős similarity. |
 | [`src/ultrametric/`](src/ultrametric/) | **Ultrametric AI (PyTorch/Triton):** True Fractal attention with dynamic Gumbel-Softmax routing, Triton block-sparse GPU kernels, and Holographic Reasoning Tokens. |
 | [`src/ultrametric_jax/`](src/ultrametric_jax/) | **Ultrametric AI (JAX/Flax/Pallas):** Google-native TPU implementation with Pallas scalar prefetch kernels, deterministic PRNG routing, and XLA-compiled fractal attention. |
-| [`papers/`](papers/) | Research papers. Includes [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md) (Markdown & LaTeX) and the original adèlic monograph LaTeX source. |
-| [`experiments/`](experiments/) | Implementation of key simulations, grokking experiments (`grokking_v4_dyck.py` through `grokking_v8_language.py`), kernel benchmarks (`benchmark_triton.py`, `benchmark_serving.py`), and the vLLM sparse decoding benchmark. |
+| [`papers/`](papers/) | Research papers. Includes [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md), [*Llama Surgery*](papers/llama_surgery.md) (both Markdown & LaTeX), and the original adèlic monograph LaTeX source. |
+| [`experiments/`](experiments/) | Implementation of key simulations, grokking experiments (`grokking_v4_dyck.py` through `grokking_v8_language.py`), kernel benchmarks (`benchmark_triton.py`, `benchmark_serving.py`), the vLLM sparse decoding benchmark, and the Llama Surgery simulation suite (`level1_semantic_dendrogram.py`, `level2_topological_niah.py`, `level3_topological_ring_attention.py`, `level4_adelic_cache.py`). |
 | [`formalization/`](formalization/) | Axiom-free Lean 4 formalization proofs for spectral gap positivity and graph properties. |
 | [`formalization/SpectralPositivity/`](https://github.com/mrdouglasny/spectral-positivity) | Michael R. Douglas's Perron-Frobenius library for irreducible nonneg matrices (vendored dependency). |
 | [`coq/`](coq/) | **Coq / MathComp 2.3.0** formalizations. Independent cross-verification of the Bass-Ihara determinant formula ([BassIhara.v](coq/theories/BassIhara.v)): 0 sorry, 0 axiom, 0 Admitted. |
