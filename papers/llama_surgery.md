@@ -409,7 +409,7 @@ A critical vulnerability of the Medoid-Value Strategy identified in Section 4.11
 
 **The Synthetic Decay Multiplier.** We address this by scaling the magnitude of the Medoid Key vector by a factor γ ∈ (0, 1] that is inversely proportional to the positional variance of the cluster. Crucially, RoPE rotation is norm-preserving: it rotates the Key vector without changing its ℓ₂ magnitude. Therefore, scaling the magnitude does not corrupt the geometric angle and preserves RoPE coherence, while strictly reducing the pre-softmax logit Q · K_medoid^T. Let P_S denote the set of absolute sequence positions of the tokens in cluster S. We define:
 
-$$\gamma = \exp\!\Bigl(-\lambda \cdot \mathrm{Var}(P_S)\Bigr)$$
+$$\gamma = \exp\!\Bigl(-\lambda \cdot \operatorname{Var}(P_S)\Bigr)$$
 
 where λ > 0 is a tunable decay coefficient. The condensed cache entries are then:
 
@@ -436,6 +436,32 @@ When a subsequent Query attends to this Super-Token, the logit factors as Q · K
 *Table: Physical KV-cache tensor size vs. logical RoPE sequence position with `TemporalAdelicCache` (`max_capacity=32`, `local_window=16`, λ=0.05). The γ correction operates on attention logits, not tensor shape: Medoid Key vectors are magnitude-scaled to restore the implicit RoPE distance penalty for temporally dispersed clusters.*
 
 The significance of this result lies not in the shape of the footprint, but in the *correctness* of the attention distribution. Without the γ correction, a Super-Token merging positions 100 and 8,000 is indistinguishable in logit space from a newly generated token at step 8,000. With the γ correction, its effective logit is suppressed by exp(-λ · Var({100, 8000})) ≈ exp(-0.05 · 3.15×10⁷) ≈ 0⁺, completely removing the temporal distortion. Together, Sections 4.11 and 4.12 establish a complete, RoPE-coherent infinite-context KV compression pipeline: physical memory is bounded at O(W + log N), and the attention distribution correctly respects the temporal ordering of the original sequence.
+
+### 4.13 Prime Arity Ablation
+
+All experiments in this paper use $p = 2$ (the binary Bruhat-Tits tree). A natural question is whether higher prime arities—which endow the tree with a richer branching structure and correspond to weak $n$-groupoid topologies with more morphism directions per level—yield better language model performance. To investigate this, we conduct a controlled ablation across $p \in \{2, 3, 5, 7\}$, comparing each topology against a frozen dense baseline on a short-sequence natural language benchmark.
+
+**Setup.** We inject the `DynamicTopologyRouter` into TinyLlama-1.1B loaded in `bfloat16` on a single NVIDIA A100-SXM4-40GB GPU. For each value of $p$, we erase the Deterministic Collapse Initialization (replacing the bias with uniform noise $\mathcal{U}(-0.1, 0.1)$) to ensure the router begins from a genuinely undecided state. All pre-trained weights are frozen; only the router parameters are trainable. We train for 250 gradient steps with learning rate $3 \times 10^{-4}$, batch size 4, sequence length 128, Gumbel-Softmax temperature annealing $\tau: 1.0 \to 0.1$ over 250 steps, and load-balancing coefficient $\lambda_{\max} = 2.0$ to prevent routing collapse. Training data is the first 90% of the Tiny Shakespeare corpus (Karpathy, 2015); evaluation is on the remaining 10%, processed in non-overlapping 128-token windows.
+
+**Results.**
+
+| Model | Perplexity |
+|-------|------------|
+| Baseline Dense (no surgery)    | 22.33 |
+| Weak $n$-groupoid ($p=2$)      | **24.23** |
+| Weak $n$-groupoid ($p=3$)      | 24.74 |
+| Weak $n$-groupoid ($p=5$)      | 25.89 |
+| Weak $n$-groupoid ($p=7$)      | 25.55 |
+
+*Table: Perplexity on Tiny Shakespeare (10% held-out test set, 128-token windows) after 250 router training steps on TinyLlama-1.1B. Lower is better. The dense baseline uses no topology injection.*
+
+Three observations are warranted:
+
+1. **All topologies incur a short-training cost.** Each injected topology scores above the dense baseline (22.33), reflecting the cost of forcing the router to build a tree from scratch in only 250 steps. The dense model requires no such adaptation; it is evaluated directly from the pre-trained checkpoint.
+
+2. **$p = 2$ outperforms all higher primes.** Among the four injected topologies, the binary Bruhat-Tits tree achieves the lowest perplexity (24.23). Perplexity increases monotonically from $p = 2$ to $p = 5$, with $p = 7$ falling between $p = 5$ and $p = 3$.
+
+3. **The weak $n$-groupoid intuition does not hold at 128 tokens.** A common theoretical argument holds that higher prime arities provide richer morphism structure and should better accommodate the non-binary branching of natural language syntax. Our empirical result contradicts this for short sequences. We attribute this to tree depth: at $p = 2$, a 128-token sequence induces a tree of depth $L = \lceil \log_2 128 \rceil = 7$ levels; at $p = 7$, the same sequence collapses to only $L = \lceil \log_7 128 \rceil = 3$ levels. The shallower tree offers fewer routing decisions per token, reducing the expressivity of the learned topology and limiting the router's ability to separate semantically distinct sub-sequences. We therefore recommend $p = 2$ as the default for sequences up to ~512 tokens, while noting that higher primes may become competitive at very long contexts where the depth difference is less pronounced.
 
 ---
 
