@@ -162,7 +162,7 @@ def main():
     
     if os.path.isdir(args.model):
         print(f"Local model detected at {args.model}. Reloading state dict to attach router weights...")
-        from transformers.modeling_utils import load_checkpoint_and_dispatch
+        from accelerate import load_checkpoint_and_dispatch
         # load_checkpoint_and_dispatch automatically handles sharded and unsharded safetensors/bin
         model = load_checkpoint_and_dispatch(
             model, 
