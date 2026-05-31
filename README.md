@@ -267,6 +267,27 @@ The `main` branch also contains **Llama Surgery**: a surgical post-training inje
 | **Adèlic KV-Cache Condensation** (§4.11) | [`level4_adelic_cache.py`](experiments/level4_adelic_cache.py) | Introduces `AdelicCache`, a `DynamicCache` subclass that applies Medoid-Value pooling to the far history whenever the physical cache exceeds a capacity ceiling. After 100 autoregressive steps, the logical RoPE position reads 100 while the physical cache retains only 20 token vectors — demonstrating $O(W + \log N)$ memory scaling with correct positional arithmetic. |
 
 **The Medoid-Value Strategy (RoPE-safe KV Condensation).** Standard token merging algorithms average both Keys and Values. Because Rotary Position Embeddings rotate the Keys by an angle proportional to the absolute sequence index, averaging two rotated Keys produces a geometrically invalid vector that destroys the attention inner product. `AdelicCache` resolves this by: (1) averaging the Values (which are invariant to RoPE rotation), and (2) selecting the *Medoid Key* — the most recent Key in the cluster — as the positional anchor. This preserves strict RoPE coherence while compressing the far-history memory footprint from $O(N)$ to $O(\log N)$.
+**Library Installation & Usage:**
+
+The core surgery logic is fully packaged and can be installed directly from GitHub:
+```bash
+pip install git+https://github.com/sneed-and-feed/adelic-spectral-zeta.git
+```
+
+You can then surgically inject the differentiable topology router into any standard Hugging Face Llama model with just a few lines of code:
+
+```python
+from transformers import AutoModelForCausalLM
+from llama_surgery import inject_surgery
+
+# Load your pre-trained model
+model = AutoModelForCausalLM.from_pretrained("TinyLlama/TinyLlama-1.1B-Intermediate-Step-1431k-3T")
+
+# Surgically replace attention layers with SurgicalLlamaAttention
+model = inject_surgery(model)
+
+# The model's attention mechanisms are now p-adic routed and ready for training
+```
 
 
 ## Directory Structure
