@@ -1,3 +1,9 @@
+try:
+    import triton
+    import triton.language
+except ImportError:
+    pass
+
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from llama_surgery import inject_surgery
