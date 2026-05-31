@@ -29,7 +29,7 @@ def benchmark_hardware(model, tokenizer, seq_lengths, csv_writer):
             # Warmup
             with torch.no_grad():
                 try:
-                    _ = model(input_ids)
+                    _ = model(input_ids, use_cache=False)
                 except torch.cuda.OutOfMemoryError:
                     print(f"  [{mode_name}] OOM during warmup!")
                     torch.cuda.empty_cache()
@@ -43,7 +43,7 @@ def benchmark_hardware(model, tokenizer, seq_lengths, csv_writer):
             try:
                 start_event.record()
                 with torch.no_grad():
-                    _ = model(input_ids)
+                    _ = model(input_ids, use_cache=False)
                 end_event.record()
                 torch.cuda.synchronize()
                 
@@ -66,14 +66,14 @@ def benchmark_perplexity(model, tokenizer, dataset_name="pg19", max_tokens=10000
     if dataset_name == "pg19":
         # Note: deepmind/pg19 might be slow to download; fallback to wikitext if needed
         try:
-            dataset = load_dataset("deepmind/pg19", split="validation", streaming=True)
+            dataset = load_dataset("deepmind/pg19", split="validation", streaming=True, trust_remote_code=True)
             text = next(iter(dataset))['text']
         except Exception as e:
             print(f"Failed to load PG19 ({e}), falling back to wikitext-103...")
-            dataset = load_dataset("wikitext", "wikitext-103-raw-v1", split="test")
+            dataset = load_dataset("Salesforce/wikitext", "wikitext-103-raw-v1", split="test")
             text = "\n\n".join(dataset["text"])
     else:
-        dataset = load_dataset("wikitext", "wikitext-103-raw-v1", split="test")
+        dataset = load_dataset("Salesforce/wikitext", "wikitext-103-raw-v1", split="test")
         text = "\n\n".join(dataset["text"])
         
     print("Tokenizing long document...")
@@ -113,7 +113,7 @@ def benchmark_perplexity(model, tokenizer, dataset_name="pg19", max_tokens=10000
         target_ids[:, :-trg_len] = -100
         
         with torch.no_grad():
-            outputs = model(input_chunk, labels=target_ids)
+            outputs = model(input_chunk, labels=target_ids, use_cache=False)
             # loss is calculated using CrossEntropyLoss which averages over valid labels
             # NLL is loss * trg_len
             neg_log_likelihood = outputs.loss
