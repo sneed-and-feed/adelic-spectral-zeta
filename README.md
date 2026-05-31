@@ -283,6 +283,11 @@ from llama_surgery import inject_surgery
 # Load your pre-trained model
 model = AutoModelForCausalLM.from_pretrained("TinyLlama/TinyLlama-1.1B-Intermediate-Step-1431k-3T")
 
+# OPTIONAL: Configure the topological arity (p). 
+# Default is p=2 (binary topos). Setting p=3, 5, or 7 switches the routing space to a 
+# weak n-groupoid geometry, which is better suited for multifaceted natural language.
+model.config.surgical_p = 3
+
 # Surgically replace attention layers with SurgicalLlamaAttention
 model = inject_surgery(model)
 
