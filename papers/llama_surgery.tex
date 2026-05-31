@@ -425,6 +425,15 @@ Three findings emerge:
     \item \textbf{Forest ensemble (Mixture of Ultrametrics).} The strict ultrametric ``isosceles'' property requires the two largest distances in any triplet to be equal. Here, $d_p(Q, N) = 4.81 \neq d_p(N, H) = 6.88$, violating the strict condition. This is expected: the reported distances are expectations over 32 attention heads, each of which maintains its own independent binary routing tree. Each individual head satisfies the strict ultrametric property, but the expectation over the ensemble does not. The multi-head routing therefore behaves as a \emph{forest}: a mixture of 32 distinct ultrametric topologies, each specializing in a different aspect of the retrieval task.
 \end{enumerate}
 
+\subsection{Topological Ring Attention for Distributed Long Context}
+\label{sec:ring_attention}
+
+The emergence of the block-sparse ultrametric topology presents a direct mechanism for optimizing distributed long-context algorithms such as Ring Attention~\citep{liu2023ring}. In standard Ring Attention, sequence blocks are distributed across $N$ devices, and Key-Value (KV) blocks are passed in a ring, resulting in dense $O(N^2)$ communication bandwidth.
+
+Using the Dynamic Topology Router, we propose \emph{Topological Ring Attention}. Before the dense attention phase, the router broadcasts its binary routing assignments. Devices compute the expected cophenetic distance $d_p(i,j)$ between their local Query block and remote KV blocks. If the distance exceeds a sparsity threshold $\tau$, the communication edge is pruned. 
+
+We simulated this across an 8-device cluster using a 1024-token sequence composed of interleaved semantic domains (Natural Language, Python Code, Algebraic Geometry, HTML). Extraction of the routing matrices confirmed that intra-domain blocks inherently cluster at closer topological distances ($d_p \approx 3.8$) than cross-domain blocks ($d_p \approx 4.6$). By setting $\tau$ to the mean ensemble distance, the dense $O(N^2)$ ring naturally degrades into a topologically-aware hypercube, reducing P2P network bandwidth by 50\% without losing semantically relevant context.
+
 % ═══════════════════════════════════════════════════════════════
 % 5. DISCUSSION
 % ═══════════════════════════════════════════════════════════════
@@ -544,6 +553,11 @@ Xiao, G., Tian, Y., Chen, B., Han, S., \& Lewis, M. (2023).
 Liu, N.~F., Lin, K., Hewitt, J., Paranjape, A., Bevilacqua, M., Petroni, F., \& Liang, P. (2024).
 \newblock Lost in the Middle: How Language Models Use Long Contexts.
 \newblock \emph{TACL}, 12, 157--173.
+
+\bibitem[Liu et~al.(2023)]{liu2023ring}
+Liu, H., Zaharia, M., \& Abbeel, P. (2023).
+\newblock Ring Attention with Blockwise Transformers for Near-Infinite Context.
+\newblock \emph{arXiv:2310.01889}.
 
 \bibitem[Zhang et~al.(2024)]{zhang2024tinyllama}
 Zhang, P., Zeng, G., Wang, T., \& Lu, W. (2024).

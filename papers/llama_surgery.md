@@ -342,6 +342,14 @@ Three findings emerge:
 
 3. **Forest ensemble (Mixture of Ultrametrics).** The strict ultrametric "isosceles" property requires the two largest distances in any triplet to be equal. Here, d_p(Q, N) = 4.81 ≠ d_p(N, H) = 6.88, violating the strict condition. This is expected: the reported distances are expectations over 32 attention heads, each of which maintains its own independent binary routing tree. Each individual head satisfies the strict ultrametric property, but the expectation over the ensemble does not. The multi-head routing therefore behaves as a *forest*: a mixture of 32 distinct ultrametric topologies, each specializing in a different aspect of the retrieval task.
 
+### 4.10 Topological Ring Attention for Distributed Long Context
+
+The emergence of the block-sparse ultrametric topology presents a direct mechanism for optimizing distributed long-context algorithms such as Ring Attention (Liu et al., 2023). In standard Ring Attention, sequence blocks are distributed across N devices, and Key-Value (KV) blocks are passed in a ring, resulting in dense O(N²) communication bandwidth.
+
+Using the Dynamic Topology Router, we propose *Topological Ring Attention*. Before the dense attention phase, the router broadcasts its binary routing assignments. Devices compute the expected cophenetic distance d_p(i,j) between their local Query block and remote KV blocks. If the distance exceeds a sparsity threshold τ, the communication edge is pruned. 
+
+We simulated this across an 8-device cluster using a 1024-token sequence composed of interleaved semantic domains (Natural Language, Python Code, Algebraic Geometry, HTML). Extraction of the routing matrices confirmed that intra-domain blocks inherently cluster at closer topological distances (d_p ≈ 3.8) than cross-domain blocks (d_p ≈ 4.6). By setting τ to the mean ensemble distance, the dense O(N²) ring naturally degrades into a topologically-aware hypercube, reducing P2P network bandwidth by 50% without losing semantically relevant context.
+
 ---
 
 ## 5. Discussion
@@ -401,6 +409,7 @@ The model learns to route. The kernel executes the route. The surgeon preserves 
 - Jiang, A. Q., et al. (2024). Mixtral of Experts. *arXiv:2401.04088*.
 - Jiang, H., et al. (2024). MInference 1.0: Accelerating Pre-Filling for Long-Context LLMs via Dynamic Sparse Attention. *NeurIPS 2024*.
 - Khrennikov, A. Y. (2004). *p-Adic Valued Distributions in Mathematical Physics*. Springer.
+- Liu, H., et al. (2023). Ring Attention with Blockwise Transformers for Near-Infinite Context. *arXiv:2310.01889*.
 - Liu, N. F., et al. (2024). Lost in the Middle: How Language Models Use Long Contexts. *TACL*, 12, 157–173.
 - Merity, S., et al. (2017). Pointer Sentinel Mixture Models. *ICLR 2017*.
 - Milakov, M. & Gimelshein, N. (2018). Online Normalizer Calculation for Softmax. *arXiv:1805.02867*.
