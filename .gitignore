@@ -39,3 +39,7 @@ scratch/
 *.glob
 .*.aux
 
+# Local env and build artifacts
+.venv/
+.pytest_cache/
+dist/

@@ -20,13 +20,20 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 dependencies = [
-    "numpy>=1.20.0",
-    "scipy>=1.6.0",
-    "mpmath>=1.2.0",
-    "matplotlib>=3.3.0",
-    "tqdm>=4.67.3",
-    "biopython>=1.85",
+    "torch>=2.0.0",
+    "transformers>=4.36.0",
+    "triton>=2.1.0; platform_system != 'Windows'",
 ]
 
 [project.urls]
 Homepage = "https://github.com/user/adelic_spectral_zeta"
+
+[tool.hatch.build]
+include = [
+  "/src/llama_surgery",
+  "/README.md",
+  "/LICENSE",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llama_surgery"]
