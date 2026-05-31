@@ -11,7 +11,7 @@ The $p$-adic tree is merely one instance of a routing topology. By relaxing disc
 ---
 
 ## 1. Llama Surgery (Continual Sparsification)
-*Goal: Surgically inject block-sparse routing into pre-trained dense LLMs (like Llama-3-8B) without destroying world knowledge.*
+**[x] COMPLETED:** *Surgically injected block-sparse routing into Llama-3.1-8B via PyTorch dynamic hooks. Resolved gradient collapse via Straight-Through Estimators, anchored generation syntax with Attention Sinks (Token 0), and achieved massive acceleration using a custom block-sparse Triton kernel heavily pipelined for Ampere/Hopper (A100/H100) Tensor Memory Accelerators.*
 
 Standard from-scratch gating fails due to "routing absorption" (Aquino-Michaels, 2026), where Q/K/V projections co-adapt to nullify the routing bias. To safely transition a dense model from $O(N^2)$ dense to $O(N \log N)$ sparse attention, we deploy a **Continuous Logit Homotopy** (inspired by Savarese et al., 2020).
 
