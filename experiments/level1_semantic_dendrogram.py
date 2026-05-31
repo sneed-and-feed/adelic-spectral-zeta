@@ -1,11 +1,3 @@
-try:
-    import triton
-    import triton.language
-    if not hasattr(triton.language, 'dtype'):
-        triton.language.dtype = type
-except ImportError:
-    pass
-
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from llama_surgery import inject_surgery
