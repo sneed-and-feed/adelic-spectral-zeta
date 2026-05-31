@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "adelic_spectral_zeta"
+name = "llama-surgery"
 version = "1.0.0"
-description = "A quantum many-body simulator and spectral solver for adèlic spectral triples and automorphic L-functions."
+description = "Hardware-accelerated, differentiable block-sparse routing for Llama via Continuous Logit Homotopy."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "CC-BY-4.0" }

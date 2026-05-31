@@ -1,6 +1,6 @@
 import torch
 from transformers import Trainer, TrainerCallback
-from src.ultrametric_v3.surgery import SurgeryLossRamp
+from .surgery import SurgeryLossRamp
 
 class TauAnnealingCallback(TrainerCallback):
     def __init__(self, initial_tau=1.0, min_tau=0.1, decay_steps=10000):
@@ -48,7 +48,7 @@ class SurgeryTrainer(Trainer):
             # Save past state if it exists
             loss = outputs["loss"] if isinstance(outputs, dict) else outputs[0]
 
-        from src.ultrametric_v3.surgery import SurgicalLlamaAttention
+        from .surgery import SurgicalLlamaAttention
         
         # Process auxiliary load balancing losses directly from attention layers
         aux_losses = []

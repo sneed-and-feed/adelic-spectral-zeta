@@ -1,5 +1,5 @@
 import torch.nn as nn
-from src.ultrametric_v3.surgery import SurgicalLlamaAttention
+from .surgery import SurgicalLlamaAttention
 
 def inject_surgery(model):
     """
