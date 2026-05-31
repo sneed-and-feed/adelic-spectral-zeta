@@ -234,6 +234,7 @@ def ultrametric_attention_triton(
         LOCAL_WINDOW_BLOCKS=LOCAL_WINDOW_BLOCKS,
         BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
         P_ARY=p, TREE_DEPTH_P2=TREE_DEPTH_P2,
+        num_warps=4, num_stages=3,
     )
 
     return out
