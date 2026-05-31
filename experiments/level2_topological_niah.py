@@ -79,13 +79,13 @@ def train_router_niah():
     Main training loop for the Topological NIAH experiment.
     """
     # 1. Load Model & Tokenizer
-    # For Colab, we load the real model in float16 onto the GPU
+    # For Colab, we load the real model in bfloat16 onto the GPU
     model_id = "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T"
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         device_map="auto"
     )
 
