@@ -150,6 +150,15 @@ class SurgicalLlamaAttention(nn.Module):
         k = repeat_kv(k, self.num_key_value_groups)
         v = repeat_kv(v, self.num_key_value_groups)
 
+        use_triton = getattr(self.config, "use_triton_sparse_attention", False)
+        if use_triton and seq_len > 1 and q.dtype == torch.float16 and not q.requires_grad:
+            from .kernel import routing_to_block_indices, ultrametric_attention_triton
+            router_indices = routing_to_block_indices(assignments, seq_len=seq_len, block_size=128)
+            out = ultrametric_attention_triton(q, k, v, router_indices, local_window=128, req_depth=2, p=self.p)
+            out = out.transpose(1, 2).contiguous().view(batch_size, seq_len, self.embed_dim)
+            out = self.o_proj(out)
+            return out, None
+
         # Raw attention scores
         scores = torch.matmul(q, k.transpose(-2, -1)) * self.scale
 
