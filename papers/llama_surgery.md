@@ -409,7 +409,7 @@ A critical vulnerability of the Medoid-Value Strategy identified in Section 4.11
 
 **The Synthetic Decay Multiplier.** We address this by scaling the magnitude of the Medoid Key vector by a factor γ ∈ (0, 1] that is inversely proportional to the positional variance of the cluster. Crucially, RoPE rotation is norm-preserving: it rotates the Key vector without changing its ℓ₂ magnitude. Therefore, scaling the magnitude does not corrupt the geometric angle and preserves RoPE coherence, while strictly reducing the pre-softmax logit Q · K_medoid^T. Let P_S denote the set of absolute sequence positions of the tokens in cluster S. We define:
 
-$$\gamma = \exp\!\Bigl(-\lambda \cdot \operatorname{Var}(P_S)\Bigr)$$
+$$\gamma = \exp\!\Bigl(-\lambda \cdot \mathrm{Var}(P_S)\Bigr)$$
 
 where λ > 0 is a tunable decay coefficient. The condensed cache entries are then:
 
