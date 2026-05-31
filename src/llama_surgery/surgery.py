@@ -4,8 +4,8 @@ import torch.nn.functional as F
 import math
 from typing import Optional
 
-from src.ultrametric.layer import RotaryPositionEmbedding, apply_rotary_pos_emb
-from src.ultrametric.topology import DynamicTopologyRouter, get_dynamic_ultrametric_mask
+from .layer import RotaryPositionEmbedding, apply_rotary_pos_emb
+from .topology import DynamicTopologyRouter, get_dynamic_ultrametric_mask
 
 def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
     """
