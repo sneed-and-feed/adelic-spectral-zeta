@@ -71,7 +71,7 @@ training_args = TrainingArguments(
     output_dir="./surgery_results",
     num_train_epochs=5,
     per_device_train_batch_size=4,
-    learning_rate=1e-2, # High learning rate to quickly separate clusters
+    learning_rate=1e-3, # Lowered from 1e-2 to prevent gradient explosions in FP16
     logging_steps=5,
     report_to="none"
 )

@@ -90,7 +90,8 @@ class DynamicTopologyRouter(nn.Module):
         if self.training:
             # Flatten for gumbel_softmax, then reshape back
             flat = logits.reshape(-1, self.p)
-            sampled = F.gumbel_softmax(flat, tau=tau, hard=self.hard, dim=-1)
+            # CRITICAL FIX: Cast to float32 to prevent FP16 overflow in exp() during gumbel_softmax
+            sampled = F.gumbel_softmax(flat.to(torch.float32), tau=tau, hard=self.hard, dim=-1).to(logits.dtype)
             assignments = sampled.view_as(logits)
         else:
             # Deterministic argmax at inference
