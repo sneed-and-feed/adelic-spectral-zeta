@@ -1,6 +1,8 @@
 try:
     import triton
     import triton.language
+    if not hasattr(triton.language, 'dtype'):
+        triton.language.dtype = type
 except ImportError:
     pass
 
