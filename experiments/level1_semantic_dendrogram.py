@@ -1,3 +1,7 @@
+import sys
+# Poison the triton module to force PyTorch's ImportError fallback
+sys.modules['triton'] = None
+
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from llama_surgery import inject_surgery
