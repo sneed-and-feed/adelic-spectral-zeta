@@ -68,23 +68,13 @@ def simulate_ring_attention():
     print("Injecting Dynamic Topology Router...")
     model = inject_surgery(model)
 
-    # 3. Dummy step to shatter the Continuous Logit Homotopy slightly
-    # (So it isn't 100% dense Child 0)
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-2)
-    model.train()
-    
-    print("Shattering initial dense manifold (10 steps)...")
-    for _ in range(10):
-        # random short inputs to train the router gates just enough to separate
-        dummy_input = torch.randint(0, 32000, (1, 128)).to(model.device)
-        outputs = model(input_ids=dummy_input, labels=dummy_input)
-        lb_loss = sum(layer.self_attn.current_penalty for layer in model.model.layers if hasattr(layer.self_attn, 'current_penalty'))
-        loss = outputs.loss + 0.1 * lb_loss
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+    print("Shattering initial dense manifold via randomized surgical weights...")
+    for name, param in model.named_parameters():
+        if "route" in name or "bias" in name and hasattr(param, 'shape') and len(param.shape) >= 1:
+            if param.requires_grad:
+                torch.nn.init.normal_(param, mean=0.0, std=2.0)
 
-    # Clear memory from the training step before the big forward pass
+    # Clear memory just in case
     torch.cuda.empty_cache()
 
     # 4. Extract Routing for Long Sequence
