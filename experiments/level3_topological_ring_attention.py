@@ -27,7 +27,7 @@ Setup:
 6. Calculate theoretical bandwidth savings compared to dense Ring Attention.
 """
 
-def generate_multi_domain_sequence(tokenizer, seq_len=2048):
+def generate_multi_domain_sequence(tokenizer, seq_len=1024):
     """
     Generates a sequence with distinctly different semantic domains to
     encourage the router to map them to different branches.
@@ -84,9 +84,12 @@ def simulate_ring_attention():
         loss.backward()
         optimizer.step()
 
+    # Clear memory from the training step before the big forward pass
+    torch.cuda.empty_cache()
+
     # 4. Extract Routing for Long Sequence
     model.eval()
-    seq_len = 2048
+    seq_len = 1024
     num_gpus = 8
     block_size = seq_len // num_gpus
     
