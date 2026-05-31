@@ -4,6 +4,14 @@ import argparse
 import csv
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import gc
+
+def clear_surgery_cache(model):
+    for name, module in model.named_modules():
+        if hasattr(module, "_cached_assignments"):
+            module._cached_assignments = None
+    gc.collect()
+    torch.cuda.empty_cache()
 
 def benchmark_hardware(model, tokenizer, seq_lengths, csv_writer):
     print("\n" + "="*50)
@@ -23,7 +31,7 @@ def benchmark_hardware(model, tokenizer, seq_lengths, csv_writer):
             model.config.use_triton_sparse_attention = use_triton
             
             # Clear cache and reset memory stats
-            torch.cuda.empty_cache()
+            clear_surgery_cache(model)
             torch.cuda.reset_peak_memory_stats()
             
             # Warmup
@@ -32,7 +40,7 @@ def benchmark_hardware(model, tokenizer, seq_lengths, csv_writer):
                     _ = model(input_ids, use_cache=False)
                 except torch.cuda.OutOfMemoryError:
                     print(f"  [{mode_name}] OOM during warmup!")
-                    torch.cuda.empty_cache()
+                    clear_surgery_cache(model)
                     csv_writer.writerow([seq_len, mode_name, "OOM", "OOM"])
                     continue
             
@@ -54,7 +62,7 @@ def benchmark_hardware(model, tokenizer, seq_lengths, csv_writer):
                 csv_writer.writerow([seq_len, mode_name, f"{exec_time_ms:.2f}", f"{peak_vram_mb:.2f}"])
             except torch.cuda.OutOfMemoryError:
                 print(f"  [{mode_name}] OOM during measurement!")
-                torch.cuda.empty_cache()
+                clear_surgery_cache(model)
                 csv_writer.writerow([seq_len, mode_name, "OOM", "OOM"])
 
 def benchmark_perplexity(model, tokenizer, dataset_name="pg19", max_tokens=100000, stride=1024):
@@ -98,13 +106,15 @@ def benchmark_perplexity(model, tokenizer, dataset_name="pg19", max_tokens=10000
     prev_end_loc = 0
     
     # Use sliding window evaluate
-    max_length = model.config.max_position_embeddings if hasattr(model.config, 'max_position_embeddings') else 8192
+    # Max length set to 16384 to avoid 40GB A100 OOM limits on FFN activations
+    max_length = 16384
     
     # Let's chunk the evaluation by context size since feeding 100k tokens in one pass might OOM
     # depending on VRAM, even with O(N) memory.
     
     print(f"Evaluating perplexity on {seq_len} tokens in sliding windows of {stride}...")
     for begin_loc in range(0, seq_len, stride):
+        clear_surgery_cache(model)
         end_loc = min(begin_loc + max_length, seq_len)
         trg_len = end_loc - prev_end_loc  # may be different from stride on last loop
         
@@ -162,8 +172,8 @@ def main():
     print(f"Hardware results saved to {args.output}")
     
     # Run Perplexity
-    # Warning: running perplexity over 100k tokens requires time. 
-    benchmark_perplexity(model, tokenizer, dataset_name=args.dataset, max_tokens=100000, stride=4096)
+    # Evaluates 100k tokens in 16k independent context chunks
+    benchmark_perplexity(model, tokenizer, dataset_name=args.dataset, max_tokens=100000, stride=16384)
 
 if __name__ == "__main__":
     main()
