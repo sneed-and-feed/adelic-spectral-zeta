@@ -159,6 +159,18 @@ def main():
     
     print("Injecting V3 Surgical Topology Router...")
     model = inject_surgery(model)
+    
+    if os.path.isdir(args.model):
+        print(f"Local model detected at {args.model}. Reloading state dict to attach router weights...")
+        from transformers.modeling_utils import load_checkpoint_and_dispatch
+        # load_checkpoint_and_dispatch automatically handles sharded and unsharded safetensors/bin
+        model = load_checkpoint_and_dispatch(
+            model, 
+            checkpoint=args.model, 
+            device_map="auto",
+            dtype=torch.float16
+        )
+        
     model.eval()
     
     seq_lengths = [4096, 8192, 16384, 32768, 65536, 128000]
