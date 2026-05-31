@@ -160,7 +160,8 @@ class SurgicalLlamaAttention(nn.Module):
             return out, None
 
         # Raw attention scores
-        scores = torch.matmul(q, k.transpose(-2, -1)) * self.scale
+        # CRITICAL FIX: Cast to float32 BEFORE matmul to prevent float16 overflow (inf) which causes NaN gradients
+        scores = torch.matmul(q.to(torch.float32), k.to(torch.float32).transpose(-2, -1)) * self.scale
 
         # Base causal masking (simplified, since HF usually passes attention_mask)
         # HF passes attention_mask as (batch_size, 1, tgt_len, src_len) with -inf for masked

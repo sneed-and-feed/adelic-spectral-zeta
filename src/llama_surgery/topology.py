@@ -83,7 +83,8 @@ class DynamicTopologyRouter(nn.Module):
 
         # Shared feature extraction → per-head routing logits
         h = F.gelu(self.backbone(x))  # (batch, seq_len, embed_dim)
-        logits = self.route_heads(h)  # (batch, seq_len, num_heads * levels * p)
+        # CRITICAL FIX: clamp logits to prevent float16 overflow to inf/NaN
+        logits = self.route_heads(h).clamp(min=-50000.0, max=50000.0)  # (batch, seq_len, num_heads * levels * p)
         logits = logits.view(batch_size, seq_len, self.num_heads, self.levels, self.p)
         logits = logits.permute(0, 2, 1, 3, 4)  # (batch, heads, seq_len, levels, p)
 
