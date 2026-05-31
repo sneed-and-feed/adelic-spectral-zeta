@@ -103,30 +103,27 @@ def simulate_ring_attention():
         # compute distances
         if assignments.dim() == 5:
             M = torch.einsum("bhilp,bhjlp->bhijl", assignments, assignments)
-            M_mean = M.mean(dim=1)
+            M_flipped = M.flip(dims=[-1])
+            P_flipped = M_flipped.cummin(dim=-1)[0]
+            sum_P = P_flipped.sum(dim=-1)
+            levels = assignments.shape[-2]
+            distances = levels - sum_P # shape: (1, 32, seq_len, seq_len)
+            dist_matrix = distances[0].float() # (32, seq_len, seq_len)
+            num_heads = dist_matrix.shape[0]
         else:
-            M = torch.einsum("bilp,bjlp->bijl", assignments, assignments)
-            M_mean = M
-            
-        M_flipped = M_mean.flip(dims=[-1])
-        P_flipped = M_flipped.cummin(dim=-1)[0]
-        sum_P = P_flipped.sum(dim=-1)
-        levels = assignments.shape[-2]
-        distances = levels - sum_P # shape: (1, seq_len, seq_len)
-        
-        dist_matrix = distances[0].float() # (seq_len, seq_len)
+            print("Error: Expected 5D assignments tensor with heads.")
+            return
 
     # 5. Simulate Block-to-Block Communication Pruning
-    print("\\n--- Communication Bandwidth Analysis ---")
+    print("\n--- Communication Bandwidth Analysis (Per-Head Pruning) ---")
     
-    dense_edges = num_gpus * num_gpus
+    dense_edges = num_heads * num_gpus * num_gpus
     active_edges = 0
     
-    # We define a topological distance threshold.
-    # If the average distance between block I and block J is > threshold, we prune it.
-    tau = levels * 0.75 # e.g., if max distance is 13, threshold is 9.75
+    # We define a topological distance threshold per head.
+    tau = levels * 0.75 # e.g., if max distance is 11, threshold is 8.25
     
-    block_distances = torch.zeros((num_gpus, num_gpus))
+    block_distances_mean = torch.zeros((num_gpus, num_gpus))
     
     for i in range(num_gpus):
         for j in range(num_gpus):
@@ -135,33 +132,31 @@ def simulate_ring_attention():
             start_j = j * block_size
             end_j = start_j + block_size
             
-            # Average distance between tokens in block i and block j
-            avg_dist = dist_matrix[start_i:end_i, start_j:end_j].mean().item()
-            block_distances[i, j] = avg_dist
+            # Average distance between tokens in block i and block j, per head
+            # shape: (32, block_size, block_size) -> mean over tokens -> (32,)
+            avg_dist_per_head = dist_matrix[:, start_i:end_i, start_j:end_j].mean(dim=(1, 2))
             
-            if avg_dist <= tau:
-                active_edges += 1
+            block_distances_mean[i, j] = avg_dist_per_head.mean().item()
+            
+            active_edges += (avg_dist_per_head <= tau).sum().item()
                 
     savings = (1.0 - (active_edges / dense_edges)) * 100
     
     print(f"Max possible topological distance: {levels}")
     print(f"Pruning Threshold (tau): {tau:.2f}")
-    print(f"Dense Ring Attention Communication Edges: {dense_edges} (O(N^2))")
+    print(f"Number of Attention Heads: {num_heads}")
+    print(f"Dense Ring Attention Edges (Total): {dense_edges} (O(H * N^2))")
     print(f"Topological Ring Attention Edges: {active_edges}")
     print(f"Network Bandwidth Savings: {savings:.1f}%")
     
-    print("\\nBlock-to-Block Distance Matrix:")
-    # Print formatted matrix
+    print("\nEnsemble-Averaged Block-to-Block Distance Matrix (For Reference):")
     header = "      " + "".join([f"GPU{j:<4}" for j in range(num_gpus)])
     print(header)
     for i in range(num_gpus):
         row_str = f"GPU{i}: "
         for j in range(num_gpus):
-            val = block_distances[i, j].item()
-            if val <= tau:
-                row_str += f"\033[92m{val:4.1f}\033[0m " # Green (Communicates)
-            else:
-                row_str += f"\033[91m{val:4.1f}\033[0m " # Red (Pruned)
+            val = block_distances_mean[i, j].item()
+            row_str += f"{val:4.1f} " 
         print(row_str)
 
 if __name__ == "__main__":
