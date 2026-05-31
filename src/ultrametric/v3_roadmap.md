@@ -30,6 +30,12 @@ $$ \mathcal{L}(t) = \mathcal{L}_{\text{CE}}(\Theta_{\text{frozen}}, \Phi) + \lam
 
 Once polarized, the routing depths $d_h = \mathbb{1}[z > 0]$ are extracted and mapped directly into the Triton block-sparse kernel.
 
+### Downstream Evaluations (Next Steps)
+While raw perplexity validates that the pre-trained manifold is preserved, the critical next frontier is formal benchmarking on precise long-range retrieval and reasoning tasks:
+- **Needle In A Haystack (NIAH):** Theoretically, the $p$-adic tree perfectly isolates the "needle". Because the needle and the query share highly similar semantic embeddings, the router will deterministically map them to the same branch on the Bruhat-Tits tree. The needle never has to compete with the dense noise of the haystack for attention mass.
+- **ZeroSCROLLS \& Multi-hop QA:** Validating multi-document reasoning and summarization where information is sparsely distributed across a 100k+ context.
+- **Long-Context Code (RepoBench):** Validating cross-file syntactic routing where distant function definitions must map to local invocations.
+
 ---
 
 ## 2. Zero-Overhead Self-Speculative Decoding
