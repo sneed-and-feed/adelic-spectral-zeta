@@ -174,7 +174,8 @@ class SurgicalLlamaAttention(nn.Module):
 
         # Dynamic Sparsification
         L = k.shape[-2]
-        full_mask = get_dynamic_ultrametric_mask(assignments, p=self.p, local_window=128).to(hidden_states.device)
+        local_window = getattr(self.config, "surgical_local_window", 16)
+        full_mask = get_dynamic_ultrametric_mask(assignments, p=self.p, local_window=local_window).to(hidden_states.device)
         um_mask_bool = full_mask > 0.5  # Shape: (B, H, S_full, L) or (B, H, L, L)
         
         if seq_len == 1 and L > 1:
