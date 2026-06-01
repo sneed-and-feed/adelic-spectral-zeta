@@ -52,7 +52,7 @@ def train_gsm8k():
     print("\nLoading GSM8K dataset...")
     # Requires `pip install datasets` in Colab
     try:
-        dataset = load_dataset("gsm8k", "main")
+        dataset = load_dataset("openai/gsm8k", "main")
     except Exception as e:
         print(f"Dataset load failed. Make sure you ran `pip install datasets`. Error: {e}")
         return
