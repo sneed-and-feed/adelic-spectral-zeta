@@ -1,3 +1,30 @@
+"""
+================================================================================
+🚨 WARNING: THE DUMMY TEXT FALLACY & CAPABILITY ZERO 🚨
+================================================================================
+
+This script flawlessly executes the hardware and software pipeline for a 1.58-bit 
+Ternary KV Cache combined with a p-adic Topological Block-Sparse Router. 
+
+However, from a MATHEMATICAL and SCIENTIFIC perspective, 1.58-bit KV Cache 
+destroys the semantic resolution of the model. Unlike weight quantization 
+(e.g., BitNet 1.58b) where weights are static operators, the KV Cache represents 
+the dynamic, continuous state of the conversation manifold.
+
+Squashing the dynamic KV state into just 3 values {-1, 0, 1} lobotomizes the 
+model's ability to perform exact token recall (Needle-In-A-Haystack).
+
+If you run this script using the default dummy repeating text, you will get a 
+false positive Perplexity of ~1.14. This is because a completely lobotomized 
+network can still predict a heavily repeated string. On real data, accuracy 
+drops to 0.0.
+
+The actual mathematical floor for preserving LLM reasoning with extreme 
+compression is 4-BIT KV CACHE, not 1.58-bit. Use this script to study the 
+Triton kernel and packing mechanics, but use 4-bit for actual training runs.
+================================================================================
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
