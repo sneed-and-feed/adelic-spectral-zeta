@@ -7,6 +7,68 @@ from typing import Optional
 from .layer import RotaryPositionEmbedding, apply_rotary_pos_emb
 from .topology import DynamicTopologyRouter, get_dynamic_ultrametric_mask
 
+class TernaryQuantize(torch.autograd.Function):
+    @staticmethod
+    @torch.amp.custom_fwd(device_type='cuda', cast_inputs=torch.float32)
+    def forward(ctx, x):
+        x_f32 = x.float()
+        gamma = x_f32.abs().mean(dim=-1, keepdim=True)
+        threshold = 0.5 * gamma
+        
+        x_ternary = torch.zeros_like(x_f32)
+        x_ternary[x_f32 > threshold] = 1.0
+        x_ternary[x_f32 < -threshold] = -1.0
+        
+        ctx.save_for_backward(x_f32, threshold)
+        return x_ternary * gamma
+
+    @staticmethod
+    @torch.amp.custom_bwd(device_type='cuda')
+    def backward(ctx, grad_output):
+        return grad_output
+
+def pack_ternary(x_ternary: torch.Tensor) -> torch.Tensor:
+    """
+    Packs a float tensor containing {-1.0, 0.0, 1.0} into int32.
+    """
+    assert x_ternary.shape[-1] % 16 == 0, "Last dimension must be multiple of 16 for packing"
+    
+    mapped = torch.zeros_like(x_ternary, dtype=torch.int32)
+    mapped[x_ternary == -1.0] = 2
+    mapped[x_ternary == 1.0] = 1
+    
+    shape = list(mapped.shape)
+    shape[-1] = shape[-1] // 16
+    shape.append(16)
+    
+    mapped = mapped.view(shape)
+    packed = torch.zeros(shape[:-1], dtype=torch.int32, device=x_ternary.device)
+    
+    for i in range(16):
+        packed |= (mapped[..., i] << (2 * i))
+        
+    return packed
+
+def unpack_ternary(packed: torch.Tensor, original_shape: tuple) -> torch.Tensor:
+    """
+    Unpacks an int32 tensor back to float tensor containing {-1.0, 0.0, 1.0}.
+    """
+    shape = list(packed.shape)
+    shape.append(16)
+    
+    unpacked = torch.zeros(shape, dtype=torch.int32, device=packed.device)
+    for i in range(16):
+        val = (packed >> (2 * i)) & 3
+        unpacked[..., i] = val
+        
+    unpacked = unpacked.view(original_shape).float()
+    
+    res = torch.zeros_like(unpacked)
+    res[unpacked == 2.0] = -1.0
+    res[unpacked == 1.0] = 1.0
+    
+    return res
+
 def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
     """
     Equiv to torch.repeat_interleave(x, dim=1, repeats=n_rep)
