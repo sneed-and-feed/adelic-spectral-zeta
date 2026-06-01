@@ -64,9 +64,14 @@ def train_gsm8k():
 
     print("Tokenizing data...")
     train_data = dataset["train"].map(format_data, batched=False)
-    train_data.set_format(type="torch", columns=["input_ids", "attention_mask"])
     
-    dataloader = DataLoader(train_data, batch_size=1, shuffle=True)
+    def collate_fn(batch):
+        return {
+            "input_ids": torch.tensor([x["input_ids"] for x in batch]),
+            "attention_mask": torch.tensor([x["attention_mask"] for x in batch])
+        }
+    
+    dataloader = DataLoader(train_data, batch_size=1, shuffle=True, collate_fn=collate_fn)
     optimizer = AdamW(model.parameters(), lr=2e-4)
     
     epochs = 3
