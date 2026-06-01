@@ -79,10 +79,10 @@ def train_gsm8k():
     optimizer = AdamW(model.parameters(), lr=2e-4)
     
     epochs = 3
-    chunk_size = 128
+    chunk_size = 256
     
     print(f"\nStarting Adèlic QAT on GSM8K for {epochs} epochs...")
-    print("Chunk size: 128 | Condensation max_capacity: 256 | local_window: 128")
+    print(f"Chunk size: {chunk_size} | Condensation max_capacity: 256 | local_window: 128")
     
     model.train()
     
