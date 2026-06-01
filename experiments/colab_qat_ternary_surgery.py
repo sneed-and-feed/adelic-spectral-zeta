@@ -150,11 +150,9 @@ def train_router_qat(model, dataloader, steps=100, device="cuda"):
             
             if torch.isnan(grad_norm) or torch.isinf(grad_norm) or grad_norm > 10.0:
                 print(f"  [Step {step}] DIVERGENCE DETECTED (grad_norm={grad_norm.item():.2f}). Skipping.")
-                optimizer.zero_grad()
-                step += 1
-                continue
+            else:
+                scaler.step(optimizer)
                 
-            scaler.step(optimizer)
             scaler.update()
             optimizer.zero_grad()
             
