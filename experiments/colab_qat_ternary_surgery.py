@@ -198,8 +198,12 @@ def main():
             texts = [" ".join([msg["content"] for msg in convo]) for convo in examples["messages"]]
             return tokenizer(texts, padding="max_length", truncation=True, max_length=256)
         tokenized_dataset = dataset.map(tokenize_function, batched=True, remove_columns=dataset.column_names)
-        tokenized_dataset.set_format("torch")
-        dataloader = DataLoader(tokenized_dataset, batch_size=4)
+        def collate_fn(batch):
+            return {
+                'input_ids': torch.tensor([b['input_ids'] for b in batch]),
+                'attention_mask': torch.tensor([b['attention_mask'] for b in batch])
+            }
+        dataloader = DataLoader(tokenized_dataset, batch_size=4, collate_fn=collate_fn)
     else:
         print("\n[WARNING] 'datasets' library not found. Falling back to dummy text.")
         train_text = "The geometry of language is not a linear sequence of events, but a complex web."
