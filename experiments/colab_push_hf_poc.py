@@ -23,7 +23,7 @@ def push_to_hub():
     AdelicLlamaConfig.register_for_auto_class()
     AdelicLlamaForCausalLM.register_for_auto_class("AutoModelForCausalLM")
     
-    base_model_id = "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T"
+    base_model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
     
     print(f"Loading Base Model: {base_model_id}")
     # Load base config
@@ -32,15 +32,19 @@ def push_to_hub():
     # Create Custom Adelic Config using the base config's attributes
     adelic_config = AdelicLlamaConfig(**base_config.to_dict())
     
-    # Configure the Adelic Condensation defaults
-    adelic_config.adelic_max_capacity = 512
-    adelic_config.adelic_local_window = 128
+    # Configure the Adelic Condensation defaults for an 8B model
+    adelic_config.adelic_max_capacity = 2048
+    adelic_config.adelic_local_window = 512
     adelic_config.adelic_similarity_threshold = 0.95
     
     print("Instantiating AdelicLlamaForCausalLM architecture...")
-    # Instantiate the custom model architecture and load the pre-trained weights from TinyLlama
-    # We use from_pretrained on the custom class directly!
-    model = AdelicLlamaForCausalLM.from_pretrained(base_model_id, config=adelic_config)
+    # Instantiate the custom model architecture and load the pre-trained weights
+    # Note: Meta Llama 3.1 requires bfloat16 for optimal loading on A100
+    model = AdelicLlamaForCausalLM.from_pretrained(
+        base_model_id, 
+        config=adelic_config,
+        torch_dtype=torch.bfloat16
+    )
     
     # Load Tokenizer
     tokenizer = AutoTokenizer.from_pretrained(base_model_id)
@@ -53,7 +57,7 @@ def push_to_hub():
     except Exception:
         pass
         
-    repo_id = f"{username}/Adelic-TinyLlama-1.1B"
+    repo_id = f"{username}/Adelic-Llama-3.1-8B-Instruct"
     
     print(f"\nPushing Custom Model with Adelic Condensation Cache to Hugging Face Hub: {repo_id}")
     print("This will upload the custom `modeling_adelic_llama.py` and `configuration_adelic_llama.py` alongside the weights.")
