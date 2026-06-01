@@ -58,8 +58,12 @@ def train_gsm8k():
         return
         
     def format_data(example):
-        text = f"Question: {example['question']}\nAnswer: {example['answer']}"
-        tokens = tokenizer(text, truncation=True, max_length=1024, padding="max_length")
+        messages = [
+            {"role": "user", "content": example["question"]},
+            {"role": "assistant", "content": example["answer"]}
+        ]
+        text = tokenizer.apply_chat_template(messages, tokenize=False)
+        tokens = tokenizer(text, truncation=True, max_length=1024, padding=False)
         return tokens
 
     print("Tokenizing data...")

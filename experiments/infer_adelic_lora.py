@@ -40,7 +40,10 @@ def run_inference():
     
     # A classic GSM8K-style reasoning problem
     question = "John has 5 apples. He gives 2 to his friend. Then he buys 3 times as many apples as he currently has. How many apples does John have now?"
-    prompt = f"Question: {question}\nAnswer: Let's think step by step."
+    messages = [
+        {"role": "user", "content": question}
+    ]
+    prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     
     print(f"\nPrompt:\n{prompt}\n")
     print("Generating response over the compressed topological cache...\n")
