@@ -189,7 +189,7 @@ def compute_perplexity(model, tokenizer, text, device="cuda"):
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=2048)
     input_ids = inputs["input_ids"].to(device)
     
-    with torch.no_grad():
+    with torch.no_grad(), torch.amp.autocast(device):
         outputs = model(input_ids, labels=input_ids)
         nll = outputs.loss.item()
         
