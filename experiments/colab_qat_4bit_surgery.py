@@ -23,17 +23,19 @@ class FakeQuantize4Bit(torch.autograd.Function):
     Backward pass: passes gradients straight through (STE) to ignore the non-differentiable rounding.
     """
     @staticmethod
+    @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
     def forward(ctx, x):
-        # 4-bit symmetric quantization: range is [-8, 7]
-        # max_val = 7.0
-        scale = x.abs().max(dim=-1, keepdim=True).values / 7.0
+        # Cast to float32 internally to prevent FP16 inf/NaN overflows during division
+        x_f32 = x.float()
+        scale = x_f32.abs().max(dim=-1, keepdim=True).values / 7.0
         scale = scale.clamp(min=1e-5) # Prevent division by zero
         
-        x_q = torch.round(x / scale).clamp(-8, 7)
+        x_q = torch.round(x_f32 / scale).clamp(-8, 7)
         x_dq = x_q * scale
-        return x_dq
+        return x_dq.to(x.dtype)
 
     @staticmethod
+    @torch.cuda.amp.custom_bwd
     def backward(ctx, grad_output):
         # Straight-Through Estimator: just pass the gradient back
         return grad_output
@@ -115,6 +117,7 @@ def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
 
     model.train()
     optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=5e-3)
+    scaler = torch.amp.GradScaler(device)
     
     encodings = tokenizer([train_text] * 8, truncation=True, padding=True, max_length=128)
     dataset = Dataset.from_dict({
@@ -139,17 +142,21 @@ def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
                 break
                 
             input_ids = batch['input_ids']
-            outputs = model(input_ids, labels=input_ids)
-            loss = outputs.loss
             
-            # Explicitly collect auxiliary router loss
-            router_loss = 0.0
-            for module in model.modules():
-                if hasattr(module, "router_loss") and module.router_loss is not None:
-                    router_loss += module.router_loss
-                    
-            total_loss = loss + 0.05 * router_loss
-            total_loss.backward()
+            with torch.amp.autocast(device):
+                outputs = model(input_ids, labels=input_ids)
+                loss = outputs.loss
+                
+                # Explicitly collect auxiliary router loss
+                router_loss = 0.0
+                for module in model.modules():
+                    if hasattr(module, "router_loss") and module.router_loss is not None:
+                        router_loss += module.router_loss
+                        
+                total_loss = loss + 0.05 * router_loss
+                
+            scaler.scale(total_loss).backward()
+            scaler.unscale_(optimizer)
             
             grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
             
@@ -159,7 +166,8 @@ def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
                 step += 1  # Increment step even on skip to avoid infinite loops
                 continue
                 
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
             optimizer.zero_grad()
             
             if step % 10 == 0:
