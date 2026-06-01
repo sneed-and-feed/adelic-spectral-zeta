@@ -46,37 +46,60 @@ def quantize_4bit(x):
 # 2. Attention Monkey Patch
 # ==============================================================================
 
-# Keep a reference to the original method just in case we need to unpatch
-_original_dense_attention = UltrametricAttention._dense_attention
+_original_forward = UltrametricAttention.forward
 
-def _qat_dense_attention(self, q, k, v, mask, batch_size, total_len):
+def _qat_forward(self, x, num_interior=0, dynamic_mask=None, routing=None, routing_assignments=None, mode="auto"):
     """
-    A patched version of the dense attention math that forces the Key and Value 
-    tensors through the 4-bit fake quantizer before computing attention.
+    A patched version of the forward pass that forces the Key and Value 
+    tensors through the 4-bit fake quantizer right after projection,
+    ensuring it applies to all modes (dense, chunked, triton).
     """
-    # Fake quantize the KV cache to 4-bits!
-    k_qat = quantize_4bit(k)
-    v_qat = quantize_4bit(v)
+    batch_size, total_len, _ = x.size()
+    seq_len = total_len - num_interior
+
+    q = self.q_proj(x).view(batch_size, total_len, self.num_heads, self.head_dim).transpose(1, 2)
+    k = self.k_proj(x).view(batch_size, total_len, self.num_heads, self.head_dim).transpose(1, 2)
+    v = self.v_proj(x).view(batch_size, total_len, self.num_heads, self.head_dim).transpose(1, 2)
     
-    # Continue with standard attention using the quantized tensors
-    scores = torch.matmul(q, k_qat.transpose(-2, -1)) * self.scale
-    if mask.dtype == torch.bool:
-        scores = scores.masked_fill(~mask, float("-inf"))
+    # APPLY 4-BIT FAKE QUANTIZATION TO KV CACHE
+    k = quantize_4bit(k)
+    v = quantize_4bit(v)
+
+    # Apply RoPE
+    from llama_surgery.layer import apply_rotary_pos_emb
+    if num_interior > 0:
+        q_seq = q[:, :, num_interior:, :]
+        k_seq = k[:, :, num_interior:, :]
+        cos, sin = self.rope(q_seq)
+        q_seq, k_seq = apply_rotary_pos_emb(q_seq, k_seq, cos, sin)
+        q = torch.cat([q[:, :, :num_interior, :], q_seq], dim=2)
+        k = torch.cat([k[:, :, :num_interior, :], k_seq], dim=2)
     else:
-        scores = scores + torch.log(mask.clamp(min=1e-9))
-        
-    attn_weights = F.softmax(scores, dim=-1)
-    attn_weights = self.attn_dropout(attn_weights)
-    
-    out = torch.matmul(attn_weights, v_qat)
-    out = out.transpose(1, 2).contiguous().view(batch_size, total_len, self.embed_dim)
-    
-    return self.o_proj(out)
+        cos, sin = self.rope(q)
+        q, k = apply_rotary_pos_emb(q, k, cos, sin)
+
+    # Resolve execution mode
+    from llama_surgery.kernel import HAS_TRITON
+    if mode == "auto":
+        if HAS_TRITON and x.is_cuda and seq_len >= 256 and routing_assignments is not None and num_interior == 0:
+            mode = "triton"
+        elif seq_len >= 128:
+            mode = "chunked"
+        else:
+            mode = "dense"
+
+    if mode == "triton" and HAS_TRITON and routing_assignments is not None:
+        return self._triton_attention(q, k, v, routing_assignments, batch_size, total_len)
+    elif mode == "chunked":
+        mask = self._resolve_mask(batch_size, total_len, seq_len, num_interior, dynamic_mask, routing, x.device)
+        return self._chunked_sparse_attention(q, k, v, mask, batch_size, total_len)
+    else:
+        mask = self._resolve_mask(batch_size, total_len, seq_len, num_interior, dynamic_mask, routing, x.device)
+        return self._dense_attention(q, k, v, mask, batch_size, total_len)
 
 def apply_qat_monkey_patch():
-    """Injects the 4-bit quantizer into the UltrametricAttention class."""
-    print("[QAT] Applying 4-bit Fake Quantization monkey-patch to UltrametricAttention.")
-    UltrametricAttention._dense_attention = _qat_dense_attention
+    print("[QAT] Applying 4-bit Fake Quantization monkey-patch to UltrametricAttention.forward.")
+    UltrametricAttention.forward = _qat_forward
 
 
 # ==============================================================================
@@ -84,11 +107,6 @@ def apply_qat_monkey_patch():
 # ==============================================================================
 
 def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
-    """
-    Trains the router while the KV cache is actively being quantized to 4-bits.
-    Implements Anon's 'skip-bad-step' logic to prevent QAT gradient explosions.
-    """
-    # Freeze all parameters EXCEPT the router
     for name, param in model.named_parameters():
         if "router" not in name:
             param.requires_grad = False
@@ -98,7 +116,6 @@ def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
     model.train()
     optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=5e-3)
     
-    # Create dummy dataset
     encodings = tokenizer([train_text] * 8, truncation=True, padding=True, max_length=128)
     dataset = Dataset.from_dict({
         'input_ids': encodings['input_ids'],
@@ -125,26 +142,28 @@ def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
             outputs = model(input_ids, labels=input_ids)
             loss = outputs.loss
             
-            # The surgery framework automatically adds auxiliary router loss
-            # if we are in training mode.
+            # Explicitly collect auxiliary router loss
+            router_loss = 0.0
+            for module in model.modules():
+                if hasattr(module, "router_loss") and module.router_loss is not None:
+                    router_loss += module.router_loss
+                    
+            total_loss = loss + 0.05 * router_loss
+            total_loss.backward()
             
-            loss.backward()
-            
-            # --- THE SKIP-BAD-STEP FIX ---
-            # QAT + Gumbel-Softmax = violent gradient explosions.
-            # We clip gradients. If the norm is insane or NaN, we skip the step.
             grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
             
             if torch.isnan(grad_norm) or torch.isinf(grad_norm) or grad_norm > 10.0:
                 print(f"  [Step {step}] DIVERGENCE DETECTED (grad_norm={grad_norm.item():.2f}). Skipping step to prevent NaN collapse.")
                 optimizer.zero_grad()
-                continue # Skip the bad step!
+                step += 1  # Increment step even on skip to avoid infinite loops
+                continue
                 
             optimizer.step()
             optimizer.zero_grad()
             
             if step % 10 == 0:
-                print(f"  [Step {step}] Loss: {loss.item():.4f} | Grad Norm: {grad_norm.item():.2f}")
+                print(f"  [Step {step}] Loss: {total_loss.item():.4f} | Grad Norm: {grad_norm.item():.2f}")
                 
             step += 1
 
