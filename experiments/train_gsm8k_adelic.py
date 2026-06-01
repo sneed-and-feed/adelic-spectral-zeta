@@ -132,11 +132,18 @@ def train_gsm8k():
                 )
                 
                 loss = outputs.loss
+                # Scale the loss to normalize gradients across sequence lengths
+                scaled_loss = loss / len(chunks)
+                
                 retain_graph = (idx < len(chunks) - 1)
-                loss.backward(retain_graph=retain_graph)
+                scaled_loss.backward(retain_graph=retain_graph)
                 loss_accum += loss.item()
                 
+            # Gradient clipping to prevent explosion
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
+            # Optional: Step the scheduler if we add one (not strictly necessary with clipping and scaled loss, but safe)
+            
             total_loss += (loss_accum / len(chunks))
             
             pbar.set_postfix({
