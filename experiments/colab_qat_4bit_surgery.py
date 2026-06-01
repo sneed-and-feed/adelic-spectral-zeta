@@ -23,7 +23,7 @@ class FakeQuantize4Bit(torch.autograd.Function):
     Backward pass: passes gradients straight through (STE) to ignore the non-differentiable rounding.
     """
     @staticmethod
-    @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+    @torch.amp.custom_fwd(device_type='cuda', cast_inputs=torch.float32)
     def forward(ctx, x):
         # Cast to float32 internally to prevent FP16 inf/NaN overflows during division
         x_f32 = x.float()
@@ -35,7 +35,7 @@ class FakeQuantize4Bit(torch.autograd.Function):
         return x_dq.to(x.dtype)
 
     @staticmethod
-    @torch.cuda.amp.custom_bwd
+    @torch.amp.custom_bwd(device_type='cuda')
     def backward(ctx, grad_output):
         # Straight-Through Estimator: just pass the gradient back
         return grad_output
@@ -114,6 +114,8 @@ def train_router_qat(model, tokenizer, train_text, steps=100, device="cuda"):
             param.requires_grad = False
         else:
             param.requires_grad = True
+            # CRITICAL FIX: Cast trainable params to FP32. GradScaler expects FP32 gradients.
+            param.data = param.data.to(torch.float32)
 
     model.train()
     optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=5e-3)
