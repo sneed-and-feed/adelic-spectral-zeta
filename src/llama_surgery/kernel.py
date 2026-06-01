@@ -143,102 +143,6 @@ if HAS_TRITON:
         tl.store(o_block_ptr, acc.to(tl.float16), boundary_check=(0, 1))
 
 
-def routing_to_block_indices(
-    assignments: torch.Tensor,
-    seq_len: int,
-    block_size: int = 128,
-) -> torch.Tensor:
-    B, H, S, L, P = assignments.shape
-    num_blocks = math.ceil(seq_len / block_size)
-
-    branch_ids = assignments.argmax(dim=-1)
-
-    if S < num_blocks * block_size:
-        pad_len = num_blocks * block_size - S
-        branch_ids = torch.nn.functional.pad(branch_ids, (0, 0, 0, pad_len), value=0)
-
-    branch_ids = branch_ids.view(B, H, num_blocks, block_size, L)
-    router_indices = branch_ids[:, :, :, 0, :]  
-
-    return router_indices.to(torch.int32)
-
-
-def ultrametric_attention_triton(
-    q: torch.Tensor,
-    k: torch.Tensor,
-    v: torch.Tensor,
-    router_indices: torch.Tensor,
-    local_window: int = 128,
-    req_depth: int = 2,
-    shift_size: int = 0,
-    p: int = 2,
-) -> torch.Tensor:
-    if not HAS_TRITON:
-        raise RuntimeError("Triton is not available")
-
-    assert q.dtype == torch.float16, f"Triton kernel requires float16, got {q.dtype}"
-    assert q.is_cuda, "Triton kernel requires CUDA tensors"
-
-    Z, H, N_CTX, DMODEL = q.shape
-
-    q = q.contiguous()
-    k = k.contiguous()
-    v = v.contiguous()
-    router_indices = router_indices.contiguous().to(torch.int32)
-
-    TREE_DEPTH = router_indices.shape[-1]
-    assert 0 <= req_depth <= TREE_DEPTH, (
-        f"req_depth ({req_depth}) must be in [0, {TREE_DEPTH}]"
-    )
-
-    TREE_DEPTH_P2 = 1 << (TREE_DEPTH - 1).bit_length() if TREE_DEPTH > 1 else 1
-
-    BLOCK_M = min(128, N_CTX)
-    BLOCK_N = min(128, N_CTX)
-    BLOCK_DMODEL = DMODEL
-    
-    LOCAL_WINDOW_BLOCKS = math.ceil(local_window / BLOCK_N)
-
-    num_blocks_needed = triton.cdiv(N_CTX, BLOCK_M)
-    num_blocks_have = router_indices.shape[2]
-    if num_blocks_have < num_blocks_needed:
-        pad = torch.zeros(
-            (Z, H, num_blocks_needed - num_blocks_have, TREE_DEPTH),
-            dtype=torch.int32,
-            device=router_indices.device,
-        )
-        router_indices = torch.cat([router_indices, pad], dim=2)
-
-    if TREE_DEPTH < TREE_DEPTH_P2:
-        depth_pad = torch.zeros(
-            (*router_indices.shape[:-1], TREE_DEPTH_P2 - TREE_DEPTH),
-            dtype=torch.int32,
-            device=router_indices.device,
-        )
-        router_indices = torch.cat([router_indices, depth_pad], dim=-1)
-
-    router_indices = router_indices.contiguous()
-    out = torch.empty_like(q)
-    sm_scale = 1.0 / math.sqrt(DMODEL)
-
-    grid = (triton.cdiv(N_CTX, BLOCK_M), Z * H)
-
-    _ultrametric_fwd_kernel[grid](
-        q, k, v, sm_scale, router_indices, out,
-        q.stride(0), q.stride(1), q.stride(2), q.stride(3),
-        k.stride(0), k.stride(1), k.stride(2), k.stride(3),
-        v.stride(0), v.stride(1), v.stride(2), v.stride(3),
-        out.stride(0), out.stride(1), out.stride(2), out.stride(3),
-        router_indices.stride(0), router_indices.stride(1), router_indices.stride(2), router_indices.stride(3),
-        req_depth, shift_size, Z, H, N_CTX,
-        LOCAL_WINDOW_BLOCKS=LOCAL_WINDOW_BLOCKS,
-        BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
-        P_ARY=p, TREE_DEPTH_P2=TREE_DEPTH_P2,
-        num_warps=4, num_stages=3,
-    )
-
-    return out
-
 
     @triton.jit
     def _ternary_ultrametric_fwd_kernel(
@@ -343,6 +247,102 @@ def ultrametric_attention_triton(
 
         acc = acc / l_i[:, None]
         tl.store(o_ptrs, acc.to(tl.float16), mask=offs_m[:, None] < N_CTX)
+
+def routing_to_block_indices(
+    assignments: torch.Tensor,
+    seq_len: int,
+    block_size: int = 128,
+) -> torch.Tensor:
+    B, H, S, L, P = assignments.shape
+    num_blocks = math.ceil(seq_len / block_size)
+
+    branch_ids = assignments.argmax(dim=-1)
+
+    if S < num_blocks * block_size:
+        pad_len = num_blocks * block_size - S
+        branch_ids = torch.nn.functional.pad(branch_ids, (0, 0, 0, pad_len), value=0)
+
+    branch_ids = branch_ids.view(B, H, num_blocks, block_size, L)
+    router_indices = branch_ids[:, :, :, 0, :]  
+
+    return router_indices.to(torch.int32)
+
+
+def ultrametric_attention_triton(
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    router_indices: torch.Tensor,
+    local_window: int = 128,
+    req_depth: int = 2,
+    shift_size: int = 0,
+    p: int = 2,
+) -> torch.Tensor:
+    if not HAS_TRITON:
+        raise RuntimeError("Triton is not available")
+
+    assert q.dtype == torch.float16, f"Triton kernel requires float16, got {q.dtype}"
+    assert q.is_cuda, "Triton kernel requires CUDA tensors"
+
+    Z, H, N_CTX, DMODEL = q.shape
+
+    q = q.contiguous()
+    k = k.contiguous()
+    v = v.contiguous()
+    router_indices = router_indices.contiguous().to(torch.int32)
+
+    TREE_DEPTH = router_indices.shape[-1]
+    assert 0 <= req_depth <= TREE_DEPTH, (
+        f"req_depth ({req_depth}) must be in [0, {TREE_DEPTH}]"
+    )
+
+    TREE_DEPTH_P2 = 1 << (TREE_DEPTH - 1).bit_length() if TREE_DEPTH > 1 else 1
+
+    BLOCK_M = min(128, N_CTX)
+    BLOCK_N = min(128, N_CTX)
+    BLOCK_DMODEL = DMODEL
+    
+    LOCAL_WINDOW_BLOCKS = math.ceil(local_window / BLOCK_N)
+
+    num_blocks_needed = triton.cdiv(N_CTX, BLOCK_M)
+    num_blocks_have = router_indices.shape[2]
+    if num_blocks_have < num_blocks_needed:
+        pad = torch.zeros(
+            (Z, H, num_blocks_needed - num_blocks_have, TREE_DEPTH),
+            dtype=torch.int32,
+            device=router_indices.device,
+        )
+        router_indices = torch.cat([router_indices, pad], dim=2)
+
+    if TREE_DEPTH < TREE_DEPTH_P2:
+        depth_pad = torch.zeros(
+            (*router_indices.shape[:-1], TREE_DEPTH_P2 - TREE_DEPTH),
+            dtype=torch.int32,
+            device=router_indices.device,
+        )
+        router_indices = torch.cat([router_indices, depth_pad], dim=-1)
+
+    router_indices = router_indices.contiguous()
+    out = torch.empty_like(q)
+    sm_scale = 1.0 / math.sqrt(DMODEL)
+
+    grid = (triton.cdiv(N_CTX, BLOCK_M), Z * H)
+
+    _ultrametric_fwd_kernel[grid](
+        q, k, v, sm_scale, router_indices, out,
+        q.stride(0), q.stride(1), q.stride(2), q.stride(3),
+        k.stride(0), k.stride(1), k.stride(2), k.stride(3),
+        v.stride(0), v.stride(1), v.stride(2), v.stride(3),
+        out.stride(0), out.stride(1), out.stride(2), out.stride(3),
+        router_indices.stride(0), router_indices.stride(1), router_indices.stride(2), router_indices.stride(3),
+        req_depth, shift_size, Z, H, N_CTX,
+        LOCAL_WINDOW_BLOCKS=LOCAL_WINDOW_BLOCKS,
+        BLOCK_M=BLOCK_M, BLOCK_DMODEL=BLOCK_DMODEL, BLOCK_N=BLOCK_N,
+        P_ARY=p, TREE_DEPTH_P2=TREE_DEPTH_P2,
+        num_warps=4, num_stages=3,
+    )
+
+    return out
 
 
 def ternary_ultrametric_attention_triton(
