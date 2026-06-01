@@ -35,81 +35,65 @@ class AdelicCache(DynamicCache):
         return self.key_cache[layer_idx], self.value_cache[layer_idx]
 
     def _condense_layer(self, layer_idx: int):
-        keys = self.key_cache[layer_idx]     
+        keys = self.key_cache[layer_idx]     # [B, H, seq_len, D]
         values = self.value_cache[layer_idx] 
 
         seq_len = keys.shape[-2]
-        far_history_len = seq_len - self.local_window
+        excess = seq_len - self.max_capacity
         
-        if far_history_len <= 0:
+        if excess <= 0:
             return 
             
-        far_keys = keys[:, :, :far_history_len, :]
-        far_values = values[:, :, :far_history_len, :]
+        max_far_history = self.max_capacity - self.local_window
         
-        local_keys = keys[:, :, far_history_len:, :]
-        local_values = values[:, :, far_history_len:, :]
+        # 1. Existing centroids (the compressed far history)
+        centroids_k = keys[:, :, :max_far_history, :].clone()
+        centroids_v = values[:, :, :max_far_history, :].clone()
+        
+        # 2. New tokens that just fell out of the local window
+        new_k = keys[:, :, max_far_history : max_far_history + excess, :]
+        new_v = values[:, :, max_far_history : max_far_history + excess, :]
+        
+        # 3. The current local window (untouched)
+        local_k = keys[:, :, max_far_history + excess :, :]
+        local_v = values[:, :, max_far_history + excess :, :]
         
         batch_size, num_heads, _, head_dim = keys.shape
         
-        new_far_keys_list = []
-        new_far_values_list = []
-        
+        # Online clustering loop: O(excess * K) -> Amortized O(1) per token
         for b in range(batch_size):
-            b_keys = []
-            b_values = []
             for h in range(num_heads):
-                h_k = far_keys[b, h] 
-                h_v = far_values[b, h]
+                c_k = centroids_k[b, h] # [K, D]
+                c_v = centroids_v[b, h] # [K, D]
                 
-                # Use fp32 for stable cosine similarity
-                norm_v = torch.nn.functional.normalize(h_v.float(), p=2, dim=-1)
-                sim_matrix = torch.matmul(norm_v, norm_v.transpose(0, 1)) 
+                n_k = new_k[b, h] # [excess, D]
+                n_v = new_v[b, h] # [excess, D]
                 
-                visited = torch.zeros(far_history_len, dtype=torch.bool, device=keys.device)
-                merged_k = []
-                merged_v = []
-                
-                for i in range(far_history_len):
-                    if visited[i]: continue
+                for i in range(excess):
+                    v_new = n_v[i:i+1] # [1, D]
+                    k_new = n_k[i:i+1]
                     
-                    cluster_indices = (sim_matrix[i] > self.similarity_threshold) & (~visited)
+                    norm_v_new = torch.nn.functional.normalize(v_new.float(), p=2, dim=-1)
+                    norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
                     
-                    if not cluster_indices.any():
-                        visited[i] = True
-                        continue
+                    sims = torch.matmul(norm_v_new, norm_c_v.transpose(0, 1)).squeeze(0) # [K]
+                    max_sim, best_idx = sims.max(dim=0)
+                    
+                    if max_sim > self.similarity_threshold:
+                        # Merge into existing semantic cluster (Differentiable, no inplace ops)
+                        mask = (torch.arange(c_v.shape[0], device=c_v.device) == best_idx).unsqueeze(1)
+                        c_v = torch.where(mask, (c_v + v_new.squeeze(0)) / 2.0, c_v)
+                        c_k = torch.where(mask, k_new.squeeze(0), c_k) # Update medoid
+                    else:
+                        # Unique Needle: Append as new centroid and LRU evict the oldest
+                        c_v = torch.cat([c_v[1:], v_new], dim=0)
+                        c_k = torch.cat([c_k[1:], k_new], dim=0)
                         
-                    visited[cluster_indices] = True
-                    
-                    pooled_v = h_v[cluster_indices].mean(dim=0)
-                    last_idx = torch.where(cluster_indices)[0][-1]
-                    medoid_k = h_k[last_idx]
-                    
-                    merged_k.append(medoid_k)
-                    merged_v.append(pooled_v)
+                centroids_k[b, h] = c_k
+                centroids_v[b, h] = c_v
                 
-                b_keys.append(torch.stack(merged_k))
-                b_values.append(torch.stack(merged_v))
-                
-            max_len = max([k.shape[0] for k in b_keys])
-            padded_k = []
-            padded_v = []
-            for k, v in zip(b_keys, b_values):
-                pad_len = max_len - k.shape[0]
-                if pad_len > 0:
-                    k = torch.cat([k, torch.zeros(pad_len, head_dim, dtype=k.dtype, device=k.device)])
-                    v = torch.cat([v, torch.zeros(pad_len, head_dim, dtype=v.dtype, device=v.device)])
-                padded_k.append(k)
-                padded_v.append(v)
-                
-            new_far_keys_list.append(torch.stack(padded_k))
-            new_far_values_list.append(torch.stack(padded_v))
-            
-        new_far_keys = torch.stack(new_far_keys_list)     
-        new_far_values = torch.stack(new_far_values_list) 
-        
-        self.key_cache[layer_idx] = torch.cat([new_far_keys, local_keys], dim=-2)
-        self.value_cache[layer_idx] = torch.cat([new_far_values, local_values], dim=-2)
+        self.key_cache[layer_idx] = torch.cat([centroids_k, local_k], dim=-2)
+        self.value_cache[layer_idx] = torch.cat([centroids_v, local_v], dim=-2)
 
     def get_seq_length(self, layer_idx: int = 0) -> int:
         if hasattr(self, '_seen_tokens'):
