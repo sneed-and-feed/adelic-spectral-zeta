@@ -191,15 +191,19 @@ def main():
     # Force 4-bit quantizer onto the dense baseline
     apply_qat_monkey_patch()
     
-    # We test it with the patch active. Because we haven't injected surgery, 
-    # the model is just using the standard UltrametricAttention fallback (if we inject it first).
-    # Wait, if we haven't injected surgery, the model uses standard LlamaAttention!
-    # So we MUST inject surgery with p=None (which acts as a wrapper) to use the patched dense attention.
-    model.config.surgical_p = None
+    # We inject surgery with p=2 but temporarily force the mask to be fully dense 
+    # to simulate the baseline dense model with 4-bit quantization.
+    model.config.surgical_p = 2
     model = inject_surgery(model)
+    
+    _orig_resolve = UltrametricAttention._resolve_mask
+    UltrametricAttention._resolve_mask = lambda self, bs, tl, *args, **kwargs: torch.ones((bs, 1, tl, tl), dtype=torch.bool, device=model.device)
+
     
     ppl_dense_4bit = compute_perplexity(model, tokenizer, test_text, device)
     print(f"Result: Dense 4-bit Perplexity = {ppl_dense_4bit:.2f} (This should be destroyed/high!)")
+    
+    UltrametricAttention._resolve_mask = _orig_resolve
     
     del model
     torch.cuda.empty_cache()
