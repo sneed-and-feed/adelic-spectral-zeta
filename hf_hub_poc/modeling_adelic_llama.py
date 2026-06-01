@@ -3,34 +3,6 @@ from transformers import LlamaForCausalLM
 from transformers.cache_utils import DynamicCache
 from .configuration_adelic_llama import AdelicLlamaConfig
 
-def _condense_tensors(centroids_k, centroids_v, new_k, new_v, similarity_threshold, excess):
-    for i in range(excess):
-        v_new = new_v[:, :, i:i+1, :] # [B, H, 1, D]
-        k_new = new_k[:, :, i:i+1, :]
-        
-        norm_v_new = torch.nn.functional.normalize(v_new.float(), p=2, dim=-1)
-        norm_c_v = torch.nn.functional.normalize(centroids_v.float(), p=2, dim=-1)
-        
-        sims = torch.matmul(norm_v_new, norm_c_v.transpose(-1, -2)).squeeze(-2) # [B, H, K]
-        max_sim, best_idx = sims.max(dim=-1) # [B, H]
-        
-        mask_cond = (max_sim > similarity_threshold).unsqueeze(-1) # [B, H, 1]
-        
-        idx_mask = (torch.arange(centroids_v.shape[-2], device=centroids_v.device).view(1, 1, -1) == best_idx.unsqueeze(-1)) # [B, H, K]
-        merge_mask = (idx_mask & mask_cond).unsqueeze(-1) # [B, H, K, 1]
-        
-        centroids_v = torch.where(merge_mask, (centroids_v + v_new) / 2.0, centroids_v)
-        centroids_k = torch.where(merge_mask, k_new, centroids_k)
-        
-        evict_mask = (~mask_cond).unsqueeze(-1) # [B, H, 1, 1]
-        evicted_c_v = torch.cat([centroids_v[:, :, 1:, :], v_new], dim=-2)
-        evicted_c_k = torch.cat([centroids_k[:, :, 1:, :], k_new], dim=-2)
-        
-        centroids_v = torch.where(evict_mask, evicted_c_v, centroids_v)
-        centroids_k = torch.where(evict_mask, evicted_c_k, centroids_k)
-        
-    return centroids_k, centroids_v
-
 class AdelicCache(DynamicCache):
     """
     AdelicCache implements Level 4 Adelic KV-Cache Condensation via the Medoid-Value Strategy.
@@ -86,10 +58,39 @@ class AdelicCache(DynamicCache):
         local_k = keys[:, :, max_far_history + excess :, :]
         local_v = values[:, :, max_far_history + excess :, :]
         
-        # O(1) graph-compiled highly optimized condensation
-        centroids_k, centroids_v = _condense_tensors(
-            centroids_k, centroids_v, new_k, new_v, self.similarity_threshold, excess
-        )
+        batch_size, num_heads, _, head_dim = keys.shape
+        
+        # Online clustering loop: O(excess * K) -> Amortized O(1) per token
+        for b in range(batch_size):
+            for h in range(num_heads):
+                c_k = centroids_k[b, h] # [K, D]
+                c_v = centroids_v[b, h] # [K, D]
+                
+                n_k = new_k[b, h] # [excess, D]
+                n_v = new_v[b, h] # [excess, D]
+                
+                for i in range(excess):
+                    v_new = n_v[i:i+1] # [1, D]
+                    k_new = n_k[i:i+1]
+                    
+                    norm_v_new = torch.nn.functional.normalize(v_new.float(), p=2, dim=-1)
+                    norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
+                    
+                    sims = torch.matmul(norm_v_new, norm_c_v.transpose(0, 1)).squeeze(0) # [K]
+                    max_sim, best_idx = sims.max(dim=0)
+                    
+                    if max_sim > self.similarity_threshold:
+                        # Merge into existing semantic cluster (Differentiable, no inplace ops)
+                        mask = (torch.arange(c_v.shape[0], device=c_v.device) == best_idx).unsqueeze(1)
+                        c_v = torch.where(mask, (c_v + v_new.squeeze(0)) / 2.0, c_v)
+                        c_k = torch.where(mask, k_new.squeeze(0), c_k) # Update medoid
+                    else:
+                        # Unique Needle: Append as new centroid and LRU evict the oldest
+                        c_v = torch.cat([c_v[1:], v_new], dim=0)
+                        c_k = torch.cat([c_k[1:], k_new], dim=0)
+                        
+                centroids_k[b, h] = c_k
+                centroids_v[b, h] = c_v
                 
         self.key_cache[layer_idx] = torch.cat([centroids_k, local_k], dim=-2)
         self.value_cache[layer_idx] = torch.cat([centroids_v, local_v], dim=-2)
