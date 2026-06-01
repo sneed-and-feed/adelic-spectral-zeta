@@ -1,15 +1,12 @@
 import os
 from huggingface_hub import login
-try:
-    from google.colab import userdata
-    hf_token = userdata.get('HF_TOKEN')
-    if hf_token:
-        login(token=hf_token)
-        print("Successfully logged into Hugging Face Hub using Colab Secrets.")
-    else:
-        print("Warning: HF_TOKEN not found in Colab Secrets.")
-except ImportError:
-    print("Not running in Colab. Ensure you have run `huggingface-cli login`.")
+
+hf_token = os.environ.get('HF_TOKEN')
+if hf_token:
+    login(token=hf_token)
+    print("Successfully logged into Hugging Face Hub using HF_TOKEN environment variable.")
+else:
+    print("Warning: HF_TOKEN environment variable not found. Ensure you are logged in.")
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 import torch
