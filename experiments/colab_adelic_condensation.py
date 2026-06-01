@@ -78,6 +78,12 @@ class AdelicCache(DynamicCache):
                     
                     # Find all tokens similar to token i
                     cluster_indices = (sim_matrix[i] > self.similarity_threshold) & (~visited)
+                    
+                    # If this is a zero-padded token from a previous padding cycle, sim_matrix is NaN
+                    if not cluster_indices.any():
+                        visited[i] = True
+                        continue
+                        
                     visited[cluster_indices] = True
                     
                     # Medoid-Value Strategy:
