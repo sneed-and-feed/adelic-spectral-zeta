@@ -127,11 +127,17 @@ def train_gsm8k():
                 outputs = model(
                     input_ids=chunk_input_ids,
                     past_key_values=past_key_values,
-                    use_cache=True,
-                    labels=chunk_labels
+                    use_cache=True
                 )
                 
-                loss = outputs.loss
+                logits = outputs.logits
+                min_len = min(logits.shape[1], chunk_labels.shape[1])
+                logits = logits[:, :min_len, :].contiguous()
+                chunk_labels = chunk_labels[:, :min_len].contiguous()
+                
+                loss_fct = torch.nn.CrossEntropyLoss()
+                loss = loss_fct(logits.view(-1, logits.size(-1)), chunk_labels.view(-1))
+                
                 # Scale the loss to normalize gradients across sequence lengths
                 scaled_loss = loss / len(chunks)
                 
