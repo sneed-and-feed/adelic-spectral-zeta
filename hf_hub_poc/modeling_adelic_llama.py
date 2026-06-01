@@ -3,7 +3,6 @@ from transformers import LlamaForCausalLM
 from transformers.cache_utils import DynamicCache
 from .configuration_adelic_llama import AdelicLlamaConfig
 
-@torch.compile(mode="reduce-overhead", fullgraph=False)
 def _condense_tensors(centroids_k, centroids_v, new_k, new_v, similarity_threshold, excess):
     for i in range(excess):
         v_new = new_v[:, :, i:i+1, :] # [B, H, 1, D]
