@@ -69,7 +69,7 @@ def train_gsm8k():
     dataloader = DataLoader(train_data, batch_size=1, shuffle=True)
     optimizer = AdamW(model.parameters(), lr=2e-4)
     
-    epochs = 2
+    epochs = 3
     chunk_size = 128
     
     print(f"\nStarting Adèlic QAT on GSM8K for {epochs} epochs...")
