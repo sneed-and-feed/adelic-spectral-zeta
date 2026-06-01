@@ -22,11 +22,11 @@ def run_qat_training():
     config.adelic_local_window = 32
     config.adelic_similarity_threshold = 0.85
     
-    print("Loading Base Model in 8-bit for VRAM efficiency...")
+    print("Loading Base Model in bf16 (40GB A100 has plenty of VRAM)...")
     model = AdelicLlamaForCausalLM.from_pretrained(
         model_id, 
         config=config, 
-        load_in_8bit=True,
+        torch_dtype=torch.bfloat16,
         device_map="auto"
     )
     
