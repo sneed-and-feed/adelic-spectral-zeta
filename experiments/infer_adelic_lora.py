@@ -10,7 +10,7 @@ from hf_hub_poc.modeling_adelic_llama import AdelicLlamaForCausalLM
 
 def run_inference():
     base_model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
-    lora_model_id = "sneedjak/Adelic-Llama-3.1-8B-Instruct-GSM8K-LoRA"
+    lora_model_id = "./adelic_gsm8k_lora"
     
     print(f"Loading Base Configuration: {base_model_id}")
     base_config = AutoConfig.from_pretrained(base_model_id)
