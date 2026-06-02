@@ -71,10 +71,13 @@ class AdelicCache(DynamicCache):
                 c_v = torch.cat([centroids_v, v_new], dim=-2) # [B, H, K+1, D]
                 c_k = torch.cat([centroids_k, k_new], dim=-2)
                 
-                norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
-                sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(-1, -2)) # [B, H, K+1, K+1]
+                # CRITICAL FIX: We MUST cluster by Key vectors, not Value vectors!
+                # If two tokens have the same Value but different Keys, dropping one destroys the associative link for its Query!
+                # By clustering by Keys, we guarantee that merged tokens were responding to the exact same Queries anyway.
+                norm_c_k = torch.nn.functional.normalize(c_k.float(), p=2, dim=-1)
+                sim_matrix = torch.matmul(norm_c_k, norm_c_k.transpose(-1, -2)) # [B, H, K+1, K+1]
                 
-                num_c = c_v.shape[-2]
+                num_c = c_k.shape[-2]
                 
                 # Mask diagonal to prevent self-matching
                 mask = torch.eye(num_c, device=sim_matrix.device, dtype=torch.bool).unsqueeze(0).unsqueeze(0)

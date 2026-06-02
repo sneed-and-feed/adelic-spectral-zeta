@@ -77,11 +77,9 @@ def main():
             # Construct a generic instruction prompt
             instruction = f"Please read the following text and answer the question based on it.\n\nText:\n{context}\n\nQuestion:\n{question}"
             
-            # Use Llama 3.1's native chat template
+            # Use Llama 3.1's native chat template to prevent base-model hallucinations
             messages = [{"role": "user", "content": instruction}]
-            prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-            
-            input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(model.device)
+            input_ids = tokenizer.apply_chat_template(messages, tokenize=True, return_tensors="pt", add_generation_prompt=True).to(model.device)
             
             # Monkey-patch model.forward for this instance to intercept massive prefills
             # This perfectly prevents Causal Smearing while keeping HF `generate()` completely oblivious,
@@ -92,8 +90,10 @@ def main():
                 def chunked_forward(input_ids=None, past_key_values=None, use_cache=None, position_ids=None, **kwargs):
                     if input_ids is not None and input_ids.shape[1] > 512 and past_key_values is None:
                         chunk_size = 512
-                        for i in range(0, input_ids.shape[1] - 1, chunk_size):
-                            chunk = input_ids[:, i:i+chunk_size]
+                        context_ids = input_ids[:, :-1]
+                        
+                        for i in range(0, context_ids.shape[1], chunk_size):
+                            chunk = context_ids[:, i:i+chunk_size]
                             
                             past_len = past_key_values._true_seen_tokens if past_key_values is not None else 0
                             chunk_pos = torch.arange(past_len, past_len + chunk.shape[1], dtype=torch.long, device=input_ids.device).unsqueeze(0)
