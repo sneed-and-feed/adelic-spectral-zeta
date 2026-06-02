@@ -21,10 +21,27 @@ def main():
     
     print(f"Loading LongBench dataset: {args.dataset}...")
     try:
-        # Hugging Face blocked custom dataset scripts entirely. 
-        # We bypass this by directly downloading the JSONL data file from the repository.
-        url = f"https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data/{args.dataset}.jsonl"
-        dataset = load_dataset('json', data_files=url, split='train')
+        import urllib.request
+        import zipfile
+        
+        # Hugging Face permanently banned dataset scripts. The data is inside a data.zip file.
+        # We download and extract it manually.
+        url = "https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data.zip"
+        zip_path = "data.zip"
+        
+        if not os.path.exists("data"):
+            print("Downloading THUDM/LongBench data.zip...")
+            urllib.request.urlretrieve(url, zip_path)
+            print("Extracting...")
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(".")
+                
+        local_file = f"data/{args.dataset}.jsonl"
+        if not os.path.exists(local_file):
+            print(f"Dataset file {local_file} not found inside data.zip!")
+            return
+            
+        dataset = load_dataset('json', data_files=local_file, split='train')
     except Exception as e:
         print(f"Failed to load dataset: {e}")
         return
