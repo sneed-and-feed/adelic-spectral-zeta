@@ -63,11 +63,12 @@ def run_niah_inference():
         device_map="auto"
     )
     
-    if os.path.exists(lora_model_id):
-        print(f"Injecting trained Adèlic LoRA adapter from {lora_model_id}...")
-        model = PeftModel.from_pretrained(model, lora_model_id)
-    else:
-        print(f"WARNING: LoRA adapter not found at {lora_model_id}. Running with base weights + AdelicCache.")
+    # Disable LoRA adapter to test if it caused Context Window Collapse
+    # if os.path.exists(lora_model_id):
+    #     print(f"Injecting trained Adèlic LoRA adapter from {lora_model_id}...")
+    #     model = PeftModel.from_pretrained(model, lora_model_id)
+    # else:
+    print(f"Running purely with base weights + AdelicCache (No LoRA).")
         
     tokenizer = AutoTokenizer.from_pretrained(base_model_id)
     if tokenizer.pad_token is None:
