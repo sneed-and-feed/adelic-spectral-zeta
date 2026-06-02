@@ -83,20 +83,36 @@ def main():
             
             input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(model.device)
             
-            # Truncate to maximum acceptable context if necessary (though Adelic handles infinity, 
-            # let's cap at 64k for sanity/time in testing unless we want true infinity)
-            # We'll just pass the full context! Adelic will compress it perfectly.
+            # CHUNKED PREFILL: Prevent Causal Smearing
+            # Passing a massive 10,000 token prompt all at once causes the entire document to compress simultaneously, 
+            # violating causality and scrambling the prompt logic. 
+            # We process it sequentially in chunks to build a mathematically pristine history.
+            chunk_size = 512
+            past_key_values = None
+            
+            # Process all tokens except the very last one as context
+            context_ids = input_ids[:, :-1]
+            for i in range(0, context_ids.shape[1], chunk_size):
+                chunk = context_ids[:, i:i+chunk_size]
+                out = model(input_ids=chunk, past_key_values=past_key_values, use_cache=True)
+                past_key_values = out.past_key_values
+            
+            # Now the entire history is perfectly condensed into the cache. 
+            # We pass the final token to trigger actual generation.
+            last_token = input_ids[:, -1:]
             
             outputs = model.generate(
-                input_ids,
+                input_ids=last_token,
+                past_key_values=past_key_values,
                 max_new_tokens=args.max_new_tokens,
-                temperature=0.1, # Low temperature for factual QA
+                temperature=0.1, 
                 do_sample=False,
                 pad_token_id=tokenizer.eos_token_id
             )
             
             # Decode only the newly generated tokens
-            output_tokens = outputs[0][input_ids.shape[1]:]
+            # Since input_ids passed to generate was just length 1, the output includes that 1 token + new tokens
+            output_tokens = outputs[0][1:]
             response = tokenizer.decode(output_tokens, skip_special_tokens=True).strip()
             
             # Save format matching LongBench's expected eval format
