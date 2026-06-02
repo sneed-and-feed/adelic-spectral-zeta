@@ -51,7 +51,7 @@ def main():
     )
     
     print("Preparing model for LoRA training...")
-    model = prepare_model_for_kbit_training(model)
+    model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=False)
     
     config = LoraConfig(
         r=16,
@@ -72,20 +72,22 @@ def main():
     epochs = 1000
     
     for epoch in range(epochs):
-        model.train()
         
         prompt_ids, target_ids = generate_sample(tokenizer)
         prompt_ids = prompt_ids.to(device)
         target_ids = target_ids.to(device)
         
         # 1. Prefill (No Gradients)
-        # This forces AdelicCache to condense the document and perfectly construct the Hologram!
+        # We MUST set model.eval() because Hugging Face will silently disable `use_cache=True` if the model is in training mode!
+        model.eval()
         with torch.no_grad():
             prefill_input = prompt_ids[:, :-1]
             outputs = model(input_ids=prefill_input, use_cache=True)
             past_key_values = outputs.past_key_values
             
         # 2. Gradient Pass (Backpropagation through Time)
+        # Re-enable training mode for the LoRA adapters
+        model.train()
         optimizer.zero_grad()
         grad_input = torch.cat([prompt_ids[:, -1:], target_ids[:, :-1]], dim=-1)
         
