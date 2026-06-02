@@ -74,16 +74,25 @@ class AdelicCache(DynamicCache):
                 norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
                 sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(-1, -2)) # [B, H, K+1, K+1]
                 
-                # Ignore self-similarity out-of-place for autograd
-                mask = torch.eye(sim_matrix.shape[-1], dtype=torch.bool, device=sim_matrix.device)
-                sim_matrix = sim_matrix.masked_fill(mask, -1.0)
-                
-                # Find the two most redundant centroids across all batches and heads
-                flat_idx = torch.argmax(sim_matrix.view(B, H, -1), dim=-1) # [B, H]
                 num_c = c_v.shape[-2]
                 
-                idx1 = flat_idx // num_c # [B, H]
-                idx2 = flat_idx % num_c  # [B, H]
+                # Mask diagonal to prevent self-matching
+                mask = torch.eye(num_c, device=sim_matrix.device, dtype=torch.bool).unsqueeze(0).unsqueeze(0)
+                sim_matrix = torch.where(mask, torch.tensor(-1.0, device=sim_matrix.device, dtype=sim_matrix.dtype), sim_matrix)
+                
+                # GLOBAL HEAD CONSENSUS
+                # A single attention head's low-dimensional subspace might accidentally alias the Needle with a common token (e.g. they are both nouns).
+                # To prevent the Needle from being destroyed in some heads, we average the similarity across ALL heads.
+                # A token is only merged if it is universally redundant across the entire multi-headed representation.
+                global_sim = sim_matrix.mean(dim=1, keepdim=True) # [B, 1, K, K]
+                
+                flat_idx = torch.argmax(global_sim.view(B, 1, -1), dim=-1) # [B, 1]
+                idx1 = flat_idx // num_c # [B, 1]
+                idx2 = flat_idx % num_c # [B, 1]
+                
+                # Expand idx1 and idx2 to all heads so every head merges the exact same global token!
+                idx1 = idx1.expand(B, H) # [B, H]
+                idx2 = idx2.expand(B, H) # [B, H]
                 
                 # Ensure idx1 < idx2
                 swap_mask = idx1 > idx2
