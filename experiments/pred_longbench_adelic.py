@@ -83,27 +83,59 @@ def main():
             
             input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(model.device)
             
-            # CHUNKED PREFILL: Prevent Causal Smearing
-            # Passing a massive 10,000 token prompt all at once causes the entire document to compress simultaneously, 
-            # violating causality and scrambling the prompt logic. 
-            # We process it sequentially in chunks to build a mathematically pristine history.
-            chunk_size = 512
-            past_key_values = None
-            
-            # Process all tokens except the very last one as context
-            context_ids = input_ids[:, :-1]
-            for i in range(0, context_ids.shape[1], chunk_size):
-                chunk = context_ids[:, i:i+chunk_size]
-                out = model(input_ids=chunk, past_key_values=past_key_values, use_cache=True)
-                past_key_values = out.past_key_values
-            
-            # Now the entire history is perfectly condensed into the cache. 
-            # We pass the final token to trigger actual generation.
-            last_token = input_ids[:, -1:]
-            
+            # Monkey-patch model.forward for this instance to intercept massive prefills
+            # This perfectly prevents Causal Smearing while keeping HF `generate()` completely oblivious,
+            # bypassing HF's internal sequence slicing bugs.
+            if not hasattr(model, "_original_forward"):
+                model._original_forward = model.forward
+                
+                def chunked_forward(input_ids=None, past_key_values=None, use_cache=None, position_ids=None, **kwargs):
+                    if input_ids is not None and input_ids.shape[1] > 512 and past_key_values is None:
+                        chunk_size = 512
+                        for i in range(0, input_ids.shape[1] - 1, chunk_size):
+                            chunk = input_ids[:, i:i+chunk_size]
+                            
+                            past_len = past_key_values._true_seen_tokens if past_key_values is not None else 0
+                            chunk_pos = torch.arange(past_len, past_len + chunk.shape[1], dtype=torch.long, device=input_ids.device).unsqueeze(0)
+                            
+                            out = model._original_forward(
+                                input_ids=chunk,
+                                past_key_values=past_key_values,
+                                use_cache=True,
+                                position_ids=chunk_pos
+                            )
+                            past_key_values = out.past_key_values
+                            
+                        # Process the final token
+                        last_token = input_ids[:, -1:]
+                        past_len = past_key_values._true_seen_tokens
+                        last_pos = torch.arange(past_len, past_len + 1, dtype=torch.long, device=input_ids.device).unsqueeze(0)
+                        
+                        out = model._original_forward(
+                            input_ids=last_token,
+                            past_key_values=past_key_values,
+                            use_cache=use_cache,
+                            position_ids=last_pos
+                        )
+                        
+                        # Pad the logits so `generate()` can slice [:, -1, :] correctly without crashing
+                        dummy_logits = torch.zeros(input_ids.shape[0], input_ids.shape[1] - 1, out.logits.shape[-1], dtype=out.logits.dtype, device=out.logits.device)
+                        full_logits = torch.cat([dummy_logits, out.logits], dim=1)
+                        
+                        from transformers.modeling_outputs import CausalLMOutputWithPast
+                        return CausalLMOutputWithPast(
+                            loss=out.loss,
+                            logits=full_logits,
+                            past_key_values=out.past_key_values,
+                            hidden_states=out.hidden_states,
+                            attentions=out.attentions,
+                        )
+                    return model._original_forward(input_ids=input_ids, past_key_values=past_key_values, use_cache=use_cache, position_ids=position_ids, **kwargs)
+                
+                model.forward = chunked_forward
+
             outputs = model.generate(
-                input_ids=last_token,
-                past_key_values=past_key_values,
+                input_ids,
                 max_new_tokens=args.max_new_tokens,
                 temperature=0.1, 
                 do_sample=False,
@@ -111,8 +143,7 @@ def main():
             )
             
             # Decode only the newly generated tokens
-            # Since input_ids passed to generate was just length 1, the output includes that 1 token + new tokens
-            output_tokens = outputs[0][1:]
+            output_tokens = outputs[0][input_ids.shape[1]:]
             response = tokenizer.decode(output_tokens, skip_special_tokens=True).strip()
             
             # Save format matching LongBench's expected eval format
