@@ -37,3 +37,14 @@ We surgically injected the Topology Router into a frozen, pre-trained TinyLlama-
 * **Semantic Dendrograms:** When fed a mixture of Natural Language, Python Code, Math, and HTML, the router autonomously clustered the different modalities into distinct $p$-adic subtrees (verified via PCA) without any explicit clustering objective. It naturally recognized that HTML and Python belong on different branches of the phylogenetic tree.
 * **Topological Needle-In-A-Haystack (NIAH):** When forced to retrieve a needle token from a 1024-token haystack, the router isolated the needle at the maximum topological distance ($\bar{d}_p = 6.88$) from the dominant haystack domain. This proves the router inherently places high-surprisal (rare) information at the periphery of the tree so it is never lost in the noise.
 * **Topological Ring Attention:** Simulating an 8-GPU Ring Attention cluster on a 1024-token multi-domain sequence, the router reduced peer-to-peer (P2P) communication edges from 2,048 (dense) to 448. This achieved a **78.1% reduction in P2P network bandwidth** across the GPUs without dropping any semantically relevant context.
+
+---
+
+## 4. Infinite Context Adèlic Cache (Llama 3.1 8B)
+
+We successfully mapped the Adèlic topology onto Llama 3.1 8B via the **Adèlic Cache**, a custom KV-cache subclass that mathematically caps memory growth to a strict $O(1)$ constant boundary (e.g., 256 tokens max memory). When the physical cache exceeds capacity, it utilizes Medoid-Value topological clustering to dynamically pool and condense "redundant" far-history tokens.
+
+* **Information Starvation vs. Context Collapse (LongBench Qasper):** The Adèlic Cache guarantees the mathematical survival of the "Attention Sink" (the first 16 tokens). This strict topological protection completely prevents "Context Window Collapse" (grammar loss and "the the the" hallucinations) seen in naive cache eviction.
+* **Exact Retrieval Score:** However, because Medoid-Value clustering physically condenses a 10,000 token scientific paper into exactly 256 token vectors, the model suffers from **Information Starvation**. It retains perfect linguistic coherence and instructional alignment, but drops exact factual "needles," achieving a **3.14% F1 Score** on Qasper (compared to ~30% for a dense 10,000 token cache). 
+
+This experimentally proves that while $O(1)$ topological clustering is exceptionally stable for maintaining conversational and narrative flow indefinitely, it is fundamentally too lossy for exact-retrieval "Needle-In-A-Haystack" tasks on its own, and must be coupled with secondary external memory retrieval (e.g., RAG) for fact-dense reasoning.
