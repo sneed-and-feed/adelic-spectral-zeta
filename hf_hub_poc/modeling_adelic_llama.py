@@ -83,6 +83,14 @@ class AdelicCache(DynamicCache):
                 mask = torch.eye(num_c, device=sim_matrix.device, dtype=torch.bool).unsqueeze(0).unsqueeze(0)
                 sim_matrix = torch.where(mask, torch.tensor(-1.0, device=sim_matrix.device, dtype=sim_matrix.dtype), sim_matrix)
                 
+                # PROTECT THE ATTENTION SINK!
+                # The first few tokens of the prompt act as an Attention Sink (StreamingLLM).
+                # If these tokens are dropped, the Softmax denominator explodes and the model hallucinates gibberish!
+                sink_size = min(16, num_c - 1)
+                if sink_size > 0:
+                    sim_matrix[:, :, :sink_size, :] = -1.0
+                    sim_matrix[:, :, :, :sink_size] = -1.0
+                
                 # GLOBAL HEAD CONSENSUS
                 # A single attention head's low-dimensional subspace might accidentally alias the Needle with a common token (e.g. they are both nouns).
                 # To prevent the Needle from being destroyed in some heads, we average the similarity across ALL heads.
