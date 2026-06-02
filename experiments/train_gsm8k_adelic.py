@@ -21,8 +21,8 @@ def train_gsm8k():
     
     # Configure Adelic parameters for the math curriculum
     # Setting an aggressive threshold to force the network to adapt to condensation during reasoning
-    config.adelic_max_capacity = 256
-    config.adelic_local_window = 128
+    config.adelic_max_capacity = 64
+    config.adelic_local_window = 32
     config.adelic_similarity_threshold = 0.90
     
     print("Loading Base Model in bf16...")
@@ -106,8 +106,7 @@ def train_gsm8k():
             # Instantiate a fresh AdelicCache for the sequence
             past_key_values = AdelicCache(
                 max_capacity=config.adelic_max_capacity,
-                local_window=config.adelic_local_window,
-                similarity_threshold=config.adelic_similarity_threshold
+                local_window=config.adelic_local_window
             )
             
             loss_accum = 0
