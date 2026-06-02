@@ -79,7 +79,14 @@ def main():
             
             # Use Llama 3.1's native chat template to prevent base-model hallucinations
             messages = [{"role": "user", "content": instruction}]
-            input_ids = tokenizer.apply_chat_template(messages, tokenize=True, return_tensors="pt", add_generation_prompt=True).to(model.device)
+            
+            encoded = tokenizer.apply_chat_template(messages, tokenize=True, return_tensors="pt", add_generation_prompt=True, return_dict=True)
+            if hasattr(encoded, "input_ids"):
+                input_ids = encoded.input_ids.to(model.device)
+            elif isinstance(encoded, dict) and "input_ids" in encoded:
+                input_ids = encoded["input_ids"].to(model.device)
+            else:
+                input_ids = encoded.to(model.device)
             
             # Monkey-patch model.forward for this instance to intercept massive prefills
             # This perfectly prevents Causal Smearing while keeping HF `generate()` completely oblivious,
