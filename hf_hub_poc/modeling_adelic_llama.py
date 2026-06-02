@@ -101,16 +101,10 @@ class AdelicCache(DynamicCache):
                 idx2 = torch.where(swap_mask, temp, idx2)
                 
                 # Merge the redundant centroid (idx2) into the first one (idx1)
-                idx1_exp = idx1.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
-                idx2_exp = idx2.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
-                
-                c_v_idx1 = torch.gather(c_v, 2, idx1_exp) # [B, H, 1, D]
-                c_v_idx2 = torch.gather(c_v, 2, idx2_exp) # [B, H, 1, D]
-                
-                merged_v = (c_v_idx1 + c_v_idx2) / 2.0
-                
-                # Update the medoid Value out-of-place for autograd
-                c_v = c_v.scatter(2, idx1_exp, merged_v)
+                # Do NOT average the Value vectors!
+                # Averaging shrinks the magnitude of the vectors, shifting the MLP input out-of-distribution and causing Context Window Collapse.
+                # By keeping the pristine $idx1$ vector untouched, we guarantee the condensed cache is 100% in-distribution.
+                # We simply let the keep_mask below drop the redundant idx2.
                 
                 # Remove the second redundant centroid to keep capacity strict
                 seq_indices = torch.arange(num_c, device=c_v.device).view(1, 1, num_c)
