@@ -33,16 +33,23 @@ def train_gsm8k():
         device_map="auto"
     )
     
-    print("Initializing LoRA Adapters...")
-    lora_config = LoraConfig(
-        r=16,
-        lora_alpha=32,
-        target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
-        lora_dropout=0.05,
-        bias="none",
-        task_type="CAUSAL_LM"
-    )
-    model = get_peft_model(model, lora_config)
+    lora_path = "./adelic_gsm8k_lora"
+    if os.path.exists(lora_path):
+        print(f"Loading existing LoRA Adapters from {lora_path} for fine-tuning...")
+        from peft import PeftModel
+        model = PeftModel.from_pretrained(model, lora_path, is_trainable=True)
+    else:
+        print("Initializing fresh LoRA Adapters...")
+        lora_config = LoraConfig(
+            r=16,
+            lora_alpha=32,
+            target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            lora_dropout=0.05,
+            bias="none",
+            task_type="CAUSAL_LM"
+        )
+        model = get_peft_model(model, lora_config)
+        
     model.print_trainable_parameters()
     
     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -69,6 +76,10 @@ def train_gsm8k():
     print("Tokenizing data...")
     train_data = dataset["train"].map(format_data, batched=False)
     
+    # We only need 500 steps to adapt the attention weights to the choked capacity
+    # since the LoRA already knows GSM8K reasoning.
+    train_data = train_data.select(range(500))
+    
     def collate_fn(batch):
         return {
             "input_ids": torch.tensor([x["input_ids"] for x in batch]),
@@ -78,7 +89,7 @@ def train_gsm8k():
     dataloader = DataLoader(train_data, batch_size=1, shuffle=True, collate_fn=collate_fn)
     optimizer = AdamW(model.parameters(), lr=2e-4)
     
-    epochs = 3
+    epochs = 1
     chunk_size = 256
     
     print(f"\nStarting Adèlic QAT on GSM8K for {epochs} epochs...")
