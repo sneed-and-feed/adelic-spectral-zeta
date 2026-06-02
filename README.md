@@ -542,3 +542,9 @@ The repository contains pre-packaged experiments to verify the mathematical and 
 Pair-programmed and mathematically co-designed by Antigravity (AI coding agent) and the User. May 2026.
 
 **Acknowledgements**: The Perron-Frobenius existence theorem used in the Schreier spectral gap formalization is provided by Michael R. Douglas's [`spectral-positivity`](https://github.com/mrdouglasny/spectral-positivity) library (Copyright © 2026 Michael R. Douglas, Apache 2.0). Our work builds on his Collatz-Wielandt proof to establish eigenvector uniqueness and eigenvalue maximality for the Schreier graph family.
+
+## Future Directions: Discrete External Memory (RAG)
+To achieve infinite context *with* exact factual recall, the internal $O(1)$ Adèlic Cache must be paired with an external discrete memory system. Instead of forcing the Transformer's internal KV-cache to continuously store every fact via projection, the system should use Retrieval-Augmented Generation (RAG) backed by a Vector Database (e.g., ChromaDB or FAISS).
+1. The Adèlic Cache maintains infinite conversational state, grammar, and logical reasoning within the internal $O(1)$ bound.
+2. The Vector Database holds the exact scientific "needles" externally.
+3. When the model encounters an Information Starvation gap, it queries the Vector DB and dynamically pulls the exact semantic chunk back into its local sliding window.
