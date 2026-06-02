@@ -33,21 +33,27 @@ inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
 # Find where "OMEGA" is in the prompt
 tokens = inputs.input_ids[0].tolist()
+needle_str = "'OMEGA-77'"
+target_ids = tokenizer(needle_str, add_special_tokens=False).input_ids
 needle_pos = -1
-for i, t in enumerate(tokens):
-    word = tokenizer.decode([t])
-    if "OMEGA" in word:
+for i in range(len(tokens) - len(target_ids)):
+    if tokens[i:i+len(target_ids)] == target_ids:
         needle_pos = i
         break
 
 print(f"OMEGA is at position {needle_pos}")
 
 print("Running prefill WITHOUT cache condensation to extract the pristine Key for OMEGA...")
+# Temporarily bump capacity so AdelicCache doesn't condense
+model.config.adelic_max_capacity = 999999
 with torch.no_grad():
     res_pristine = model(inputs.input_ids, use_cache=True)
     
-pristine_keys = res_pristine.past_key_values[0][0] # layer 0, keys [B, H, K, D]
+pristine_keys = res_pristine.past_key_values.key_cache[0] # layer 0, keys [B, H, K, D]
 omega_key_pristine = pristine_keys[0, 0, needle_pos, :] # head 0
+
+# Restore capacity
+model.config.adelic_max_capacity = 256
 
 print("Running prefill WITH AdelicCache condensation...")
 with torch.no_grad():
