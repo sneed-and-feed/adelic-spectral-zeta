@@ -54,3 +54,11 @@ To solve Information Starvation without exceeding the $O(1)$ memory bound, we im
 *   **Result:** The model scored a **0.50% F1** and suffered absolute **Context Window Collapse** (outputting infinite loops of *"the the the"*).
 *   **Analysis:** The EMA-averaged Hologram vector was a mathematical "Frankenstein" token that Llama 3 had never seen during pre-training. As 9,000+ tokens were folded into it, its magnitude shrank and its directional variance became a singularity of noise. When the Attention mechanism attended to this Out-Of-Distribution token, it caused a catastrophic activation shift in the MLP layers, destroying linguistic coherence.
 *   **Conclusion:** You cannot inject continuous, superimposed vectors into a discrete pre-trained Transformer without fine-tuning. The architecture is fully functional, but the model requires a **Low-Rank Adaptation (LoRA)** trained specifically to decode the Holographic state.
+
+## 6. Holographic State LoRA Training Failure
+
+To rescue the Holographic State Collapse, we implemented a custom Cache-Injected BPTT training loop to train a rank-16 LoRA to decode the Hologram.
+
+*   **Result:** The training loss plateaued at `~3.8` (the cross-entropy entropy of random guessing) and failed to converge.
+*   **Analysis:** A single float16 vector *can* theoretically store hundreds of orthogonal facts. However, simple Exponential Moving Average (EMA) folding linearly crushes older facts (`0.9^180 = 5.7e-9`), erasing them into floating-point zero. Furthermore, a rank-16 LoRA projection mathematically lacks the parameter capacity to disentangle a dense, noisy superposition of hundreds of vectors.
+*   **Conclusion:** Continuous State Memory cannot be naively grafted into a pre-trained discrete Transformer using simple EMA folding and low-rank adapters. It requires specialized State Space gating mechanisms (e.g., Mamba) and full-depth network training to disentangle the superposition. To achieve infinite context with exact factual recall, the $O(1)$ Adèlic Cache must be paired with an external discrete memory system (e.g., RAG or a vector database).
