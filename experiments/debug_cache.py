@@ -31,14 +31,13 @@ print("Generating sequence...")
 prompt = generate_niah_prompt(tokenizer, haystack_len_tokens=2000)
 inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
-# Find where "OMEGA" is in the prompt
+# Find where "OMEGA" is in the prompt by progressively decoding
 tokens = inputs.input_ids[0].tolist()
-needle_str = "'OMEGA-77'"
-target_ids = tokenizer(needle_str, add_special_tokens=False).input_ids
 needle_pos = -1
-for i in range(len(tokens) - len(target_ids)):
-    if tokens[i:i+len(target_ids)] == target_ids:
-        needle_pos = i
+for i in range(1, len(tokens)):
+    prefix = tokenizer.decode(tokens[:i])
+    if "OMEGA" in prefix:
+        needle_pos = i - 1 # The token that just triggered the inclusion of "OMEGA"
         break
 
 print(f"OMEGA is at position {needle_pos}")
