@@ -7,7 +7,7 @@ from hf_hub_poc.configuration_adelic_llama import AdelicLlamaConfig
 from hf_hub_poc.modeling_adelic_llama import AdelicLlamaForCausalLM
 
 def push_model():
-    hf_repo_name = "your_username/AdelicLlama-3-8B-Instruct" # Change this to your HF username
+    hf_repo_name = "sneedjak/AdelicLlama-3-8B-Instruct" 
     base_model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
     
     print("Loading base config...")
