@@ -7,9 +7,10 @@ class AdelicCache(DynamicCache):
     """
     AdelicCache implements Level 4 Adelic KV-Cache Condensation via the Medoid-Value Strategy.
     """
-    def __init__(self, max_capacity: int = 512, local_window: int = 128, similarity_threshold: float = 0.95):
+    def __init__(self, soft_capacity: int = 256, hard_capacity: int = 1024, local_window: int = 128, similarity_threshold: float = 0.95):
         super().__init__()
-        self.max_capacity = max_capacity
+        self.soft_capacity = soft_capacity
+        self.hard_capacity = hard_capacity
         self.local_window = local_window
         self.similarity_threshold = similarity_threshold
         self.key_cache = []
@@ -29,7 +30,7 @@ class AdelicCache(DynamicCache):
 
         current_length = self.key_cache[layer_idx].shape[-2]
         
-        if current_length > self.max_capacity:
+        if current_length > self.soft_capacity:
             self._condense_layer(layer_idx)
             
         return self.key_cache[layer_idx], self.value_cache[layer_idx]
@@ -39,12 +40,12 @@ class AdelicCache(DynamicCache):
         values = self.value_cache[layer_idx] 
 
         seq_len = keys.shape[-2]
-        excess = seq_len - self.max_capacity
+        excess = seq_len - self.soft_capacity
         
         if excess <= 0:
             return 
             
-        max_far_history = self.max_capacity - self.local_window
+        max_far_history = self.soft_capacity - self.local_window
         
         # 1. Existing centroids (the compressed far history)
         centroids_k = keys[:, :, :max_far_history, :].clone()
@@ -97,6 +98,20 @@ class AdelicCache(DynamicCache):
                 # A token is only merged if it is universally redundant across the entire multi-headed representation.
                 global_sim = sim_matrix.mean(dim=1, keepdim=True) # [B, 1, K, K]
                 
+                # ADAPTIVE CAPACITY CHECK
+                # If the most similar pair across all heads is below the threshold, they are NOT redundant.
+                # If we haven't hit the hard memory limit yet, we can safely stop condensing and let the cache grow!
+                max_sim_val = global_sim.view(B, -1).max(dim=-1)[0] # [B]
+                hard_excess = (seq_len - i) - self.hard_capacity
+                
+                # We break if ALL batches have max similarity < threshold AND ALL batches are under hard_capacity
+                # (For simplicity in this batch processing loop, we break if the condition holds for the whole batch)
+                if torch.all(max_sim_val < self.similarity_threshold) and hard_excess <= 0:
+                    # We broke early! Concatenate the unprocessed new tokens back into centroids.
+                    centroids_k = torch.cat([centroids_k, new_k[:, :, i:, :]], dim=-2)
+                    centroids_v = torch.cat([centroids_v, new_v[:, :, i:, :]], dim=-2)
+                    break
+                
                 flat_idx = torch.argmax(global_sim.view(B, 1, -1), dim=-1) # [B, 1]
                 idx1 = flat_idx // num_c # [B, 1]
                 idx2 = flat_idx % num_c # [B, 1]
@@ -141,7 +156,8 @@ class AdelicLlamaForCausalLM(LlamaForCausalLM):
         # Automatically inject the AdelicCache if generation requests a cache but none is provided yet
         if use_cache and past_key_values is None:
             past_key_values = AdelicCache(
-                max_capacity=self.config.adelic_max_capacity,
+                soft_capacity=self.config.adelic_soft_capacity,
+                hard_capacity=self.config.adelic_hard_capacity,
                 local_window=self.config.adelic_local_window,
                 similarity_threshold=self.config.adelic_similarity_threshold
             )
