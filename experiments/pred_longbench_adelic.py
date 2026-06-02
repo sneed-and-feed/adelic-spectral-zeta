@@ -22,7 +22,8 @@ def main():
     print(f"Loading LongBench dataset: {args.dataset}...")
     try:
         # Load the original LongBench dataset (v1)
-        dataset = load_dataset('THUDM/LongBench', args.dataset, split='test')
+        # Hugging Face recently disabled dataset scripts by default; must pass trust_remote_code=True
+        dataset = load_dataset('THUDM/LongBench', args.dataset, split='test', trust_remote_code=True)
     except Exception as e:
         print(f"Failed to load dataset: {e}")
         return
