@@ -28,15 +28,15 @@ def main():
         # We download and extract it manually.
         url = "https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data.zip"
         zip_path = "data.zip"
+        local_file = f"data/{args.dataset}.jsonl"
         
-        if not os.path.exists("data"):
+        if not os.path.exists(local_file):
             print("Downloading THUDM/LongBench data.zip...")
             urllib.request.urlretrieve(url, zip_path)
             print("Extracting...")
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(".")
                 
-        local_file = f"data/{args.dataset}.jsonl"
         if not os.path.exists(local_file):
             print(f"Dataset file {local_file} not found inside data.zip!")
             return
