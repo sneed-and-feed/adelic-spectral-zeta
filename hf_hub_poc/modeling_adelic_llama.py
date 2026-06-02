@@ -61,53 +61,55 @@ class AdelicCache(DynamicCache):
         B, H, _, D = keys.shape
         
         # Vectorized online clustering loop across all batches and heads
-        for i in range(excess):
-            v_new = new_v[:, :, i:i+1, :] # [B, H, 1, D]
-            k_new = new_k[:, :, i:i+1, :] # [B, H, 1, D]
-            
-            # Topological Clustering: Append the new token
-            c_v = torch.cat([centroids_v, v_new], dim=-2) # [B, H, K+1, D]
-            c_k = torch.cat([centroids_k, k_new], dim=-2)
-            
-            norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
-            sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(-1, -2)) # [B, H, K+1, K+1]
-            
-            # Ignore self-similarity out-of-place for autograd
-            mask = torch.eye(sim_matrix.shape[-1], dtype=torch.bool, device=sim_matrix.device)
-            sim_matrix = sim_matrix.masked_fill(mask, -1.0)
-            
-            # Find the two most redundant centroids across all batches and heads
-            flat_idx = torch.argmax(sim_matrix.view(B, H, -1), dim=-1) # [B, H]
-            num_c = c_v.shape[-2]
-            
-            idx1 = flat_idx // num_c # [B, H]
-            idx2 = flat_idx % num_c  # [B, H]
-            
-            # Ensure idx1 < idx2
-            swap_mask = idx1 > idx2
-            temp = idx1.clone()
-            idx1 = torch.where(swap_mask, idx2, idx1)
-            idx2 = torch.where(swap_mask, temp, idx2)
-            
-            # Merge the redundant centroid (idx2) into the first one (idx1)
-            idx1_exp = idx1.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
-            idx2_exp = idx2.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
-            
-            c_v_idx1 = torch.gather(c_v, 2, idx1_exp) # [B, H, 1, D]
-            c_v_idx2 = torch.gather(c_v, 2, idx2_exp) # [B, H, 1, D]
-            
-            merged_v = (c_v_idx1 + c_v_idx2) / 2.0
-            
-            # Update the medoid Value out-of-place for autograd
-            c_v = c_v.scatter(2, idx1_exp, merged_v)
-            
-            # Remove the second redundant centroid to keep capacity strict
-            seq_indices = torch.arange(num_c, device=c_v.device).view(1, 1, num_c)
-            keep_mask = seq_indices != idx2.unsqueeze(-1) # [B, H, num_c]
-            
-            # Boolean masking flattens the tensor to 1D, so we must view() it back
-            centroids_v = c_v[keep_mask.unsqueeze(-1).expand(B, H, num_c, D)].view(B, H, num_c - 1, D)
-            centroids_k = c_k[keep_mask.unsqueeze(-1).expand(B, H, num_c, D)].view(B, H, num_c - 1, D)
+        # Wrapping in no_grad() prevents Autograd from building a massive graph, dropping step time drastically!
+        with torch.no_grad():
+            for i in range(excess):
+                v_new = new_v[:, :, i:i+1, :] # [B, H, 1, D]
+                k_new = new_k[:, :, i:i+1, :] # [B, H, 1, D]
+                
+                # Topological Clustering: Append the new token
+                c_v = torch.cat([centroids_v, v_new], dim=-2) # [B, H, K+1, D]
+                c_k = torch.cat([centroids_k, k_new], dim=-2)
+                
+                norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
+                sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(-1, -2)) # [B, H, K+1, K+1]
+                
+                # Ignore self-similarity out-of-place for autograd
+                mask = torch.eye(sim_matrix.shape[-1], dtype=torch.bool, device=sim_matrix.device)
+                sim_matrix = sim_matrix.masked_fill(mask, -1.0)
+                
+                # Find the two most redundant centroids across all batches and heads
+                flat_idx = torch.argmax(sim_matrix.view(B, H, -1), dim=-1) # [B, H]
+                num_c = c_v.shape[-2]
+                
+                idx1 = flat_idx // num_c # [B, H]
+                idx2 = flat_idx % num_c  # [B, H]
+                
+                # Ensure idx1 < idx2
+                swap_mask = idx1 > idx2
+                temp = idx1.clone()
+                idx1 = torch.where(swap_mask, idx2, idx1)
+                idx2 = torch.where(swap_mask, temp, idx2)
+                
+                # Merge the redundant centroid (idx2) into the first one (idx1)
+                idx1_exp = idx1.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
+                idx2_exp = idx2.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
+                
+                c_v_idx1 = torch.gather(c_v, 2, idx1_exp) # [B, H, 1, D]
+                c_v_idx2 = torch.gather(c_v, 2, idx2_exp) # [B, H, 1, D]
+                
+                merged_v = (c_v_idx1 + c_v_idx2) / 2.0
+                
+                # Update the medoid Value out-of-place for autograd
+                c_v = c_v.scatter(2, idx1_exp, merged_v)
+                
+                # Remove the second redundant centroid to keep capacity strict
+                seq_indices = torch.arange(num_c, device=c_v.device).view(1, 1, num_c)
+                keep_mask = seq_indices != idx2.unsqueeze(-1) # [B, H, num_c]
+                
+                # Boolean masking flattens the tensor to 1D, so we must view() it back
+                centroids_v = c_v[keep_mask.unsqueeze(-1).expand(B, H, num_c, D)].view(B, H, num_c - 1, D)
+                centroids_k = c_k[keep_mask.unsqueeze(-1).expand(B, H, num_c, D)].view(B, H, num_c - 1, D)
                 
         self.key_cache[layer_idx] = torch.cat([centroids_k, local_k], dim=-2)
         self.value_cache[layer_idx] = torch.cat([centroids_v, local_v], dim=-2)
