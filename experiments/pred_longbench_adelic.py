@@ -21,9 +21,10 @@ def main():
     
     print(f"Loading LongBench dataset: {args.dataset}...")
     try:
-        # Load the original LongBench dataset (v1)
-        # Hugging Face recently disabled dataset scripts by default; must pass trust_remote_code=True
-        dataset = load_dataset('THUDM/LongBench', args.dataset, split='test', trust_remote_code=True)
+        # Hugging Face blocked custom dataset scripts entirely. 
+        # We bypass this by directly downloading the JSONL data file from the repository.
+        url = f"https://huggingface.co/datasets/THUDM/LongBench/resolve/main/data/{args.dataset}.jsonl"
+        dataset = load_dataset('json', data_files=url, split='train')
     except Exception as e:
         print(f"Failed to load dataset: {e}")
         return
