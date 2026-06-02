@@ -7,15 +7,17 @@ class AdelicCache(DynamicCache):
     """
     AdelicCache implements Level 4 Adelic KV-Cache Condensation via the Medoid-Value Strategy.
     """
-    def __init__(self, soft_capacity: int = 256, hard_capacity: int = 1024, local_window: int = 128, similarity_threshold: float = 0.95):
+    def __init__(self, soft_capacity: int = 256, hard_capacity: int = 1024, local_window: int = 128, similarity_threshold: float = 0.95, hologram_decay: float = 0.9):
         super().__init__()
         self.soft_capacity = soft_capacity
         self.hard_capacity = hard_capacity
         self.local_window = local_window
         self.similarity_threshold = similarity_threshold
+        self.hologram_decay = hologram_decay
         self.key_cache = []
         self.value_cache = []
         self._true_seen_tokens = 0
+        self.has_hologram = [False] * 128
 
     def update(self, key_states: torch.Tensor, value_states: torch.Tensor, layer_idx: int, cache_kwargs=None):
         if layer_idx == 0:
@@ -84,10 +86,11 @@ class AdelicCache(DynamicCache):
                 mask = torch.eye(num_c, device=sim_matrix.device, dtype=torch.bool).unsqueeze(0).unsqueeze(0)
                 sim_matrix = torch.where(mask, torch.tensor(-1.0, device=sim_matrix.device, dtype=sim_matrix.dtype), sim_matrix)
                 
-                # PROTECT THE ATTENTION SINK!
+                # PROTECT THE ATTENTION SINK AND HOLOGRAM!
                 # The first few tokens of the prompt act as an Attention Sink (StreamingLLM).
-                # If these tokens are dropped, the Softmax denominator explodes and the model hallucinates gibberish!
-                sink_size = min(16, num_c - 1)
+                # The 17th token is our Holographic State Projection.
+                # If these are dropped, the model hallucinates or loses its holographic memory!
+                sink_size = min(17, num_c - 1)
                 if sink_size > 0:
                     sim_matrix[:, :, :sink_size, :] = -1.0
                     sim_matrix[:, :, :, :sink_size] = -1.0
@@ -126,13 +129,31 @@ class AdelicCache(DynamicCache):
                 idx1 = torch.where(swap_mask, idx2, idx1)
                 idx2 = torch.where(swap_mask, temp, idx2)
                 
-                # Merge the redundant centroid (idx2) into the first one (idx1)
-                # Do NOT average the Value vectors!
-                # Averaging shrinks the magnitude of the vectors, shifting the MLP input out-of-distribution and causing Context Window Collapse.
-                # By keeping the pristine $idx1$ vector untouched, we guarantee the condensed cache is 100% in-distribution.
-                # We simply let the keep_mask below drop the redundant idx2.
+                # HOLOGRAPHIC STATE PROJECTION
+                # Extract the dropped token before we drop it
+                idx2_expand = idx2.unsqueeze(-1).unsqueeze(-1).expand(B, H, 1, D)
+                v_drop = torch.gather(c_v, 2, idx2_expand) # [B, H, 1, D]
+                k_drop = torch.gather(c_k, 2, idx2_expand) # [B, H, 1, D]
                 
-                # Remove the second redundant centroid to keep capacity strict
+                if self.has_hologram[layer_idx]:
+                    # Fold into existing Hologram at index 16 using Exponential Moving Average
+                    decay = self.hologram_decay
+                    hologram_v = decay * c_v[:, :, 16:17, :] + (1 - decay) * v_drop
+                    hologram_k = decay * c_k[:, :, 16:17, :] + (1 - decay) * k_drop
+                    c_v[:, :, 16:17, :] = hologram_v
+                    c_k[:, :, 16:17, :] = hologram_k
+                else:
+                    # Initialize Hologram at index 16
+                    # (Note: we assume the input has at least 16 tokens for the sink)
+                    c_v = torch.cat([c_v[:, :, :16, :], v_drop, c_v[:, :, 16:, :]], dim=-2)
+                    c_k = torch.cat([c_k[:, :, :16, :], k_drop, c_k[:, :, 16:, :]], dim=-2)
+                    self.has_hologram[layer_idx] = True
+                    num_c += 1
+                    
+                    # Since we injected a token at index 16, any token after 16 must be shifted right by 1
+                    idx2 = torch.where(idx2 >= 16, idx2 + 1, idx2)
+                
+                # Remove the redundant centroid (idx2)
                 seq_indices = torch.arange(num_c, device=c_v.device).view(1, 1, num_c)
                 keep_mask = seq_indices != idx2.unsqueeze(-1) # [B, H, num_c]
                 
@@ -159,7 +180,8 @@ class AdelicLlamaForCausalLM(LlamaForCausalLM):
                 soft_capacity=self.config.adelic_soft_capacity,
                 hard_capacity=self.config.adelic_hard_capacity,
                 local_window=self.config.adelic_local_window,
-                similarity_threshold=self.config.adelic_similarity_threshold
+                similarity_threshold=self.config.adelic_similarity_threshold,
+                hologram_decay=self.config.adelic_hologram_decay
             )
             
         # Provide correct position_ids since the physical cache length is compressed
