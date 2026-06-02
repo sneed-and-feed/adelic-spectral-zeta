@@ -73,42 +73,30 @@ class AdelicCache(DynamicCache):
                     v_new = n_v[i:i+1] # [1, D]
                     k_new = n_k[i:i+1]
                     
-                    norm_v_new = torch.nn.functional.normalize(v_new.float(), p=2, dim=-1)
+                    # Topological Clustering: Append the new token, then merge the two most redundant centroids!
+                    c_v = torch.cat([c_v, v_new], dim=0)
+                    c_k = torch.cat([c_k, k_new], dim=0)
+                    
                     norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
+                    sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(0, 1))
+                    sim_matrix.fill_diagonal_(-1.0) # Ignore self-similarity
                     
-                    sims = torch.matmul(norm_v_new, norm_c_v.transpose(0, 1)).squeeze(0) # [K]
-                    max_sim, best_idx = sims.max(dim=0)
+                    flat_idx = torch.argmax(sim_matrix)
+                    num_c = c_v.shape[0]
+                    idx1 = flat_idx // num_c
+                    idx2 = flat_idx % num_c
                     
-                    if max_sim > self.similarity_threshold:
-                        # Merge into existing semantic cluster (Differentiable, no inplace ops)
-                        mask = (torch.arange(c_v.shape[0], device=c_v.device) == best_idx).unsqueeze(1)
-                        c_v = torch.where(mask, (c_v + v_new.squeeze(0)) / 2.0, c_v)
-                        c_k = torch.where(mask, k_new.squeeze(0), c_k) # Update medoid
-                    else:
-                        # Topological Clustering: Append the unique needle, then merge the two most redundant centroids!
-                        c_v = torch.cat([c_v, v_new], dim=0)
-                        c_k = torch.cat([c_k, k_new], dim=0)
+                    if idx1 > idx2:
+                        idx1, idx2 = idx2, idx1
                         
-                        norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
-                        sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(0, 1))
-                        sim_matrix.fill_diagonal_(-1.0) # Ignore self-similarity
-                        
-                        flat_idx = torch.argmax(sim_matrix)
-                        num_c = c_v.shape[0]
-                        idx1 = flat_idx // num_c
-                        idx2 = flat_idx % num_c
-                        
-                        if idx1 > idx2:
-                            idx1, idx2 = idx2, idx1
-                            
-                        # Merge the redundant centroid into the first one
-                        mask = (torch.arange(num_c, device=c_v.device) == idx1).unsqueeze(1)
-                        c_v = torch.where(mask, (c_v + c_v[idx2]) / 2.0, c_v)
-                        
-                        # Remove the second redundant centroid to keep capacity strict
-                        keep_mask = torch.arange(num_c, device=c_v.device) != idx2
-                        c_v = c_v[keep_mask]
-                        c_k = c_k[keep_mask]
+                    # Merge the redundant centroid into the first one
+                    mask = (torch.arange(num_c, device=c_v.device) == idx1).unsqueeze(1)
+                    c_v = torch.where(mask, (c_v + c_v[idx2]) / 2.0, c_v)
+                    
+                    # Remove the second redundant centroid to keep capacity strict
+                    keep_mask = torch.arange(num_c, device=c_v.device) != idx2
+                    c_v = c_v[keep_mask]
+                    c_k = c_k[keep_mask]
                         
                 centroids_k[b, h] = c_k
                 centroids_v[b, h] = c_v
