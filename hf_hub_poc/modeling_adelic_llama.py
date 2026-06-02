@@ -96,15 +96,15 @@ class AdelicCache(DynamicCache):
         self.value_cache[layer_idx] = torch.cat([centroids_v, local_v], dim=-2)
 
     def get_seq_length(self, layer_idx: int = 0) -> int:
-        if hasattr(self, '_seen_tokens'):
-            return self._seen_tokens
-        return self._true_seen_tokens
+        if len(self.key_cache) <= layer_idx:
+            return 0
+        return self.key_cache[layer_idx].shape[-2]
 
 
 class AdelicLlamaForCausalLM(LlamaForCausalLM):
     config_class = AdelicLlamaConfig
 
-    def forward(self, input_ids=None, past_key_values=None, use_cache=None, **kwargs):
+    def forward(self, input_ids=None, past_key_values=None, use_cache=None, position_ids=None, **kwargs):
         # Automatically inject the AdelicCache if generation requests a cache but none is provided yet
         if use_cache and past_key_values is None:
             past_key_values = AdelicCache(
@@ -112,9 +112,19 @@ class AdelicLlamaForCausalLM(LlamaForCausalLM):
                 local_window=self.config.adelic_local_window,
                 similarity_threshold=self.config.adelic_similarity_threshold
             )
+            
+        # Provide correct position_ids since the physical cache length is compressed
+        if past_key_values is not None and isinstance(past_key_values, AdelicCache):
+            if position_ids is None and input_ids is not None:
+                seq_len = input_ids.shape[1]
+                past_len = past_key_values._true_seen_tokens
+                device = input_ids.device
+                position_ids = torch.arange(past_len, past_len + seq_len, dtype=torch.long, device=device).unsqueeze(0)
+                
         return super().forward(
             input_ids=input_ids, 
             past_key_values=past_key_values, 
             use_cache=use_cache, 
+            position_ids=position_ids,
             **kwargs
         )
