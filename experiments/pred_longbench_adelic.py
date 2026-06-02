@@ -53,7 +53,7 @@ def main():
     # Load model on GPU with bfloat16 for maximum A100 performance
     model_id = "sneedjak/AdelicLlama-3.1-8B-Instruct"
     
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
     
     # trust_remote_code=True tells HuggingFace to download our topology router architecture
     model = AutoModelForCausalLM.from_pretrained(
