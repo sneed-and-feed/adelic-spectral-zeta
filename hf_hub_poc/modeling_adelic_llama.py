@@ -72,9 +72,9 @@ class AdelicCache(DynamicCache):
             norm_c_v = torch.nn.functional.normalize(c_v.float(), p=2, dim=-1)
             sim_matrix = torch.matmul(norm_c_v, norm_c_v.transpose(-1, -2)) # [B, H, K+1, K+1]
             
-            # Ignore self-similarity
+            # Ignore self-similarity out-of-place for autograd
             mask = torch.eye(sim_matrix.shape[-1], dtype=torch.bool, device=sim_matrix.device)
-            sim_matrix.masked_fill_(mask, -1.0)
+            sim_matrix = sim_matrix.masked_fill(mask, -1.0)
             
             # Find the two most redundant centroids across all batches and heads
             flat_idx = torch.argmax(sim_matrix.view(B, H, -1), dim=-1) # [B, H]
@@ -98,8 +98,8 @@ class AdelicCache(DynamicCache):
             
             merged_v = (c_v_idx1 + c_v_idx2) / 2.0
             
-            # Update the medoid Value (we leave the Key c_k as the older one: idx1)
-            c_v.scatter_(2, idx1_exp, merged_v)
+            # Update the medoid Value out-of-place for autograd
+            c_v = c_v.scatter(2, idx1_exp, merged_v)
             
             # Remove the second redundant centroid to keep capacity strict
             seq_indices = torch.arange(num_c, device=c_v.device).view(1, 1, num_c)
