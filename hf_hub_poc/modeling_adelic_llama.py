@@ -134,10 +134,11 @@ class AdelicLlamaForCausalLM(LlamaForCausalLM):
             
         # Provide correct position_ids since the physical cache length is compressed
         if past_key_values is not None and isinstance(past_key_values, AdelicCache):
-            if position_ids is None and input_ids is not None:
+            if input_ids is not None:
                 seq_len = input_ids.shape[1]
                 past_len = past_key_values._true_seen_tokens
                 device = input_ids.device
+                # Overwrite HF's incorrect position_ids which are based on the compressed cache size
                 position_ids = torch.arange(past_len, past_len + seq_len, dtype=torch.long, device=device).unsqueeze(0)
                 
         return super().forward(
