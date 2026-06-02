@@ -32,7 +32,7 @@ def generate_sample(tokenizer):
 
 def main():
     print("Loading tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained("sneedjak/AdelicLlama-3.1-8B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("sneedjak/AdelicLlama-3.1-8B-Instruct", trust_remote_code=True)
     
     print("Loading model in 4-bit...")
     bnb_config = BitsAndBytesConfig(
