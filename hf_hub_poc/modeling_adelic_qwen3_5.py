@@ -1,6 +1,6 @@
 import torch
 from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5ForCausalLM
-from .configuration_adelic_qwen3_5 import AdelicQwen3_5Config
+from configuration_adelic_qwen3_5 import AdelicQwen3_5Config
 
 def _condense_cache_layer(layer_cache, layer_idx, config, cache_container):
     """
