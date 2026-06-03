@@ -4,7 +4,17 @@ import argparse
 import torch
 from tqdm import tqdm
 from datasets import load_dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, BitsAndBytesConfig
+
+# Import directly from the files we downloaded to the root folder (or if running from repo)
+try:
+    from configuration_adelic_qwen3_5 import AdelicQwen3_5Config
+    from modeling_adelic_qwen3_5 import AdelicQwen3_5ForCausalLM
+except ImportError:
+    import sys
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from hf_hub_poc.configuration_adelic_qwen3_5 import AdelicQwen3_5Config
+    from hf_hub_poc.modeling_adelic_qwen3_5 import AdelicQwen3_5ForCausalLM
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -43,10 +53,20 @@ def main():
     if args.max_samples is not None:
         dataset = dataset.select(range(min(args.max_samples, len(dataset))))
 
-    print(f"Loading Adèlic Qwen 3.6 27B Model in 4-bit...")
-    model_id = "sneedjak/Adelic-Qwen3.6-27B-Topology"
-    
+    model_id = "Qwen/Qwen3.6-27B" 
+    print(f"Loading tokenizer from {model_id}...")
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    
+    print("Extracting base config...")
+    base_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+    base_dict = base_config.to_dict()
+    if "text_config" in base_dict:
+        base_dict = base_dict["text_config"]
+    if "generation_config" in base_dict:
+        del base_dict["generation_config"]
+        
+    print("Wrapping inside Adèlic Spectral Zeta Topology...")
+    config = AdelicQwen3_5Config(**base_dict)
     
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -55,11 +75,13 @@ def main():
         bnb_4bit_quant_type="nf4"
     )
     
-    model = AutoModelForCausalLM.from_pretrained(
+    print(f"Loading Weights into Adèlic Architecture in 4-bit...")
+    model = AdelicQwen3_5ForCausalLM.from_pretrained(
         model_id,
-        trust_remote_code=True,
+        config=config,
         quantization_config=bnb_config,
-        device_map="auto"
+        device_map="auto",
+        trust_remote_code=True,
     )
     model.eval()
 
@@ -75,12 +97,7 @@ def main():
             messages = [{"role": "user", "content": instruction}]
             
             encoded = tokenizer.apply_chat_template(messages, tokenize=True, return_tensors="pt", add_generation_prompt=True, return_dict=True)
-            if hasattr(encoded, "input_ids"):
-                input_ids = encoded.input_ids.to(model.device)
-            elif isinstance(encoded, dict) and "input_ids" in encoded:
-                input_ids = encoded["input_ids"].to(model.device)
-            else:
-                input_ids = encoded.to(model.device)
+            input_ids = encoded["input_ids"].to(model.device)
             
             # Monkey-patch forward to prevent Causal Smearing (chunked prefill)
             if not hasattr(model, "_original_forward"):
@@ -134,7 +151,6 @@ def main():
             outputs = model.generate(
                 input_ids,
                 max_new_tokens=args.max_new_tokens,
-                temperature=0.1, 
                 do_sample=False,
                 pad_token_id=tokenizer.eos_token_id
             )
