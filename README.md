@@ -171,6 +171,15 @@ This proves a direct arithmetic origin for ergodicity breaking: **the distributi
 
 > **Papers:** [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex)) · [*Llama Surgery: Injecting Differentiable p-Adic Topology into Pre-Trained LLMs*](papers/llama_surgery.md) ([LaTeX](papers/llama_surgery.tex))
 
+### Official Hugging Face Models
+
+We host our surgical topological injections on the Hugging Face Hub for instant "plug-and-play" inference with infinite context:
+
+* [**Adelic-Gemma-4-31B-it**](https://huggingface.co/sneedjak/Adelic-Gemma-4-31B-it): Features a custom **Triton Kernel** that completely eliminates Python/PyTorch memory bottlenecks. By calculating the Medoid-Value similarity metrics completely inside the GPU SRAM registers ($\mathcal{O}(1)$ footprint), this Gemma implementation achieves native FlashAttention-like speed while dynamically bounded to an $O(\log N)$ context size.
+* [**Adelic-Qwen3.6-27B-Topology**](https://huggingface.co/sneedjak/Adelic-Qwen3.6-27B-Topology): Features the exact same strict $O(\log N)$ mathematical bounds and custom $\mathcal{O}(1)$ SRAM **Triton Kernel** condensation wrapper as the Gemma implementation.
+
+*(Note: These repositories contain the topology routing logic and patch scripts, not the multi-gigabyte base model weights. You must load the official Google/Qwen weights and pass them into the `apply_adelic_topology()` patch).*
+
 This repository includes a complete, dual-stack implementation of **Ultrametric AI** — a fundamentally new neural attention architecture that replaces the dense $O(N^2)$ self-attention matrix of standard Transformers with a hierarchical $O(N \log N)$ block-sparse mask derived from the $p$-adic metric on the Bruhat-Tits tree.
 
 The key mathematical insight is that tokens in a sequence are not flat — they can be organized into a recursive fractal tree where the "distance" between two tokens is defined by their lowest common ancestor depth in the $p$-adic topology. Tokens sharing a deep ancestor attend densely; tokens sharing only a shallow ancestor attend sparsely or pass messages through interior "Reasoning Tokens" (Holographic States). This architecture natively encodes the non-archimedean geometry of the adèlic framework into the attention mechanism itself.
@@ -254,6 +263,8 @@ Located in [`src/ultrametric_v2_research/`](src/ultrametric_v2_research/):
 #### V3 Research: Llama Surgery — Injecting Differentiable $p$-Adic Topology into Pre-Trained LLMs
 
 The `main` branch also contains **Llama Surgery**: a surgical post-training injection of the Dynamic Topology Router into a frozen, pre-trained TinyLlama-1.1B, without any weight updates, distillation, or retraining. The full paper is at [`papers/llama_surgery.md`](papers/llama_surgery.md) and the experiments are at [`experiments/`](experiments/).
+
+**Hugging Face Hub Releases:** We have officially released full architecture wrappers for **Gemma 4 (9B)** and **Qwen 3.6 (27B)** that seamlessly inject the Adèlic Cache condensation algorithm at runtime. These implementations feature an $\mathcal{O}(1)$ SRAM Triton kernel for hardware-accelerated clustering on CUDA (with a graceful PyTorch fallback for CPU), binding the physical VRAM footprint to $\mathcal{O}(\log N)$ without model retraining. See the `hf_hub_poc/` directory for the architecture scripts.
 
 **The Continuous Logit Homotopy (Differentiable Trojan Horse).** The central challenge of injecting sparsity into a pre-trained model is the initialization cliff: a randomly initialized sparse mask instantly shatters the pre-trained attention manifold, causing immediate loss divergence. Llama Surgery resolves this with the *Continuous Logit Homotopy*: at step 0, all router logits are initialized to $-\infty$ except Branch 0, forcing a Deterministic Collapse where all tokens are assigned to a single branch. The resulting $p$-adic distance is exactly 0, making the STE attention mask exactly dense ($1.0$ everywhere). The model is completely unaware it has been surgically altered. A load-balancing loss then acts as the "anesthetic wearing off," gradually pulling branches apart over a configurable ramp schedule.
 
