@@ -44,6 +44,11 @@ def main():
     base_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
     
     base_dict = base_config.to_dict()
+    
+    if "text_config" in base_dict:
+        print("Extracting text_config from multimodal configuration...")
+        base_dict = base_dict["text_config"]
+
     # TRANSFORMERS BUG FIX: In bleeding-edge transformers, if a remote config has a generation_config dict,
     # GenerationConfig.from_model_config blindly calls to_dict() on it, crashing the entire load process.
     if "generation_config" in base_dict:

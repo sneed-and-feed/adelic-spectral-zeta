@@ -1,7 +1,7 @@
-from transformers.models.qwen3_5.configuration_qwen3_5 import Qwen3_5Config
+from transformers.models.qwen3_5.configuration_qwen3_5 import Qwen3_5TextConfig
 
-class AdelicQwen3_5Config(Qwen3_5Config):
-    model_type = "adelic_qwen3_5"
+class AdelicQwen3_5Config(Qwen3_5TextConfig):
+    model_type = "adelic_qwen3_5_text"
 
     def __init__(
         self,
