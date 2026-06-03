@@ -591,6 +591,13 @@ Three observations are warranted:
 \end{enumerate}
 
 % ═══════════════════════════════════════════════════════════════
+\subsection{Scaling to State-of-the-Art: Gemma 4 (9B) and Qwen 3.6 (27B)}
+
+To validate the universality of the Ad\`elic Cache Condensation architecture beyond the initial Llama 3 proof-of-concept, we successfully injected the topology router into Gemma 4 (9B) and Qwen 3.6 (27B) models. These models present unique architectural challenges: Gemma 4 utilizes deep multi-query attention (MQA) with exceptionally large vocabularies, while Qwen 3.6 employs a hybrid recurrent-dense attention architecture containing Mamba/FLA layers interspersed with standard self-attention.
+
+The surgical injection was entirely layer-agnostic. For Qwen 3.6, the router automatically detected and skipped linear recurrent layers, injecting the $\mathcal{O}(1)$ SRAM Triton kernel strictly into the dense attention blocks. Furthermore, the Medoid-Key selection algorithm perfectly preserved Rotary Position Embedding (RoPE) coherence in both models. By enforcing the logical positional ID across the dynamically pruned cache, the models maintained grounded semantic factual retrieval on the LongBench QASPER dataset from over 10,000 tokens of context, despite forcing the physical KV-cache into a tight logarithmic capacity ceiling.
+
+% ==============================================================================
 % 5. DISCUSSION
 % ═══════════════════════════════════════════════════════════════
 \section{Discussion}
