@@ -10,7 +10,7 @@ from hf_hub_poc.modeling_adelic_qwen import AdelicQwenForCausalLM
 from transformers import AutoTokenizer, AutoConfig, BitsAndBytesConfig
 
 def main():
-    model_id = "Qwen/Qwen2.5-32B-Instruct"
+    model_id = "Qwen/Qwen3.6-27B"
     
     try:
         from google.colab import userdata
@@ -63,13 +63,9 @@ def main():
     
     # We create a massive repeated prompt to test cache compression
     prompt_text = "The quick brown fox jumps over the lazy dog. " * 50
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant. Please summarize the user's text."},
-        {"role": "user", "content": prompt_text + " What animal jumped?"}
-    ]
+    prompt_text += "\n\nQuestion: What animal jumped?\nAnswer: The quick brown"
     
-    text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    inputs = tokenizer(text, return_tensors="pt").to(model.device)
+    inputs = tokenizer(prompt_text, return_tensors="pt").to(model.device)
     
     print(f"\nPrompt length: {inputs.input_ids.shape[1]} tokens")
     print("Generating...")
@@ -77,7 +73,7 @@ def main():
     # Since use_cache=True, our AdelicQwenForCausalLM forward method will auto-inject the AdelicCache
     outputs = model.generate(
         **inputs,
-        max_new_tokens=20,
+        max_new_tokens=10,
         use_cache=True,
         do_sample=False
     )
