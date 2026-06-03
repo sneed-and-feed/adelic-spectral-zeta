@@ -71,7 +71,7 @@ def main():
             context = item['context']
             question = item['input']
             
-            instruction = f"Please read the following text and answer the question based on it.\n\nText:\n{context}\n\nQuestion:\n{question}"
+            instruction = f"Please read the following text and answer the question based on it. Answer directly and concisely. DO NOT output any reasoning, thinking process, or explanation.\n\nText:\n{context}\n\nQuestion:\n{question}"
             messages = [{"role": "user", "content": instruction}]
             
             encoded = tokenizer.apply_chat_template(messages, tokenize=True, return_tensors="pt", add_generation_prompt=True, return_dict=True)
