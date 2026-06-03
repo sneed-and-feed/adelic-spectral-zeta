@@ -110,7 +110,7 @@ def train_router_niah():
     num_steps = 200
     for step in range(num_steps):
         model.train()
-        sample = generate_niah_sample(tokenizer, haystack_len=1024)
+        sample = generate_niah_sample(tokenizer, haystack_len=256)
         input_ids = sample["input_ids"].to(model.device)
         labels = sample["labels"].to(model.device)
         
@@ -132,7 +132,7 @@ def train_router_niah():
     # 5. Extract Emerging Topology
     model.eval()
     with torch.no_grad():
-        sample = generate_niah_sample(tokenizer, haystack_len=1024)
+        sample = generate_niah_sample(tokenizer, haystack_len=256)
         input_ids = sample["input_ids"].to(model.device)
         
         # Forward pass to cache assignments
