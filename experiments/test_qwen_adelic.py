@@ -7,23 +7,32 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from hf_hub_poc.configuration_adelic_qwen import AdelicQwenConfig
 from hf_hub_poc.modeling_adelic_qwen import AdelicQwenForCausalLM
-from transformers import AutoTokenizer, AutoConfig
+from transformers import AutoTokenizer, AutoConfig, BitsAndBytesConfig
 
 def main():
-    model_id = "Qwen/Qwen3.6-7B-Instruct"
+    model_id = "Qwen/Qwen3.6-27B-Instruct"
+    
+    try:
+        from google.colab import userdata
+        hf_token = userdata.get('HF_TOKEN')
+        print("Loaded HF_TOKEN from Colab secrets.")
+    except Exception:
+        hf_token = os.environ.get("HF_TOKEN")
+        print("Not in Colab, checking local environment for HF_TOKEN.")
+
     print(f"Loading {model_id}...")
     
     try:
-        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
     except Exception as e:
-        print(f"Could not load tokenizer (Note: 3.6 might be named differently on HF, replace with 2.5 if needed). Error: {e}")
+        print(f"Could not load tokenizer. Error: {e}")
         # Fallback to 2.5 for testing if 3.6 isn't strictly available yet
-        model_id = "Qwen/Qwen2.5-7B-Instruct"
+        model_id = "Qwen/Qwen2.5-32B-Instruct"
         print(f"Falling back to {model_id}...")
-        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
         
     # Download the base config and wrap it in our Adelic wrapper
-    base_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+    base_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
     
     config = AdelicQwenConfig(
         **base_config.to_dict(),
@@ -34,13 +43,22 @@ def main():
         adelic_hologram_decay=0.9
     )
 
-    print("Loading Adèlic Qwen model weights...")
+    print("Configuring 4-bit Quantization (BitsAndBytes)...")
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+    )
+
+    print("Loading Adèlic Qwen 27B model weights (this may take a minute)...")
     model = AdelicQwenForCausalLM.from_pretrained(
         model_id,
         config=config,
-        torch_dtype=torch.bfloat16,
+        quantization_config=quantization_config,
         device_map="auto",
         trust_remote_code=True,
+        token=hf_token
     )
     
     # We create a massive repeated prompt to test cache compression
