@@ -10,7 +10,7 @@ from hf_hub_poc.modeling_adelic_qwen import AdelicQwenForCausalLM
 from transformers import AutoTokenizer, AutoConfig, BitsAndBytesConfig
 
 def main():
-    model_id = "Qwen/Qwen2.5-32B-Instruct"
+    model_id = "Qwen/Qwen3.6-27B" # User wants to run Qwen3.6-27B
     
     try:
         from google.colab import userdata
@@ -22,6 +22,16 @@ def main():
 
     print(f"Loading {model_id}...")
     
+    if "Qwen3.6" in model_id or "Qwen3_5" in model_id:
+        print("\n[!] Qwen3.6 Hybrid Architecture Detected. Using AdelicQwen3_5 classes.")
+        print("[!] If you have not installed FLA, run: pip install git+https://github.com/fla-org/flash-linear-attention")
+        from hf_hub_poc.configuration_adelic_qwen3_5 import AdelicQwen3_5Config as AdelicConfig
+        from hf_hub_poc.modeling_adelic_qwen3_5 import AdelicQwen3_5ForCausalLM as AdelicLM
+    else:
+        print("\n[!] Qwen2.5 Standard Architecture Detected. Using AdelicQwen classes.")
+        from hf_hub_poc.configuration_adelic_qwen import AdelicQwenConfig as AdelicConfig
+        from hf_hub_poc.modeling_adelic_qwen import AdelicQwenForCausalLM as AdelicLM
+
     try:
         tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
     except Exception as e:
@@ -39,7 +49,7 @@ def main():
     if "generation_config" in base_dict:
         del base_dict["generation_config"]
         
-    config = AdelicQwenConfig(
+    config = AdelicConfig(
         **base_dict,
         adelic_soft_capacity=256,
         adelic_hard_capacity=1024,
@@ -60,7 +70,7 @@ def main():
     )
 
     print(f"Loading Adèlic {model_id} model weights (this may take a minute)...")
-    model = AdelicQwenForCausalLM.from_pretrained(
+    model = AdelicLM.from_pretrained(
         model_id,
         config=config,
         quantization_config=quantization_config,
