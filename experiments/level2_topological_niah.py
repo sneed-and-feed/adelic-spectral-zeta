@@ -111,8 +111,8 @@ def train_router_niah():
     for step in range(num_steps):
         model.train()
         sample = generate_niah_sample(tokenizer, haystack_len=1024)
-        input_ids = sample["input_ids"]
-        labels = sample["labels"]
+        input_ids = sample["input_ids"].to(model.device)
+        labels = sample["labels"].to(model.device)
         
         optimizer.zero_grad()
         outputs = model(input_ids=input_ids, labels=labels)
@@ -133,7 +133,7 @@ def train_router_niah():
     model.eval()
     with torch.no_grad():
         sample = generate_niah_sample(tokenizer, haystack_len=1024)
-        input_ids = sample["input_ids"]
+        input_ids = sample["input_ids"].to(model.device)
         
         # Forward pass to cache assignments
         _ = model(input_ids=input_ids)
