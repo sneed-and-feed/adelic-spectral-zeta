@@ -29,6 +29,27 @@ def main():
         model_id = "Qwen/Qwen2.5-32B"
         print(f"Falling back to {model_id}...")
         tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
+        
+    # Download the base config and wrap it in our Adelic wrapper
+    base_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
+    
+    base_dict = base_config.to_dict()
+    # TRANSFORMERS BUG FIX: In bleeding-edge transformers, if a remote config has a generation_config dict,
+    # GenerationConfig.from_model_config blindly calls to_dict() on it, crashing the entire load process.
+    if "generation_config" in base_dict:
+        del base_dict["generation_config"]
+        
+    config = AdelicQwenConfig(
+        **base_dict,
+        adelic_soft_capacity=256,
+        adelic_hard_capacity=1024,
+        adelic_local_window=128,
+        adelic_similarity_threshold=0.95,
+        adelic_hologram_decay=0.9
+    )
+    
+    if hasattr(config, "generation_config"):
+        config.generation_config = None
 
     print("Configuring 4-bit Quantization (BitsAndBytes)...")
     quantization_config = BitsAndBytesConfig(
@@ -41,11 +62,7 @@ def main():
     print("Loading Adèlic Qwen 27B model weights (this may take a minute)...")
     model = AdelicQwenForCausalLM.from_pretrained(
         model_id,
-        adelic_soft_capacity=256,
-        adelic_hard_capacity=1024,
-        adelic_local_window=128,
-        adelic_similarity_threshold=0.95,
-        adelic_hologram_decay=0.9,
+        config=config,
         quantization_config=quantization_config,
         device_map="auto",
         trust_remote_code=True,
