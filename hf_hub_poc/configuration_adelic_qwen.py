@@ -18,3 +18,12 @@ class AdelicQwenConfig(Qwen2Config):
         self.adelic_similarity_threshold = adelic_similarity_threshold
         self.adelic_hologram_decay = adelic_hologram_decay
         super().__init__(**kwargs)
+
+    def get_text_config(self, decoder=False):
+        """
+        Hotfix for Hugging Face transformers main branch bug:
+        GenerationConfig.from_model_config incorrectly assumes get_text_config() returns an object 
+        with a to_dict() method. If the base class returns a dict, it crashes.
+        Since Qwen IS a text model, the text config is just self.
+        """
+        return self
