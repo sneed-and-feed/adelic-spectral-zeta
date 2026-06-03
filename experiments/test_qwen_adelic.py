@@ -10,7 +10,7 @@ from hf_hub_poc.modeling_adelic_qwen import AdelicQwenForCausalLM
 from transformers import AutoTokenizer, AutoConfig, BitsAndBytesConfig
 
 def main():
-    model_id = "Qwen/Qwen3.6-27B"
+    model_id = "Qwen/Qwen2.5-32B-Instruct"
     
     try:
         from google.colab import userdata
@@ -26,7 +26,7 @@ def main():
         tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
     except Exception as e:
         print(f"Could not load tokenizer. Error: {e}")
-        model_id = "Qwen/Qwen2.5-32B"
+        model_id = "Qwen/Qwen2.5-7B-Instruct"
         print(f"Falling back to {model_id}...")
         tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
         
@@ -59,7 +59,7 @@ def main():
         bnb_4bit_quant_type="nf4",
     )
 
-    print("Loading Adèlic Qwen 27B model weights (this may take a minute)...")
+    print(f"Loading Adèlic {model_id} model weights (this may take a minute)...")
     model = AdelicQwenForCausalLM.from_pretrained(
         model_id,
         config=config,
@@ -71,9 +71,13 @@ def main():
     
     # We create a massive repeated prompt to test cache compression
     prompt_text = "The quick brown fox jumps over the lazy dog. " * 50
-    prompt_text += "\n\nQuestion: What animal jumped?\nAnswer: The quick brown"
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant. Please summarize the user's text."},
+        {"role": "user", "content": prompt_text + " What animal jumped?"}
+    ]
     
-    inputs = tokenizer(prompt_text, return_tensors="pt").to(model.device)
+    text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    inputs = tokenizer(text, return_tensors="pt").to(model.device)
     
     print(f"\nPrompt length: {inputs.input_ids.shape[1]} tokens")
     print("Generating...")
