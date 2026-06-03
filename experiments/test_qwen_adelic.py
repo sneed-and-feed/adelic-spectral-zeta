@@ -26,22 +26,9 @@ def main():
         tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
     except Exception as e:
         print(f"Could not load tokenizer. Error: {e}")
-        # Fallback to 2.5 for testing if 3.6 isn't strictly available yet
         model_id = "Qwen/Qwen2.5-32B"
         print(f"Falling back to {model_id}...")
         tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
-        
-    # Download the base config and wrap it in our Adelic wrapper
-    base_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True, token=hf_token)
-    
-    config = AdelicQwenConfig(
-        **base_config.to_dict(),
-        adelic_soft_capacity=256,
-        adelic_hard_capacity=1024,
-        adelic_local_window=128,
-        adelic_similarity_threshold=0.95,
-        adelic_hologram_decay=0.9
-    )
 
     print("Configuring 4-bit Quantization (BitsAndBytes)...")
     quantization_config = BitsAndBytesConfig(
@@ -54,7 +41,11 @@ def main():
     print("Loading Adèlic Qwen 27B model weights (this may take a minute)...")
     model = AdelicQwenForCausalLM.from_pretrained(
         model_id,
-        config=config,
+        adelic_soft_capacity=256,
+        adelic_hard_capacity=1024,
+        adelic_local_window=128,
+        adelic_similarity_threshold=0.95,
+        adelic_hologram_decay=0.9,
         quantization_config=quantization_config,
         device_map="auto",
         trust_remote_code=True,
