@@ -522,3 +522,12 @@ The repository contains pre-packaged experiments to verify the mathematical and 
 Pair-programmed and mathematically co-designed by Antigravity (AI coding agent) and the User. May 2026.
 
 **Acknowledgements**: The Perron-Frobenius existence theorem used in the Schreier spectral gap formalization is provided by Michael R. Douglas's [`spectral-positivity`](https://github.com/mrdouglasny/spectral-positivity) library (Copyright © 2026 Michael R. Douglas, Apache 2.0). Our work builds on his Collatz-Wielandt proof to establish eigenvector uniqueness and eigenvalue maximality for the Schreier graph family.
+
+---
+
+## Pre-quantized Adèlic Models
+
+You can download the GGUF models that are pre-configured and compatible with our custom `llama.cpp` Adèlic KV Condenser engine below:
+
+- [Adelic-Gemma-4-12B-GGUF](https://huggingface.co/sneedjak/Adelic-Gemma-4-12B-GGUF) (12B Parameters, available in Q6_K and F16)
+- [Adelic-Gemma-4-31B-GGUF](https://huggingface.co/sneedjak/Adelic-Gemma-4-31B-GGUF) (31B Parameters)
