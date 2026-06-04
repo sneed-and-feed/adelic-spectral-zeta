@@ -175,10 +175,10 @@ This proves a direct arithmetic origin for ergodicity breaking: **the distributi
 
 We host our surgical topological injections on the Hugging Face Hub for instant "plug-and-play" inference with infinite context:
 
-* [**Adelic-Gemma-4-31B-it**](https://huggingface.co/sneedjak/Adelic-Gemma-4-31B-it): Features a custom **Triton Kernel** that completely eliminates Python/PyTorch memory bottlenecks. By calculating the Medoid-Value similarity metrics completely inside the GPU SRAM registers ($\mathcal{O}(1)$ footprint), this Gemma implementation achieves native FlashAttention-like speed while dynamically bounded to an $O(\log N)$ context size.
-* [**Adelic-Qwen3.6-27B-Topology**](https://huggingface.co/sneedjak/Adelic-Qwen3.6-27B-Topology): **Now includes a fully compiled 27GB Q8_0 GGUF file!** You can run the full 27B model locally with infinite context using our [experimental Adèlic llama.cpp fork](https://github.com/sneed-and-feed/llama.cpp) which features a custom C++/CUDA backend for topological cache pruning.
+* [**Adelic-Gemma-4-31B-it**](https://huggingface.co/sneedjak/Adelic-Gemma-4-31B-it): Features a custom **GGML/CUDA kernel** (`ggml_adelic_condense`) that dynamically prunes KV-cache reads in $\mathcal{O}(1)$ SRAM time by writing highly negative mask values directly into the `kq_mask` tensor before softmax. This Gemma 4 31B implementation achieves 277.5 tokens/second prefill throughput while maintaining RoPE-coherent Medoid-Value condensation with an $O(W + \log N)$ physical cache footprint.
+* [**Adelic-Qwen3.6-27B-Topology**](https://huggingface.co/sneedjak/Adelic-Qwen3.6-27B-Topology): Includes a fully compiled 27 GB Q8_0 GGUF file. Run the full 27B model locally with infinite context using our [experimental Adèlic llama.cpp fork](https://github.com/sneed-and-feed/llama.cpp), which features a custom C++/CUDA backend for topological cache pruning.
 
-*(Note: The Gemma 4 repository contains the topology routing logic and PyTorch patch scripts, but the Qwen repository now contains the ready-to-run GGUF file!)*
+*(Note: The Gemma 4 repository contains the topology routing logic and PyTorch patch scripts. The Qwen repository contains the ready-to-run GGUF file.)*
 
 This repository includes a complete, dual-stack implementation of **Ultrametric AI** — a fundamentally new neural attention architecture that replaces the dense $O(N^2)$ self-attention matrix of standard Transformers with a hierarchical $O(N \log N)$ block-sparse mask derived from the $p$-adic metric on the Bruhat-Tits tree.
 
@@ -264,7 +264,7 @@ Located in [`src/ultrametric_v2_research/`](src/ultrametric_v2_research/):
 
 The `main` branch also contains **Llama Surgery**: a surgical post-training injection of the Dynamic Topology Router into a frozen, pre-trained TinyLlama-1.1B, without any weight updates, distillation, or retraining. The full paper is at [`papers/llama_surgery.md`](papers/llama_surgery.md) and the experiments are at [`experiments/`](experiments/).
 
-**Hugging Face Hub Releases:** We have officially released full architecture wrappers for **Gemma 4 (9B)** and **Qwen 3.6 (27B)** that seamlessly inject the Adèlic Cache condensation algorithm at runtime. The Qwen 3.6 release has also been fully compiled into a standalone GGUF file that runs on our custom `llama.cpp` CUDA backend for local inference. See the `hf_hub_poc/` directory for the Python architecture scripts.
+**Hugging Face Hub Releases:** We have officially released full architecture wrappers for **Gemma 4 (9B and 31B)** and **Qwen 3.6 (27B)** that seamlessly inject the Adèlic KV-Cache Condensation algorithm at runtime. The 31B Gemma model runs natively via a custom `ggml_adelic_condense` CUDA kernel in our `llama.cpp` fork (§4.13 of the paper). The 9B Gemma and 27B Qwen models use PyTorch-side surgical injection (§4.15). The Qwen 3.6 release has also been fully compiled into a standalone GGUF file that runs on our custom `llama.cpp` CUDA backend for local inference. See the `hf_hub_poc/` directory for the Python architecture scripts.
 
 **The Continuous Logit Homotopy (Differentiable Trojan Horse).** The central challenge of injecting sparsity into a pre-trained model is the initialization cliff: a randomly initialized sparse mask instantly shatters the pre-trained attention manifold, causing immediate loss divergence. Llama Surgery resolves this with the *Continuous Logit Homotopy*: at step 0, all router logits are initialized to $-\infty$ except Branch 0, forcing a Deterministic Collapse where all tokens are assigned to a single branch. The resulting $p$-adic distance is exactly 0, making the STE attention mask exactly dense ($1.0$ everywhere). The model is completely unaware it has been surgically altered. A load-balancing loss then acts as the "anesthetic wearing off," gradually pulling branches apart over a configurable ramp schedule.
 
@@ -279,37 +279,6 @@ The `main` branch also contains **Llama Surgery**: a surgical post-training inje
 
 **The Medoid-Value Strategy (RoPE-safe KV Condensation).** Standard token merging algorithms average both Keys and Values. Because Rotary Position Embeddings rotate the Keys by an angle proportional to the absolute sequence index, averaging two rotated Keys produces a geometrically invalid vector that destroys the attention inner product. `AdelicCache` resolves this by: (1) averaging the Values (which are invariant to RoPE rotation), and (2) selecting the *Medoid Key* — the most recent Key in the cluster — as the positional anchor. This preserves strict RoPE coherence while compressing the far-history memory footprint from $O(N)$ to $O(\log N)$.
 
-#### V4: Infinite Context Adèlic Topology Router (Llama 3.1 8B)
-
-We have successfully perfected the Adèlic Cache into a mathematically flawless, plug-and-play architecture that completely drops the $O(N)$ KV-cache memory requirement of Transformer models down to a strict $O(1)$ constant boundary (e.g. 256 tokens max memory), while maintaining deterministic retrieval capabilities (Needle-In-A-Haystack).
-
-**Available Now on Hugging Face:**
-You can load the infinite-context Adèlic Llama 3.1 8B model natively on consumer hardware:
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-# Automatically injects the Adèlic Topology Router into Llama 3
-model = AutoModelForCausalLM.from_pretrained("sneedjak/AdelicLlama-3.1-8B-Instruct", trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained("sneedjak/AdelicLlama-3.1-8B-Instruct")
-```
-
-**Performance Metrics (Baseline vs Adèlic)**
-Assuming a cache capacity limit of 256 tokens:
-* **Memory at 100,000 Tokens:** Baseline requires ~13.1 GB of VRAM. Adèlic requires **~33 MB (99.7% Reduction)**.
-* **Inference Speed at 100,000 Tokens:** Baseline computes 100k dot products per step. Adèlic computes 256 dot products per step. **(~390x Latency Speedup).**
-* **Exact Retrieval (LongBench Qasper Benchmark):** The Adèlic Cache mathematically prevents "Context Window Collapse" (grammar loss and "the the the" hallucinations) by strictly protecting the Attention Sink (first 16 tokens). However, because Medoid-Value clustering condenses a 10,000 token scientific paper into exactly 256 physical token vectors, the model suffers from **Information Starvation**. It retains perfect linguistic coherence and instructional alignment, but drops exact factual "needles," achieving a **3.14% F1 Score** on Qasper (compared to ~30% for a dense 10,000 token cache). This experimentally proves that while $O(1)$ topological clustering is exceptionally stable for maintaining conversational flow, it is fundamentally too lossy for exact-retrieval tasks on its own.
-
-**Future Directions: Solving Information Starvation**
-To make the Adèlic architecture viable for Needle-In-A-Haystack tasks, the $O(1)$ KV Cache must be coupled with a secondary storage mechanism:
-1. **Dynamic Local Injection (RAG):** When the dropped tokens are evicted from the active GPU cache, they are moved to CPU RAM. The model is trained to emit a special `<|search|>` token to asynchronously fetch relevant dropped chunks back into the `local_window` when it detects it needs specific facts.
-2. **Holographic State Projection:** Instead of deleting redundant tokens, project them into a fixed-size continuous continuous state vector (similar to Mamba / SSMs) that serves as an ultra-compressed "vibe" memory alongside the exact discrete tokens.
-3. **Adaptive Capacity:** Dynamically expand the `max_capacity` ceiling when the topological similarity matrix indicates high factual density (low redundancy), and aggressively shrink it only during conversational filler.
-
-**The 3 Mathematical Breakthroughs Required:**
-1. **Global Head Consensus:** Because Grouped Query Attention (GQA) heads operate in low-dimensional spaces, individual heads suffer from "semantic aliasing" (e.g., treating "OMEGA" identical to "city"). By averaging the topological similarity matrix across *all* attention heads, the Router requires a universal consensus before merging tokens, mathematically guaranteeing that rare factual data survives compression.
-2. **Pristine Medoids:** Averaging Value vectors geometrically shrinks their magnitudes, generating Out-Of-Distribution tensors that poison the MLP. We halt vector averaging and keep the Medoid vectors completely untouched, ensuring the compressed cache is 100% physically in-distribution.
-3. **Strict Attention Sink Protection:** The Medoid clustering algorithm is strictly forbidden from evaluating or dropping the first 16 tokens of the prompt. This mathematically guarantees the survival of the Attention Sink, permanently immunizing the model against Context Window Collapse.
-4. **V2 Vectorization:** Replacing iterative loop nesting with PyTorch `gather`/`scatter` operations dropped the topological clustering step latency from 6.5s down to <1s.
 **Library Installation & Usage:**
 
 The core surgery logic is fully packaged and can be installed directly from GitHub:
@@ -554,8 +523,11 @@ Pair-programmed and mathematically co-designed by Antigravity (AI coding agent) 
 
 **Acknowledgements**: The Perron-Frobenius existence theorem used in the Schreier spectral gap formalization is provided by Michael R. Douglas's [`spectral-positivity`](https://github.com/mrdouglasny/spectral-positivity) library (Copyright © 2026 Michael R. Douglas, Apache 2.0). Our work builds on his Collatz-Wielandt proof to establish eigenvector uniqueness and eigenvalue maximality for the Schreier graph family.
 
-## Future Directions: Discrete External Memory (RAG)
-To achieve infinite context *with* exact factual recall, the internal $O(1)$ Adèlic Cache must be paired with an external discrete memory system. Instead of forcing the Transformer's internal KV-cache to continuously store every fact via projection, the system should use Retrieval-Augmented Generation (RAG) backed by a Vector Database (e.g., ChromaDB or FAISS).
-1. The Adèlic Cache maintains infinite conversational state, grammar, and logical reasoning within the internal $O(1)$ bound.
-2. The Vector Database holds the exact scientific "needles" externally.
-3. When the model encounters an Information Starvation gap, it queries the Vector DB and dynamically pulls the exact semantic chunk back into its local sliding window.
+---
+
+## Pre-quantized Adèlic Models
+
+You can download the GGUF models that are pre-configured and compatible with our custom `llama.cpp` Adèlic KV Condenser engine below:
+
+- [Adelic-Gemma-4-12B-GGUF](https://huggingface.co/sneedjak/Adelic-Gemma-4-12B-GGUF) (12B Parameters, available in Q6_K and F16)
+- [Adelic-Gemma-4-31B-GGUF](https://huggingface.co/sneedjak/Adelic-Gemma-4-31B-GGUF) (31B Parameters)

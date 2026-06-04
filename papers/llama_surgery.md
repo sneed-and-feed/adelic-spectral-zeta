@@ -473,7 +473,7 @@ Three observations are warranted:
 
 ---
 
-### 4.14 Scaling to State-of-the-Art: Gemma 4 (9B) and Qwen 3.6 (27B)
+### 4.15 Scaling to State-of-the-Art: Gemma 4 (9B) and Qwen 3.6 (27B)
 
 To validate the universality of the Adèlic Cache Condensation architecture beyond the initial Llama 3 proof-of-concept, we successfully injected the topology router into Gemma 4 (9B) and Qwen 3.6 (27B) models. These models present unique architectural challenges: Gemma 4 utilizes deep multi-query attention (MQA) with exceptionally large vocabularies, while Qwen 3.6 employs a hybrid recurrent-dense attention architecture containing Mamba/FLA layers interspersed with standard self-attention.
 
@@ -482,13 +482,13 @@ The surgical injection was entirely layer-agnostic. For Qwen 3.6, the router aut
 ## 5. Discussion
 
 
-**Content-based vs. position-based routing.** The transition from position-based routing (V1/V2) to content-based routing (V3) is the most significant architectural shift. In V1/V2, a token's tree branch was a deterministic function of its sequence index. The V3 Dynamic Topology Router eliminates this: the tree branch is a learned function of the token embedding, allowing the model to cluster tokens by meaning rather than proximity.
+**Content-based vs. position-based routing.** The transition from position-based routing (V1/V2) to content-based routing (V3) is the most significant architectural shift in this work. In V1/V2, a token's tree branch was a deterministic function of its sequence index. This meant that semantically unrelated tokens at adjacent positions were forced into the same branch, while semantically related tokens at distant positions were separated. The V3 Dynamic Topology Router eliminates this misalignment: the tree branch is now a learned function of the token embedding, allowing the model to cluster tokens by meaning rather than proximity.
 
-**Surgical initialization matters.** The Continuous Logit Homotopy is not merely an engineering convenience—it is a mathematical necessity. Without it, the randomly initialized router produces a random block-sparse mask at step 0, corrupting the pre-trained attention distribution and causing immediate divergence.
+**Surgical initialization matters.** The Continuous Logit Homotopy is not merely an engineering convenience—it is a mathematical necessity. Without it, the randomly initialized router produces a random block-sparse mask at step 0, which corrupts the pre-trained attention distribution and causes immediate divergence. The homotopy ensures a smooth path from the pre-trained dense manifold to the final sparse topology.
 
-**The Attention Sink is load-bearing.** The Attention Sink discovery highlights a non-obvious property of autoregressive Transformers: the attention distribution requires a "rest state" token that is globally visible. This is not specific to ultrametric architectures—it is a universal requirement for any attention sparsification method that can potentially isolate the first token.
+**The Attention Sink is load-bearing.** The Attention Sink discovery highlights a non-obvious property of autoregressive Transformers: the attention distribution requires a "rest state" token that is globally visible. This is not a property of the ultrametric architecture specifically—it is a universal requirement for any attention sparsification method that can potentially isolate the first token. We expect this finding to generalize to other sparse attention frameworks.
 
-**Hugging Face compatibility.** A significant engineering contribution is full compatibility with the Hugging Face `transformers` library. The surgical injection modifies only the `self_attn` attribute of each `LlamaDecoderLayer`, preserving the `generate()` API, the `DynamicCache` KV-cache class, the `Trainer` class, and the `safetensors` serialization format.
+**Hugging Face compatibility.** A significant engineering contribution of this work is full compatibility with the Hugging Face `transformers` library. The surgical injection modifies only the `self_attn` attribute of each `LlamaDecoderLayer`, preserving the `generate()` API, the `DynamicCache` KV-cache class, the `Trainer` class, and the `safetensors` serialization format. Users can adopt Llama Surgery as a drop-in replacement without modifying any downstream code.
 
 **Ultrametric emergence in retrieval.** The NIAH experiment (Section 4.9) provides the first direct evidence that retrieval-driven router training spontaneously induces an ultrametric cophenetic hierarchy on the context window. The router does not group the query with the needle (as a naïve "semantic similarity" model would predict), but instead isolates the needle at maximum topological distance from the dominant haystack domain. This is consistent with an information-theoretic interpretation: the needle carries maximum surprisal relative to the haystack distribution, and the tree hierarchy naturally places high-surprisal tokens at the periphery. The multi-head forest ensemble structure suggests that individual heads specialize in orthogonal retrieval subtasks—an observation that merits further investigation with per-head ablation studies.
 
@@ -501,7 +501,7 @@ The surgical injection was entirely layer-agnostic. For Qwen 3.6, the router aut
 2. The Triton kernel is forward-only; training still uses the O(N^2) PyTorch dense path.
 3. The router adds ~2% parameter overhead per layer.
 4. GQA compatibility requires broadcasting KV heads before applying the per-head topology mask.
-5. The training curriculum was tuned manually; automated hyperparameter search may yield improved convergence.
+5. The training curriculum (temperature schedule, load-balancing coefficient, ramp duration) was tuned manually; automated hyperparameter search may yield improved convergence.
 6. The 40 GB A100 VRAM ceiling limits single-GPU prefill to 16k tokens; 80 GB GPUs or tensor parallelism would be required for the full 128k context window.
 7. The `AdelicCache` condensation is currently validated on a dummy random-weight model; production-scale evaluation on full TinyLlama-1.1B with perplexity and NIAH retrieval benchmarks remains future work.
 
@@ -509,23 +509,23 @@ The surgical injection was entirely layer-agnostic. For Qwen 3.6, the router aut
 
 ## 6. Related Work
 
-**Model Surgery.** LoRA (Hu et al., 2022) injects low-rank adapters into frozen weights for parameter-efficient fine-tuning. Our approach is complementary: rather than adapting the weight matrices, we inject a *structural* modification to the attention pattern itself.
+**Model Surgery.** LoRA (Hu et al., 2022) injects low-rank adapters into frozen weights for parameter-efficient fine-tuning. Our approach is complementary: rather than adapting the weight matrices, we inject a *structural* modification to the attention pattern itself. The router can be composed with LoRA adapters for joint structural and parametric adaptation.
 
-**Attention Sinks.** Xiao et al. (2023) identified the Attention Sink phenomenon in streaming LLMs. Our work extends this finding to the block-sparse topology setting, where the sink must be anchored in the *routing mask* to prevent softmax collapse.
+**Attention Sinks.** Xiao et al. (2023) identified the Attention Sink phenomenon in streaming LLMs and proposed retaining initial tokens in the KV-cache. Our work extends this finding to the block-sparse topology setting, where the sink must be anchored not just in the cache but in the *routing mask* to prevent softmax collapse.
 
-**Continuous Sparsification.** Savarese et al. (2020) introduced continuous sparsification of neural network weights via smooth ℓ_0 relaxations. Our Continuous Logit Homotopy adapts this to *attention topology*.
+**Continuous Sparsification.** Savarese et al. (2020) introduced continuous sparsification of neural network weights via smooth ℓ_0 relaxations. Our Continuous Logit Homotopy adapts this principle to *attention topology*: the sparsity target is not individual weight magnitudes but the block-level connectivity pattern of the attention matrix.
 
-**Sparse Attention in Pre-Trained Models.** LongLoRA (Chen et al., 2024) uses shifted sparse attention with LoRA. MInference (Jiang et al., 2024) identifies and exploits sparse attention patterns at inference time without retraining. Our approach differs in that the sparsity pattern is *learned* during a short fine-tuning phase.
+**Sparse Attention in Pre-Trained Models.** LongLoRA (Chen et al., 2024) uses shifted sparse attention with LoRA for long-context extension. MInference (Jiang et al., 2024) identifies and exploits sparse attention patterns at inference time without retraining. Our approach differs in that the sparsity pattern is *learned* during a short fine-tuning phase, not extracted post-hoc.
 
-**Mixture of Experts.** Switch Transformer (Fedus et al., 2022) uses learned routing for sparse feedforward computation. Our load-balancing loss follows their formulation, but applies it to *attention* routing.
+**Mixture of Experts.** Switch Transformer (Fedus et al., 2022) and subsequent work (Jiang et al., 2024) use learned routing for sparse feedforward computation. Our load-balancing loss follows their formulation, but applies it to *attention* routing rather than expert dispatch.
 
-**Ultrametric and p-adic Methods.** Bradley (2010) connected p-adic analysis to hierarchical clustering. Khrennikov (2004) established foundations for p-adic neural networks. Our work operationalizes these structures as a differentiable inductive bias for hardware-accelerated attention.
+**Ultrametric and p-adic Methods.** Bradley (2010) connected p-adic analysis to hierarchical clustering. Khrennikov (2004) established foundations for p-adic neural networks. Our work operationalizes these mathematical structures as a differentiable inductive bias for hardware-accelerated attention.
 
 ---
 
 ## 7. Conclusion
 
-Llama Surgery demonstrates that pre-trained dense language models can be continuously sparsified via differentiable topology injection, without retraining, distillation, or post-hoc pruning. The Dynamic Topology Router discovers content-based block-sparse attention patterns that are mathematically grounded in p-adic geometry, compatible with the Hugging Face ecosystem, and directly executable by a custom Triton kernel optimized for modern GPU architectures. When forced to perform exact sequence retrieval, the router spontaneously induces an ultrametric cophenetic hierarchy on the context window, with the multi-head architecture producing a forest ensemble of 32 independent ultrametric trees—each specializing in a distinct aspect of the retrieval task—rather than a single global hierarchy. A simulated Ring Attention deployment confirms that the emergent ultrametric topology induces consistent block-level distance separation between semantic domains, achieving a 78.1% reduction in P2P network bandwidth via per-head pruning. The `AdelicCache` condensation experiment further demonstrates that the same topological branch assignments can compress the physical KV cache from O(N) to O(W + log N), maintaining a strict capacity ceiling while advancing the logical RoPE sequence position without bound—establishing the structural foundations for infinite-context generation under practical memory constraints.
+Llama Surgery demonstrates that pre-trained dense language models can be continuously sparsified via differentiable topology injection, without retraining, distillation, or post-hoc pruning. The Dynamic Topology Router discovers content-based block-sparse attention patterns that are mathematically grounded in p-adic geometry, compatible with the Hugging Face ecosystem, and directly executable by a custom Triton kernel optimized for modern GPU architectures. When forced to perform exact sequence retrieval, the router spontaneously induces an ultrametric cophenetic hierarchy on the context window, with the multi-head architecture producing a forest ensemble of 32 independent ultrametric trees—each specializing in a distinct aspect of the retrieval task—rather than a single global hierarchy. A simulated Ring Attention deployment confirms that the emergent ultrametric topology induces consistent block-level distance separation between semantic domains, establishing the structural prerequisite for communication-aware pruning in distributed long-context inference. The `AdelicCache` condensation experiment further demonstrates that the same topological branch assignments can compress the physical KV cache from O(N) to O(W + log N), maintaining a strict capacity ceiling while advancing the logical RoPE sequence position without bound—establishing the structural foundations for infinite-context generation under practical memory constraints.
 
 The model learns to route. The kernel executes the route. The surgeon preserves the patient.
 
@@ -548,4 +548,5 @@ The model learns to route. The kernel executes the route. The surgeon preserves 
 - Milakov, M. & Gimelshein, N. (2018). Online Normalizer Calculation for Softmax. *arXiv:1805.02867*.
 - Savarese, P., Silva, H., & Maire, M. (2020). Winning the Lottery with Continuous Sparsification. *NeurIPS 2020*.
 - Xiao, G., et al. (2023). Efficient Streaming Language Models with Attention Sinks. *ICLR 2024*.
+- Karpathy, A. (2015). char-rnn. *GitHub repository*.
 - Zhang, P., Zeng, G., Wang, T., & Lu, W. (2024). TinyLlama: An Open-Source Small Language Model. *arXiv:2401.02385*.
