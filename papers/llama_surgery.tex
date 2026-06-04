@@ -601,6 +601,7 @@ Three observations are warranted:
 
 % ═══════════════════════════════════════════════════════════════
 \subsection{Scaling to State-of-the-Art: Gemma 4 (9B) and Qwen 3.6 (27B)}
+\label{sec:scaling}
 
 To validate the universality of the Ad\`elic Cache Condensation architecture beyond the initial Llama 3 proof-of-concept, we successfully injected the topology router into Gemma 4 (9B) and Qwen 3.6 (27B) models. These models present unique architectural challenges: Gemma 4 utilizes deep multi-query attention (MQA) with exceptionally large vocabularies, while Qwen 3.6 employs a hybrid recurrent-dense attention architecture containing Mamba/FLA layers interspersed with standard self-attention.
 
@@ -650,7 +651,7 @@ The surgical injection was entirely layer-agnostic. For Qwen 3.6, the router aut
 % ═══════════════════════════════════════════════════════════════
 \section{Conclusion}
 
-Llama Surgery demonstrates that pre-trained dense language models can be continuously sparsified via differentiable topology injection, without retraining, distillation, or post-hoc pruning. The Dynamic Topology Router discovers content-based block-sparse attention patterns that are mathematically grounded in $p$-adic geometry, compatible with the Hugging Face ecosystem, and directly executable by a custom Triton kernel optimized for modern GPU architectures. When forced to perform exact sequence retrieval, the router spontaneously induces an ultrametric cophenetic hierarchy on the context window, with the multi-head architecture producing a forest ensemble of 32 independent ultrametric trees---each specializing in a distinct aspect of the retrieval task---rather than a single global hierarchy. A simulated Ring Attention deployment confirms that the emergent ultrametric topology induces consistent block-level distance separation between semantic domains, establishing the structural prerequisite for communication-aware pruning in distributed long-context inference.
+Llama Surgery demonstrates that pre-trained dense language models can be continuously sparsified via differentiable topology injection, without retraining, distillation, or post-hoc pruning. The Dynamic Topology Router discovers content-based block-sparse attention patterns that are mathematically grounded in $p$-adic geometry, compatible with the Hugging Face ecosystem, and directly executable by a custom Triton kernel optimized for modern GPU architectures. When forced to perform exact sequence retrieval, the router spontaneously induces an ultrametric cophenetic hierarchy on the context window, with the multi-head architecture producing a forest ensemble of 32 independent ultrametric trees---each specializing in a distinct aspect of the retrieval task---rather than a single global hierarchy. A simulated Ring Attention deployment confirms that the emergent ultrametric topology induces consistent block-level distance separation between semantic domains, establishing the structural prerequisite for communication-aware pruning in distributed long-context inference. The \texttt{AdelicCache} condensation experiment further demonstrates that the same topological branch assignments can compress the physical KV cache from $O(N)$ to $O(W + \log N)$, maintaining a strict capacity ceiling while advancing the logical RoPE sequence position without bound---establishing the structural foundations for infinite-context generation under practical memory constraints.
 
 The model learns to route. The kernel executes the route. The surgeon preserves the patient.
 
@@ -760,6 +761,11 @@ Pustovit, Y. (2026).
 Su, J., Lu, Y., Pan, S., Murtadha, A., Bo, W., \& Liu, Y. (2024).
 \newblock RoFormer: Enhanced Transformer with Rotary Position Embedding.
 \newblock \emph{Neurocomputing}, 568, 127063.
+
+\bibitem[Karpathy(2015)]{karpathy2015char}
+Karpathy, A. (2015).
+\newblock char-rnn.
+\newblock \emph{GitHub repository}.
 
 \end{thebibliography}
 
