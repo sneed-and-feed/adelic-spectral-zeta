@@ -119,7 +119,7 @@ class SurgicalLlamaAttention(nn.Module):
         
         self.embed_dim = config.hidden_size
         self.num_heads = config.num_attention_heads
-        self.head_dim = self.embed_dim // self.num_heads
+        self.head_dim = getattr(config, "head_dim", self.embed_dim // self.num_heads)
         
         # GQA compliance
         self.num_key_value_heads = getattr(config, "num_key_value_heads", self.num_heads)
@@ -181,6 +181,18 @@ class SurgicalLlamaAttention(nn.Module):
         q = self.q_proj(hidden_states).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
         k = self.k_proj(hidden_states).view(batch_size, seq_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
         v = self.v_proj(hidden_states).view(batch_size, seq_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
+
+        # Apply KV cache fake quantization if enabled (QAT)
+        if getattr(self.config, "quantize_kv_cache", False):
+            from .qat import FakeQuantizeSTE
+            kv_bits = getattr(self.config, "kv_cache_bits", 4)
+            q_min = - (2 ** (kv_bits - 1))
+            q_max = (2 ** (kv_bits - 1)) - 1
+            # Channel-wise scaling along the head dimension (dim=-1)
+            k_scale = k.abs().max(dim=-1, keepdim=True).values / q_max
+            v_scale = v.abs().max(dim=-1, keepdim=True).values / q_max
+            k = FakeQuantizeSTE.apply(k, kv_bits, k_scale, q_min, q_max)
+            v = FakeQuantizeSTE.apply(v, kv_bits, v_scale, q_min, q_max)
 
         # Apply RoPE
         if position_embeddings is not None:
