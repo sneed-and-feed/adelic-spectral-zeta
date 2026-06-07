@@ -275,6 +275,82 @@ def sample_token(logits, temperature=0.7):
     probs /= np.sum(probs)
     return int(np.random.choice(len(logits), p=probs))
 
+def find_tokens_bulk(model, text_list):
+    """Finds multiple token IDs in a single pass over the vocabulary."""
+    results = {text: None for text in text_list}
+    remaining = set(text_list)
+    
+    # Fast path: try tokenize first for each target
+    for text in list(remaining):
+        try:
+            tokens = model.tokenize(text, add_bos=False, special=True)
+            if len(tokens) == 1:
+                results[text] = tokens[0]
+                remaining.remove(text)
+        except Exception:
+            pass
+            
+    if not remaining:
+        return results
+        
+    # Single-pass vocab scan fallback
+    vocab_size = model.n_vocab()
+    for token_id in range(vocab_size):
+        try:
+            piece = model.detokenize([token_id])
+            if piece in remaining:
+                results[piece] = token_id
+                remaining.remove(piece)
+                if not remaining:
+                    break
+        except Exception:
+            continue
+            
+    return results
+
+
+def scan_vocabulary(model):
+    print("\n===== [Vocabulary Scan] =====")
+    vocab_size = model.n_vocab()
+    print(f"Total vocabulary size: {vocab_size}")
+    
+    # Test tokenization of common control strings
+    test_strings = [
+        b"<bos>", b"<eos>", 
+        b"<|im_start|>", b"<|im_end|>", 
+        b"<|turn>", b"<turn|>", 
+        b"<|image|>", b"<image|>", 
+        b"user", b"assistant", b"model", b"<start_of_turn>", b"<end_of_turn>"
+    ]
+    print("\nTokenization results for common strings:")
+    for s in test_strings:
+        try:
+            tokens = model.tokenize(s, add_bos=False, special=True)
+            detok = model.detokenize(tokens).decode("utf-8", errors="ignore")
+            print(f"  Tokenizing {s.decode()} -> IDs: {tokens} -> Detok: '{detok}'")
+        except Exception as e:
+            print(f"  Tokenizing {s.decode()} -> Failed: {e}")
+            
+    # Scan vocabulary for tokens matching patterns
+    patterns = ["im_start", "im_end", "turn", "user", "assistant", "model", "image", "bos", "eos"]
+    print("\nScanning vocabulary for matches containing patterns:")
+    matched = 0
+    # To avoid printing too many, we limit to 150 matches
+    for token_id in range(vocab_size):
+        try:
+            piece_bytes = model.detokenize([token_id])
+            piece = piece_bytes.decode("utf-8", errors="ignore")
+            if any(p in piece for p in patterns):
+                print(f"  ID {token_id:6d}: '{piece}' (bytes: {piece_bytes})")
+                matched += 1
+                if matched >= 150:
+                    print("  ... (limit of 150 matches reached)")
+                    break
+        except Exception:
+            pass
+    print("=============================\n")
+
+
 # ==============================================================================
 # 4. Main Execution Loop
 # ==============================================================================
@@ -287,6 +363,7 @@ def main():
     parser.add_argument("--mock", action="store_true", help="Force mock execution mode")
     parser.add_argument("--temp", type=float, default=0.7, help="Temperature for text sampling")
     parser.add_argument("--max_tokens", type=int, default=128, help="Max output tokens to generate")
+    parser.add_argument("--scan_vocab", action="store_true", help="Perform a full scan of vocabulary control tokens")
     
     args = parser.parse_args()
     
@@ -370,6 +447,9 @@ def main():
     print(f"[Injector] Model hidden dimension (n_embd): {n_embd}")
     print(f"[Injector] Vocabulary size: {vocab_size}")
     
+    if args.scan_vocab:
+        scan_vocabulary(model)
+    
     # 3. Initialize Vision Stack
     vision_stack = MultimodalEncoder(device=device, llm_dim=n_embd)
     
@@ -392,55 +472,120 @@ def main():
     visual_embeddings = vision_stack.extract_and_project(image)  # Shape (196, n_embd)
     print(f"[Injector] Visual embeddings projected successfully. Shape: {visual_embeddings.shape}")
     
-    # 6. Retrieve special tokens dynamically
-    # For Gemma 4:
-    # image_token is '<|image|>' (ID: 517766 or 258880 depending on shard/HF mapping)
-    # eoi_token is '<image|>' (ID: 517770 or 258882)
-    # We retrieve them dynamically to prevent mismatches
-    print("[Injector] Querying special tokens...")
-    try:
-        image_token_id = model.tokenize(b"<|image|>", add_bos=False, special=True)[0]
-    except Exception:
+    # 6. Retrieve special tokens dynamically and select template
+    print("[Injector] Detecting prompt format and special tokens from vocabulary...")
+    
+    # Define targets to lookup in vocabulary
+    targets = [
+        b"<|image|>", b"<image|>",
+        b"<|im_start|>", b"<|im_end|>",
+        b"<|turn|>", b"<turn|>",
+        b"<start_of_turn>", b"<end_of_turn>"
+    ]
+    
+    # Bulk find token IDs
+    resolved_tokens = find_tokens_bulk(model, targets)
+    
+    image_token_id = resolved_tokens[b"<|image|>"]
+    eoi_token_id = resolved_tokens[b"<image|>"]
+    
+    if image_token_id is None:
+        print("  -> Warning: <|image|> token not found in vocab. Defaulting to 517766.")
         image_token_id = 517766
-    try:
-        eoi_token_id = model.tokenize(b"<image|>", add_bos=False, special=True)[0]
-    except Exception:
+    if eoi_token_id is None:
+        print("  -> Warning: <image|> EOI token not found in vocab. Defaulting to 517770.")
         eoi_token_id = 517770
         
-    print(f"  -> Detected <|image|> ID: {image_token_id}")
-    print(f"  -> Detected <image|> EOI ID: {eoi_token_id}")
+    print(f"  -> Resolved <|image|> ID: {image_token_id}")
+    print(f"  -> Resolved <image|> EOI ID: {eoi_token_id}")
     
-    # 7. Tokenize Prompt Segments
-    # Dynamically detect if the model uses ChatML (<|im_start|>) vs. Gemma 4 (<|turn>)
-    use_chatml = False
+    im_start_id = resolved_tokens[b"<|im_start|>"]
+    im_end_id = resolved_tokens[b"<|im_end|>"]
+    turn_user_id = resolved_tokens[b"<|turn|>"]
+    turn_end_id = resolved_tokens[b"<turn|>"]
+    gemma2_start_id = resolved_tokens[b"<start_of_turn>"]
+    gemma2_end_id = resolved_tokens[b"<end_of_turn>"]
+    
+    print(f"  -> Template tokens found:")
+    print(f"     * <|im_start|>: {im_start_id}")
+    print(f"     * <|im_end|>: {im_end_id}")
+    print(f"     * <|turn|>: {turn_user_id}")
+    print(f"     * <turn|>: {turn_end_id}")
+    print(f"     * <start_of_turn>: {gemma2_start_id}")
+    print(f"     * <end_of_turn>: {gemma2_end_id}")
+
+    # 7. Tokenize Prompt Segments using manual injection for safety
     try:
-        test_tokens = model.tokenize(b"<|im_start|>", add_bos=False, special=True)
-        if len(test_tokens) == 1:
-            use_chatml = True
-            print("[Injector] ChatML formatting detected from GGUF vocabulary.")
+        bos_token_id = model.tokenize(b"", add_bos=True)[0]
     except Exception:
-        pass
-
-    if use_chatml:
-        prefix_text = b"<bos><|im_start|>user\n"
-        suffix_text = f"\n{args.prompt}<|im_end|>\n<|im_start|>assistant\n".encode("utf-8")
         try:
-            eot_token_id = model.tokenize(b"<|im_end|>", add_bos=False, special=True)[0]
+            bos_token_id = find_tokens_bulk(model, [b"<bos>"])[b"<bos>"] or 2
         except Exception:
-            eot_token_id = 1
+            bos_token_id = 2
+
+    # Choose prompt structure based on detected tokens
+    if im_start_id is not None and im_end_id is not None:
+        print("[Injector] Selected prompt template: ChatML")
+        # Prefix: <bos><|im_start|>user\n
+        user_text_ids = model.tokenize(b"user\n", add_bos=False, special=True)
+        prefix_ids = [bos_token_id, im_start_id] + user_text_ids
+        
+        # Suffix: \n{prompt}<|im_end|>\n<|im_start|>assistant\n
+        prompt_ids = model.tokenize(f"\n{args.prompt}".encode("utf-8"), add_bos=False, special=True)
+        nl_ids = model.tokenize(b"\n", add_bos=False, special=True)
+        assistant_ids = model.tokenize(b"assistant\n", add_bos=False, special=True)
+        suffix_ids = prompt_ids + [im_end_id] + nl_ids + [im_start_id] + assistant_ids
+        
+        eot_token_id = im_end_id
+        
+    elif turn_user_id is not None and turn_end_id is not None:
+        print("[Injector] Selected prompt template: Gemma 4 (<|turn>)")
+        # Prefix: <bos><|turn>user\n
+        user_text_ids = model.tokenize(b"user\n", add_bos=False, special=True)
+        prefix_ids = [bos_token_id, turn_user_id] + user_text_ids
+        
+        # Suffix: \n{prompt}<turn|>\n<|turn>model\n
+        prompt_ids = model.tokenize(f"\n{args.prompt}".encode("utf-8"), add_bos=False, special=True)
+        nl_ids = model.tokenize(b"\n", add_bos=False, special=True)
+        model_text_ids = model.tokenize(b"model\n", add_bos=False, special=True)
+        suffix_ids = prompt_ids + [turn_end_id] + nl_ids + [turn_user_id] + model_text_ids
+        
+        eot_token_id = turn_end_id
+        
+    elif gemma2_start_id is not None and gemma2_end_id is not None:
+        print("[Injector] Selected prompt template: Gemma 1/2 (<start_of_turn>)")
+        # Prefix: <bos><start_of_turn>user\n
+        user_text_ids = model.tokenize(b"user\n", add_bos=False, special=True)
+        prefix_ids = [bos_token_id, gemma2_start_id] + user_text_ids
+        
+        # Suffix: \n{prompt}<end_of_turn>\n<start_of_turn>model\n
+        prompt_ids = model.tokenize(f"\n{args.prompt}".encode("utf-8"), add_bos=False, special=True)
+        nl_ids = model.tokenize(b"\n", add_bos=False, special=True)
+        model_text_ids = model.tokenize(b"model\n", add_bos=False, special=True)
+        suffix_ids = prompt_ids + [gemma2_end_id] + nl_ids + [gemma2_start_id] + model_text_ids
+        
+        eot_token_id = gemma2_end_id
+        
     else:
-        prefix_text = b"<bos><|turn>user\n"
-        suffix_text = f"\n{args.prompt}<turn|>\n<|turn>model\n".encode("utf-8")
-        try:
-            eot_token_id = model.tokenize(b"<turn|>", add_bos=False, special=True)[0]
-        except Exception:
-            eot_token_id = 216
+        # Default fallback to ChatML if not sure
+        print("[Injector] Warning: No standard template matching. Defaulting to ChatML with fallback IDs.")
+        fallback_im_start = im_start_id if im_start_id is not None else 106
+        fallback_im_end = im_end_id if im_end_id is not None else 216
+        
+        user_text_ids = model.tokenize(b"user\n", add_bos=False, special=True)
+        prefix_ids = [bos_token_id, fallback_im_start] + user_text_ids
+        
+        prompt_ids = model.tokenize(f"\n{args.prompt}".encode("utf-8"), add_bos=False, special=True)
+        nl_ids = model.tokenize(b"\n", add_bos=False, special=True)
+        assistant_ids = model.tokenize(b"assistant\n", add_bos=False, special=True)
+        suffix_ids = prompt_ids + [fallback_im_end] + nl_ids + [fallback_im_start] + assistant_ids
+        
+        eot_token_id = fallback_im_end
 
-    print(f"[Injector] Tokenizing prompt prefix: '{prefix_text.decode()}'")
-    prefix_ids = model.tokenize(prefix_text, add_bos=False, special=True)
-    
-    print(f"[Injector] Tokenizing prompt suffix: '{suffix_text.decode()}'")
-    suffix_ids = model.tokenize(suffix_text, add_bos=False, special=True)
+    print(f"  -> Generated prefix IDs: {prefix_ids}")
+    print(f"  -> Detokenized prefix: '{model.detokenize(prefix_ids).decode('utf-8', errors='ignore')}'")
+    print(f"  -> Generated suffix IDs: {suffix_ids}")
+    print(f"  -> Detokenized suffix: '{model.detokenize(suffix_ids).decode('utf-8', errors='ignore')}'")
     
     # 8. Run Three-Stage Decoding
     print("\n===== [Stage 1: Decoding Prefix Text] =====")
