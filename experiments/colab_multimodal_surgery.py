@@ -1,5 +1,15 @@
 import sys
 import os
+
+# Try to load HF_TOKEN from Google Colab secrets if available
+try:
+    from google.colab import userdata
+    token = userdata.get('HF_TOKEN')
+    if token:
+        os.environ["HF_TOKEN"] = token
+except Exception:
+    pass
+
 # Ensure the src/ directory and the root directory are in the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -237,14 +247,26 @@ def run_multimodal_simulation():
         image = Image.new("RGB", (224, 224), color=(128, 128, 128))
 
     # Initialize ViT (with offline fallback configuration)
-    try:
-        print("Loading pretrained google/vit-base-patch16-224...")
-        vit_processor = ViTImageProcessor.from_pretrained("google/vit-base-patch16-224")
-        vit_model = ViTModel.from_pretrained("google/vit-base-patch16-224")
-        print("Pretrained ViT loaded successfully.")
-    except Exception as e:
-        print(f"Pretrained ViT download failed: {e}. Falling back to random initialization.")
-        vit_config = ViTConfig()
+    # Only load pretrained weights on CUDA (e.g. Colab) to prevent memory allocation crashes on local CPU
+    load_pretrained = (device == "cuda")
+    if load_pretrained:
+        try:
+            print("Loading pretrained google/vit-base-patch16-224...")
+            vit_processor = ViTImageProcessor.from_pretrained("google/vit-base-patch16-224")
+            vit_model = ViTModel.from_pretrained("google/vit-base-patch16-224")
+            print("Pretrained ViT loaded successfully.")
+        except Exception as e:
+            print(f"Pretrained ViT load failed: {e}. Falling back to random initialization.")
+            load_pretrained = False
+
+    if not load_pretrained:
+        print("Using tiny randomly-initialized ViT for simulation (saves memory on CPU).")
+        vit_config = ViTConfig(
+            hidden_size=64,
+            num_hidden_layers=2,
+            num_attention_heads=4,
+            intermediate_size=128
+        )
         vit_processor = ViTImageProcessor()
         vit_model = ViTModel(vit_config)
 
