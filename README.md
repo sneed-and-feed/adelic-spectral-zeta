@@ -177,6 +177,7 @@ We host our surgical topological injections on the Hugging Face Hub for instant 
 
 * [**Adelic-Gemma-4-31B-it**](https://huggingface.co/sneedjak/Adelic-Gemma-4-31B-it): Features a custom **GGML/CUDA kernel** (`ggml_adelic_condense`) that dynamically prunes KV-cache reads in $\mathcal{O}(1)$ SRAM time by writing highly negative mask values directly into the `kq_mask` tensor before softmax. This Gemma 4 31B implementation achieves 277.5 tokens/second prefill throughput while maintaining RoPE-coherent Medoid-Value condensation with an $O(W + \log N)$ physical cache footprint.
 * [**Adelic-Qwen3.6-27B-Topology**](https://huggingface.co/sneedjak/Adelic-Qwen3.6-27B-Topology): Includes a fully compiled 27 GB Q8_0 GGUF file. Run the full 27B model locally with infinite context using our [experimental Adèlic llama.cpp fork](https://github.com/sneed-and-feed/llama.cpp), which features a custom C++/CUDA backend for topological cache pruning.
+* [**Multimodal GGUF Injector CLI**](src/llama_surgery/multimodal_injector.py): A standard command-line utility, `llama-multimodal-injector`, that projects visual features from a screenshot/image into the LLM's hidden space and injects them directly into the context KV-cache of `llama.cpp` using ctypes-based three-stage decoding. It automatically detects and aligns with the model's vocabulary (ChatML, Gemma 4, or Gemma 1/2) and special token layouts.
 
 *(Note: The Gemma 4 repository contains the topology routing logic and PyTorch patch scripts. The Qwen repository contains the ready-to-run GGUF file.)*
 
