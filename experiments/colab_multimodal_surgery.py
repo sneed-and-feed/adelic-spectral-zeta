@@ -4,9 +4,15 @@ import os
 # Try to load HF_TOKEN from Google Colab secrets if available
 try:
     from google.colab import userdata
-    token = userdata.get('HF_TOKEN')
-    if token:
-        os.environ["HF_TOKEN"] = token
+    try:
+        token = userdata.get('HF_TOKEN')
+        if token:
+            os.environ["HF_TOKEN"] = token
+            print("Successfully loaded HF_TOKEN from Colab secrets.")
+        else:
+            print("HF_TOKEN was found in Colab secrets but is empty.")
+    except Exception as e:
+        print(f"Note: Could not load HF_TOKEN from Colab secrets ({e}). If you have it set, make sure 'Notebook access' is enabled for HF_TOKEN in the Secrets panel (key icon on the left sidebar).")
 except Exception:
     pass
 
