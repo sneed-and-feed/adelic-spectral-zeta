@@ -244,14 +244,13 @@ def decode_embeddings(ctx_ptr, embeddings, pos_start, seq_id=0):
     """Decodes a numpy array of custom embeddings at specified positions."""
     # embeddings is of shape (n_tokens, n_embd)
     n_tokens, n_embd = embeddings.shape
-    embeddings_flat = embeddings.astype(np.float32).flatten()
+    embeddings_flat = embeddings.astype(np.float32, copy=False).flatten()
     
     batch = ll_cpp.llama_batch_init(n_tokens, n_embd, 1)
     batch.n_tokens = n_tokens
     
-    # Copy floats into batch.embd using ctypes memmove
-    c_floats = (ctypes.c_float * len(embeddings_flat))(*embeddings_flat)
-    ctypes.memmove(batch.embd, c_floats, ctypes.sizeof(c_floats))
+    # Copy floats directly from numpy buffer into batch.embd using ctypes memmove (zero copy)
+    ctypes.memmove(batch.embd, embeddings_flat.ctypes.data, embeddings_flat.nbytes)
     
     for i in range(n_tokens):
         batch.pos[i] = pos_start + i
@@ -302,22 +301,39 @@ def main():
     
     # 1. Download or locate GGUF model
     model_path = args.model_path
-    if not model_path and HAS_LLAMA_CPP:
+    if HAS_LLAMA_CPP:
         from huggingface_hub import hf_hub_download
-        print("[Injector] No model path specified. Downloading Gemma-4-12B-patched GGUF (approx 23.8 GB) or Q6_K (approx 9.78 GB)...")
-        # We prefer the Q6_K version to save bandwith/disk unless specified, but let's default to Q6_K since it's faster
-        try:
-            model_path = hf_hub_download(
-                repo_id="sneedjak/Adelic-Gemma-4-12B-GGUF",
-                filename="adelic-gemma4-12b-Q6_K.gguf"
-            )
-            print(f"[Injector] Download complete: {model_path}")
-        except Exception as e:
-            print(f"[Injector] Download failed: {e}. Switching to mock mode.")
-            HAS_LLAMA_CPP = False
+        if not model_path:
+            # Default to downloading Q6_K version to save bandwidth/disk
+            filename = "adelic-gemma4-12b-Q6_K.gguf"
+            print(f"[Injector] No model path specified. Downloading default {filename}...")
+            try:
+                model_path = hf_hub_download(
+                    repo_id="sneedjak/Adelic-Gemma-4-12B-GGUF",
+                    filename=filename
+                )
+                print(f"[Injector] Download complete: {model_path}")
+            except Exception as e:
+                print(f"[Injector] Download failed: {e}. Switching to mock mode.")
+                HAS_LLAMA_CPP = False
+                model_path = "mock_model.gguf"
+        elif not os.path.exists(model_path):
+            # The specified path does not exist locally; check if it's a filename we can pull from HF
+            filename = os.path.basename(model_path)
+            print(f"[Injector] Specified model path '{model_path}' not found locally. Attempting to download '{filename}' from Hugging Face...")
+            try:
+                model_path = hf_hub_download(
+                    repo_id="sneedjak/Adelic-Gemma-4-12B-GGUF",
+                    filename=filename
+                )
+                print(f"[Injector] Download complete: {model_path}")
+            except Exception as e:
+                print(f"[Injector] Download failed: {e}. Switching to mock mode.")
+                HAS_LLAMA_CPP = False
+                model_path = "mock_model.gguf"
+    else:
+        if not model_path:
             model_path = "mock_model.gguf"
-    elif not model_path:
-        model_path = "mock_model.gguf"
         
     # 2. Initialize the Llama engine
     print(f"[Injector] Loading model into Llama engine...")
@@ -331,14 +347,24 @@ def main():
         )
         model_ptr = model.model
         ctx_ptr = model.ctx
-        n_embd = ll_cpp.llama_model_n_embd(model_ptr)
+        # Dynamic fallback for hidden size lookup to support different llama-cpp-python versions
+        try:
+            n_embd = ll_cpp.llama_model_n_embd(model_ptr)
+        except AttributeError:
+            try:
+                n_embd = ll_cpp.llama_n_embd(model_ptr)
+            except AttributeError:
+                n_embd = getattr(model, "n_embd", lambda: 3072)()
         vocab_size = model.n_vocab()
     else:
         # Initialize mock model
         model = llama_cpp.Llama(model_path=model_path)
         model_ptr = model.model
         ctx_ptr = model.ctx
-        n_embd = ll_cpp.llama_model_n_embd(model_ptr)
+        try:
+            n_embd = ll_cpp.llama_model_n_embd(model_ptr)
+        except AttributeError:
+            n_embd = 3072
         vocab_size = model.n_vocab()
         
     print(f"[Injector] Model hidden dimension (n_embd): {n_embd}")
@@ -433,10 +459,7 @@ def main():
         eot_token_id = 216
         
     for step in range(args.max_tokens):
-        # Retrieve logits pointer
-        logits_ptr = ll_cpp.llama_get_logits_ith(ctx_ptr, 0)
-        
-        # Safe logits cast
+        # Safe logits cast in mock mode
         if not HAS_LLAMA_CPP:
             # Mock generating a sample action response
             mock_action_seq = ["[Mock] Action: CLICK on Search Bar at (600, 165).", "\nReason: Found search query target."]
@@ -449,8 +472,17 @@ def main():
             time.sleep(0.3)
             continue
             
+        # Retrieve logits pointer with dynamic version fallback
+        try:
+            logits_ptr = ll_cpp.llama_get_logits_ith(ctx_ptr, 0)
+        except AttributeError:
+            logits_ptr = ll_cpp.llama_get_logits(ctx_ptr)
+            
+        # Explicitly cast to POINTER(c_float) to prevent type errors if returned as c_void_p
+        typed_logits_ptr = ctypes.cast(logits_ptr, ctypes.POINTER(ctypes.c_float))
+        
         # Convert logits pointer to numpy array
-        logits = np.ctypeslib.as_array(logits_ptr, shape=(vocab_size,))
+        logits = np.ctypeslib.as_array(typed_logits_ptr, shape=(vocab_size,))
         
         # Sample next token
         next_token = sample_token(logits, temperature=args.temp)
