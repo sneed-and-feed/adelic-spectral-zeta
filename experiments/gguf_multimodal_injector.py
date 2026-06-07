@@ -411,11 +411,31 @@ def main():
     print(f"  -> Detected <image|> EOI ID: {eoi_token_id}")
     
     # 7. Tokenize Prompt Segments
-    # Prefix: "<start_of_turn>user\n"
-    # Suffix: "\n{PROMPT}<end_of_turn>\n<start_of_turn>model\n"
-    prefix_text = b"<bos><|turn>user\n"
-    suffix_text = f"\n{args.prompt}<turn|>\n<|turn>model\n".encode("utf-8")
-    
+    # Dynamically detect if the model uses ChatML (<|im_start|>) vs. Gemma 4 (<|turn>)
+    use_chatml = False
+    try:
+        test_tokens = model.tokenize(b"<|im_start|>", add_bos=False, special=True)
+        if len(test_tokens) == 1:
+            use_chatml = True
+            print("[Injector] ChatML formatting detected from GGUF vocabulary.")
+    except Exception:
+        pass
+
+    if use_chatml:
+        prefix_text = b"<bos><|im_start|>user\n"
+        suffix_text = f"\n{args.prompt}<|im_end|>\n<|im_start|>assistant\n".encode("utf-8")
+        try:
+            eot_token_id = model.tokenize(b"<|im_end|>", add_bos=False, special=True)[0]
+        except Exception:
+            eot_token_id = 1
+    else:
+        prefix_text = b"<bos><|turn>user\n"
+        suffix_text = f"\n{args.prompt}<turn|>\n<|turn>model\n".encode("utf-8")
+        try:
+            eot_token_id = model.tokenize(b"<turn|>", add_bos=False, special=True)[0]
+        except Exception:
+            eot_token_id = 216
+
     print(f"[Injector] Tokenizing prompt prefix: '{prefix_text.decode()}'")
     prefix_ids = model.tokenize(prefix_text, add_bos=False, special=True)
     
@@ -453,10 +473,6 @@ def main():
         eos_token_id = model.tokenize(b"<eos>", add_bos=False, special=True)[0]
     except Exception:
         eos_token_id = 1
-    try:
-        eot_token_id = model.tokenize(b"<turn|>", add_bos=False, special=True)[0]
-    except Exception:
-        eot_token_id = 216
         
     for step in range(args.max_tokens):
         # Safe logits cast in mock mode
