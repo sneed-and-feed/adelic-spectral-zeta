@@ -3,6 +3,7 @@ from .surgery import SurgicalLlamaAttention, SurgeryLossRamp
 from .surgery_trainer import SurgeryTrainer, TauAnnealingCallback
 from .topology import DynamicTopologyRouter
 from .qat import QATLinear, inject_qat, FakeQuantizeSTE
+from .multimodal_injector import MultimodalEncoder, VisionProjection
 
 __all__ = [
     "inject_surgery",
@@ -14,4 +15,6 @@ __all__ = [
     "QATLinear",
     "inject_qat",
     "FakeQuantizeSTE",
+    "MultimodalEncoder",
+    "VisionProjection",
 ]
