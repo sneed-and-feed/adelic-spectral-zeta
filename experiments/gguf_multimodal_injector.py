@@ -474,7 +474,8 @@ def main():
             
         # Retrieve logits pointer with dynamic version fallback
         try:
-            logits_ptr = ll_cpp.llama_get_logits_ith(ctx_ptr, 0)
+            # Pass -1 to retrieve the logits of the last output row in the batch
+            logits_ptr = ll_cpp.llama_get_logits_ith(ctx_ptr, -1)
         except AttributeError:
             logits_ptr = ll_cpp.llama_get_logits(ctx_ptr)
             
