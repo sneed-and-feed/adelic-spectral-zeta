@@ -479,7 +479,7 @@ def main():
     targets = [
         b"<|image|>", b"<image|>",
         b"<|im_start|>", b"<|im_end|>",
-        b"<|turn|>", b"<turn|>",
+        b"<|turn>", b"<turn|>",
         b"<start_of_turn>", b"<end_of_turn>"
     ]
     
@@ -501,7 +501,7 @@ def main():
     
     im_start_id = resolved_tokens[b"<|im_start|>"]
     im_end_id = resolved_tokens[b"<|im_end|>"]
-    turn_user_id = resolved_tokens[b"<|turn|>"]
+    turn_user_id = resolved_tokens[b"<|turn>"]
     turn_end_id = resolved_tokens[b"<turn|>"]
     gemma2_start_id = resolved_tokens[b"<start_of_turn>"]
     gemma2_end_id = resolved_tokens[b"<end_of_turn>"]
@@ -509,7 +509,7 @@ def main():
     print(f"  -> Template tokens found:")
     print(f"     * <|im_start|>: {im_start_id}")
     print(f"     * <|im_end|>: {im_end_id}")
-    print(f"     * <|turn|>: {turn_user_id}")
+    print(f"     * <|turn>: {turn_user_id}")
     print(f"     * <turn|>: {turn_end_id}")
     print(f"     * <start_of_turn>: {gemma2_start_id}")
     print(f"     * <end_of_turn>: {gemma2_end_id}")
