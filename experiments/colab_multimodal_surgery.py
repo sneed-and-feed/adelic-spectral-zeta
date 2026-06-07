@@ -8,7 +8,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+from io import BytesIO
+from PIL import Image
+import requests
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, ViTImageProcessor, ViTModel, ViTConfig
 
 # Import Llama Surgery components
 from llama_surgery import inject_surgery, SurgicalLlamaAttention, DynamicTopologyRouter
@@ -222,16 +225,49 @@ def run_multimodal_simulation():
     model = inject_multimodal_surgery(model)
     model.to(device)
     
-    # 2. Setup mock multimodal inputs (Interleaved Text & Image tokens)
-    # Let's say our sequence has:
-    #   - 16 Text tokens (modality 0)
-    #   - 32 Image patch tokens (modality 1)
-    #   - 16 Text tokens (modality 0)
-    # Total seq_len = 64
-    seq_len = 64
+    # 2. Setup Vision Transformer (ViT) feature extractor
+    image_url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/cats.png"
+    try:
+        print(f"Downloading sample image from {image_url}...")
+        response = requests.get(image_url, timeout=5)
+        image = Image.open(BytesIO(response.content)).convert("RGB")
+        print("Sample image loaded successfully.")
+    except Exception as e:
+        print(f"Could not load image from URL: {e}. Creating a synthetic image.")
+        image = Image.new("RGB", (224, 224), color=(128, 128, 128))
+
+    # Initialize ViT (with offline fallback configuration)
+    try:
+        print("Loading pretrained google/vit-base-patch16-224...")
+        vit_processor = ViTImageProcessor.from_pretrained("google/vit-base-patch16-224")
+        vit_model = ViTModel.from_pretrained("google/vit-base-patch16-224")
+        print("Pretrained ViT loaded successfully.")
+    except Exception as e:
+        print(f"Pretrained ViT download failed: {e}. Falling back to random initialization.")
+        vit_config = ViTConfig()
+        vit_processor = ViTImageProcessor()
+        vit_model = ViTModel(vit_config)
+
+    vit_model.to(device)
+    vit_model.eval()
+    for param in vit_model.parameters():
+        param.requires_grad = False
+
+    # Preprocess image and extract patch features
+    inputs = vit_processor(images=image, return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = vit_model(**inputs)
+        # Exclude [CLS] token (first token) to get pure 196 image patches
+        vit_features = outputs.last_hidden_state[:, 1:, :] # (1, 196, 768)
+
+    image_len = vit_features.shape[1]
+    vit_dim = vit_features.shape[2]
+    print(f"Extracted image patch features. Shape: {vit_features.shape}")
+
+    # Setup multimodal sequence dimensions
     text_len1 = 16
-    image_len = 32
     text_len2 = 16
+    seq_len = text_len1 + image_len + text_len2
     
     # Define modality index vector (0 = Text, 1 = Vision)
     modality_indices = torch.cat([
@@ -240,10 +276,9 @@ def run_multimodal_simulation():
         torch.zeros(text_len2, dtype=torch.long)
     ]).to(device)
     
-    # Define static inputs and projector
+    # Define static text inputs and projector
     text_ids = torch.randint(0, 1000, (1, text_len1 + text_len2)).to(device)
-    vision_features = torch.randn(1, image_len, 768).to(device)
-    vision_proj = VisionProjection(vit_dim=768, llm_dim=64).to(device)
+    vision_proj = VisionProjection(vit_dim=vit_dim, llm_dim=64).to(device)
     
     # 3. Setup optimizer for the router parameters and vision projector
     optimizer = torch.optim.AdamW([
@@ -262,16 +297,16 @@ def run_multimodal_simulation():
     for step in range(1, 11):
         optimizer.zero_grad()
         
-        # Generate mock embeddings inside loop to construct fresh computation graph
+        # Generate embeddings inside loop to construct fresh computation graph
         text_embeds = model.model.embed_tokens(text_ids)
-        vision_embeds = vision_proj(vision_features)
+        vision_embeds = vision_proj(vit_features)
         
         # Interleave them: [Text1, Vision, Text2]
         interleaved_embeds = torch.cat([
             text_embeds[:, :text_len1, :],
             vision_embeds,
             text_embeds[:, text_len1:, :]
-        ], dim=1) # (1, 64, 64)
+        ], dim=1) # (1, seq_len, 64)
         
         # Override the forward call of attention layers to accept modality_indices
         for layer in model.model.layers:
@@ -320,7 +355,7 @@ def run_multimodal_simulation():
     with torch.no_grad():
         # Compute final interleaved embeds
         text_embeds = model.model.embed_tokens(text_ids)
-        vision_embeds = vision_proj(vision_features)
+        vision_embeds = vision_proj(vit_features)
         interleaved_embeds = torch.cat([
             text_embeds[:, :text_len1, :],
             vision_embeds,
