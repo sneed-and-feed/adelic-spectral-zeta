@@ -1,0 +1,189 @@
+{
+  "spectral_circles": [
+    {
+      "n": 2,
+      "dimension": 4,
+      "observed_radii": [
+        0.0,
+        1.414214,
+        2.0
+      ],
+      "theoretical_radii": [
+        0.0,
+        1.414214,
+        2.0
+      ],
+      "max_error": 0.0
+    },
+    {
+      "n": 3,
+      "dimension": 8,
+      "observed_radii": [
+        0.0,
+        1.189207,
+        1.414214,
+        2.0
+      ],
+      "theoretical_radii": [
+        0.0,
+        1.189207,
+        1.414214,
+        2.0
+      ],
+      "max_error": 0.0
+    },
+    {
+      "n": 4,
+      "dimension": 16,
+      "observed_radii": [
+        0.0,
+        1.090508,
+        1.189207,
+        1.414214,
+        2.0
+      ],
+      "theoretical_radii": [
+        0.0,
+        1.090508,
+        1.189207,
+        1.414214,
+        2.0
+      ],
+      "max_error": 0.0
+    },
+    {
+      "n": 5,
+      "dimension": 32,
+      "observed_radii": [
+        0.0,
+        1.044274,
+        1.090508,
+        1.189207,
+        1.414214,
+        2.0
+      ],
+      "theoretical_radii": [
+        0.0,
+        1.044274,
+        1.090508,
+        1.189207,
+        1.414214,
+        2.0
+      ],
+      "max_error": 0.0
+    }
+  ],
+  "winding_numbers": [
+    {
+      "n": 2,
+      "k": 2,
+      "radius": 1.4142135623730951,
+      "winding_computed_real": 2.0,
+      "winding_computed_imag": 8.834874115176436e-17,
+      "winding_expected": 2,
+      "absolute_error": 0.0
+    },
+    {
+      "n": 3,
+      "k": 2,
+      "radius": 1.4142135623730951,
+      "winding_computed_real": 1.9999999999999991,
+      "winding_computed_imag": 2.1203697876423444e-16,
+      "winding_expected": 2,
+      "absolute_error": 8.881784197001252e-16
+    },
+    {
+      "n": 3,
+      "k": 3,
+      "radius": 1.189207115002721,
+      "winding_computed_real": 4.000000000000001,
+      "winding_computed_imag": -3.533949646070574e-17,
+      "winding_expected": 4,
+      "absolute_error": 8.881784197001252e-16
+    },
+    {
+      "n": 4,
+      "k": 2,
+      "radius": 1.4142135623730951,
+      "winding_computed_real": 1.9999999999999982,
+      "winding_computed_imag": 7.067899292141149e-17,
+      "winding_expected": 2,
+      "absolute_error": 1.7763568394002505e-15
+    },
+    {
+      "n": 4,
+      "k": 3,
+      "radius": 1.189207115002721,
+      "winding_computed_real": 4.0,
+      "winding_computed_imag": 6.361109362927034e-16,
+      "winding_expected": 4,
+      "absolute_error": 0.0
+    },
+    {
+      "n": 4,
+      "k": 4,
+      "radius": 1.0905077326652577,
+      "winding_computed_real": 8.000000000000002,
+      "winding_computed_imag": -6.89120180983762e-16,
+      "winding_expected": 8,
+      "absolute_error": 1.7763568394002505e-15
+    },
+    {
+      "n": 5,
+      "k": 2,
+      "radius": 1.4142135623730951,
+      "winding_computed_real": 1.999999999999993,
+      "winding_computed_imag": 1.4135798584282297e-16,
+      "winding_expected": 2,
+      "absolute_error": 7.105427357601002e-15
+    },
+    {
+      "n": 5,
+      "k": 3,
+      "radius": 1.189207115002721,
+      "winding_computed_real": 4.000000000000007,
+      "winding_computed_imag": 6.007714398319976e-16,
+      "winding_expected": 4,
+      "absolute_error": 7.105427357601002e-15
+    },
+    {
+      "n": 5,
+      "k": 4,
+      "radius": 1.0905077326652577,
+      "winding_computed_real": 8.0,
+      "winding_computed_imag": -5.300924469105862e-16,
+      "winding_expected": 8,
+      "absolute_error": 0.0
+    },
+    {
+      "n": 5,
+      "k": 5,
+      "radius": 1.0442737824274138,
+      "winding_computed_real": 15.999999999999996,
+      "winding_computed_imag": -2.4737647522494017e-16,
+      "winding_expected": 16,
+      "absolute_error": 3.552713678800501e-15
+    }
+  ],
+  "skin_effect_localization": {
+    "theoretical_xi": 2.8853900817779263,
+    "theoretical_r_gbz": 0.7071067811865475,
+    "system_sizes": [
+      20,
+      30,
+      50,
+      80,
+      120,
+      200
+    ],
+    "measured_mean_xi": [
+      2.8853900817779254,
+      2.885390081777925,
+      2.885390081777926,
+      2.8853900817779268,
+      2.885390081777926,
+      2.8853900817779254
+    ]
+  },
+  "gbz_analysis": {}
+}

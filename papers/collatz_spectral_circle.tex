@@ -1,0 +1,422 @@
+\documentclass[11pt,reqno]{amsart}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{tikz}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Spectral Circle Theorem for the Collatz Relation Matrix\\on $\mathbb{Z}/2^n\mathbb{Z}$}
+\author{Anonymous Authors}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+We study the directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, defined by the affine generators $y \equiv 3x$ and $y \equiv 3x - 1 \pmod{2^n}$. Viewed representation-theoretically, $D_n$ is a finite-dimensional projection of a 2-adic transfer operator, and its spectrum decomposes recursively as $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$, where $S_n$ is the twisted block. We show that $D_n$ acts as a monomial matrix in the additive character basis, reflecting the induced representation of the semidirect product $\mathbb{Z}_2 \rtimes \langle 3 \rangle$, and that all eigenvalues of $S_n$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof combines the Hadamard $\tau$-decomposition, the cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ ($n \ge 2$), and the orbit structure of the multiplication-by-3 map on odd residues modulo $2^n$. The core algebraic modules and structural decompositions have been formally verified in the Lean~4 proof assistant with zero \texttt{sorry}s and zero custom axioms.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+% ============================================================================
+\section{Introduction}
+% ============================================================================
+
+The Collatz conjecture concerns the iteration of the map $C \colon \mathbb{N} \to \mathbb{N}$ defined by $C(x) = x/2$ if $x$ is even, and $C(x) = (3x+1)/2$ if $x$ is odd. A structural approach to this problem studies the inverse dynamics on $p$-adic completions \cite{lagarias2010}.
+
+In this paper, we show that the orbit structure of the Collatz relation modulo $2^n$ is genuinely algebraic, and its spectrum can be controlled representation-theoretically. We work with the \emph{Collatz relation matrix} $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, which encodes the two affine generators of the Collatz dynamics modulo $2^n$. Our main result is an exact description of the spectrum of $D_n$ in terms of nested spectral circles.
+
+\begin{theorem}[Spectral Circle Theorem]\label{thm:main}
+For any $n \ge 2$, the spectrum of $D_n$ decomposes as
+\[
+\operatorname{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}.
+\]
+In particular, all eigenvalues of the twisted block $S_n$ satisfy $|\lambda| = 2^{2^{-(n-1)}}$.
+\end{theorem}
+
+The proof combines four primary ingredients:
+\begin{enumerate}
+\item The Hadamard $\tau$-decomposition (Section~\ref{sec:hadamard}),
+\item The monomial action of $D_n$ in the Fourier basis (Section~\ref{sec:fourier}),
+\item The cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ for $n \ge 2$ (Section~\ref{sec:cyclotomic}),
+\item The orbit structure of multiplication by 3 on odd residues (Section~\ref{sec:orbits}).
+\end{enumerate}
+
+\subsection{Notation}
+Throughout, $N = 2^n$ for $n \ge 1$, $\omega = e^{2\pi i / N}$ is a primitive $N$-th root of unity, and $\tau \colon \mathbb{Z}/N\mathbb{Z} \to \mathbb{Z}/N\mathbb{Z}$ denotes the involution $\tau(x) = x + N/2$. For an orbit $C \subseteq \mathbb{Z}/N\mathbb{Z}$, $|C|$ denotes its cardinality.
+
+% ============================================================================
+\section{The Directed Collatz Relation Matrix}
+% ============================================================================
+
+\begin{definition}\label{def:collatz}
+The \emph{directed Collatz relation matrix} $D_n$ is the $N \times N$ matrix with entries in $\{0, 1\}$ indexed by $\mathbb{Z}/2^n\mathbb{Z} \times \mathbb{Z}/2^n\mathbb{Z}$ defined by
+\[
+D_n(x, y) = \begin{cases} 1 & \text{if } y \equiv 3x \pmod{2^n} \text{ or } y \equiv 3x - 1 \pmod{2^n}, \\ 0 & \text{otherwise.} \end{cases}
+\]
+\end{definition}
+
+\begin{remark}
+The generators $x \mapsto 3x$ and $x \mapsto 3x - 1$ are applied to \emph{all} $x \in \mathbb{Z}/2^n\mathbb{Z}$, not just odd residues. For $n \ge 1$, these two images are always distinct (since $3x \not\equiv 3x - 1 \pmod{2^n}$ because $1 \not\equiv 0 \pmod{2^n}$), so every row of $D_n$ has exactly two $1$s. The corresponding Schreier graph is out-degree 2-regular.
+\end{remark}
+
+\begin{remark}
+This matrix should not be confused with the Collatz \emph{function} matrix, which encodes the piecewise map $x \mapsto 3x$ (for even $x$) and $x \mapsto (3x-1)/2$ (for odd $x$). The relation matrix and the function matrix have different algebraic structures and spectra.
+\end{remark}
+
+\begin{example}
+For $n = 2$ ($N = 4$), the generators produce:
+\[
+\begin{array}{c|cc}
+x & 3x \bmod 4 & 3x-1 \bmod 4 \\ \hline
+0 & 0 & 3 \\
+1 & 3 & 2 \\
+2 & 2 & 1 \\
+3 & 1 & 0
+\end{array}
+\qquad
+D_2 = \begin{pmatrix} 1 & 0 & 0 & 1 \\ 0 & 0 & 1 & 1 \\ 0 & 1 & 1 & 0 \\ 1 & 1 & 0 & 0 \end{pmatrix}
+\]
+The eigenvalues of $D_2$ are $\{2, 0, \sqrt{2}, -\sqrt{2}\}$, where $\operatorname{spec}(D_1) = \{2, 0\}$ and $\operatorname{spec}(S_2) = \{\pm\sqrt{2}\}$. All non-trivial eigenvalues lie on the circle $|\lambda| = \sqrt{2} = 2^{2^{-(2-1)}}$.
+\end{example}
+
+% ============================================================================
+\section{The Hadamard $\tau$-Decomposition}\label{sec:hadamard}
+% ============================================================================
+
+\begin{definition}
+Let $\tau \colon \mathbb{Z}/2^n\mathbb{Z} \to \mathbb{Z}/2^n\mathbb{Z}$ be the involution $\tau(x) = x + 2^{n-1}$.
+\end{definition}
+
+\begin{lemma}[Deck Commutativity; Formalized in Lean 4]\label{lem:tau-commute}
+For $n \ge 1$, the involution $\tau$ commutes with both generators:
+\[
+3 \cdot \tau(x) \equiv \tau(3x) \pmod{2^n}, \qquad 3 \cdot \tau(x) - 1 \equiv \tau(3x - 1) \pmod{2^n}.
+\]
+Consequently, $D_n(\tau(x), \tau(y)) = D_n(x, y)$ for all $x, y \in \mathbb{Z}/2^n\mathbb{Z}$.
+\end{lemma}
+
+\begin{proof}
+Direct computation: $3(x + 2^{n-1}) = 3x + 3 \cdot 2^{n-1} = 3x + 2^{n-1} + 2^n \equiv 3x + 2^{n-1} \pmod{2^n}$. Similarly, $3\tau(x) - 1 = 3x - 1 + 2^{n-1} \equiv \tau(3x - 1) \pmod{2^n}$.
+\end{proof}
+
+\begin{theorem}[Hadamard Block Diagonalization; Formalized in Lean 4]\label{thm:hadamard}
+Let $H = \frac{1}{\sqrt{2}}\begin{psmallmatrix} I & I \\ I & -I \end{psmallmatrix}$ be the block Hadamard matrix of size $2^n \times 2^n$, where $I$ is the identity of size $2^{n-1} \times 2^{n-1}$. Then
+\[
+H D_n H^{-1} = \begin{pmatrix} W_n & 0 \\ 0 & S_n \end{pmatrix}
+\]
+where $W_n = D_{n-1}$ is the \emph{symmetric block} and $S_n$ is the \emph{twisted block}, both of size $2^{n-1} \times 2^{n-1}$. Explicitly:
+\begin{align*}
+W_n(v, u) &= D_n(v, u) + D_n(v, u + 2^{n-1}) = D_{n-1}(v, u), \\
+S_n(v, u) &= D_n(v, u) - D_n(v, u + 2^{n-1}),
+\end{align*}
+for $v, u \in \{0, \ldots, 2^{n-1} - 1\}$.
+\end{theorem}
+
+\begin{proof}
+Under the fiber identification $\mathbb{Z}/2^n\mathbb{Z} \cong \mathbb{Z}/2^{n-1}\mathbb{Z} \times \mathbb{Z}/2\mathbb{Z}$, the deck symmetry $D_n(\tau x, \tau y) = D_n(x, y)$ implies that the matrix $D_n$ has block structure $\begin{psmallmatrix} A & B \\ B & A \end{psmallmatrix}$. Conjugation by $H$ gives $\begin{psmallmatrix} A+B & 0 \\ 0 & A-B \end{psmallmatrix}$. The fiber-sum identity $\sum_{t \in \{0, 2^{n-1}\}} D_n(v, u + t) = D_{n-1}(v, u)$ follows because each affine image $3v$ and $3v-1$ in $\mathbb{Z}/2^n\mathbb{Z}$ projects to a unique residue modulo $2^{n-1}$.
+\end{proof}
+
+\begin{corollary}\label{cor:spec-decomp}
+For all $n \ge 2$, $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$. Iterating down to $n = 1$:
+\[
+\operatorname{spec}(D_n) = \operatorname{spec}(D_1) \cup \bigcup_{k=2}^{n} \operatorname{spec}(S_k)
+\]
+where $D_1 = \begin{psmallmatrix} 1 & 1 \\ 1 & 1 \end{psmallmatrix}$ has spectrum $\{2, 0\}$.
+\end{corollary}
+
+% ============================================================================
+\section{Fourier Analysis: The Monomial Action}\label{sec:fourier}
+% ============================================================================
+
+We consider the additive characters $\chi_k \colon \mathbb{Z}/2^n\mathbb{Z} \to \mathbb{C}^*$ defined by $\chi_k(x) = \omega^{kx}$, where $\omega = e^{2\pi i / 2^n}$.
+
+\begin{theorem}[Monomial Character Action; Formalized in Lean 4]\label{thm:monomial}
+For any $n \ge 1$ and $k \in \mathbb{Z}/2^n\mathbb{Z}$, the operator $D_n$ acts on the additive character $\chi_k$ as:
+\[
+D_n \chi_k = (1 + \omega^{-k}) \cdot \chi_{3k}
+\]
+where the character index $3k$ is computed modulo $2^n$.
+\end{theorem}
+
+\begin{proof}
+Applying $D_n$ to $\chi_k$ evaluated at $x \in \mathbb{Z}/2^n\mathbb{Z}$:
+\begin{align*}
+(D_n \chi_k)(x) &= \sum_{y \in \mathbb{Z}/N\mathbb{Z}} D_n(x, y) \, \chi_k(y) \\
+&= \chi_k(3x) + \chi_k(3x - 1) \\
+&= \omega^{3kx} + \omega^{k(3x - 1)} \\
+&= \omega^{3kx}(1 + \omega^{-k}) \\
+&= (1 + \omega^{-k}) \, \chi_{3k}(x). \qedhere
+\end{align*}
+\end{proof}
+
+\begin{corollary}\label{cor:weight-zero}
+For $k = N/2 = 2^{n-1}$, the character $\chi_{2^{n-1}}$ has weight $1 + \omega^{-2^{n-1}} = 1 + e^{-\pi i} = 1 - 1 = 0$. Consequently, $\lambda = 0$ is always an eigenvalue of $D_n$.
+\end{corollary}
+
+\begin{remark}\label{rem:monomial-matrix}
+In the character basis $\{\chi_k\}_{k=0}^{N-1}$, the matrix representing $D_n$ is a generalized permutation (monomial) matrix: column $k$ has its sole nonzero entry at row $3k \bmod N$ with value $(1 + \omega^{-k})$. Equivalently, row $k$ contains its nonzero entry at column $3^{-1}k \bmod N$ with value $(1 + \omega^{-3^{-1}k})$.
+\end{remark}
+
+% ============================================================================
+\section{The $\times 3$ Orbit Structure}\label{sec:orbits}
+% ============================================================================
+
+The monomial action decomposes into independent invariant subspaces corresponding to the orbits of the multiplication-by-3 automorphism $\sigma(k) = 3k \bmod 2^n$.
+
+\begin{lemma}\label{lem:parity}
+The map $\sigma$ preserves parity: if $k$ is odd, then $3k \bmod 2^n$ is odd.
+\end{lemma}
+
+\begin{proposition}[Twisted Subspace as Odd Characters]\label{prop:odd-char}
+A character $\chi_k$ is antisymmetric under the deck involution $\tau(x) = x + 2^{n-1}$ if and only if $k$ is odd:
+\[
+\chi_k(\tau(x)) = \omega^{k(x + 2^{n-1})} = \omega^{kx} \cdot e^{\pi i k} = (-1)^k \chi_k(x).
+\]
+Hence the twisted block $S_n$ corresponds exactly to the monomial action of $D_n$ restricted to the $2^{n-1}$-dimensional subspace of odd characters $\{ \chi_k : k \text{ is odd} \}$.
+\end{proposition}
+
+\begin{proposition}[Orbit Decomposition of Odd Residues; Formalized in Lean 4]\label{prop:orbits}
+Let $(\mathbb{Z}/2^n\mathbb{Z})^\times$ denote the group of odd residues modulo $2^n$.
+\begin{enumerate}
+\item For $n = 2$, $(\mathbb{Z}/4\mathbb{Z})^\times = \{1, 3\}$ forms a single orbit of length $2 = 2^{n-1}$ under $\times 3$.
+\item For $n \ge 3$, the order of $3$ in $(\mathbb{Z}/2^n\mathbb{Z})^\times$ is $\operatorname{ord}(3, 2^n) = 2^{n-2}$, and the odd residues decompose into exactly two disjoint orbits of length $2^{n-2}$:
+\begin{align*}
+C_1 &= \langle 3 \rangle = \{1, 3, 9, \ldots, 3^{2^{n-2}-1}\} \pmod{2^n}, \\
+C_2 &= -C_1 = \{-1, -3, -9, \ldots\} = 2^n - C_1.
+\end{align*}
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+For $n = 2$, $3 \cdot 1 \equiv 3$ and $3 \cdot 3 \equiv 1 \pmod 4$, giving the single cycle $(1 \; 3)$.
+
+For $n \ge 3$, we prove $\operatorname{ord}(3, 2^n) = 2^{n-2}$ by induction on $n$. For $n = 3$, $3^1 = 3 \not\equiv 1 \pmod 8$ and $3^2 = 9 \equiv 1 \pmod 8$, so $\operatorname{ord}(3, 8) = 2 = 2^{3-2}$. Assume $3^{2^{n-3}} = 1 + a \cdot 2^{n-1}$ for some odd integer $a$. Squaring yields:
+\[
+3^{2^{n-2}} = (1 + a \cdot 2^{n-1})^2 = 1 + a \cdot 2^n + a^2 \cdot 2^{2n-2} \equiv 1 \pmod{2^n} \quad (\text{since } 2n-2 \ge n \text{ for } n \ge 2).
+\]
+Moreover, $3^{2^{n-3}} \not\equiv 1 \pmod{2^n}$ since $a$ is odd. Thus $\operatorname{ord}(3, 2^n) = 2^{n-2}$.
+
+Since $|(\mathbb{Z}/2^n\mathbb{Z})^\times| = \varphi(2^n) = 2^{n-1}$, the subgroup $\langle 3 \rangle$ has index $2$. To see that $-1 \notin \langle 3 \rangle$, observe that modulo $8$, every power $3^m$ is congruent to $1$ or $3$, whereas $-1 \equiv 7 \pmod 8$. Thus $-1 \notin \langle 3 \rangle$, and the two cosets $C_1 = \langle 3 \rangle$ and $C_2 = -C_1$ partition $(\mathbb{Z}/2^n\mathbb{Z})^\times$.
+\end{proof}
+
+% ============================================================================
+\section{The Cyclotomic Product Identity}\label{sec:cyclotomic}
+% ============================================================================
+
+\begin{theorem}[Cyclotomic Product Identity; Formalized in Lean 4]\label{thm:cyclotomic}
+Let $n \ge 2$ and let $\omega = e^{2\pi i / 2^n}$ be a primitive $2^n$-th root of unity. Then
+\[
+\prod_{\substack{k=1 \\ k \text{ odd}}}^{2^n - 1} (1 + \omega^{-k}) = 2.
+\]
+\end{theorem}
+
+\begin{proof}
+For $n \ge 2$, the $2^n$-th cyclotomic polynomial is
+\[
+\Phi_{2^n}(x) = x^{2^{n-1}} + 1 = \prod_{\substack{k=1 \\ k \text{ odd}}}^{2^n - 1} (x - \omega^k).
+\]
+Evaluating at $x = -1$, since $2^{n-1}$ is even for $n \ge 2$, we have:
+\[
+\Phi_{2^n}(-1) = (-1)^{2^{n-1}} + 1 = 1 + 1 = 2.
+\]
+On the other hand:
+\[
+\Phi_{2^n}(-1) = \prod_{k \text{ odd}} (-1 - \omega^k) = (-1)^{2^{n-1}} \prod_{k \text{ odd}} (1 + \omega^k) = \prod_{k \text{ odd}} (1 + \omega^k).
+\]
+Since the involution $k \mapsto -k \equiv 2^n - k \pmod{2^n}$ is a permutation of the odd residues, we obtain:
+\[
+\prod_{k \text{ odd}} (1 + \omega^{-k}) = \prod_{k \text{ odd}} (1 + \omega^k) = \Phi_{2^n}(-1) = 2. \qedhere
+\]
+\end{proof}
+
+\begin{remark}
+The condition $n \ge 2$ is essential: for $n = 1$, the sole odd residue is $k = 1$ with $\omega = -1$, giving $1 + \omega^{-1} = 1 + (-1) = 0 \ne 2$.
+\end{remark}
+
+% ============================================================================
+\section{Proof of the Spectral Circle Theorem}
+% ============================================================================
+
+\begin{definition}
+For any orbit $C \subseteq (\mathbb{Z}/2^n\mathbb{Z})^\times$ under $k \mapsto 3k \bmod 2^n$, define the \emph{orbit weight product}
+\[
+W_C = \prod_{k \in C} (1 + \omega^{-k}).
+\]
+\end{definition}
+
+\begin{lemma}[Orbit Weight Magnitudes; Formalized in Lean 4]\label{lem:orbit-weight}
+\begin{enumerate}
+\item For $n = 2$, the single orbit $C = \{1, 3\}$ has weight product $W_C = 2$.
+\item For $n \ge 3$, each of the two orbits $C_1, C_2$ has weight product magnitude $|W_{C_1}| = |W_{C_2}| = \sqrt{2}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For $n = 2$, $\omega = i$. The orbit $C = \{1, 3\}$ has $W_C = (1 + i^{-1})(1 + i^{-3}) = (1 - i)(1 + i) = 1 - i^2 = 2$.
+
+For $n \ge 3$, $C_1 \sqcup C_2 = \{k \in \mathbb{Z}/2^n\mathbb{Z} : k \text{ is odd}\}$, so by Theorem~\ref{thm:cyclotomic}:
+\[
+W_{C_1} \cdot W_{C_2} = \prod_{k \text{ odd}} (1 + \omega^{-k}) = 2.
+\]
+Since $C_2 = -C_1$, complex conjugation gives:
+\[
+|W_{C_2}| = \prod_{k \in C_2} |1 + \omega^{-k}| = \prod_{k \in C_1} |1 + \omega^k| = \prod_{k \in C_1} |1 + \overline{\omega^{-k}}| = \prod_{k \in C_1} |\overline{1 + \omega^{-k}}| = |W_{C_1}|.
+\]
+Therefore $|W_{C_1}|^2 = |W_{C_1}| \cdot |W_{C_2}| = |W_{C_1} W_{C_2}| = 2$, so $|W_{C_1}| = |W_{C_2}| = \sqrt{2}$.
+\end{proof}
+
+\begin{lemma}[Cyclic Monomial Characteristic Polynomial; Formalized in Lean 4]\label{lem:cyclic-monomial}
+Let $M$ be a monomial matrix of dimension $m$ whose nonzero entries form a single directed cycle with weight product $W = \prod_{j=1}^m w_j$. Then:
+\[
+\det(\lambda I - M) = \lambda^m - W.
+\]
+Consequently, the eigenvalues of $M$ are the $m$-th roots of $W$, all having magnitude $|\lambda| = |W|^{1/m}$.
+\end{lemma}
+
+\begin{proof}
+Expanding the determinant of the companion-like matrix $\lambda I - M$ along the cycle yields $\lambda^m - (-1)^{m-1}(-1) W = \lambda^m - W$. A complete proof by induction on $m$ for arbitrary commutative rings is formalized in \texttt{CyclicWeightCharpoly.lean}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Proposition~\ref{prop:odd-char}, the twisted block $S_n$ is isomorphic to the restriction of $D_n$ to the odd-character subspace. By Theorem~\ref{thm:monomial}, this action is monomial with cycle permutation $\sigma(k) = 3k \bmod 2^n$ and local weights $w_k = 1 + \omega^{-k}$.
+
+\textbf{Case $n = 2$:} By Proposition~\ref{prop:orbits}, the odd characters form a single cycle $C = \{1, 3\}$ of length $m = 2$. By Lemma~\ref{lem:orbit-weight}, $W_C = 2$. By Lemma~\ref{lem:cyclic-monomial}, the eigenvalues of $S_2$ are the roots of $\lambda^2 - 2 = 0$, giving $\lambda = \pm\sqrt{2}$. Their magnitude is $|\lambda| = \sqrt{2} = 2^{2^{-(2-1)}}$.
+
+\textbf{Case $n \ge 3$:} By Proposition~\ref{prop:orbits}, the odd characters decompose into two cycles $C_1, C_2$, each of length $m = 2^{n-2}$. By Lemma~\ref{lem:orbit-weight}, each cycle has weight magnitude $|W_{C_i}| = \sqrt{2}$. By Lemma~\ref{lem:cyclic-monomial}, all eigenvalues from both cycles have magnitude
+\[
+|\lambda| = |W_{C_i}|^{1/m} = (\sqrt{2})^{1/2^{n-2}} = (2^{1/2})^{2^{-(n-2)}} = 2^{2^{-(n-1)}}.
+\]
+Since the two cycles account for $2 \cdot 2^{n-2} = 2^{n-1} = \dim(S_n)$ eigenvalues, this accounts for the entire spectrum of $S_n$.
+
+By Corollary~\ref{cor:spec-decomp}, $\operatorname{spec}(D_n) = \operatorname{spec}(D_1) \cup \bigcup_{k=2}^n \operatorname{spec}(S_k) = \{2, 0\} \cup \bigcup_{k=2}^n \{ \lambda : |\lambda| = 2^{2^{-(k-1)}} \}$.
+\end{proof}
+
+% ============================================================================
+\section{Representation-Theoretic Framing and the 2-adic Limit}
+% ============================================================================
+
+The exact solvability of the spectrum of $D_n$ reflects the underlying algebraic structure of the Collatz dynamics. The affine generators $x \mapsto 3x$ and $x \mapsto 3x-1$ generate a semidirect product action on $\mathbb{Z}/2^n\mathbb{Z}$.
+
+The fact that $D_n$ acts as a monomial matrix in the character basis (Theorem~\ref{thm:monomial}) is the characteristic signature of an induced representation. The spectral circles arise because the characters of $\mathbb{Z}/2^n\mathbb{Z}$ are permuted by the multiplicative action of $3$, inducing monomial cycles whose weights are precisely the cyclotomic products. This structure lifts to the continuous setting via Mackey's little group method applied to the semidirect product $\mathbb{Z}_2 \rtimes \langle 3 \rangle$, where $\mathbb{Z}_2$ denotes the compact ring of 2-adic integers.
+
+In this context, the sequence $(D_n)_{n \ge 1}$ represents the sequence of finite-dimensional projections of a bounded transfer operator acting on $L^2(\mathbb{Z}_2)$.
+
+\begin{corollary}[Directed Spectral Gap; Formalized in Lean 4]
+The Perron eigenvalue of $D_n$ is $2$ for all $n \ge 1$. The second-largest eigenvalue magnitude across all levels is $\max_{2 \le k \le n} 2^{2^{-(k-1)}} = \sqrt{2}$ (attained at $k = 2$). The directed spectral gap is
+\[
+\Delta(D_n) = 2 - \max_{|\lambda| < 2} |\lambda| = 2 - \sqrt{2} \approx 0.5858.
+\]
+\end{corollary}
+
+\begin{remark}[Asymptotic Gap Convergence; Formalized in Lean 4]
+The ``new eigenvalue radius'' $\rho(S_n) = 2^{2^{-(n-1)}}$ converges to $1$ as $n \to \infty$:
+\[
+\lim_{n \to \infty} 2^{2^{-(n-1)}} = 2^0 = 1.
+\]
+This convergence is formalized in Lean~4 in \texttt{AsymptoticGap.lean}.
+\end{remark}
+
+\begin{corollary}[Profinite Spectral Structure]
+The profinite limit operator $D_\infty$ on $L^2(\mathbb{Z}_2)$ has discrete spectrum
+\[
+\operatorname{spec}_{\mathrm{disc}}(D_\infty) = \{2, 0\} \cup \bigcup_{n=2}^{\infty} \left\{ \text{circle of radius } 2^{2^{-(n-1)}} \right\}
+\]
+which is a nested family of concentric circles with radii $\sqrt{2} > 2^{1/4} > 2^{1/8} > \cdots \to 1$, accumulating on the unit circle.
+\end{corollary}
+
+% ============================================================================
+\section{Numerical Verification}
+% ============================================================================
+
+We verified the spectral circle theorem numerically for $n = 2$ through $n = 10$ using double-precision eigenvalue computation. The results are summarized in Table~\ref{tab:circle}.
+
+\begin{table}[h]
+\centering
+\caption{Numerical verification of $|\lambda| = 2^{2^{-(n-1)}}$ for all eigenvalues of $S_n$.}\label{tab:circle}
+\begin{tabular}{@{}crrcc@{}}
+\toprule
+$n$ & $\dim(S_n)$ & $2^{2^{-(n-1)}}$ & $\max|\lambda|$ & All on circle? \\
+\midrule
+2 & 2 & 1.41421356 & 1.41421356 & \checkmark \\
+3 & 4 & 1.18920712 & 1.18920712 & \checkmark \\
+4 & 8 & 1.09050773 & 1.09050773 & \checkmark \\
+5 & 16 & 1.04427378 & 1.04427378 & \checkmark \\
+6 & 32 & 1.02189715 & 1.02189715 & \checkmark \\
+7 & 64 & 1.01088929 & 1.01088929 & \checkmark \\
+8 & 128 & 1.00542990 & 1.00542990 & \checkmark \\
+9 & 256 & 1.00271128 & 1.00271128 & \checkmark \\
+10 & 512 & 1.00135472 & 1.00135472 & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ and orbit weight magnitude $|W_{C_i}| = \sqrt{2}$ were verified to full double precision for all $n \le 12$.
+
+% ============================================================================
+\section{Undirected Spectrum and Fractal Groups}
+% ============================================================================
+
+While the directed spectrum admits the exact cyclotomic description above, the \emph{undirected} spectrum of the symmetrized adjacency matrix $A_n = D_n + D_n^\top$ behaves qualitatively differently.
+
+\begin{conjecture}[Undirected Gap Collapse]\label{conj:undirected}
+The undirected spectral gap satisfies
+\[
+\Delta(A_n) = \Theta(|V|^{-\alpha})
+\]
+with $\alpha \approx 0.2286$. In particular, the undirected Collatz Schreier graphs are \emph{not} expanders.
+\end{conjecture}
+
+Numerical evidence from sparse eigenvalue extraction ($n = 3, \ldots, 16$) supports this conjecture with regression $R^2 = 0.9917$.
+
+We note a structural parallel between the recursive Hadamard block decomposition of our Collatz relation matrices and the spectral theory of fractal groups and self-similar automata. The recursive decomposition $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$ is structurally analogous to the techniques used to compute spectra of Schreier graphs for iterated monodromy groups and self-similar groups (e.g., the Grigorchuk and Basilica groups) \cite{bartholdi2003, nekrashevych2005}.
+
+% ============================================================================
+\section{Lean 4 Formalization}
+% ============================================================================
+
+The structural components and algebraic identities comprising the proof have been formally verified in Lean~4 using the \texttt{Mathlib} library:
+
+\begin{enumerate}
+\item \textbf{Hadamard Block Diagonalization} (\texttt{CollatzRelMatrix.lean}): $\tau$-invariance (\texttt{collatzDirMatrix\_tau\_invariant}), the fiber-sum identity (\texttt{fiber\_sum\_identity}), and the block diagonalization $H D_n H^{-1} = \operatorname{diag}(D_{n-1}, S_n)$ (\texttt{D'\_block\_diag}) with zero \texttt{sorry}s.
+\item \textbf{Cyclotomic Product Identity} (\texttt{CyclotomicProduct.lean}): The product identity $\prod_{k \text{ odd}} (1 + \zeta^{-k}) = 2$ and orbit weight product $W_1 W_2 = 2$ (\texttt{W\_1\_mul\_W\_2\_eq\_two}) for all $n \ge 2$ with zero \texttt{sorry}s.
+\item \textbf{Cyclic Monomial Characteristic Polynomial} (\texttt{CyclicWeightCharpoly.lean}): The general characteristic polynomial identity $\det(\lambda I - M) = \lambda^L - \prod W_k$ (\texttt{charpoly\_cyclicWeightMatrix}) for cyclic monomial matrices over arbitrary commutative rings with zero \texttt{sorry}s.
+\item \textbf{Monomial Character Action \& Orbit Structure} (\texttt{SpectralCircle.lean}): Monomial action on characters (\texttt{collatzDirMatrix\_char\_action}), order of 3 mod $2^n$ (\texttt{order\_three\_mod\_pow\_two}), and orbit weight magnitude $|W_C|^2 = 2$ (\texttt{orbit\_weight\_magnitude\_sq}) with zero \texttt{sorry}s.
+\item \textbf{DFT Unitarity} (\texttt{DFT.lean}): Unitarity of the Fourier character basis $F F^* = I$ (\texttt{dft\_mul\_star}) and $(F \otimes I)(F^* \otimes I) = I$ with zero \texttt{sorry}s.
+\item \textbf{Asymptotic Gap Convergence} (\texttt{AsymptoticGap.lean}): Limit $\lim_{n \to \infty} 2^{2^{-(n-1)}} = 1$ (\texttt{directed\_gap_limit}) with zero \texttt{sorry}s.
+\item \textbf{Schreier Covering Connectivity} (\texttt{SchreierConnectivity.lean}): 2-fold covering path lifting and global connectivity of the Collatz Schreier graphs for all $n \ge 1$ with zero \texttt{sorry}s.
+\item \textbf{Ihara-Bass Determinant Formula} (\texttt{IharaBass.lean}): The algebraic Bass determinant identity (\texttt{ihara\_bass\_polynomial}) for graph zeta functions with zero \texttt{sorry}s.
+\end{enumerate}
+
+% ============================================================================
+% References
+% ============================================================================
+
+\begin{thebibliography}{99}
+\bibitem{lagarias2010} Lagarias, J.~C. (2010). \textit{The Ultimate Challenge: The 3x+1 Problem}. American Mathematical Society.
+
+\bibitem{terras1976} Terras, R. (1976). A stopping time problem on the positive integers. \textit{Acta Arithmetica}, 30(3), 241--252.
+
+\bibitem{wirsching1998} Wirsching, G.~J. (1998). \textit{The Dynamical System Generated by the $3n+1$ Function}. Lecture Notes in Mathematics, Vol.~1681. Springer.
+
+\bibitem{tao2022} Tao, T. (2022). Almost all orbits of the Collatz map attain almost bounded values. \textit{Forum of Mathematics, Pi}, 10, e12.
+
+\bibitem{bartholdi2003} Bartholdi, L., \& Grigorchuk, R.~I. (2003). On the spectrum of Hecke type operators related to some fractal groups. \textit{Trudy Matematicheskogo Instituta imeni V.A. Steklova}, 231, 5--45.
+
+\bibitem{nekrashevych2005} Nekrashevych, V. (2005). \textit{Self-Similar Groups}. Mathematical Surveys and Monographs, Vol.~117. American Mathematical Society.
+\end{thebibliography}
+
+\end{document}
