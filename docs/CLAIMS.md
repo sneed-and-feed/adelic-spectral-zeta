@@ -8,40 +8,40 @@ This document provides a rigorous, transparent breakdown of all claims made in t
 
 The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `sorry`s and zero custom axioms** (relying only on standard Mathlib axioms):
 
-* **Schreier Graph Connectivity** ([SchreierConnectivity.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierConnectivity.lean))
+* **Schreier Graph Connectivity** ([SchreierConnectivity.lean](formalization/Formalization/SchreierConnectivity.lean))
   * *Claim:* The Schreier graphs on $\mathbb{Z}/2^n\mathbb{Z}$ governed by Collatz-like operations $3x$ and $3x-1$ are connected for all $n \ge 1$.
   * *Status:* Fully formalized and proven.
-* **Perron-Frobenius Theorem for Connected Schreier Graphs** ([SchreierPerronFrobenius.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierPerronFrobenius.lean))
+* **Perron-Frobenius Theorem for Connected Schreier Graphs** ([SchreierPerronFrobenius.lean](formalization/Formalization/SchreierPerronFrobenius.lean))
   * *Claim:* The dominant eigenvalue of the Schreier adjacency matrix is unique, and its corresponding eigenvector is strictly positive.
   * *Status:* Fully formalized and proven (utilizes the walk-induction support-graph lemmas in the `SpectralPositivity` sub-library).
-* **Schreier Spectral Tower Decomposition** ([SchreierSpectral.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierSpectral.lean))
+* **Schreier Spectral Tower Decomposition** ([SchreierSpectral.lean](formalization/Formalization/SchreierSpectral.lean))
   * *Claim:* The Schreier adjacency matrix can be block-decomposed into symmetric and antisymmetric sub-spaces, allowing exact determination of its spectral properties.
   * *Status:* Fully formalized and proven.
-* **Relative Eigenvalue Dominance (Antisymmetric Dominance)** ([SchreierAntisymBound.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierAntisymBound.lean))
+* **Relative Eigenvalue Dominance (Antisymmetric Dominance)** ([SchreierAntisymBound.lean](formalization/Formalization/SchreierAntisymBound.lean))
   * *Claim:* The antisymmetric eigenvalue bounds strictly dominate the symmetric eigenvalue bounds in the Schreier spectral gap limit.
   * *Status:* Fully formalized and proven.
-* **Symmetric Eigenvalue Upper Bound** ([SymmetricBound.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SymmetricBound.lean))
+* **Symmetric Eigenvalue Upper Bound** ([SymmetricBound.lean](formalization/Formalization/SymmetricBound.lean))
   * *Claim:* Rigorous upper bounds on symmetric eigenvalues under block decomposition.
   * *Status:* Fully formalized and proven.
-* **Exact Trace Identity** ([SchreierTrace.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierTrace.lean))
+* **Exact Trace Identity** ([SchreierTrace.lean](formalization/Formalization/SchreierTrace.lean))
   * *Claim:* The analytical trace formula for the Schreier graph adjacency operator holds.
   * *Status:* Fully formalized and proven.
-* **Adèlic Topology Construction** ([AdelicTopology.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/AdelicTopology.lean))
+* **Adèlic Topology Construction** ([AdelicTopology.lean](formalization/Formalization/AdelicTopology.lean))
   * *Claim:* Rigorous definition of the adèlic product topology and its topological properties.
   * *Status:* Fully formalized and proven.
-* **Thermodynamic Entanglement Phase Transition** ([ManyBodyPhaseTransition.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/ManyBodyPhaseTransition.lean))
+* **Thermodynamic Entanglement Phase Transition** ([ManyBodyPhaseTransition.lean](formalization/Formalization/ManyBodyPhaseTransition.lean))
   * *Claim:* A single-particle zero-mode in the Dirac Hamiltonian mathematically forces a macroscopic ground-state degeneracy in the Fermionic many-body Fock space.
   * *Status:* Fully formalized and proven.
-* **Trigonometric Telescoping Sums** ([TrigSum.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/TrigSum.lean))
+* **Trigonometric Telescoping Sums** ([TrigSum.lean](formalization/Formalization/TrigSum.lean))
   * *Claim:* Computes exact telescoping sum bounds for real trigonometric functions on 1D chains.
   * *Status:* Fully formalized and proven.
-* **Low-Depth Edge Check Verifications** ([Counterexample.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/Counterexample.lean))
+* **Low-Depth Edge Check Verifications** ([Counterexample.lean](formalization/Formalization/Counterexample.lean))
   * *Claim:* Proves precise adjacency matches at low depths (e.g., depth 4).
   * *Status:* Fully formalized and proven (via `decide`/`rfl`).
-* **Discrete Fourier Basis** ([FourierChain.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/FourierChain.lean))
+* **Discrete Fourier Basis** ([FourierChain.lean](formalization/Formalization/FourierChain.lean))
   * *Claim:* Rigorous definition of discrete real sine/cosine Fourier modes.
   * *Status:* Fully formalized and proven.
-* **Rayleigh Quotient Lower Bound on 1D Chain** ([FourierIsomorphism.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/FourierIsomorphism.lean))
+* **Rayleigh Quotient Lower Bound on 1D Chain** ([FourierIsomorphism.lean](formalization/Formalization/FourierIsomorphism.lean))
   * *Claim:* A lower bound showing that the Rayleigh quotient on the 1D Fourier chain is strictly positive.
   * *Status:* Fully formalized and proven (0-sorry).
 * **Ramanujan Tau Congruence Verification** ([RamanujanTau.lean](formalization/Formalization/RamanujanTau.lean))
@@ -96,10 +96,10 @@ Cross-verification across independent type theories eliminates the risk of a sha
 
 The following files compile successfully under Lean 4 with **zero `sorry`s, but introduce non-standard axioms** or represent conditional reduction theorems:
 
-* **Conditional GRH Spectral Reduction** ([SpectralGRH.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SpectralGRH.lean))
+* **Conditional GRH Spectral Reduction** ([SpectralGRH.lean](formalization/Formalization/SpectralGRH.lean))
   * *Claim:* If there exists a self-adjoint operator spectrum $S \subset \mathbb{R}$ satisfying the Trace Identity Conjecture (the spectrum is exactly the set of parameters $\gamma$ of non-trivial zeros $s = 1/2 + i\gamma$ of a completed $L$-function), then the Generalized Riemann Hypothesis (GRH) holds for that $L$-function.
   * *Status:* Formally proven **conditionally**; the theorem is proved, but the self-adjointness and trace identity are assumptions.
-* **Collatz Galois Group Structure** ([CollatzGalois.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/CollatzGalois.lean))
+* **Collatz Galois Group Structure** ([CollatzGalois.lean](formalization/Formalization/CollatzGalois.lean))
   * *Claim:* Algebraic properties of the Collatz composition polynomial map.
   * *Status:* Formally proven **conditionally** under 3 assumed axioms:
     * `P9_irreducible` (Irreducibility of the composition polynomial at depth 5).
@@ -135,7 +135,7 @@ The following claims are verified via numerical simulations in the `src/` and `e
 
 The following files represent active research fronts, stubs, or blueprints and contain **`sorry` placeholders**:
 
-* **Twisted Block Matrix Power Identity** ([TwistedBlockPow.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/TwistedBlockPow.lean))
+* **Twisted Block Matrix Power Identity** ([TwistedBlockPow.lean](formalization/Formalization/TwistedBlockPow.lean))
   * *Claim:* The twisted directed block matrix $`S_n`$ satisfies $`S_n^{2^{n-1}} = -2 \cdot I`$ over $\mathbb{Q}$. This identity encodes the fact that the $\times 3$ action on odd residues mod $2^n$ partitions the state space into exactly 2 disjoint cyclic orbits, each of length $2^{n-2}$, whose cyclotomic weight products have magnitude $\sqrt{2}$.
   * *Status:* Contains 1 `sorry` — the matrix identity itself. **This is the sole remaining unproven assumption in the spectral circle pipeline.** Previously, this gap was hidden behind a structural `axiom twisted_block_eigenvalues` in `SchreierSpectralGap.lean`; the axiom has been completely removed and replaced with a precisely scoped `sorry`.
 * **Adèlic Topological Quantum Error Correction** ([AdelicTopologicalQEC.lean](formalization/Formalization/AdelicTopologicalQEC.lean))
@@ -147,10 +147,10 @@ The following files represent active research fronts, stubs, or blueprints and c
 * **Quantum Scars & Strong ETH Violation** ([QuantumScars.lean](formalization/Formalization/QuantumScars.lean))
   * *Claim:* The adèlic zero-modes of the Dirac Hamiltonian (forced by $L$-function zeros via `ManyBodyPhaseTransition.lean`) generate Quantum Many-Body Scar states that formally falsify the Strong Eigenstate Thermalization Hypothesis (Strong ETH). Specifically: the vacuum zero-mode state $|Z\rangle$ is a mid-spectrum eigenstate with Rényi-2 entropy $`S^{(2)}_A = 0`$ (pure product state, Area Law), strictly less than the Volume-Law thermal entropy. This proves `theorem adelic_zero_mode_is_scar : IsQuantumScar Z` and `theorem strong_eth_violation : ¬ StrongETH E`.
   * *Status:* Top-level theorems fully formalized with 0 sorry. Depends transitively on 1 `sorry` in the helper lemma `Z_purity` (Purity of the vacuum state = 1), blocked by absent dependent-type tensor product APIs for partial traces over `Subtype` bipartitions in Mathlib. See Section 4.
-* **Twisted Eigenvalue Magnitude** ([SchreierSpectralGap.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/SchreierSpectralGap.lean))
+* **Twisted Eigenvalue Magnitude** ([SchreierSpectralGap.lean](formalization/Formalization/SchreierSpectralGap.lean))
   * *Claim:* Any eigenvalue $\lambda$ of the twisted block $S_n$ has $|\lambda| = 2^{2^{-(n-1)}}$.
   * *Status:* 0 `sorry` in this file. The proof lifts the rational matrix identity from `TwistedBlockPow.lean` to $\mathbb{C}$ via `RingHom.mapMatrix (algebraMap \mathbb{Q} \mathbb{C})` and `map_pow`, evaluates it on eigenvectors via `Module.End.HasEigenvalue.pow` to establish $\lambda^{2^{n-1}} = -2$, then derives the magnitude via absolute value arithmetic. Depends transitively on the 1 `sorry` in `TwistedBlockPow.lean`.
-* **Erdős Similarity Conjecture Blueprint** ([ErdosSimilarity.lean](file:///c:/Users/x/.gemini/antigravity/scratch/adelic_spectral_zeta/formalization/Formalization/ErdosSimilarity.lean))
+* **Erdős Similarity Conjecture Blueprint** ([ErdosSimilarity.lean](formalization/Formalization/ErdosSimilarity.lean))
   * *Claim:* Formulating the topological properties of geometric cylinder sets to resolve similarity bounds.
   * *Status:* Contains several `sorry` stubs (e.g., compactness of geometric cylinders and similarity properties).
 * **Quantum Scars: Purity of the Vacuum State** (`Z_purity` in [QuantumScars.lean](formalization/Formalization/QuantumScars.lean))
