@@ -37,12 +37,16 @@ scratch/
 *.vok
 *.vos
 *.glob
+*.aux
+.*.aux
 .coq-native/
 .lia.cache
 coq/theories/*.vo
 coq/theories/*.vok
 coq/theories/*.vos
 coq/theories/*.glob
+coq/theories/.*.aux
+coq/theories/*.aux
 coq/theories/.coq-native/
 coq/theories/.lia.cache
 
