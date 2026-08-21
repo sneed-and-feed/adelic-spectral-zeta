@@ -75,18 +75,18 @@ The following files compile successfully under Lean 4 (`v4.8.0`) with **zero `so
   * *Claim:* As a corollary to the Spectral Circle Theorem, the restricted spectral gap of the Collatz cyclic operation is strictly positive and increases monotonically for dimension $d \ge 2$.
   * *Status:* Fully formalized and proven (0-sorry, 0-axiom).
 
-### Dual Lean 4 + Coq Provenance
+### Dual Lean 4 + Rocq Provenance
 
 The **Bass-Ihara determinant formula** is the only result in this repository that has been independently formalized in *two* proof assistants built on different logical foundations:
 
 | Proof Assistant | Foundation | Library | File | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **Lean 4** (v4.8.0) | Dependent Type Theory (CIC) | Mathlib | [IharaBass.lean](formalization/Formalization/IharaBass.lean) + [IharaZeta.lean](formalization/Formalization/IharaZeta.lean) | 0 `sorry`, 0 axiom |
-| **Coq** (8.20 / MathComp 2.3.0) | Calculus of Inductive Constructions | MathComp | [BassIhara.v](coq/theories/BassIhara.v) | 0 `sorry`, 0 `axiom`, 0 `Admitted` |
+| **Rocq (Coq)** (8.20 / MathComp 2.3.0) | Calculus of Inductive Constructions | MathComp | [BassIhara.v](coq/theories/BassIhara.v) | 0 `sorry`, 0 `axiom`, 0 `Admitted` |
 
 The two formalizations share no code and use structurally different proof strategies:
 * **Lean**: Block matrices `M_Bass`, `N_Bass`, `K_Bass`, `L_Bass` with `det_fromBlocks₁₁` / `det_fromBlocks_zero₂₁` Schur complement lemmas from Mathlib.
-* **Coq**: Direct Schur complement via `block_mx`, `det_lblock`, `det_ublock` in MathComp's `matrix` library, with explicit pilot matrices `P1`, `P3`, `P5`, `P6` and the key identity `(I - uJ)(I + uJ) = (1 - u²)I`.
+* **Rocq (Coq)**: Direct Schur complement via `block_mx`, `det_lblock`, `det_ublock` in MathComp's `matrix` library, with explicit pilot matrices `P1`, `P3`, `P5`, `P6` and the key identity `(I - uJ)(I + uJ) = (1 - u²)I`.
 
 Cross-verification across independent type theories eliminates the risk of a shared kernel bug invalidating the result.
 

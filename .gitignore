@@ -32,12 +32,19 @@ openalex_search.json
 scripts/
 scratch/
 
-# Coq build artifacts
+# Coq / Rocq build artifacts
 *.vo
 *.vok
 *.vos
 *.glob
-.*.aux
+.coq-native/
+.lia.cache
+coq/theories/*.vo
+coq/theories/*.vok
+coq/theories/*.vos
+coq/theories/*.glob
+coq/theories/.coq-native/
+coq/theories/.lia.cache
 
 # Local env and build artifacts
 .venv/

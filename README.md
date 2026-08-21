@@ -2,12 +2,12 @@
 
 [![DOI](https://zenodo.org/badge/20327753.svg)](https://doi.org/10.5281/zenodo.20327753)
 [![Lean 4 Formalization](https://img.shields.io/badge/Lean_4-0_sorry_%7C_v4.8.0-brightgreen.svg)](formalization/Formalization/)
-[![Coq Cross-Verification](https://img.shields.io/badge/Coq-MathComp_2.3.0-blue.svg)](coq/theories/BassIhara.v)
+[![Rocq Cross-Verification](https://img.shields.io/badge/Rocq_(Coq)-MathComp_2.3.0-blue.svg)](coq/theories/BassIhara.v)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 A unified mathematical physics, formal verification, and scientific computing framework implementing:
 1. **2-Adic Arithmetic Dynamics & Spectral Theory**: The exact spectral theory of transfer operators, non-Hermitian point-gap topology, Markov semigroups, and dynamical zeta functions for the Collatz system on quotient rings $\mathbb{Z}/2^n\mathbb{Z}$ and the compact field of 2-adic integers $\mathbb{Z}_2$.
-2. **Formal Verification (Lean 4 & Coq MathComp)**: Axiom-free, 0-`sorry` machine-checked proofs of spectral graph theorems, covering factorizations, cyclotomic products, automaton zeta functions, and dual-verified Ihara-Bass determinant decompositions.
+2. **Formal Verification (Lean 4 & Rocq / MathComp)**: Axiom-free, 0-`sorry` machine-checked proofs of spectral graph theorems, covering factorizations, cyclotomic products, automaton zeta functions, and dual-verified Ihara-Bass determinant decompositions.
 3. **Adèlic Spectral Triples & Quantum Scars**: The singular rank-1 perturbation theory of global Dirac operators $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$, Weierstrass canonical determinants for automorphic $L$-functions, and arithmetic quantum many-body scars violating Strong ETH.
 4. **Ultrametric Neural Attention & Topological AI**: Non-Archimedean attention mechanisms on Bruhat-Tits trees ($O(N \log N)$ sparse attention), hardware-native Triton/Pallas kernels, and differentiable $p$-adic topological injections into large language models (Llama Surgery & Multimodal GGUF context streaming).
 
@@ -24,9 +24,9 @@ A unified mathematical physics, formal verification, and scientific computing fr
   - [2.5 2-Adic Markov Semigroups, Total Variation Mixing & Tao-Terras Stopping Times](#25-2-adic-markov-semigroups-total-variation-mixing--tao-terras-stopping-times)
   - [2.6 Closed-Form Dynamical Zeta Functions & Ihara-Bass Geodesic Duality](#26-closed-form-dynamical-zeta-functions--ihara-bass-geodesic-duality)
   - [2.7 Classification of Generalized Affine Cyclotomic Systems](#27-classification-of-generalized-affine-cyclotomic-systems)
-- [3. Formal Proofs & Interactive Theorem Proving (Lean 4 & Coq)](#3-formal-proofs--interactive-theorem-proving-lean-4--coq)
+- [3. Formal Proofs & Interactive Theorem Proving (Lean 4 & Rocq)](#3-formal-proofs--interactive-theorem-proving-lean-4--rocq)
   - [3.1 Unconditional Formal Proofs (0 `sorry`, 0 Custom Axioms)](#31-unconditional-formal-proofs-0-sorry-0-custom-axioms)
-  - [3.2 Dual Lean 4 + Coq Cross-Verification (Bass-Ihara Determinant Formula)](#32-dual-lean-4--coq-cross-verification-bass-ihara-determinant-formula)
+  - [3.2 Dual Lean 4 + Rocq Cross-Verification (Bass-Ihara Determinant Formula)](#32-dual-lean-4--rocq-cross-verification-bass-ihara-determinant-formula)
   - [3.3 Spectral Circle Pipeline & Status](#33-spectral-circle-pipeline--status)
   - [3.4 Conditional Reductions & Formal Blueprints](#34-conditional-reductions--formal-blueprints)
   - [3.5 Open Conjectures](#35-open-conjectures)
@@ -67,7 +67,7 @@ graph TD
 
     subgraph Pillar 2: Formal Verification
         Lean["Lean 4 (v4.8.0 / Mathlib)"] --- Dual["Dual Verification (0 sorry, 0 axiom)"]
-        Coq["Coq (MathComp 2.3.0)"] --- Dual
+        Rocq["Rocq / Coq (MathComp 2.3.0)"] --- Dual
         Dual --> BassIhara["Bass-Ihara Determinant Formula"]
         Lean --> SpecPipe["Spectral Circle Pipeline & Tower Factorization"]
         Lean --> ScarProof["Adèlic Zero-Modes & Strong ETH Violation"]
@@ -210,9 +210,9 @@ See [`docs/generalized_affine_cyclotomic_circles.md`](docs/generalized_affine_cy
 
 ---
 
-## 3. Formal Proofs & Interactive Theorem Proving (Lean 4 & Coq)
+## 3. Formal Proofs & Interactive Theorem Proving (Lean 4 & Rocq)
 
-The repository hosts machine-checked formalizations in **Lean 4** (`v4.8.0`) and **Coq** (`MathComp 2.3.0`). See [`docs/CLAIMS.md`](docs/CLAIMS.md) for the full claim-by-claim audit.
+The repository hosts machine-checked formalizations in **Lean 4** (`v4.8.0`) and **Rocq** (formerly Coq, using `MathComp 2.3.0`). See [`docs/CLAIMS.md`](docs/CLAIMS.md) for the full claim-by-claim audit.
 
 ### 3.1 Unconditional Formal Proofs (0 `sorry`, 0 Custom Axioms)
 
@@ -241,7 +241,7 @@ The following files compile unconditionally using only standard foundational typ
 
 ---
 
-### 3.2 Dual Lean 4 + Coq Cross-Verification (Bass-Ihara Determinant Formula)
+### 3.2 Dual Lean 4 + Rocq Cross-Verification (Bass-Ihara Determinant Formula)
 
 The **Bass-Ihara determinant formula** for graph zeta functions is cross-verified across two independent proof assistants built on distinct type-theoretic foundations:
 
@@ -250,7 +250,7 @@ $$\det(I - u A + u^2(D - I)) = (1 - u^2)^{|E| - |V|} \det(I - u T)$$
 | Proof Assistant | Foundation | Specification File | Status | Proof Strategy |
 | :--- | :--- | :--- | :--- | :--- |
 | **Lean 4** (v4.8.0) | Dependent Type Theory (CIC) | [`IharaBass.lean`](formalization/Formalization/IharaBass.lean) · [`IharaZeta.lean`](formalization/Formalization/IharaZeta.lean) | **0 `sorry`, 0 axiom** | Block matrices $M, N, K, L$ with `det_fromBlocks₁₁` Schur complements and incidence identities $S T^\top = A, S S^\top = D, J^2 = I$. |
-| **Coq** (8.20 / MathComp 2.3.0) | Inductive Constructions | [`BassIhara.v`](coq/theories/BassIhara.v) | **0 `sorry`, 0 axiom, 0 `Admitted`** | Direct Schur complement using pilot matrices $P_1, P_3, P_5, P_6$, `det_lblock`/`det_ublock`, and $(I - uJ)(I + uJ) = (1 - u^2)I$. |
+| **Rocq (Coq)** (8.20 / MathComp 2.3.0) | Inductive Constructions | [`BassIhara.v`](coq/theories/BassIhara.v) | **0 `sorry`, 0 axiom, 0 `Admitted`** | Direct Schur complement using pilot matrices $P_1, P_3, P_5, P_6$, `det_lblock`/`det_ublock`, and $(I - uJ)(I + uJ) = (1 - u^2)I$. |
 
 Cross-verification eliminates the possibility of shared proof-checker kernel vulnerabilities.
 
@@ -390,7 +390,7 @@ The CLI tool [`llama-multimodal-injector`](src/llama_surgery/multimodal_injector
 | [`src/ultrametric_jax/`](src/ultrametric_jax/) | Ultrametric AI JAX/Flax/Pallas TPU implementation with deterministic PRNG key threading and scalar prefetch kernels. |
 | [`src/ultrametric_v2_research/`](src/ultrametric_v2_research/) | Multi-Prime Adèlic routing ($\prod_p \mathbb{Q}_p$) and Swin-style shifted ultrametric trees. |
 | [`formalization/Formalization/`](formalization/Formalization/) | Lean 4 (`v4.8.0`) formal verification files covering spectral graph theory, covering factorizations, cyclotomic products, and quantum scar theorems. |
-| [`coq/theories/BassIhara.v`](coq/theories/BassIhara.v) | Independent Coq MathComp 2.3.0 formalization of the Bass-Ihara determinant formula (0 `sorry`, 0 `axiom`, 0 `Admitted`). |
+| [`coq/theories/BassIhara.v`](coq/theories/BassIhara.v) | Independent Rocq (formerly Coq) MathComp 2.3.0 formalization of the Bass-Ihara determinant formula (0 `sorry`, 0 `axiom`, 0 `Admitted`). |
 | [`papers/`](papers/) | Complete research papers in Markdown and LaTeX format: [*Collatz Spectral Circle*](papers/collatz_spectral_circle.md), [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md), and [*Llama Surgery*](papers/llama_surgery.md). |
 | [`docs/`](docs/) | Comprehensive research monographs, technical notes, and claims registries: [`CLAIMS.md`](docs/CLAIMS.md), [`CONJECTURES.md`](docs/CONJECTURES.md), and theoretical monographs. |
 | [`experiments/`](experiments/) | Numerical verification suites, spectral eigensolvers, Monte Carlo simulations, and benchmark scripts. |
