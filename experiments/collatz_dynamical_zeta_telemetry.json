@@ -1,0 +1,339 @@
+{
+  "symbolic_determinant_verification": [
+    {
+      "n": 1,
+      "dim": 2,
+      "match": true,
+      "determinant_factored": "1 - 2*u"
+    },
+    {
+      "n": 2,
+      "dim": 4,
+      "match": true,
+      "determinant_factored": "(2*u - 1)*(2*u**2 - 1)"
+    },
+    {
+      "n": 3,
+      "dim": 8,
+      "match": true,
+      "determinant_factored": "(2*u - 1)*(2*u**2 - 1)*(2*u**4 + 1)"
+    },
+    {
+      "n": 4,
+      "dim": 16,
+      "match": true,
+      "determinant_factored": "(2*u - 1)*(2*u**2 - 1)*(2*u**4 + 1)*(2*u**8 + 1)"
+    },
+    {
+      "n": 5,
+      "dim": 32,
+      "match": true,
+      "determinant_factored": "(2*u - 1)*(2*u**2 - 1)*(2*u**4 + 1)*(2*u**8 + 1)*(2*u**16 + 1)"
+    }
+  ],
+  "monomial_cycle_weights": [
+    {
+      "k": 2,
+      "cycle_length": 1,
+      "W_C1_real": 1.0,
+      "W_C1_imag": -1.0,
+      "modulus": 1.4142135623730951,
+      "product": 1.9999999999999998
+    },
+    {
+      "k": 3,
+      "cycle_length": 2,
+      "W_C1_real": 0.0,
+      "W_C1_imag": -1.414213562373095,
+      "modulus": 1.414213562373095,
+      "product": 1.9999999999999996
+    },
+    {
+      "k": 4,
+      "cycle_length": 4,
+      "W_C1_real": -6.661338147750939e-16,
+      "W_C1_imag": 1.414213562373094,
+      "modulus": 1.414213562373094,
+      "product": 1.9999999999999996
+    },
+    {
+      "k": 5,
+      "cycle_length": 8,
+      "W_C1_real": -8.881784197001252e-16,
+      "W_C1_imag": 1.4142135623730951,
+      "modulus": 1.4142135623730951,
+      "product": 2.0000000000000036
+    },
+    {
+      "k": 6,
+      "cycle_length": 16,
+      "W_C1_real": -3.1086244689504383e-15,
+      "W_C1_imag": 1.4142135623730927,
+      "modulus": 1.4142135623730927,
+      "product": 2.0000000000000013
+    }
+  ],
+  "trace_verification": [
+    {
+      "n": 1,
+      "traces_m_1_to_16": [
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192,
+        16384,
+        32768,
+        65536
+      ],
+      "matrix_verified": true,
+      "series_verified": true
+    },
+    {
+      "n": 2,
+      "traces_m_1_to_16": [
+        2,
+        8,
+        8,
+        24,
+        32,
+        80,
+        128,
+        288,
+        512,
+        1088,
+        2048,
+        4224,
+        8192,
+        16640,
+        32768,
+        66048
+      ],
+      "matrix_verified": true,
+      "series_verified": true
+    },
+    {
+      "n": 3,
+      "traces_m_1_to_16": [
+        2,
+        8,
+        8,
+        16,
+        32,
+        80,
+        128,
+        304,
+        512,
+        1088,
+        2048,
+        4192,
+        8192,
+        16640,
+        32768,
+        66112
+      ],
+      "matrix_verified": true,
+      "series_verified": true
+    },
+    {
+      "n": 4,
+      "traces_m_1_to_16": [
+        2,
+        8,
+        8,
+        16,
+        32,
+        80,
+        128,
+        288,
+        512,
+        1088,
+        2048,
+        4192,
+        8192,
+        16640,
+        32768,
+        66144
+      ],
+      "matrix_verified": true,
+      "series_verified": true
+    },
+    {
+      "n": 5,
+      "traces_m_1_to_16": [
+        2,
+        8,
+        8,
+        16,
+        32,
+        80,
+        128,
+        288,
+        512,
+        1088,
+        2048,
+        4192,
+        8192,
+        16640,
+        32768,
+        66112
+      ],
+      "matrix_verified": true,
+      "series_verified": true
+    }
+  ],
+  "concentric_pole_radii": [
+    {
+      "k": 1,
+      "dimension_block": 1,
+      "radius": 0.5,
+      "gap_to_unit_circle": 0.5,
+      "asymptotic_scaling": 0.5
+    },
+    {
+      "k": 2,
+      "dimension_block": 2,
+      "radius": 0.7071067811865476,
+      "gap_to_unit_circle": 0.2928932188134524,
+      "asymptotic_scaling": 0.34657359027997264
+    },
+    {
+      "k": 3,
+      "dimension_block": 4,
+      "radius": 0.8408964152537145,
+      "gap_to_unit_circle": 0.1591035847462855,
+      "asymptotic_scaling": 0.17328679513998632
+    },
+    {
+      "k": 4,
+      "dimension_block": 8,
+      "radius": 0.9170040432046712,
+      "gap_to_unit_circle": 0.08299595679532878,
+      "asymptotic_scaling": 0.08664339756999316
+    },
+    {
+      "k": 5,
+      "dimension_block": 16,
+      "radius": 0.9576032806985737,
+      "gap_to_unit_circle": 0.0423967193014263,
+      "asymptotic_scaling": 0.04332169878499658
+    },
+    {
+      "k": 6,
+      "dimension_block": 32,
+      "radius": 0.9785720620877001,
+      "gap_to_unit_circle": 0.02142793791229991,
+      "asymptotic_scaling": 0.02166084939249829
+    },
+    {
+      "k": 7,
+      "dimension_block": 64,
+      "radius": 0.9892280131939755,
+      "gap_to_unit_circle": 0.010771986806024536,
+      "asymptotic_scaling": 0.010830424696249145
+    },
+    {
+      "k": 8,
+      "dimension_block": 128,
+      "radius": 0.9945994234836332,
+      "gap_to_unit_circle": 0.0054005765163668285,
+      "asymptotic_scaling": 0.0054152123481245725
+    },
+    {
+      "k": 9,
+      "dimension_block": 256,
+      "radius": 0.9972960560854701,
+      "gap_to_unit_circle": 0.0027039439145298827,
+      "asymptotic_scaling": 0.0027076061740622863
+    },
+    {
+      "k": 10,
+      "dimension_block": 512,
+      "radius": 0.9986471128909702,
+      "gap_to_unit_circle": 0.00135288710902981,
+      "asymptotic_scaling": 0.0013538030870311431
+    }
+  ],
+  "ihara_bass_verification": [
+    {
+      "n": 1,
+      "V": 2,
+      "E": 4,
+      "Darts": 8,
+      "Betti": 2,
+      "traces": [
+        4,
+        8,
+        28,
+        104,
+        244,
+        680,
+        2188,
+        6728
+      ],
+      "top_eigs": [
+        3.0,
+        1.732051,
+        1.732051,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "n": 2,
+      "V": 4,
+      "E": 8,
+      "Darts": 16,
+      "Betti": 4,
+      "traces": [
+        4,
+        16,
+        28,
+        80,
+        244,
+        592,
+        2188,
+        6800
+      ],
+      "top_eigs": [
+        3.0,
+        1.732051,
+        1.732051,
+        1.732051,
+        1.732051
+      ]
+    },
+    {
+      "n": 3,
+      "V": 8,
+      "E": 16,
+      "Darts": 32,
+      "Betti": 8,
+      "traces": [
+        4,
+        16,
+        28,
+        32,
+        244,
+        784,
+        2188,
+        6944
+      ],
+      "top_eigs": [
+        3.0,
+        1.732051,
+        1.732051,
+        1.732051,
+        1.732051
+      ]
+    }
+  ]
+}
