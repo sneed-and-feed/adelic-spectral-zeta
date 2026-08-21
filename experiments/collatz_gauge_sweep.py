@@ -113,7 +113,7 @@ def main():
     plt.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plot_path = "c:/Users/x/.gemini/antigravity/scratch/collatz_gauge_sweep.png"
+    plot_path = "figures/collatz_gauge_sweep.png"
     plt.savefig(plot_path)
     print(f"\nSaved sweep plots to {plot_path}")
 

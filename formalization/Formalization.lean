@@ -24,3 +24,5 @@ import Formalization.WeakIntegrability
 import Formalization.SpectralOracle
 import Formalization.ConjectureB
 import Formalization.OptimalRestrictedRewiring
+import Formalization.UndirectedGapExponent
+import Formalization.DynamicalZetaFactorization
