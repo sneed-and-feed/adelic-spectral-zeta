@@ -4,7 +4,7 @@
 [![Lean 4 Formalization](https://img.shields.io/badge/Lean_4-0_sorry_%7C_v4.8.0-brightgreen.svg)](formalization/Formalization/)
 [![Mathlib Upstream](https://img.shields.io/badge/Mathlib_Upstream-2--Tier_Arch-brightgreen.svg)](formalization/MathlibUpstream/)
 [![Rocq Cross-Verification](https://img.shields.io/badge/Rocq_(Coq)-MathComp_2.3.0-blue.svg)](coq/theories/BassIhara.v)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-blue.svg)](LICENSE)
 
 A unified mathematical physics, formal verification, and scientific computing framework implementing:
 1. **2-Adic Arithmetic Dynamics & Spectral Theory**: The exact spectral theory of transfer operators, non-Hermitian point-gap topology, Markov semigroups, and dynamical zeta functions for the Collatz system on quotient rings $\mathbb{Z}/2^n\mathbb{Z}$ and the compact ring of 2-adic integers $\mathbb{Z}_2$.
