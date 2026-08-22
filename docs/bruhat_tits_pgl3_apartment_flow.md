@@ -3,7 +3,8 @@
 **Authors:** Adelic Spectral Zeta Research Group  
 **Date:** August 2026  
 **Artifact Link:** [figures/pgl3_apartment_flow.png](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/figures/pgl3_apartment_flow.png)  
-**Verification Script:** [experiments/bruhat_tits_pgl3_apartment_flow.py](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/experiments/bruhat_tits_pgl3_apartment_flow.py)
+**Verification Script:** [experiments/bruhat_tits_pgl3_apartment_flow.py](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/experiments/bruhat_tits_pgl3_apartment_flow.py)  
+**Interactive Visualizer:** [docs/building_visualizer.html](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/docs/building_visualizer.html) · [User Guide](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/docs/interactive_building_visualizer_guide.md)
 
 ---
 

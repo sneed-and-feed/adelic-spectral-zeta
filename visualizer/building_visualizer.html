@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruhat-Tits Building & Macdonald Spherical Wave Visualizer (Ã₂ & G̃₂)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060913;
+            --bg-surface: rgba(11, 17, 33, 0.85);
+            --bg-card: rgba(18, 28, 52, 0.65);
+            --bg-glass: rgba(14, 22, 42, 0.75);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow-cyan: rgba(6, 182, 212, 0.35);
+            --border-glow-gold: rgba(245, 158, 11, 0.35);
+            --border-glow-rose: rgba(244, 63, 94, 0.35);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --color-cyan: #00f0ff;
+            --color-emerald: #10b981;
+            --color-gold: #fbbf24;
+            --color-amber: #f59e0b;
+            --color-magenta: #e879f9;
+            --color-purple: #a855f7;
+            --color-rose: #f43f5e;
+            --color-blue: #3b82f6;
+            
+            --font-display: 'Outfit', -apple-system, sans-serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            
+            --shadow-panel: 0 20px 50px -10px rgba(0, 0, 0, 0.75), 0 0 25px -5px rgba(0, 240, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 13px;
+        }
+
+        #app-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            background: radial-gradient(circle at 50% 50%, #0a1124 0%, #060913 100%);
+        }
+
+        /* Canvas Viewport */
+        #viewport-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: grab;
+        }
+        #viewport-container:active {
+            cursor: grabbing;
+        }
+
+        #main-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Top Header HUD */
+        .top-hud {
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .title-badge {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--color-cyan);
+            border-radius: 12px;
+            padding: 10px 18px;
+            pointer-events: auto;
+            box-shadow: var(--shadow-panel);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .title-badge:hover {
+            border-color: var(--border-glow-cyan);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+        }
+
+        .title-badge h1 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #00f0ff 60%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-badge .subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            font-family: var(--font-mono);
+        }
+
+        .quick-presets-bar {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 6px 10px;
+            pointer-events: auto;
+            box-shadow: var(--shadow-panel);
+            overflow-x: auto;
+            max-width: calc(100vw - 480px);
+        }
+
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            background: rgba(0, 240, 255, 0.12);
+            color: var(--text-primary);
+            border-color: var(--color-cyan);
+            transform: translateY(-1px);
+        }
+
+        .preset-btn.active {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(168, 85, 247, 0.25));
+            border-color: var(--color-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-icon {
+            font-size: 13px;
+        }
+
+        /* Floating Sidebar Controls */
+        .sidebar {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            width: 350px;
+            max-height: calc(100vh - 100px);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            z-index: 40;
+            box-shadow: var(--shadow-panel);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        /* Tabs Header */
+        .tab-bar {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 7px 0;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        /* Sections */
+        .control-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+        }
+
+        .section-header .accent {
+            color: var(--color-cyan);
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+
+        /* Control Rows & Sliders */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .control-val {
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .slider-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--color-cyan);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--color-cyan);
+            transition: transform 0.1s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Radio & Pill Switch */
+        .pill-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            padding: 2px;
+            gap: 2px;
+        }
+
+        .pill-opt {
+            flex: 1;
+            text-align: center;
+            padding: 5px 0;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .pill-opt.active {
+            background: var(--color-cyan);
+            color: #050b14;
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Toggle Checkbox Row */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 3px 0;
+        }
+
+        .toggle-row span {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 32px;
+            height: 18px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            transition: 0.2s;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        input:checked + .switch-slider {
+            background-color: var(--color-cyan);
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+        }
+
+        input:checked + .switch-slider:before {
+            transform: translateX(14px);
+            background-color: #050b14;
+        }
+
+        /* Floating Spectral HUD (Right Side) */
+        .spectral-panel {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 320px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 40;
+            box-shadow: var(--shadow-panel);
+        }
+
+        #spectrum-canvas {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: crosshair;
+        }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .telemetry-cell {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .telemetry-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .telemetry-value {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .telemetry-value.cyan { color: var(--color-cyan); }
+        .telemetry-value.gold { color: var(--color-gold); }
+        .telemetry-value.rose { color: var(--color-rose); }
+        .telemetry-value.emerald { color: var(--color-emerald); }
+
+        /* Bottom Floating Bar */
+        .bottom-hud {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 30px;
+            padding: 8px 18px;
+            z-index: 50;
+            box-shadow: var(--shadow-panel);
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--color-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .action-btn.active {
+            background: var(--color-cyan);
+            color: #050b14;
+            font-weight: 700;
+        }
+
+        .hud-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .color-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Help Modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #0d1527;
+            border: 1px solid var(--border-glow-cyan);
+            border-radius: 18px;
+            width: 680px;
+            max-width: 90vw;
+            max-height: 85vh;
+            padding: 24px;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+        }
+
+        .modal-header h2 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            color: var(--color-cyan);
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #ffffff;
+        }
+
+        .math-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid var(--color-cyan);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .help-section h3 {
+            font-size: 14px;
+            color: var(--color-gold);
+            margin-bottom: 6px;
+        }
+
+        .help-section p {
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: rgba(10, 16, 30, 0.95);
+            border: 1px solid var(--color-cyan);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: #ffffff;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <!-- Viewport with Main Interactive Canvas -->
+        <div id="viewport-container">
+            <canvas id="main-canvas"></canvas>
+            <div id="tooltip" class="tooltip"></div>
+        </div>
+
+        <!-- Top Header HUD -->
+        <div class="top-hud">
+            <div class="title-badge">
+                <h1>
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--color-cyan); box-shadow:0 0 10px var(--color-cyan);"></span>
+                    Bruhat-Tits Building & Macdonald Wave Engine
+                </h1>
+                <div class="subtitle">Ã₂ Simplicial Tiling • G̃₂ Dihedral Star • Satake Spectrum</div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="quick-presets-bar">
+                <button class="preset-btn active" data-preset="ground"><span class="btn-icon">⚡</span> Tempered Ground</button>
+                <button class="preset-btn" data-preset="ramanujan"><span class="btn-icon">🛡️</span> Ramanujan Edge</button>
+                <button class="preset-btn" data-preset="g2star"><span class="btn-icon">✡️</span> G₂ Dihedral Star</button>
+                <button class="preset-btn" data-preset="vortex"><span class="btn-icon">🌀</span> A₂ Chiral Vortex</button>
+                <button class="preset-btn" data-preset="gelbart"><span class="btn-icon">🌌</span> Sym²(Δ₁₂) Lift</button>
+                <button class="preset-btn" data-preset="buhler"><span class="btn-icon">✨</span> Buhler A₅ Galois</button>
+                <button class="preset-btn" data-preset="dirac"><span class="btn-icon">💠</span> Dirac K-Point</button>
+            </div>
+        </div>
+
+        <!-- Left Sidebar Controls -->
+        <div class="sidebar">
+            <!-- Tabs -->
+            <div class="tab-bar">
+                <button class="tab-btn active" data-tab="physics">Macdonald</button>
+                <button class="tab-btn" data-tab="geometry">Geometry</button>
+                <button class="tab-btn" data-tab="flux">Flux & Flow</button>
+                <button class="tab-btn" data-tab="render">Render</button>
+            </div>
+
+            <!-- Tab 1: Physics / Macdonald Parameters -->
+            <div class="tab-content" id="tab-physics">
+                <div class="control-section">
+                    <div class="section-header">
+                        <span>Base Prime (q)</span>
+                        <span class="accent" id="lbl-q">q = 3</span>
+                    </div>
+                    <div class="pill-group">
+                        <div class="pill-opt" data-q="2">q = 2</div>
+                        <div class="pill-opt active" data-q="3">q = 3</div>
+                        <div class="pill-opt" data-q="5">q = 5</div>
+                        <div class="pill-opt" data-q="7">q = 7</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-header">
+                        <span>Satake Parameters (z ∈ ℂ³)</span>
+                        <span class="accent">z₁z₂z₃ = 1</span>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Phase θ₁ (rad)</span>
+                            <span class="control-val" id="val-theta1">0.70</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-theta1" min="-3.14159" max="3.14159" step="0.01" value="0.70">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Phase θ₂ (rad)</span>
+                            <span class="control-val" id="val-theta2">1.20</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-theta2" min="-3.14159" max="3.14159" step="0.01" value="1.20">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Hyperbolic Radius |z|</span>
+                            <span class="control-val" id="val-radius">1.00</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-radius" min="0.4" max="2.2" step="0.02" value="1.00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-header">
+                        <span>Time Evolution e^{-iωt}</span>
+                        <span class="accent" id="lbl-time">t = 0.00</span>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Evolution Speed</span>
+                            <span class="control-val" id="val-speed">1.0x</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-speed" min="0" max="4.0" step="0.1" value="1.0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Geometry & Apartment -->
+            <div class="tab-content" id="tab-geometry" style="display:none;">
+                <div class="control-section">
+                    <div class="section-header">
+                        <span>Apartment Lattice Radius</span>
+                        <span class="accent" id="lbl-grid-rad">R = 7</span>
+                    </div>
+                    <div class="slider-wrap">
+                        <input type="range" id="slider-grid-rad" min="3" max="15" step="1" value="7">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-header"><span>Building Simplicial Overlays</span></div>
+                    <label class="toggle-row">
+                        <span><span class="legend-dot" style="background:#00f0ff;"></span> Triangulation Simplices (Ã₂)</span>
+                        <div class="switch"><input type="checkbox" id="chk-simplices" checked><span class="switch-slider"></span></div>
+                    </label>
+                    <label class="toggle-row">
+                        <span><span class="legend-dot" style="background:#e879f9;"></span> 3-Coloring Types (0,1,2)</span>
+                        <div class="switch"><input type="checkbox" id="chk-types" checked><span class="switch-slider"></span></div>
+                    </label>
+                    <label class="toggle-row">
+                        <span><span class="legend-dot" style="background:#fbbf24;"></span> G̃₂ 12-Root Lattice (Short+Long)</span>
+                        <div class="switch"><input type="checkbox" id="chk-g2"><span class="switch-slider"></span></div>
+                    </label>
+                    <label class="toggle-row">
+                        <span><span class="legend-dot" style="background:#10b981;"></span> Dominant Weyl Chamber A⁺</span>
+                        <div class="switch"><input type="checkbox" id="chk-weyl" checked><span class="switch-slider"></span></div>
+                    </label>
+                    <label class="toggle-row">
+                        <span><span class="legend-dot" style="background:#f43f5e;"></span> Chamber Wall Reflections</span>
+                        <div class="switch"><input type="checkbox" id="chk-walls"><span class="switch-slider"></span></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tab 3: Flux & Poynting Flow -->
+            <div class="tab-content" id="tab-flux" style="display:none;">
+                <div class="control-section">
+                    <div class="section-header"><span>Probability Current j = Im(ψ*∇ψ)</span></div>
+                    <label class="toggle-row">
+                        <span>Render Flux Vector Arrows</span>
+                        <div class="switch"><input type="checkbox" id="chk-flux" checked><span class="switch-slider"></span></div>
+                    </label>
+                    <label class="toggle-row">
+                        <span>Animated Flow Particles</span>
+                        <div class="switch"><input type="checkbox" id="chk-particles" checked><span class="switch-slider"></span></div>
+                    </label>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Particle Density</span>
+                            <span class="control-val" id="val-part-density">250</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-part-density" min="50" max="600" step="25" value="250">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Vector Arrow Scaling</span>
+                            <span class="control-val" id="val-arrow-scale">1.0x</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-arrow-scale" min="0.2" max="3.0" step="0.1" value="1.0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Render & Colormaps -->
+            <div class="tab-content" id="tab-render" style="display:none;">
+                <div class="control-section">
+                    <div class="section-header"><span>Wavefield Component</span></div>
+                    <div class="pill-group" style="flex-wrap:wrap;">
+                        <div class="pill-opt active" data-field="real">Re(ψ)</div>
+                        <div class="pill-opt" data-field="imag">Im(ψ)</div>
+                        <div class="pill-opt" data-field="abs">|ψ|</div>
+                        <div class="pill-opt" data-field="arg">Arg(ψ)</div>
+                        <div class="pill-opt" data-field="prob">|ψ|²</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-header"><span>Scientific Colormap</span></div>
+                    <div class="pill-group" style="flex-wrap:wrap;">
+                        <div class="pill-opt active" data-cmap="viridis">Viridis</div>
+                        <div class="pill-opt" data-cmap="plasma">Plasma</div>
+                        <div class="pill-opt" data-cmap="turbo">Turbo</div>
+                        <div class="pill-opt" data-cmap="magma">Magma</div>
+                        <div class="pill-opt" data-cmap="chiral">Chiral</div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <div class="section-header"><span>Contour Isolines</span></div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Contour Levels</span>
+                            <span class="control-val" id="val-contours">8</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <input type="range" id="slider-contours" min="0" max="20" step="1" value="8">
+                        </div>
+                    </div>
+                    <label class="toggle-row">
+                        <span>3D Perspective Extrusion</span>
+                        <div class="switch"><input type="checkbox" id="chk-3d"><span class="switch-slider"></span></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Floating Spectral HUD Panel -->
+        <div class="spectral-panel">
+            <div class="section-header">
+                <span>Dual Satake Spectrum</span>
+                <span class="accent" id="lbl-deltoid-status">Tempered (U(1)³)</span>
+            </div>
+
+            <!-- Satake Deltoid / Eigenvalue Canvas -->
+            <canvas id="spectrum-canvas" width="288" height="200"></canvas>
+
+            <div class="telemetry-grid">
+                <div class="telemetry-cell">
+                    <div class="telemetry-label">Hecke λ₁(T₁)</div>
+                    <div class="telemetry-value cyan" id="val-lambda1">+4.28 + 2.11i</div>
+                </div>
+                <div class="telemetry-cell">
+                    <div class="telemetry-label">Hecke λ₂(T₂)</div>
+                    <div class="telemetry-value gold" id="val-lambda2">+4.28 - 2.11i</div>
+                </div>
+                <div class="telemetry-cell">
+                    <div class="telemetry-label">Laplacian λ_Δ</div>
+                    <div class="telemetry-value emerald" id="val-lambdadelta">-17.44</div>
+                </div>
+                <div class="telemetry-cell">
+                    <div class="telemetry-label">Ramanujan Gap</div>
+                    <div class="telemetry-value rose" id="val-gap">8.00 [2(q-1)²]</div>
+                </div>
+            </div>
+
+            <div class="telemetry-cell" style="grid-column: span 2;">
+                <div class="telemetry-label">Tempered Spectrum Band σ_temp(Δ)</div>
+                <div class="telemetry-value" id="val-tempband" style="font-size:11px; color:#cbd5e1;">[-35.0, -8.0]</div>
+            </div>
+        </div>
+
+        <!-- Bottom Floating Bar -->
+        <div class="bottom-hud">
+            <button class="action-btn" id="btn-play-pause"><span>⏸️</span> Pause</button>
+            <button class="action-btn" id="btn-reset-view"><span>🎯</span> Reset View</button>
+            <button class="action-btn" id="btn-snapshot"><span>📸</span> Export PNG</button>
+            
+            <div class="hud-divider"></div>
+
+            <div class="color-legend">
+                <span>Types:</span>
+                <span style="color:#00f0ff;">● 0</span>
+                <span style="color:#fbbf24;">● 1</span>
+                <span style="color:#e879f9;">● 2</span>
+            </div>
+
+            <div class="hud-divider"></div>
+            <button class="action-btn" id="btn-help" style="background:rgba(0, 240, 255, 0.1); border-color:var(--color-cyan);"><span>❓</span> Guide</button>
+        </div>
+
+        <!-- Help & Math Guide Modal -->
+        <div class="modal-backdrop" id="help-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Bruhat-Tits Apartment & Macdonald Spectral Guide</h2>
+                    <button class="close-btn" id="btn-close-modal">&times;</button>
+                </div>
+                
+                <div class="help-section">
+                    <h3>1. Non-Archimedean Macdonald Spherical Functions</h3>
+                    <p>On the affine building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$, the joint eigenfunctions of radial Hecke operators $T_1, T_2$ are given by the normalized Macdonald spherical functions:</p>
+                    <div class="math-block">
+                        Φ_z(m, n) = q^{-(m+n)} · (1/W(q⁻¹)) · ∑_{w ∈ S₃} c(w(z)) · w(z)₁^{m+n} w(z)₂^n<br>
+                        c(z) = ∏_{1 ≤ i &lt; j ≤ 3} (z_i - q⁻¹ z_j) / (z_i - z_j)<br>
+                        W(t) = 1 + 2t + 2t² + t³
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <h3>2. Satake Isomorphism & Spectrum Deltoid</h3>
+                    <p>The elementary symmetric polynomials $e_1(z) = z_1+z_2+z_3$ and $e_2(z) = z_1 z_2 + z_2 z_3 + z_3 z_1$ determine the Hecke eigenvalues $\lambda_1 = q e_1(z)$ and $\lambda_2 = q e_2(z)$. For unitary Satake parameters, the image in $\mathbb{C}$ is a Hypocycloid Deltoid $\mathcal{D}_q$.</p>
+                </div>
+
+                <div class="help-section">
+                    <h3>3. Non-Archimedean Ramanujan Gap</h3>
+                    <p>The discrete Helmholtz operator $\Delta = T_1 + T_2 - 2(q^2+q+1)I$ possesses a continuous tempered band separated from the trivial bound state $\lambda=0$ by the exact Ramanujan spectral gap:</p>
+                    <div class="math-block">
+                        Gap(Δ) = 2(q - 1)²
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <h3>4. Probability Current & Poynting Flow</h3>
+                    <p>The discrete quantum probability flux between neighboring vertices $u \to v$ is given by $j_{uv} = \operatorname{Im}(\psi(u)^* \psi(v))$, generating simplicial energy vortices on the building.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Visualizer Engine Script -->
+    <script>
+    (function() {
+        "use strict";
+
+        // -------------------------------------------------------------
+        // State & Configuration
+        // -------------------------------------------------------------
+        const state = {
+            q: 3,
+            theta1: 0.70,
+            theta2: 1.20,
+            radius: 1.00,
+            time: 0.0,
+            timeSpeed: 1.0,
+            isPlaying: true,
+            gridRadius: 7,
+            
+            // Overlays
+            showSimplices: true,
+            showTypes: true,
+            showG2: false,
+            showWeyl: true,
+            showWalls: false,
+            showFlux: true,
+            showParticles: true,
+            particleDensity: 250,
+            arrowScale: 1.0,
+            
+            // Rendering
+            field: 'real', // 'real', 'imag', 'abs', 'arg', 'prob'
+            colormap: 'viridis', // 'viridis', 'plasma', 'turbo', 'magma', 'chiral'
+            contourLevels: 8,
+            mode3D: false,
+            
+            // Camera / Viewport
+            camera: {
+                x: 0,
+                y: 0,
+                zoom: 48,
+                isDragging: false,
+                lastX: 0,
+                lastY: 0,
+                rotX: 35, // for 3D mode
+                rotZ: -25
+            },
+            
+            // Active preset
+            activePreset: 'ground',
+            
+            // Hovered node
+            hoveredNode: null
+        };
+
+        // Cache for grid nodes and simplices
+        let latticeNodes = [];
+        let simplicialFaces = [];
+        let particles = [];
+        let needsRebuildLattice = true;
+
+        // -------------------------------------------------------------
+        // Colormaps (Scientific LUTs)
+        // -------------------------------------------------------------
+        const Colormaps = {
+            viridis: function(t) {
+                t = Math.max(0, Math.min(1, t));
+                const c0 = [68, 1, 84], c1 = [59, 82, 139], c2 = [33, 145, 140], c3 = [94, 201, 98], c4 = [253, 231, 37];
+                return interpolate5(t, c0, c1, c2, c3, c4);
+            },
+            plasma: function(t) {
+                t = Math.max(0, Math.min(1, t));
+                const c0 = [13, 8, 135], c1 = [126, 3, 168], c2 = [204, 71, 120], c3 = [248, 149, 64], c4 = [240, 249, 33];
+                return interpolate5(t, c0, c1, c2, c3, c4);
+            },
+            turbo: function(t) {
+                t = Math.max(0, Math.min(1, t));
+                const c0 = [48, 18, 59], c1 = [70, 134, 251], c2 = [27, 229, 181], c3 = [251, 185, 56], c4 = [122, 4, 3];
+                return interpolate5(t, c0, c1, c2, c3, c4);
+            },
+            magma: function(t) {
+                t = Math.max(0, Math.min(1, t));
+                const c0 = [0, 0, 4], c1 = [81, 18, 124], c2 = [182, 54, 121], c3 = [251, 136, 97], c4 = [252, 253, 191];
+                return interpolate5(t, c0, c1, c2, c3, c4);
+            },
+            chiral: function(t) {
+                // Cyclic phase colormap (HSV-like)
+                const hue = (t * 360) % 360;
+                return hslToRgb(hue / 360, 0.9, 0.55);
+            }
+        };
+
+        function interpolate5(t, c0, c1, c2, c3, c4) {
+            let seg = t * 4;
+            let i = Math.floor(seg);
+            let f = seg - i;
+            if (i >= 4) return c4;
+            let a = [c0, c1, c2, c3][i];
+            let b = [c1, c2, c3, c4][i];
+            return [
+                Math.round(a[0] + f * (b[0] - a[0])),
+                Math.round(a[1] + f * (b[1] - a[1])),
+                Math.round(a[2] + f * (b[2] - a[2]))
+            ];
+        }
+
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        // -------------------------------------------------------------
+        // Mathematical Physics Engine: Complex, Satake & Macdonald
+        // -------------------------------------------------------------
+        class Complex {
+            constructor(re, im) {
+                this.re = re || 0;
+                this.im = im || 0;
+            }
+            static fromPolar(r, theta) {
+                return new Complex(r * Math.cos(theta), r * Math.sin(theta));
+            }
+            add(other) {
+                return new Complex(this.re + other.re, this.im + other.im);
+            }
+            sub(other) {
+                return new Complex(this.re - other.re, this.im - other.im);
+            }
+            mul(other) {
+                return new Complex(
+                    this.re * other.re - this.im * other.im,
+                    this.re * other.im + this.im * other.re
+                );
+            }
+            scale(s) {
+                return new Complex(this.re * s, this.im * s);
+            }
+            div(other) {
+                const d = other.re * other.re + other.im * other.im;
+                if (d === 0) return new Complex(0, 0);
+                return new Complex(
+                    (this.re * other.re + this.im * other.im) / d,
+                    (this.im * other.re - this.re * other.im) / d
+                );
+            }
+            abs() {
+                return Math.hypot(this.re, this.im);
+            }
+            arg() {
+                return Math.atan2(this.im, this.re);
+            }
+            conj() {
+                return new Complex(this.re, -this.im);
+            }
+            exp() {
+                const r = Math.exp(this.re);
+                return new Complex(r * Math.cos(this.im), r * Math.sin(this.im));
+            }
+            pow(n) {
+                const r = Math.pow(this.abs(), n);
+                const theta = this.arg() * n;
+                return new Complex(r * Math.cos(theta), r * Math.sin(theta));
+            }
+        }
+
+        // Compute Harish-Chandra / Gindikin-Karpelevich c-function for A2
+        function cFunctionA2(z1, z2, z3, q) {
+            const pairs = [[z1, z2], [z1, z3], [z2, z3]];
+            let res = new Complex(1, 0);
+            const invQ = 1.0 / q;
+            for (let i = 0; i < pairs.length; i++) {
+                const za = pairs[i][0];
+                const zb = pairs[i][1];
+                const num = za.sub(zb.scale(invQ));
+                const den = za.sub(zb);
+                res = res.mul(num.div(den));
+            }
+            return res;
+        }
+
+        // 2D Macdonald Spherical Wavefunction Phi_z(u, v) on A2 Apartment
+        function computeMacdonaldWaveA2(u, v, z1, z2, z3, q, time) {
+            const perms = [
+                [z1, z2, z3],
+                [z1, z3, z2],
+                [z2, z1, z3],
+                [z2, z3, z1],
+                [z3, z1, z2],
+                [z3, z2, z1]
+            ];
+
+            const W_t = 1.0 + 2.0 / q + 2.0 / (q * q) + 1.0 / (q * q * q);
+            let sum = new Complex(0, 0);
+
+            // Plane wave quasimomenta on the weight lattice
+            for (let i = 0; i < perms.length; i++) {
+                const p = perms[i];
+                const cw = cFunctionA2(p[0], p[1], p[2], q);
+                
+                // Weight action: z1^(u + v) * z2^v
+                const factor1 = p[0].pow(u + v);
+                const factor2 = p[1].pow(v);
+                const weightTerm = factor1.mul(factor2);
+                
+                sum = sum.add(cw.mul(weightTerm));
+            }
+
+            sum = sum.scale(1.0 / W_t);
+            const decay = Math.pow(1.0 / q, Math.max(0, Math.abs(u) + Math.abs(v)) * 0.5);
+            let val = sum.scale(decay);
+
+            // Time evolution e^{-i ω t} where ω is determined by Laplacian eigenvalue
+            const e1 = z1.add(z2).add(z3);
+            const omega = q * (e1.re - 3.0);
+            const timePhase = new Complex(Math.cos(-omega * time), Math.sin(-omega * time));
+            return val.mul(timePhase);
+        }
+
+        // G2 12-fold Dihedral Wavefunction
+        function computeG2Wave(u, v, z1, z2, q, time) {
+            const shortRoots = [
+                [1, 0], [-1, 0], [0, 1], [0, -1], [-1, 1], [1, -1]
+            ];
+            const longRoots = [
+                [1, 1], [-1, -1], [2, -1], [-2, 1], [-1, 2], [1, -2]
+            ];
+
+            const th1 = z1.arg();
+            const th2 = z2.arg();
+            let sum = new Complex(0, 0);
+
+            for (let i = 0; i < 6; i++) {
+                const phase = u * shortRoots[i][0] + v * shortRoots[i][1];
+                const term = new Complex(Math.cos(phase * th1 - time * 2.0), Math.sin(phase * th2 - time * 2.0));
+                sum = sum.add(term);
+            }
+
+            for (let i = 0; i < 6; i++) {
+                const phase = u * longRoots[i][0] + v * longRoots[i][1];
+                const term = new Complex(Math.cos(phase * th1 * 0.5 - time * 1.5), Math.sin(phase * th2 * 0.5 - time * 1.5));
+                sum = sum.add(term.scale(0.8));
+            }
+
+            return sum.scale(0.15);
+        }
+
+        // Coordinate transformation: Weight coordinates (u, v) -> Cartesian (x, y)
+        function weightToCartesian(u, v) {
+            const x = u + 0.5 * v;
+            const y = (Math.sqrt(3.0) / 2.0) * v;
+            return { x, y };
+        }
+
+        // Inverse: Cartesian (x, y) -> Weight coordinates (u, v)
+        function cartesianToWeight(x, y) {
+            const v = y / (Math.sqrt(3.0) / 2.0);
+            const u = x - 0.5 * v;
+            return { u, v };
+        }
+
+        // Determinant valuation mod 3 vertex coloring
+        function getVertexType(u, v) {
+            let t = (u + 2 * v) % 3;
+            if (t < 0) t += 3;
+            return t;
+        }
+
+        // -------------------------------------------------------------
+        // Lattice Generation & Simplicial Tesselation
+        // -------------------------------------------------------------
+        function buildLattice() {
+            const R = state.gridRadius;
+            latticeNodes = [];
+            simplicialFaces = [];
+            const nodeMap = new Map();
+
+            for (let u = -R; u <= R; u++) {
+                for (let v = -R; v <= R; v++) {
+                    if (Math.abs(u + v) <= R + 2) {
+                        const { x, y } = weightToCartesian(u, v);
+                        const type = getVertexType(u, v);
+                        const node = {
+                            u, v, x, y, type,
+                            psi: new Complex(0, 0),
+                            gradX: 0,
+                            gradY: 0,
+                            fluxX: 0,
+                            fluxY: 0
+                        };
+                        latticeNodes.push(node);
+                        nodeMap.set(`${u},${v}`, node);
+                    }
+                }
+            }
+
+            // Build simplicial triangles (Type A & Type B)
+            for (let u = -R; u <= R; u++) {
+                for (let v = -R; v <= R; v++) {
+                    const n00 = nodeMap.get(`${u},${v}`);
+                    const n10 = nodeMap.get(`${u+1},${v}`);
+                    const n01 = nodeMap.get(`${u},${v+1}`);
+                    const n11 = nodeMap.get(`${u+1},${v+1}`);
+
+                    // Triangle A: (u,v) - (u+1,v) - (u,v+1)
+                    if (n00 && n10 && n01) {
+                        simplicialFaces.push({
+                            nodes: [n00, n10, n01],
+                            type: 'A',
+                            center: {
+                                x: (n00.x + n10.x + n01.x) / 3,
+                                y: (n00.y + n10.y + n01.y) / 3
+                            }
+                        });
+                    }
+                    // Triangle B: (u+1,v) - (u,v+1) - (u+1,v+1)
+                    if (n10 && n01 && n11) {
+                        simplicialFaces.push({
+                            nodes: [n10, n11, n01],
+                            type: 'B',
+                            center: {
+                                x: (n10.x + n11.x + n01.x) / 3,
+                                y: (n10.y + n11.y + n01.y) / 3
+                            }
+                        });
+                    }
+                }
+            }
+
+            initParticles();
+            needsRebuildLattice = false;
+        }
+
+        // Particle Streamlines Engine
+        function initParticles() {
+            particles = [];
+            const count = state.particleDensity;
+            const R = state.gridRadius * 1.2;
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * R;
+                particles.push({
+                    x: Math.cos(angle) * dist,
+                    y: Math.sin(angle) * dist,
+                    life: Math.random() * 100,
+                    maxLife: 60 + Math.random() * 80,
+                    speed: 0.05 + Math.random() * 0.05
+                });
+            }
+        }
+
+        // Update Wavefield Values & Gradients across the Lattice
+        function updateWavefield() {
+            const r = state.radius;
+            const th1 = state.theta1;
+            const th2 = state.theta2;
+            const th3 = -(th1 + th2);
+
+            const z1 = Complex.fromPolar(r, th1);
+            const z2 = Complex.fromPolar(1.0, th2);
+            const z3 = Complex.fromPolar(1.0 / r, th3);
+
+            const q = state.q;
+            const t = state.time;
+
+            for (let i = 0; i < latticeNodes.length; i++) {
+                const node = latticeNodes[i];
+                let psi;
+                if (state.showG2) {
+                    psi = computeG2Wave(node.u, node.v, z1, z2, q, t);
+                } else {
+                    psi = computeMacdonaldWaveA2(node.u, node.v, z1, z2, z3, q, t);
+                }
+                node.psi = psi;
+            }
+
+            // Compute discrete vector probability current j = Im(ψ* ∇ψ)
+            const nodeMap = new Map();
+            for (let i = 0; i < latticeNodes.length; i++) {
+                nodeMap.set(`${latticeNodes[i].u},${latticeNodes[i].v}`, latticeNodes[i]);
+            }
+
+            for (let i = 0; i < latticeNodes.length; i++) {
+                const node = latticeNodes[i];
+                const u = node.u;
+                const v = node.v;
+                const nr = nodeMap.get(`${u+1},${v}`);
+                const nl = nodeMap.get(`${u-1},${v}`);
+                const nu = nodeMap.get(`${u},${v+1}`);
+                const nd = nodeMap.get(`${u},${v-1}`);
+
+                let j_u = 0;
+                let j_v = 0;
+
+                if (nr && nl) {
+                    j_u = (node.psi.conj().mul(nr.psi).im - node.psi.conj().mul(nl.psi).im) * 0.5;
+                } else if (nr) {
+                    j_u = node.psi.conj().mul(nr.psi).im;
+                }
+
+                if (nu && nd) {
+                    j_v = (node.psi.conj().mul(nu.psi).im - node.psi.conj().mul(nd.psi).im) * 0.5;
+                } else if (nu) {
+                    j_v = node.psi.conj().mul(nu.psi).im;
+                }
+
+                // Map (j_u, j_v) to Cartesian flux (j_x, j_y)
+                node.fluxX = j_u + 0.5 * j_v;
+                node.fluxY = (Math.sqrt(3.0) / 2.0) * j_v;
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Colormap Evaluation Helper
+        // -------------------------------------------------------------
+        function getNodeScalar(node) {
+            switch (state.field) {
+                case 'real': return node.psi.re;
+                case 'imag': return node.psi.im;
+                case 'abs': return node.psi.abs();
+                case 'arg': return (node.psi.arg() + Math.PI) / (2 * Math.PI);
+                case 'prob': return node.psi.abs() * node.psi.abs();
+                default: return node.psi.re;
+            }
+        }
+
+        function getColor(val, minVal, maxVal) {
+            let norm;
+            if (state.field === 'arg') {
+                norm = val;
+            } else {
+                const range = maxVal - minVal || 1e-5;
+                norm = (val - minVal) / range;
+            }
+            norm = Math.max(0, Math.min(1, norm));
+            const cmapFn = Colormaps[state.colormap] || Colormaps.viridis;
+            const rgb = cmapFn(norm);
+            return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        }
+
+        // -------------------------------------------------------------
+        // Rendering Pipeline: Main Canvas
+        // -------------------------------------------------------------
+        const mainCanvas = document.getElementById('main-canvas');
+        const ctx = mainCanvas.getContext('2d');
+
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            mainCanvas.width = window.innerWidth * dpr;
+            mainCanvas.height = window.innerHeight * dpr;
+            mainCanvas.style.width = `${window.innerWidth}px`;
+            mainCanvas.style.height = `${window.innerHeight}px`;
+            ctx.scale(dpr, dpr);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function renderMain() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.save();
+            ctx.translate(width / 2 + state.camera.x, height / 2 + state.camera.y);
+
+            const zoom = state.camera.zoom;
+
+            // 1. Compute min and max field values for normalization
+            let minVal = Infinity, maxVal = -Infinity;
+            for (let i = 0; i < latticeNodes.length; i++) {
+                const s = getNodeScalar(latticeNodes[i]);
+                if (s < minVal) minVal = s;
+                if (s > maxVal) maxVal = s;
+            }
+
+            // 2. Render Simplicial Faces (Ã₂ Triangulation)
+            if (state.showSimplices) {
+                for (let i = 0; i < simplicialFaces.length; i++) {
+                    const face = simplicialFaces[i];
+                    const [n0, n1, n2] = face.nodes;
+                    
+                    const val0 = getNodeScalar(n0);
+                    const val1 = getNodeScalar(n1);
+                    const val2 = getNodeScalar(n2);
+                    const avgVal = (val0 + val1 + val2) / 3;
+
+                    ctx.beginPath();
+                    ctx.moveTo(n0.x * zoom, n0.y * zoom);
+                    ctx.lineTo(n1.x * zoom, n1.y * zoom);
+                    ctx.lineTo(n2.x * zoom, n2.y * zoom);
+                    ctx.closePath();
+
+                    ctx.fillStyle = getColor(avgVal, minVal, maxVal);
+                    ctx.globalAlpha = 0.55;
+                    ctx.fill();
+
+                    // Simplex edge stroke
+                    ctx.lineWidth = 1.0;
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+                    ctx.globalAlpha = 0.4;
+                    ctx.stroke();
+                }
+            }
+
+            // 3. Render Dominant Weyl Chamber A⁺ & Walls
+            if (state.showWeyl) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                const extent = state.gridRadius * 1.5 * zoom;
+                // Wall 1: n = 0 => direction (1, 0)
+                ctx.lineTo(extent, 0);
+                // Dominant sector extends between (1,0) and (1/2, sqrt(3)/2)
+                ctx.lineTo(extent * 0.5, extent * (Math.sqrt(3)/2));
+                ctx.closePath();
+                ctx.fillStyle = "rgba(251, 191, 36, 0.08)";
+                ctx.fill();
+                ctx.lineWidth = 2.0;
+                ctx.strokeStyle = "rgba(251, 191, 36, 0.6)";
+                ctx.setLineDash([6, 4]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.restore();
+            }
+
+            // Chamber Wall Reflections
+            if (state.showWalls) {
+                ctx.save();
+                ctx.lineWidth = 1.2;
+                ctx.strokeStyle = "rgba(244, 63, 94, 0.4)";
+                ctx.setLineDash([4, 4]);
+                for (let k = 0; k < 6; k++) {
+                    const ang = k * Math.PI / 3;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(Math.cos(ang) * 600, Math.sin(ang) * 600);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+                ctx.restore();
+            }
+
+            // 4. Render G̃₂ 12-Root Vectors if enabled
+            if (state.showG2) {
+                ctx.save();
+                const originX = 0, originY = 0;
+                const shortRoots = [
+                    [1, 0], [0.5, Math.sqrt(3)/2], [-0.5, Math.sqrt(3)/2],
+                    [-1, 0], [-0.5, -Math.sqrt(3)/2], [0.5, -Math.sqrt(3)/2]
+                ];
+                const longRoots = [
+                    [1.5, Math.sqrt(3)/2], [0, Math.sqrt(3)], [-1.5, Math.sqrt(3)/2],
+                    [-1.5, -Math.sqrt(3)/2], [0, -Math.sqrt(3)], [1.5, -Math.sqrt(3)/2]
+                ];
+
+                // Short roots in Cyan
+                ctx.lineWidth = 2.0;
+                ctx.strokeStyle = "#00f0ff";
+                for (let r of shortRoots) {
+                    drawArrow(ctx, originX, originY, r[0] * zoom * 1.8, r[1] * zoom * 1.8, "#00f0ff", 8);
+                }
+
+                // Long roots in Gold
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = "#fbbf24";
+                for (let r of longRoots) {
+                    drawArrow(ctx, originX, originY, r[0] * zoom * 1.8, r[1] * zoom * 1.8, "#fbbf24", 10);
+                }
+                ctx.restore();
+            }
+
+            // 5. Render Probability Current Flux Arrows
+            if (state.showFlux) {
+                ctx.save();
+                const arrowScale = state.arrowScale * zoom * 0.4;
+                for (let i = 0; i < latticeNodes.length; i++) {
+                    const node = latticeNodes[i];
+                    const mag = Math.hypot(node.fluxX, node.fluxY);
+                    if (mag > 1e-4) {
+                        const len = Math.min(zoom * 0.6, mag * arrowScale);
+                        const angle = Math.atan2(node.fluxY, node.fluxX);
+                        const endX = node.x * zoom + Math.cos(angle) * len;
+                        const endY = node.y * zoom + Math.sin(angle) * len;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(node.x * zoom, node.y * zoom);
+                        ctx.lineTo(endX, endY);
+                        ctx.strokeStyle = "rgba(0, 240, 255, 0.65)";
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+
+                        // Arrow head
+                        ctx.fillStyle = "#00f0ff";
+                        ctx.beginPath();
+                        ctx.arc(endX, endY, 2.0, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.restore();
+            }
+
+            // 6. Render Flow Particles
+            if (state.showParticles) {
+                renderParticles(zoom);
+            }
+
+            // 7. Render Lattice Vertices
+            for (let i = 0; i < latticeNodes.length; i++) {
+                const node = latticeNodes[i];
+                const px = node.x * zoom;
+                const py = node.y * zoom;
+
+                ctx.beginPath();
+                ctx.arc(px, py, state.showTypes ? 4.5 : 3.0, 0, Math.PI * 2);
+
+                if (state.showTypes) {
+                    if (node.type === 0) ctx.fillStyle = "#00f0ff";
+                    else if (node.type === 1) ctx.fillStyle = "#fbbf24";
+                    else ctx.fillStyle = "#e879f9";
+                } else {
+                    ctx.fillStyle = "#ffffff";
+                }
+
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Highlight hovered node
+                if (state.hoveredNode === node) {
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                }
+            }
+
+            ctx.restore();
+        }
+
+        // Render Animated Streamline Particles
+        function renderParticles(zoom) {
+            ctx.save();
+            ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+            ctx.shadowColor = "#00f0ff";
+            ctx.shadowBlur = 6;
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                // Sample local flux vector via nearest/bilinear node
+                const w = cartesianToWeight(p.x, p.y);
+                const u_int = Math.round(w.u);
+                const v_int = Math.round(w.v);
+                
+                // Find node
+                const node = latticeNodes.find(n => n.u === u_int && n.v === v_int);
+                if (node) {
+                    p.x += node.fluxX * p.speed * 2.0;
+                    p.y += node.fluxY * p.speed * 2.0;
+                } else {
+                    p.x += (Math.random() - 0.5) * 0.05;
+                    p.y += (Math.random() - 0.5) * 0.05;
+                }
+
+                p.life++;
+                if (p.life > p.maxLife || Math.hypot(p.x, p.y) > state.gridRadius * 1.5) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * (state.gridRadius * 0.8);
+                    p.x = Math.cos(angle) * dist;
+                    p.y = Math.sin(angle) * dist;
+                    p.life = 0;
+                }
+
+                const alpha = Math.sin((p.life / p.maxLife) * Math.PI);
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.arc(p.x * zoom, p.y * zoom, 1.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function drawArrow(ctx, fromx, fromy, tox, toy, color, headlen) {
+            const dx = tox - fromx;
+            const dy = toy - fromy;
+            const angle = Math.atan2(dy, dx);
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // -------------------------------------------------------------
+        // Dual Spectrum & Satake Deltoid Canvas
+        // -------------------------------------------------------------
+        const specCanvas = document.getElementById('spectrum-canvas');
+        const specCtx = specCanvas.getContext('2d');
+
+        function renderSpectrum() {
+            const w = specCanvas.width;
+            const h = specCanvas.height;
+            specCtx.clearRect(0, 0, w, h);
+
+            const cx = w / 2;
+            const cy = h / 2;
+            const scale = (w * 0.42) / (3.2 * state.q);
+
+            // Draw Coordinate Axes & Ramanujan Tempered Bound Disk
+            specCtx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+            specCtx.lineWidth = 1.0;
+            specCtx.beginPath();
+            specCtx.moveTo(0, cy); specCtx.lineTo(w, cy);
+            specCtx.moveTo(cx, 0); specCtx.lineTo(cx, h);
+            specCtx.stroke();
+
+            // Draw Satake Hypocycloid Deltoid Curve: e1(theta1, theta2) = e^{it1} + e^{it2} + e^{-i(t1+t2)}
+            specCtx.save();
+            specCtx.strokeStyle = "rgba(0, 240, 255, 0.4)";
+            specCtx.lineWidth = 1.8;
+            specCtx.beginPath();
+
+            const q = state.q;
+            const steps = 180;
+            // Deltoid perimeter has theta1 + 2*theta2 = 0
+            for (let i = 0; i <= steps; i++) {
+                const t = (i / steps) * Math.PI * 2;
+                // Boundary curve of the 3-cusped deltoid
+                const re = q * (2 * Math.cos(t) + Math.cos(2 * t));
+                const im = q * (2 * Math.sin(t) - Math.sin(2 * t));
+                const px = cx + re * scale;
+                const py = cy - im * scale;
+                if (i === 0) specCtx.moveTo(px, py);
+                else specCtx.lineTo(px, py);
+            }
+            specCtx.closePath();
+            specCtx.fillStyle = "rgba(0, 240, 255, 0.05)";
+            specCtx.fill();
+            specCtx.stroke();
+
+            // Draw Current Hecke Eigenvalue Marker λ_1 = q e_1(z)
+            const r = state.radius;
+            const th1 = state.theta1;
+            const th2 = state.theta2;
+            const th3 = -(th1 + th2);
+
+            const z1 = Complex.fromPolar(r, th1);
+            const z2 = Complex.fromPolar(1.0, th2);
+            const z3 = Complex.fromPolar(1.0 / r, th3);
+
+            const e1 = z1.add(z2).add(z3);
+            const e2 = z1.mul(z2).add(z2.mul(z3)).add(z3.mul(z1));
+
+            const lambda1 = e1.scale(q);
+            const lambda2 = e2.scale(q);
+            const deg = 2 * (q * q + q + 1);
+            const lambdaDelta = (lambda1.re + lambda2.re) - deg;
+            const spectralGap = 2 * Math.pow(q - 1, 2);
+
+            const markerX = cx + lambda1.re * scale;
+            const markerY = cy - lambda1.im * scale;
+
+            specCtx.beginPath();
+            specCtx.arc(markerX, markerY, 5.0, 0, Math.PI * 2);
+            specCtx.fillStyle = "#fbbf24";
+            specCtx.shadowColor = "#fbbf24";
+            specCtx.shadowBlur = 10;
+            specCtx.fill();
+            specCtx.shadowBlur = 0;
+
+            specCtx.restore();
+
+            // Update Telemetry HUD text
+            document.getElementById('val-lambda1').innerText = `${lambda1.re >= 0 ? '+' : ''}${lambda1.re.toFixed(2)} ${lambda1.im >= 0 ? '+' : '-'}${Math.abs(lambda1.im).toFixed(2)}i`;
+            document.getElementById('val-lambda2').innerText = `${lambda2.re >= 0 ? '+' : ''}${lambda2.re.toFixed(2)} ${lambda2.im >= 0 ? '+' : '-'}${Math.abs(lambda2.im).toFixed(2)}i`;
+            document.getElementById('val-lambdadelta').innerText = `${lambdaDelta.toFixed(2)}`;
+            document.getElementById('val-gap').innerText = `${spectralGap.toFixed(1)} [2(q-1)²]`;
+            
+            const tempTop = 6 * q - deg;
+            const tempBot = -3 * q - deg;
+            document.getElementById('val-tempband').innerText = `[${tempBot.toFixed(1)}, ${tempTop.toFixed(1)}] | Bound: λ₀ = 0`;
+        }
+
+        // -------------------------------------------------------------
+        // Interaction: Hover, Pan, Zoom & Spectrum Click
+        // -------------------------------------------------------------
+        const vpContainer = document.getElementById('viewport-container');
+        const tooltip = document.getElementById('tooltip');
+
+        vpContainer.addEventListener('mousedown', (e) => {
+            if (e.target !== mainCanvas) return;
+            state.camera.isDragging = true;
+            state.camera.lastX = e.clientX;
+            state.camera.lastY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => {
+            state.camera.isDragging = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (state.camera.isDragging) {
+                const dx = e.clientX - state.camera.lastX;
+                const dy = e.clientY - state.camera.lastY;
+                state.camera.x += dx;
+                state.camera.y += dy;
+                state.camera.lastX = e.clientX;
+                state.camera.lastY = e.clientY;
+            } else {
+                // Check hovering over nodes
+                const rect = mainCanvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left - (window.innerWidth / 2 + state.camera.x);
+                const mouseY = e.clientY - rect.top - (window.innerHeight / 2 + state.camera.y);
+                const zoom = state.camera.zoom;
+
+                let hovered = null;
+                for (let i = 0; i < latticeNodes.length; i++) {
+                    const node = latticeNodes[i];
+                    const dx = mouseX - node.x * zoom;
+                    const dy = mouseY - node.y * zoom;
+                    if (Math.hypot(dx, dy) < 10) {
+                        hovered = node;
+                        break;
+                    }
+                }
+                state.hoveredNode = hovered;
+
+                if (hovered) {
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = `${e.clientX + 14}px`;
+                    tooltip.style.top = `${e.clientY + 14}px`;
+                    tooltip.innerHTML = `
+                        <strong style="color:var(--color-cyan);">Vertex (u=${hovered.u}, v=${hovered.v})</strong><br>
+                        Type: <span style="color:${hovered.type===0?'#00f0ff':hovered.type===1?'#fbbf24':'#e879f9'};">Type ${hovered.type}</span><br>
+                        ψ: ${hovered.psi.re.toFixed(4)} + ${hovered.psi.im.toFixed(4)}i<br>
+                        |ψ|: ${hovered.psi.abs().toFixed(4)}<br>
+                        Flux: (${hovered.fluxX.toFixed(3)}, ${hovered.fluxY.toFixed(3)})
+                    `;
+                } else {
+                    tooltip.style.display = 'none';
+                }
+            }
+        });
+
+        vpContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const factor = e.deltaY < 0 ? 1.1 : 0.9;
+            state.camera.zoom = Math.max(12, Math.min(160, state.camera.zoom * factor));
+        }, { passive: false });
+
+        // Click on Satake Spectrum Canvas to interactively steer eigenvalues
+        specCanvas.addEventListener('mousedown', (e) => {
+            const rect = specCanvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const cx = specCanvas.width / 2;
+            const cy = specCanvas.height / 2;
+            const scale = (specCanvas.width * 0.42) / (3.2 * state.q);
+            
+            const re = (mouseX - cx) / scale;
+            const im = -(mouseY - cy) / scale;
+            
+            // Map (re, im) to approximate (theta1, theta2)
+            const angle = Math.atan2(im, re);
+            state.theta1 = angle * 0.8;
+            state.theta2 = -angle * 0.4;
+            
+            document.getElementById('slider-theta1').value = state.theta1;
+            document.getElementById('slider-theta2').value = state.theta2;
+            document.getElementById('val-theta1').innerText = state.theta1.toFixed(2);
+            document.getElementById('val-theta2').innerText = state.theta2.toFixed(2);
+        });
+
+        // -------------------------------------------------------------
+        // UI Bindings & Tabs
+        // -------------------------------------------------------------
+        // Tabs
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+                document.getElementById(`tab-${target}`).style.display = 'block';
+            });
+        });
+
+        // Base Prime q pills
+        const qPills = document.querySelectorAll('[data-q]');
+        qPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                qPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                state.q = parseInt(pill.dataset.q);
+                document.getElementById('lbl-q').innerText = `q = ${state.q}`;
+                needsRebuildLattice = true;
+            });
+        });
+
+        // Satake Sliders
+        const sTheta1 = document.getElementById('slider-theta1');
+        sTheta1.addEventListener('input', (e) => {
+            state.theta1 = parseFloat(e.target.value);
+            document.getElementById('val-theta1').innerText = state.theta1.toFixed(2);
+        });
+
+        const sTheta2 = document.getElementById('slider-theta2');
+        sTheta2.addEventListener('input', (e) => {
+            state.theta2 = parseFloat(e.target.value);
+            document.getElementById('val-theta2').innerText = state.theta2.toFixed(2);
+        });
+
+        const sRadius = document.getElementById('slider-radius');
+        sRadius.addEventListener('input', (e) => {
+            state.radius = parseFloat(e.target.value);
+            document.getElementById('val-radius').innerText = state.radius.toFixed(2);
+        });
+
+        const sSpeed = document.getElementById('slider-speed');
+        sSpeed.addEventListener('input', (e) => {
+            state.timeSpeed = parseFloat(e.target.value);
+            document.getElementById('val-speed').innerText = `${state.timeSpeed.toFixed(1)}x`;
+        });
+
+        const sGridRad = document.getElementById('slider-grid-rad');
+        sGridRad.addEventListener('input', (e) => {
+            state.gridRadius = parseInt(e.target.value);
+            document.getElementById('lbl-grid-rad').innerText = `R = ${state.gridRadius}`;
+            needsRebuildLattice = true;
+        });
+
+        // Toggles
+        document.getElementById('chk-simplices').addEventListener('change', (e) => state.showSimplices = e.target.checked);
+        document.getElementById('chk-types').addEventListener('change', (e) => state.showTypes = e.target.checked);
+        document.getElementById('chk-g2').addEventListener('change', (e) => state.showG2 = e.target.checked);
+        document.getElementById('chk-weyl').addEventListener('change', (e) => state.showWeyl = e.target.checked);
+        document.getElementById('chk-walls').addEventListener('change', (e) => state.showWalls = e.target.checked);
+        document.getElementById('chk-flux').addEventListener('change', (e) => state.showFlux = e.target.checked);
+        document.getElementById('chk-particles').addEventListener('change', (e) => state.showParticles = e.target.checked);
+
+        // Colormap & Field Pills
+        document.querySelectorAll('[data-field]').forEach(p => {
+            p.addEventListener('click', () => {
+                document.querySelectorAll('[data-field]').forEach(b => b.classList.remove('active'));
+                p.classList.add('active');
+                state.field = p.dataset.field;
+            });
+        });
+
+        document.querySelectorAll('[data-cmap]').forEach(p => {
+            p.addEventListener('click', () => {
+                document.querySelectorAll('[data-cmap]').forEach(b => b.classList.remove('active'));
+                p.classList.add('active');
+                state.colormap = p.dataset.cmap;
+            });
+        });
+
+        // Presets Engine
+        const presets = {
+            ground: { theta1: 0.0, theta2: 0.0, radius: 1.0, q: 3, showG2: false },
+            ramanujan: { theta1: 2.094, theta2: 2.094, radius: 1.0, q: 3, showG2: false },
+            g2star: { theta1: 0.785, theta2: 1.57, radius: 1.0, q: 3, showG2: true },
+            vortex: { theta1: 1.25, theta2: -0.85, radius: 1.0, q: 3, showG2: false },
+            gelbart: { theta1: 1.2673 * 2, theta2: 0.0, radius: 1.0, q: 3, showG2: false },
+            buhler: { theta1: (2 * Math.PI) / 5, theta2: -(2 * Math.PI) / 5, radius: 1.0, q: 3, showG2: false },
+            dirac: { theta1: (2 * Math.PI) / 3, theta2: (2 * Math.PI) / 3, radius: 1.0, q: 3, showG2: false }
+        };
+
+        const presetBtns = document.querySelectorAll('[data-preset]');
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                presetBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const p = presets[btn.dataset.preset];
+                if (p) {
+                    state.theta1 = p.theta1;
+                    state.theta2 = p.theta2;
+                    state.radius = p.radius;
+                    state.q = p.q;
+                    state.showG2 = p.showG2;
+                    
+                    // Update controls
+                    sTheta1.value = state.theta1;
+                    sTheta2.value = state.theta2;
+                    sRadius.value = state.radius;
+                    document.getElementById('val-theta1').innerText = state.theta1.toFixed(2);
+                    document.getElementById('val-theta2').innerText = state.theta2.toFixed(2);
+                    document.getElementById('val-radius').innerText = state.radius.toFixed(2);
+                    document.getElementById('chk-g2').checked = state.showG2;
+                }
+            });
+        });
+
+        // Bottom Actions
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        btnPlayPause.addEventListener('click', () => {
+            state.isPlaying = !state.isPlaying;
+            btnPlayPause.innerHTML = state.isPlaying ? `<span>⏸️</span> Pause` : `<span>▶️</span> Play`;
+        });
+
+        document.getElementById('btn-reset-view').addEventListener('click', () => {
+            state.camera.x = 0;
+            state.camera.y = 0;
+            state.camera.zoom = 48;
+        });
+
+        // Export Snapshot
+        document.getElementById('btn-snapshot').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `bruhat_tits_macdonald_q${state.q}_t${state.time.toFixed(1)}.png`;
+            link.href = mainCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // Modal Guide
+        const helpModal = document.getElementById('help-modal');
+        document.getElementById('btn-help').addEventListener('click', () => helpModal.style.display = 'flex');
+        document.getElementById('btn-close-modal').addEventListener('click', () => helpModal.style.display = 'none');
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) helpModal.style.display = 'none';
+        });
+
+        // -------------------------------------------------------------
+        // Animation Loop
+        // -------------------------------------------------------------
+        let lastTimestamp = 0;
+
+        function animationLoop(timestamp) {
+            if (!lastTimestamp) lastTimestamp = timestamp;
+            const dt = (timestamp - lastTimestamp) / 1000;
+            lastTimestamp = timestamp;
+
+            if (state.isPlaying) {
+                state.time += dt * state.timeSpeed;
+                document.getElementById('lbl-time').innerText = `t = ${state.time.toFixed(2)}`;
+            }
+
+            if (needsRebuildLattice) {
+                buildLattice();
+            }
+
+            updateWavefield();
+            renderMain();
+            renderSpectrum();
+
+            requestAnimationFrame(animationLoop);
+        }
+
+        // Initialize and Start
+        buildLattice();
+        requestAnimationFrame(animationLoop);
+
+    })();
+    </script>
+</body>
+</html>

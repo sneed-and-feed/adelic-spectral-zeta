@@ -27,3 +27,5 @@ import Formalization.OptimalRestrictedRewiring
 import Formalization.UndirectedGapExponent
 import Formalization.DynamicalZetaFactorization
 import Formalization.BuildingPGL3
+import Formalization.BuildingG2
+import Formalization.BuildingG2LFunction
