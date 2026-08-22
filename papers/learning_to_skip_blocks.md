@@ -50,7 +50,7 @@ $$g_{\ell,h} = \sigma\left(\frac{z_{\ell,h} + \log U_1 - \log U_2}{\tau}\right),
 
 The temperature is annealed linearly from $\tau = 1.0$ to $\tau = 0.1$ over the first 80% of training. As $\tau \to 0$, the gate distribution concentrates on $\{0, 1\}$, forcing each head to commit to either dense attention ($g \approx 0$, tree bias suppressed) or sparse tree routing ($g \approx 1$, tree bias amplified).
 
-At inference time, we simply threshold: $g = \mathbb{1}[z > 0]$.
+At inference time, we simply threshold: $g = \mathbb{1}[z \gt 0]$.
 
 ### 2.3 Triton Block-Sparse Kernel
 
@@ -72,7 +72,7 @@ The complete pipeline operates in three phases:
 
 1. **Phase A (Training).** Train with standard PyTorch dense attention, augmented by the soft Gumbel-Sigmoid tree bias. Gradients flow through the reparameterized gates, allowing the model to learn which heads benefit from hierarchical routing.
 
-2. **Phase B (Extraction).** After convergence, read off the polarized gate values. Map each gate probability to a discrete routing depth: $d_h = D$ if $g_h > 0.5$, else $d_h = 0$.
+2. **Phase B (Extraction).** After convergence, read off the polarized gate values. Map each gate probability to a discrete routing depth: $d_h = D$ if $g_h \gt 0.5$, else $d_h = 0$.
 
 3. **Phase C (Inference).** Inject the extracted routing depths into the Triton kernel. The kernel executes the mathematically equivalent attention computation using only the blocks that pass the routing check.
 

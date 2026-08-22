@@ -12,34 +12,46 @@
 We establish the exact, closed-form algebraic and analytic structure of the rational Fredholm determinant and dynamical zeta function for the directed Collatz relation matrices $D_n$ on the finite projective quotient rings $\mathbb{Z}/2^n\mathbb{Z}$. By exploiting the deck involution symmetry $\tau: x \mapsto x + 2^{n-1}$ and the action of the affine transfer operator on the Pontryagin dual $\widehat{\mathbb{Z}/2^n\mathbb{Z}}$, we prove that the multiplicative unit group $(\mathbb{Z}/2^n\mathbb{Z})^\times \cong C_2 \times C_{2^{n-2}}$ decomposes under the multiplication-by-3 endomorphism into exactly two disjoint monomial cycles $C_1^{(n)}$ and $C_2^{(n)}$ of length $L_n = 2^{n-2}$.
 
 Through the cyclic weighted shift theorem formalized in `formalization/Formalization/CyclicWeightCharpoly.lean` and the cyclotomic product identity in `formalization/Formalization/CyclotomicProduct.lean`, we compute the exact cycle weights $W_{C_1}^{(n)}$ and $W_{C_2}^{(n)}$, proving that their product satisfies $W_{C_1}^{(n)} W_{C_2}^{(n)} = 2$ with constant modulus $|W_{C_1}^{(n)}| = \sqrt{2}$. This yields an explicit, closed-form factorization of the Fredholm determinant:
+
 $$\det(I - u D_n) = (1 - 2u)(1 - 2u^2) \prod_{k=3}^n \left(1 + 2 u^{2^{k-1}}\right)$$
 
 We define the dynamical zeta function $\zeta_n(u) = 1/\det(I - u D_n)$ and establish:
 1. **Analytic Continuation & Radius of Convergence:** $\zeta_n(u)$ has radius of convergence $R = 1/2$ (dictated by the Perron-Frobenius eigenvalue $\lambda_0 = 2$) and extends meromorphically to the whole complex plane with exactly $2^n$ poles.
 2. **Concentric Spectral Condensation:** For each level $k \in \{3, \dots, n\}$, the $2^{k-1}$ poles of the $k$-th twisted factor lie uniformly distributed on the concentric geometric circle $|u| = 2^{-2^{-(k-1)}}$. As $k \to \infty$, these concentric circles condense exponentially onto the unit circle $|u| = 1$ at rate $1 - r_k \sim \ln(2) 2^{-(k-1)}$.
 3. **Exact Closed-Form Dynamical Trace Formula:** For all $m \ge 1$,
-   $$\text{Tr}(D_n^m) = 2^m + [2 \mid m] 2 \cdot 2^{m/2} + \sum_{k=3}^n [2^{k-1} \mid m] 2^{k-1} (-1)^{m / 2^{k-1}} 2^{m / 2^{k-1}}$$
+
+$$\text{Tr}(D_n^m) = 2^m + [2 \mid m] 2 \cdot 2^{m/2} + \sum_{k=3}^n [2^{k-1} \mid m] 2^{k-1} (-1)^{m / 2^{k-1}} 2^{m / 2^{k-1}}$$
+
    which exhibits strict parity filtering: for all odd $m$, $\text{Tr}(D_n^m) = 2^m$ identically for all $n \ge 1$.
 4. **Ihara-Bass Geodesic Duality:** We establish the formal algebraic bridge between the directed transfer determinant and the Ihara-Bass formula formalized in `formalization/Formalization/IharaBass.lean` on the underlying 4-regular Schreier graph $\Gamma_n$, elucidating the precise dichotomy between directed Artin-Mazur periodic orbit counting and undirected non-backtracking geodesic counting.
 
-All theoretical results are verified symbolically and numerically to machine precision ($< 10^{-15}$) via the dedicated test suite at `experiments/collatz_dynamical_zeta.py`.
+All theoretical results are verified symbolically and numerically to machine precision ($\lt 10^{-15}$) via the dedicated test suite at `experiments/collatz_dynamical_zeta.py`.
 
 ---
 
 ## 1. Introduction and Adelic Dynamical Foundations
 
 The 2-adic integers $\mathbb{Z}_2 = \varprojlim \mathbb{Z}/2^n\mathbb{Z}$ form a compact topological ring equipped with normalized Haar measure $\mu_2$. The shortcut Collatz endomorphism $T: \mathbb{Z}_2 \to \mathbb{Z}_2$ is defined by:
+
 $$T(x) = \begin{cases} \frac{x}{2} & \text{if } x \equiv 0 \pmod{2} \\ \frac{3x+1}{2} & \text{if } x \equiv 1 \pmod{2} \end{cases}$$
+
 The map $T$ is a continuous, nonsingular 2-to-1 covering of $\mathbb{Z}_2$ with inverse branches:
+
 $$g_0(x) = 2x, \qquad g_1(x) = \frac{2x - 1}{3}$$
+
 Both branches contract the 2-adic ultrametric distance $d_2(x, y) = |x - y|_2$ by the uniform factor $1/2$:
+
 $$|g_0(x) - g_0(y)|_2 = \frac{1}{2} |x - y|_2, \qquad |g_1(x) - g_1(y)|_2 = \frac{1}{2} |x - y|_2$$
 
 ### 1.1 The Directed Collatz Relation Graph $\mathcal{D}_n$
 At each finite resolution $n \ge 1$, the dynamics of $T$ induce a directed multi-relation on the quotient ring $\mathbb{Z}/2^n\mathbb{Z}$. The dual transition matrix $D_n \in \text{Mat}_{2^n \times 2^n}(\mathbb{Z})$ (formalized in `formalization/Formalization/CollatzRelMatrix.lean`) is defined by:
+
 $$D_n(x, y) = \begin{cases} 1 & \text{if } y \equiv 3x \pmod{2^n} \text{ or } y \equiv 3x - 1 \pmod{2^n} \\ 0 & \text{otherwise} \end{cases}$$
+
 The matrix $D_n$ operates on test functions $f: \mathbb{Z}/2^n\mathbb{Z} \to \mathbb{C}$ by:
+
 $$(D_n f)(x) = f(3x) + f(3x - 1)$$
+
 Every vertex $x \in \mathbb{Z}/2^n\mathbb{Z}$ has out-degree 2 (edges directed to $3x$ and $3x-1$) and in-degree 2 (preimages under $y \mapsto 3x, 3x-1$). Thus $D_n$ is a 2-regular directed relation matrix.
 
 ```mermaid
@@ -52,23 +64,33 @@ graph LR
 
 ### 1.2 The Deck Involution and Inductive Tower
 The fundamental topological symmetry of the covering $\mathbb{Z}/2^n\mathbb{Z} \to \mathbb{Z}/2^{n-1}\mathbb{Z}$ is the deck transformation $\tau: \mathbb{Z}/2^n\mathbb{Z} \to \mathbb{Z}/2^n\mathbb{Z}$:
+
 $$\tau(x) = x + 2^{n-1} \pmod{2^n}$$
+
 Because $3 \cdot 2^{n-1} = 2^{n-1} + 2^n \equiv 2^{n-1} \pmod{2^n}$, the Collatz map commutes strictly with $\tau$:
+
 $$3 \tau(x) = \tau(3x), \qquad 3 \tau(x) - 1 = \tau(3x - 1)$$
+
 Consequently, $D_n(\tau x, \tau y) = D_n(x, y)$.
 
 Under the orthogonal Hadamard basis change $H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} \otimes I_{2^{n-1}}$, the space $L^2(\mathbb{Z}/2^n\mathbb{Z})$ decomposes into the $\tau$-invariant ($T$-even) and $\tau$-anti-invariant ($T$-odd) subspaces:
+
 $$L^2(\mathbb{Z}/2^n\mathbb{Z}) = \mathcal{H}_n^+ \oplus \mathcal{H}_n^-$$
+
 where:
 - $\mathcal{H}_n^+ = \{f \mid f(x + 2^{n-1}) = f(x)\} \cong L^2(\mathbb{Z}/2^{n-1}\mathbb{Z})$
 - $\mathcal{H}_n^- = \{f \mid f(x + 2^{n-1}) = -f(x)\}$
 
 As proven in `formalization/Formalization/CollatzRelMatrix.lean` (`D'_block_diag` and `weightedDirMatrix_eq`), the operator $D_n$ block-diagonalizes as:
+
 $$D_n \sim \begin{pmatrix} D_{n-1} & 0 \\ 0 & S_n \end{pmatrix}$$
+
 where $S_n \in \text{Mat}_{2^{n-1} \times 2^{n-1}}(\mathbb{Z})$ is the *twisted block* acting on $\mathcal{H}_n^-$:
+
 $$S_n(v, u) = D_n(v, u) - D_n(v, u + 2^{n-1})$$
 
 Iterating this one-step decomposition produces the *Inductive Spectral Tower*:
+
 $$\text{Spec}(D_n) = \text{Spec}(D_1) \cup \bigcup_{k=2}^n \text{Spec}(S_k)$$
 
 ---
@@ -78,13 +100,16 @@ $$\text{Spec}(D_n) = \text{Spec}(D_1) \cup \bigcup_{k=2}^n \text{Spec}(S_k)$$
 To determine the spectrum of the twisted blocks $S_n$, we transform to the Pontryagin dual group of additive Fourier characters $\widehat{\mathbb{Z}/2^n\mathbb{Z}}$.
 
 Let $\zeta_{2^n} = \exp(2\pi i / 2^n)$ be a primitive $2^n$-th root of unity. The character basis is given by:
+
 $$\chi_k(x) = \zeta_{2^n}^{k x}, \qquad k, x \in \mathbb{Z}/2^n\mathbb{Z}$$
 
 ### 2.1 Character Action of $D_n$
 The action of $D_n$ on an additive character $\chi_k$ is computed directly (formalized in `formalization/Formalization/DirectedSpectrum.lean`, lemma `D_n_chi`):
+
 $$(D_n \chi_k)(x) = \chi_k(3x) + \chi_k(3x - 1) = \zeta_{2^n}^{3 k x} + \zeta_{2^n}^{k(3x - 1)} = \left(1 + \zeta_{2^n}^{-k}\right) \zeta_{2^n}^{3 k x} = \left(1 + \zeta_{2^n}^{-k}\right) \chi_{3k}(x)$$
 
 Therefore, in the Fourier character basis, $D_n$ acts as a **weighted monomial shift**:
+
 $$D_n: \chi_k \longmapsto w_n(k) \chi_{3k}, \qquad w_n(k) = 1 + \zeta_{2^n}^{-k}$$
 
 ```mermaid
@@ -96,19 +121,26 @@ graph LR
 
 ### 2.2 Identification of the $T$-Odd Characters
 The subspace $\mathcal{H}_n^-$ of $\tau$-odd functions is spanned precisely by the characters $\chi_k$ where $k$ is **odd**, i.e., $k \in (\mathbb{Z}/2^n\mathbb{Z})^\times$:
+
 $$\chi_k(x + 2^{n-1}) = \zeta_{2^n}^{k x + k 2^{n-1}} = \zeta_{2^n}^{k x} \cdot (-1)^k = -\chi_k(x) \iff k \equiv 1 \pmod{2}$$
+
 Thus, $\dim \mathcal{H}_n^- = \phi(2^n) = 2^{n-1}$.
 
 ### 2.3 Structure of the Unit Group $(\mathbb{Z}/2^n\mathbb{Z})^\times$
 For $n \ge 3$, the unit group $(\mathbb{Z}/2^n\mathbb{Z})^\times$ has the classic 2-adic Galois decomposition:
+
 $$(\mathbb{Z}/2^n\mathbb{Z})^\times \cong \langle -1 \pmod{2^n} \rangle \times \langle 3 \pmod{2^n} \rangle \cong C_2 \times C_{2^{n-2}}$$
+
 The subgroup generated by $3$ has exact order $L_n = 2^{n-2}$.
 
 Under the shift action $k \mapsto 3k \pmod{2^n}$, the $2^{n-1}$ odd characters partition into **exactly two disjoint cycles**:
 1. **Positive Cycle $C_1^{(n)}$ (the orbit of $+1$):**
-   $$C_1^{(n)} = \left\{ 1, 3, 9, \dots, 3^{2^{n-2}-1} \pmod{2^n} \right\}$$
+
+$$C_1^{(n)} = \left\{ 1, 3, 9, \dots, 3^{2^{n-2}-1} \pmod{2^n} \right\}$$
+
 2. **Negative Cycle $C_2^{(n)}$ (the orbit of $-1$):**
-   $$C_2^{(n)} = -C_1^{(n)} = \left\{ -1, -3, -9, \dots, -3^{2^{n-2}-1} \pmod{2^n} \right\}$$
+
+$$C_2^{(n)} = -C_1^{(n)} = \left\{ -1, -3, -9, \dots, -3^{2^{n-2}-1} \pmod{2^n} \right\}$$
 
 For $n = 2$, $(\mathbb{Z}/4\mathbb{Z})^\times = \{1, 3\}$ has order 2, with $C_1^{(2)} = \{1\}$ and $C_2^{(2)} = \{3 = -1\}$, each of length $L_2 = 2^0 = 1$.
 
@@ -124,31 +156,46 @@ w(k_1) & 0 & \dots & 0 & 0 \\
 
 **Theorem 2.1 (Cyclic Weight Determinant Formula, Lean: `CyclicWeightCharpoly.lean`):**  
 *Let $M_C$ be a cyclic weighted shift matrix of dimension $L$ with edge weights $W(k)$. Then:*
+
 $$\det(X I - M_C) = X^L - \prod_{k \in C} W(k)$$
 
 *Proof.* Expanding the determinant along the first row via the Laplace expansion yields:
+
 $$\det(X I - M_C) = X \det(X I_{L-1} - \text{Shift}_{L-1}) + (-1)^{L+1} (-w(k_L)) \det(\text{UpperBidiagonal})$$
+
 The submatrix on the left is strictly lower-triangular with diagonal $X$, giving $X^{L-1}$. The submatrix on the right is upper-bidiagonal with diagonal entries $-w(k_j)$, giving $(-1)^{L-1} \prod_{j=1}^{L-1} w(k_j)$. Multiplying through yields $X^L - \prod_{j=1}^L w(k_j)$, as proved in `charpoly_cyclicWeightMatrix`. $\blacksquare$
 
 ### 2.5 Evaluation of Cycle Weights and Cyclotomic Products
 The cycle weight $W_{C_1}^{(n)}$ is the product of the character weights along the orbit $C_1^{(n)}$:
+
 $$W_{C_1}^{(n)} = \prod_{x \in C_1^{(n)}} \left(1 + \zeta_{2^n}^{-x}\right), \qquad W_{C_2}^{(n)} = \prod_{x \in C_2^{(n)}} \left(1 + \zeta_{2^n}^{-x}\right)$$
 
 **Theorem 2.2 (Weight Product Identity, Lean: `CyclotomicProduct.lean`):**  
 *For all $n \ge 2$, the cycle weights satisfy:*
+
 $$W_{C_1}^{(n)} \cdot W_{C_2}^{(n)} = 2$$
+
 *and complex conjugation symmetry:*
+
 $$W_{C_2}^{(n)} = \overline{W_{C_1}^{(n)}}$$
+
 *Consequently, both weights have exact constant modulus:*
+
 $$\left| W_{C_1}^{(n)} \right| = \left| W_{C_2}^{(n)} \right| = \sqrt{2} = 2^{1/2}$$
 
 *Proof.* 
 Since $(\mathbb{Z}/2^n\mathbb{Z})^\times = C_1^{(n)} \cup C_2^{(n)}$ is a disjoint partition:
+
 $$W_{C_1}^{(n)} \cdot W_{C_2}^{(n)} = \prod_{x \in (\mathbb{Z}/2^n\mathbb{Z})^\times} \left(1 + \zeta_{2^n}^{-x}\right)$$
+
 The map $x \mapsto \mu = -\zeta_{2^n}^{-x}$ is a bijection from $(\mathbb{Z}/2^n\mathbb{Z})^\times$ to the set of primitive $2^n$-th roots of unity $\mu_{2^n}^*$. Thus:
+
 $$\prod_{x \in (\mathbb{Z}/2^n\mathbb{Z})^\times} \left(1 + \zeta_{2^n}^{-x}\right) = \prod_{\mu \in \mu_{2^n}^*} (1 - \mu) = \Phi_{2^n}(1)$$
+
 where $\Phi_{2^n}(X) = X^{2^{n-1}} + 1$ is the $2^n$-th cyclotomic polynomial. Evaluating at $X = 1$:
+
 $$\Phi_{2^n}(1) = 1^{2^{n-1}} + 1 = 2$$
+
 Since $C_2^{(n)} = -C_1^{(n)}$ and $\overline{1 + \zeta_{2^n}^{-x}} = 1 + \zeta_{2^n}^{x} = 1 + \zeta_{2^n}^{-(-x)}$, we have $W_{C_2}^{(n)} = \overline{W_{C_1}^{(n)}}$.  
 Therefore $|W_{C_1}^{(n)}|^2 = W_{C_1}^{(n)} \overline{W_{C_1}^{(n)}} = W_{C_1}^{(n)} W_{C_2}^{(n)} = 2$, so $|W_{C_1}^{(n)}| = \sqrt{2}$. $\blacksquare$
 
@@ -156,35 +203,50 @@ Therefore $|W_{C_1}^{(n)}|^2 = W_{C_1}^{(n)} \overline{W_{C_1}^{(n)}} = W_{C_1}^
 For $n \ge 3$, the cycle weight $W_{C_1}^{(n)}$ has real part $\text{Re}(W_{C_1}^{(n)}) = 0$. Specifically:
 - For $n = 2$: $W_{C_1}^{(2)} = 1 - i = \sqrt{2} e^{-i \pi/4}$, $W_{C_2}^{(2)} = 1 + i = \sqrt{2} e^{i \pi/4}$.
   Here $L_2 = 1$, and the characteristic polynomial of $S_2$ is:
-  $$\det(X I - S_2) = (X - \sqrt{2})(X + \sqrt{2}) = X^2 - 2$$
+
+$$\det(X I - S_2) = (X - \sqrt{2})(X + \sqrt{2}) = X^2 - 2$$
+
 - For $n = 3$: $W_{C_1}^{(3)} = -i \sqrt{2}$, $W_{C_2}^{(3)} = +i \sqrt{2}$.
   Here $L_3 = 2$, and:
-  $$\det(X I - S_3) = (X^2 - (-i\sqrt{2}))(X^2 - (+i\sqrt{2})) = X^4 - (i^2 \cdot 2) = X^4 + 2$$
+
+$$\det(X I - S_3) = (X^2 - (-i\sqrt{2}))(X^2 - (+i\sqrt{2})) = X^4 - (i^2 \cdot 2) = X^4 + 2$$
+
 - For $n \ge 4$: $W_{C_1}^{(n)} = i (-1)^{n-1} \sqrt{2}$, yielding:
-  $$\det(X I - S_n) = (X^{2^{n-2}} - W_{C_1}^{(n)})(X^{2^{n-2}} - W_{C_2}^{(n)}) = X^{2^{n-1}} + 2$$
+
+$$\det(X I - S_n) = (X^{2^{n-2}} - W_{C_1}^{(n)})(X^{2^{n-2}} - W_{C_2}^{(n)}) = X^{2^{n-1}} + 2$$
 
 ---
 
 ## 3. Closed-Form Rational Fredholm Determinants
 
 The Fredholm determinant $\det(I - u D_n)$ is related to the characteristic polynomial by the standard algebraic inversion:
+
 $$\det(I - u D_n) = u^{2^n} \det\left(u^{-1} I - D_n\right)$$
 
 ### 3.1 Main Theorem: Exact Factorization of $\det(I - u D_n)$
 
 **Theorem 3.1 (Rational Fredholm Determinant Formula):**  
 *For every $n \ge 1$, the Fredholm determinant of the Collatz relation matrix $D_n$ is an exact integer polynomial given by:*
+
 $$\det(I - u D_n) = (1 - 2u) (1 - 2u^2) \prod_{k=3}^n \left(1 + 2 u^{2^{k-1}}\right)$$
 
 *Proof.*  
 By the Inductive Spectral Tower theorem, the characteristic polynomial of $D_n$ splits into the product of the characteristic polynomials of $D_1$ and the twisted blocks $S_k$ for $k=2, \dots, n$:
+
 $$\det(X I - D_n) = \det(X I - D_1) \cdot \det(X I - S_2) \cdot \prod_{k=3}^n \det(X I - S_k)$$
+
 1. For $n = 1$: $D_1 = \begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$ has eigenvalues $\lambda = 2$ and $\lambda = 0$.
-   $$\det(X I - D_1) = X(X - 2) \implies u^2 \left(\frac{1}{u}\right)\left(\frac{1}{u} - 2\right) = 1 - 2u$$
+
+$$\det(X I - D_1) = X(X - 2) \implies u^2 \left(\frac{1}{u}\right)\left(\frac{1}{u} - 2\right) = 1 - 2u$$
+
 2. For $k = 2$: $\det(X I - S_2) = X^2 - 2$.
-   $$u^2 \left(\frac{1}{u^2} - 2\right) = 1 - 2u^2$$
+
+$$u^2 \left(\frac{1}{u^2} - 2\right) = 1 - 2u^2$$
+
 3. For $k \ge 3$: $\det(X I - S_k) = X^{2^{k-1}} + 2$.
-   $$u^{2^{k-1}} \left(\frac{1}{u^{2^{k-1}}} + 2\right) = 1 + 2 u^{2^{k-1}}$$
+
+$$u^{2^{k-1}} \left(\frac{1}{u^{2^{k-1}}} + 2\right) = 1 + 2 u^{2^{k-1}}$$
+
 Multiplying these factors together produces the stated identity. $\blacksquare$
 
 ### 3.2 Explicit Factorization Table
@@ -205,14 +267,17 @@ Multiplying these factors together produces the stated identity. $\blacksquare$
 ## 4. The Dynamical Zeta Function and Closed-Form Trace Formula
 
 The dynamical zeta function $\zeta_n(u)$ associated with the directed graph $\mathcal{D}_n$ is defined by the formal Artin-Mazur power series:
+
 $$\zeta_n(u) = \exp\left( \sum_{m=1}^\infty \frac{\text{Tr}(D_n^m)}{m} u^m \right) = \frac{1}{\det(I - u D_n)}$$
 
 ### 4.1 Logarithmic Derivative and Exact Trace Formula
 
 Taking the logarithmic derivative of $\zeta_n(u)$:
+
 $$u \frac{d}{du} \ln \zeta_n(u) = - u \frac{d}{du} \ln \det(I - u D_n) = \sum_{m=1}^\infty \text{Tr}(D_n^m) u^m$$
 
 Using the factorized form of $\det(I - u D_n)$:
+
 $$-\ln \det(I - u D_n) = -\ln(1 - 2u) - \ln(1 - 2u^2) - \sum_{k=3}^n \ln\left(1 + 2 u^{2^{k-1}}\right)$$
 
 We expand each component via the standard Mercator series:
@@ -224,16 +289,21 @@ Multiplying by $u \frac{d}{du}$ (which multiplies the $u^m$ coefficient by $m$) 
 
 **Theorem 4.1 (Exact Closed-Form Collatz Trace Formula):**  
 *For any level $n \ge 1$ and path length $m \ge 1$, the number of closed directed cycles of length $m$ on $\mathcal{D}_n$ is given by:*
+
 $$\text{Tr}(D_n^m) = 2^m + [2 \mid m] 2 \cdot 2^{m/2} + \sum_{k=3}^n [2^{k-1} \mid m] 2^{k-1} (-1)^{m / 2^{k-1}} 2^{m / 2^{k-1}}$$
+
 *where $[\cdot]$ denotes the Iverson bracket ($[P] = 1$ if $P$ is true, $0$ otherwise).*
 
 ### 4.2 Properties of the Trace Dynamics
 1. **Strict Parity Filter:** For any odd integer $m$, $2 \nmid m$ and $2^{k-1} \nmid m$ for all $k \ge 3$. Thus:
-   $$\text{Tr}(D_n^m) = 2^m \quad \text{for all } m \text{ odd, for all } n \ge 1$$
+
+$$\text{Tr}(D_n^m) = 2^m \quad \text{for all } m \text{ odd, for all } n \ge 1$$
+
    No twisted block contributes to odd-length closed walks!
 2. **Hierarchical Activation:** The $k$-th twisted block $S_k$ only activates at lengths $m$ that are integer multiples of its fundamental period $2^{k-1}$.
-3. **Stabilization of Local Traces:** For any fixed length $m$, once $2^{n-1} > m$, adding further levels does not alter $\text{Tr}(D_n^m)$. Thus:
-   $$\lim_{n \to \infty} \text{Tr}(D_n^m) = 2^m + [2 \mid m] 2^{m/2 + 1} + \sum_{k=3}^{\lfloor \log_2 m \rfloor + 1} [2^{k-1} \mid m] 2^{k-1} (-1)^{m / 2^{k-1}} 2^{m / 2^{k-1}}$$
+3. **Stabilization of Local Traces:** For any fixed length $m$, once $2^{n-1} \gt m$, adding further levels does not alter $\text{Tr}(D_n^m)$. Thus:
+
+$$\lim_{n \to \infty} \text{Tr}(D_n^m) = 2^m + [2 \mid m] 2^{m/2 + 1} + \sum_{k=3}^{\lfloor \log_2 m \rfloor + 1} [2^{k-1} \mid m] 2^{k-1} (-1)^{m / 2^{k-1}} 2^{m / 2^{k-1}}$$
 
 ### 4.3 Table of Exact Traces $\text{Tr}(D_n^m)$
 
@@ -272,18 +342,28 @@ graph TD
 **Theorem 5.1 (Concentric Circle Pole Spectrum):**  
 *The poles of the Collatz dynamical zeta function $\zeta_n(u)$ are organized into $n$ concentric geometric circles centered at the origin:*
 1. **Perron-Frobenius Pole ($k=1$):**
-   $$u_0 = \frac{1}{2} \qquad \left(|u| = r_1 = 0.5\right)$$
+
+$$u_0 = \frac{1}{2} \qquad \left(|u| = r_1 = 0.5\right)$$
+
 2. **Second-Level Poles ($k=2$):**
-   $$u \in \left\{ +2^{-1/2}, -2^{-1/2} \right\} \qquad \left(|u| = r_2 = 2^{-1/2} \approx 0.707107\right)$$
+
+$$u \in \left\{ +2^{-1/2}, -2^{-1/2} \right\} \qquad \left(|u| = r_2 = 2^{-1/2} \approx 0.707107\right)$$
+
 3. **Higher-Level Poles ($k \ge 3$):** For each $k \in \{3, \dots, n\}$, there are $2^{k-1}$ poles given by:
-   $$u_{k, j} = 2^{-2^{-(k-1)}} \exp\left( i \frac{(2j+1)\pi}{2^{k-1}} \right), \qquad j = 0, 1, \dots, 2^{k-1} - 1$$
+
+$$u_{k, j} = 2^{-2^{-(k-1)}} \exp\left( i \frac{(2j+1)\pi}{2^{k-1}} \right), \qquad j = 0, 1, \dots, 2^{k-1} - 1$$
+
    *All $2^{k-1}$ poles lie precisely on the circle of radius:*
-   $$r_k = 2^{-2^{-(k-1)}} = 2^{-1 / 2^{k-1}}$$
+
+$$r_k = 2^{-2^{-(k-1)}} = 2^{-1 / 2^{k-1}}$$
 
 ### 5.2 Spectral Condensation Rate
 As the resolution $k \to \infty$, the radius $r_k$ converges monotonically to the unit circle:
+
 $$r_k = \exp\left( - \frac{\ln 2}{2^{k-1}} \right) = 1 - \frac{\ln 2}{2^{k-1}} + \mathcal{O}\left( 4^{-(k-1)} \right)$$
+
 The distance of the $k$-th spectral shell to the unit circle $|u| = 1$ decays exponentially:
+
 $$\text{dist}(r_k, 1) = 1 - r_k \sim (\ln 2) \cdot 2^{-(k-1)}$$
 
 | Level $k$ | Number of Poles $2^{k-1}$ | Exact Radius $r_k = 2^{-2^{-(k-1)}}$ | Distance to Unit Circle $1 - r_k$ | Asymptotic Estimate $\frac{\ln 2}{2^{k-1}}$ |
@@ -301,7 +381,9 @@ $$\text{dist}(r_k, 1) = 1 - r_k \sim (\ln 2) \cdot 2^{-(k-1)}$$
 
 ### 5.3 Connection to Ruelle Transfer Operators
 In the continuous 2-adic setting, the Ruelle transfer operator $\mathcal{L}$ acting on $\alpha$-Hölder spaces $C^\alpha(\mathbb{Z}_2)$ satisfies the Lasota-Yorke inequality:
+
 $$\|\mathcal{L} f\|_\alpha \le 2^{-\alpha} \|f\|_\alpha + C \|f\|_\infty$$
+
 By the Ionescu-Tulcea & Marinescu theorem, $\mathcal{L}$ has essential spectral radius $r_{\text{ess}}(\mathcal{L}) \le 2^{-\alpha}$. Outside this disk, the spectrum consists of isolated eigenvalues of finite multiplicity.
 
 The finite relation matrices $D_n$ represent the Fourier Galerkin truncations of $\mathcal{L}^*$. The concentric circles of poles at $u = \lambda^{-1}$ with $|\lambda| = 2^{2^{-(k-1)}} \to 1^+$ illustrate how the discrete spectrum accumulates onto the peripheral spectrum $|\lambda| = 1$ in the projective limit $n \to \infty$.
@@ -321,6 +403,7 @@ The affine Collatz action on $\mathbb{Z}/2^n\mathbb{Z}$ is generated by the two 
 
 ### 6.2 The Hashimoto Non-Backtracking Operator
 Let $\mathcal{D}(\Gamma_n)$ be the set of darts. The Hashimoto edge adjacency matrix $M \in \text{Mat}_{|D| \times |D|}(\mathbb{R})$ is defined by:
+
 $$M(d_1, d_2) = \begin{cases} 1 & \text{if } \text{target}(d_1) = \text{source}(d_2) \text{ and } d_2 \ne d_1^{-1} \\ 0 & \text{otherwise} \end{cases}$$
 
 The trace $\text{Tr}(M^m)$ counts the number of closed non-backtracking walks of length $m$ on $\Gamma_n$.
@@ -335,6 +418,7 @@ theorem ihara_bass_polynomial :
 ```
 
 For the 4-regular Schreier graph $\Gamma_n$ ($d = 4$), this simplifies to the classical Ihara formula:
+
 $$\mathbf{Z}_{\Gamma_n}(u)^{-1} = \det(I - u M) = (1 - u^2)^{2^n} \det\left( (1 + 3u^2) I - u A_{\Gamma_n} \right)$$
 
 ### 6.4 Duality: Directed Artin-Mazur vs. Undirected Ihara-Bass
@@ -356,7 +440,9 @@ The analytical formulas derived above were implemented and verified in Python vi
 
 ### 7.1 Symbolic Verification of Determinants
 The exact matrix determinant $u^{2^n} \text{charpoly}(D_n)(1/u)$ was evaluated using SymPy's Berkowitz algorithm and compared with the closed form:
+
 $$\det(I - u D_n) \stackrel{?}{=} (1 - 2u)(1 - 2u^2) \prod_{k=3}^n (1 + 2u^{2^{k-1}})$$
+
 **Result:** Exact symbolic equivalence (`diff == 0`) holds across all tested levels $n = 1, 2, 3, 4, 5$.
 
 ### 7.2 Numerical Trace Verification

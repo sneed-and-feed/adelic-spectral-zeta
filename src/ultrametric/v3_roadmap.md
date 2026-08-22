@@ -17,18 +17,22 @@ Standard from-scratch gating fails due to "routing absorption" (Aquino-Michaels,
 
 ### Mathematical Formulation
 For each attention layer $\ell$, we inject a `MultiPrimeTopologyRouter`. The modified attention equation is:
+
 $$ \text{Attn}_\ell(Q, K, V) = \text{softmax}\left( \frac{QK^\top}{\sqrt{d_k}} + M_{\text{causal}} + \sum_{p \in \mathcal{P}} g_{\ell,h}^{(p)} \cdot \alpha^{(p)} \cdot T_{ij}^{(p)} \right) V $$
+
 Where $T_{ij}^{(p)}$ is the tree distance matrix, and the Gumbel-Sigmoid gate is $g \in [0, 1]$.
 
 **Surgical Initialization:** To achieve a mathematically guaranteed zero-shock insertion, the router's logit projection bias $z$ is initialized to $\mu_{init} \ll 0$ (e.g., -5.0). Thus, $\mathbb{E}[g] \approx 0$, making the injected tree bias negligibly small and preserving the pre-trained manifold identically at step 0.
 
 ### Training Curriculum
 We optimize the joint loss:
+
 $$ \mathcal{L}(t) = \mathcal{L}_{\text{CE}}(\Theta_{\text{frozen}}, \Phi) + \lambda(t) \cdot \frac{1}{L \cdot H \cdot |\mathcal{P}|} \sum_{\ell, h, p} (1 - g_{\ell,h}^{(p)}) $$
+
 - **Auxiliary Loss Ramp-up $\lambda(t)$:** Slowly monotonically increases the penalty for density.
 - **Temperature Annealing $\tau(t)$:** Anneals from $\tau_{max} = 1.0$ down to $\tau_{min} = 0.1$, forcing the continuous gates to polarize into hard binary decisions $g \in \{0, 1\}$.
 
-Once polarized, the routing depths $d_h = \mathbb{1}[z > 0]$ are extracted and mapped directly into the Triton block-sparse kernel.
+Once polarized, the routing depths $d_h = \mathbb{1}[z \gt 0]$ are extracted and mapped directly into the Triton block-sparse kernel.
 
 ### Downstream Evaluations (Next Steps)
 While raw perplexity validates that the pre-trained manifold is preserved, the critical next frontier is formal benchmarking on precise long-range retrieval and reasoning tasks:
@@ -51,7 +55,9 @@ For rejection sampling, a token is accepted if $u \le \min\left(1, \frac{P(x)}{Q
 Given marginal acceptance probability $\alpha$, expected tokens per step is $\mathbb{E}[N] = \frac{1 - \alpha^{K+1}}{1 - \alpha}$.
 
 Let $C_{\text{sparse}} \approx \frac{1}{8} C_{\text{dense}}$. The expected theoretical wall-clock speedup $S$ is:
+
 $$ S = \frac{\mathbb{E}[N]}{1 + K (\frac{C_{\text{sparse}}}{C_{\text{dense}}})} $$
+
 Assuming $K=4$ and $\alpha=0.75$, $S = \frac{2.73}{1.5} \approx \textbf{1.82}\times$ speedup. 
 If $\alpha \to 0.9$ (due to local sliding windows matching exact Markovian grammar), $S \to \textbf{2.72}\times$.
 
@@ -65,7 +71,9 @@ Standard MoE uses a flat, unstable `Softmax(Wx)` router. U-MoE replaces this wit
 ### Adèlic Expert Assignment
 If a tree has depth $D$, we define $E = p^k$ experts ($k \le D$). 
 A token $m$ with routing vector $r_m = (c_{m,0}, c_{m,1}, \dots, c_{m,D-1})$ routes to expert $e(m)$:
+
 $$ e(m) = \sum_{j=0}^{k-1} c_{m,j} p^{k-1-j} $$
+
 Experts sharing a deep Lowest Common Ancestor (LCA) in the $p$-adic tree process semantically similar tokens. This eliminates parameter symmetries and routing collapse.
 
 ### Block-Sparse Dispatch Kernel
@@ -83,7 +91,9 @@ When a block exits the local sliding window $W$, we algorithmically fuse it into
 
 ### Fractal Storage Bounds
 For arity $p$, when $p$ adjacent blocks exit the sliding window at depth $d$, they are compressed:
+
 $$ K^{(d-1)}_{j} = f_\theta \left( K^{(d)}_{p \cdot j}, \dots, K^{(d)}_{p \cdot j + (p-1)} \right) $$
+
 This recursively ascends the tree hierarchy. The total active footprint is bounded by $W$ at each depth. 
 Maximum depth is $\lceil \log_p (N / B) \rceil$, yielding **$O(\log N)$ KV memory growth**. 
 At 1M tokens ($B=128, W=4, p=2$), standard memory uses $\approx$7800 blocks, while Adèlic KV-Fusion requires just $52$ blocks (a 150$\times$ reduction).

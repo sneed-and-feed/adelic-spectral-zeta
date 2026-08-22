@@ -8,10 +8,10 @@ We present a unified geometric, operator-theoretic, and formal mathematical fram
 
 We establish and formally verify:
 1. **1D Adelic Fusion & 2-Adic Conformal Seeding:** The 2-adic scale anchor fixes the conformal pole locus at $\sigma = 1/2$, while unramified odd primes reside on the unitary axis $\sigma = 0$, verified across CRT diagonal descent sieves and Montgomery-Odlyzko GUE quantum chaos statistics.
-2. **Higher-Rank $\mathrm{GL}_n$ Satake Transfer Engine:** The Hecke transfer operators on Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ map geometric building degrees to Langlands Satake parameters for $\mathrm{GL}_2$ (Ramanujan $\Delta$), $\mathrm{GL}_3$ (Gelbart-Jacquet $\operatorname{Sym}^2(\Delta)$ & Buhler $A_5$), and $\mathrm{GL}_4$ (Rankin-Selberg $\Delta \times \Delta$).
-3. **Simplicial Buildings of Type $\tilde{A}_2$ (Lean 4 Formalized, 0 `sorry`s):** Machine-checked formalization of type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$, exact commutativity $[\mathcal{A}_1, \mathcal{A}_2] = 0$, the Macdonald spherical eigenbasis, and the Ramanujan spectral gap $\operatorname{Gap}(\Delta) = 2(q-1)^2 = 8$ in Lean 4.8.0 ([`BuildingPGL3.lean`](../formalization/Formalization/BuildingPGL3.lean)).
-4. **Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Exterior Power Rigidity:** Aronszajn-Krein boundary perturbations exhibit strict deficiency-index rigidity $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2| > 0$, rigorously excluding zero-modes off $\sigma = 1/2$.
-5. **Multi-Variable Weil-Arthur-Selberg Trace Formula:** Coupling 2D building transfer operator traces to Arthur-Selberg orbital integrals along the maximal split torus, matching 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$ with uniform numerical residuals $< 4.9 \times 10^{-14}$.
+2. **Higher-Rank $\mathrm{GL}_n$ Satake Transfer Engine:** The Hecke transfer operators on Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ map geometric building degrees to Langlands Satake parameters for $\mathrm{GL}_2$ (Ramanujan $\Delta$), $\mathrm{GL}_3$ (Gelbart-Jacquet $\mathrm{Sym}^2(\Delta)$ & Buhler $A_5$), and $\mathrm{GL}_4$ (Rankin-Selberg $\Delta \times \Delta$).
+3. **Simplicial Buildings of Type $\tilde{A}_2$ (Lean 4 Formalized, 0 `sorry`s):** Machine-checked formalization of type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$, exact commutativity $[\mathcal{A}_1, \mathcal{A}_2] = 0$, the Macdonald spherical eigenbasis, and the Ramanujan spectral gap $\mathrm{Gap}(\Delta) = 2(q-1)^2 = 8$ in Lean 4.8.0 ([`BuildingPGL3.lean`](../formalization/Formalization/BuildingPGL3.lean)).
+4. **Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Exterior Power Rigidity:** Aronszajn-Krein boundary perturbations exhibit strict deficiency-index rigidity $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2| \gt 0$, rigorously excluding zero-modes off $\sigma = 1/2$.
+5. **Multi-Variable Weil-Arthur-Selberg Trace Formula:** Coupling 2D building transfer operator traces to Arthur-Selberg orbital integrals along the maximal split torus, matching 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$ with uniform numerical residuals $\lt 4.9 \times 10^{-14}$.
 
 ---
 
@@ -25,21 +25,21 @@ We establish and formally verify:
 
 ```mermaid
 graph TD
-    subgraph Tier 1: 1D Adelic Fusion & 2-Adic Anchor
+    subgraph Tier_1_1D_Adelic_Fusion_2_Adic_Anchor ["Tier 1: 1D Adelic Fusion & 2-Adic Anchor"]
         Fig1["Figure 1: Global Adelic Spectrum & CRT Descent"]
         Fig1 --> P2Anchor["p=2 Conformal Seeding (σ = 1/2)"]
         Fig1 --> OddShield["Odd Prime Unitary Shielding (σ = 0)"]
         Fig1 --> GUEStats["Montgomery-Odlyzko GUE Statistics"]
     end
 
-    subgraph Tier 2: Higher-Rank GL_n Satake Theory
+    subgraph Tier_2_Higher_Rank_GL_n_Satake_Theory ["Tier 2: Higher-Rank GL_n Satake Theory"]
         Fig2["Figure 2: Satake Torus Spectra & Tree Waves"]
         Fig2 --> GL2Tree["GL(2) Sato-Tate on T_{p+1} Trees"]
         Fig2 --> GL3Sym2["GL(3) Sym²(Δ) & Buhler A_5 Discrete Levels"]
         Fig2 --> GL4Iso["GL(4) Rankin-Selberg Isobaric Sums"]
     end
 
-    subgraph Tier 3: Simplicial A2 Flow & Arthur-Selberg Trace
+    subgraph Tier_3_Simplicial_A2_Flow_Arthur_Selberg_Trace ["Tier 3: Simplicial A2 Flow & Arthur-Selberg Trace"]
         Fig3["Figure 3: Simplicial A2 Apartment Flow & ASTF"]
         Fig3 --> LeanA2["Lean 4 [A₁, A₂] = 0 & Macdonald Waves"]
         Fig3 --> ShahidiRig["Langlands-Shahidi Λ² GL₄ Deficiency Rigidity"]
@@ -74,13 +74,13 @@ graph TD
 ### [Chapter 4: Higher Langlands Extensions & Satake Transfer Operators on Bruhat-Tits Buildings](monograph/04_higher_langlands_extensions.md)
 * Functorial lifts and Hecke trace projections on $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$.
 * $\mathrm{GL}_2$ tree transfer, Deligne-Ramanujan bounds, and Sato-Tate distributions.
-* $\mathrm{GL}_3$ Gelbart-Jacquet $\operatorname{Sym}^2(\Delta)$ and Buhler $A_5$ Galois representations.
-* $\mathrm{GL}_4$ Rankin-Selberg isobaric sums $\Delta \times \Delta = \operatorname{Sym}^2(\Delta) \boxplus \mathbf{1}$.
+* $\mathrm{GL}_3$ Gelbart-Jacquet $\mathrm{Sym}^2(\Delta)$ and Buhler $A_5$ Galois representations.
+* $\mathrm{GL}_4$ Rankin-Selberg isobaric sums $\Delta \times \Delta = \mathrm{Sym}^2(\Delta) \boxplus \mathbf{1}$.
 
 ### [Chapter 5: Artin L-Functions, Langlands-Shahidi Rigidity, and Critical Line Stability](monograph/05_artin_l_functions_rigidity.md)
 * Generalization to Galois representations and icosahedral Artin $L$-functions ($N=800$).
 * Langlands-Shahidi exterior square $L$-functions ($\Lambda^2 \mathrm{GL}_4$) and exceptional Lie isomorphism $\mathfrak{sl}_4(\mathbb{C}) \cong \mathfrak{so}_6(\mathbb{C})$.
-* Mathematical proof of critical line rigidity: why sweeping off $\sigma = 1/2$ enforces $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2| > 0$.
+* Mathematical proof of critical line rigidity: why sweeping off $\sigma = 1/2$ enforces $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2| \gt 0$.
 * Exact trace invariant of the compressed Artin Dirac operator.
 
 ### [Chapter 6: Quantum Physical Realization & Many-Body Entanglement Sweeps](monograph/06_quantum_physical_realization.md)
@@ -120,9 +120,9 @@ graph TD
 * 2D Macdonald spherical joint eigenbasis and explicit Ramanujan spectral gap $2(q-1)^2 = 8$.
 
 ### [Chapter 15: The Multi-Variable Weil-Arthur-Selberg Trace Formula & Simplicial Path Duality](monograph/15_multivariable_weil_arthur_selberg.md)
-* Coupling 2D transfer operator traces $\operatorname{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula on $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
+* Coupling 2D transfer operator traces $\mathrm{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula on $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
 * Non-Archimedean split torus orbital integral duality with positive Weyl chamber paths $\mathcal{A}^+$.
-* Numerical verification across Gelbart-Jacquet $\operatorname{Sym}^2(\Delta)$ and Buhler $A_5$ with residuals $< 4.9 \times 10^{-14}$.
+* Numerical verification across Gelbart-Jacquet $\mathrm{Sym}^2(\Delta)$ and Buhler $A_5$ with residuals $\lt 4.9 \times 10^{-14}$.
 
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.

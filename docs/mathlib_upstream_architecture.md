@@ -44,10 +44,11 @@ Every component in `MathlibUpstream` is formatted strictly according to Mathlib 
   - `upperBidiagonal n W`: Upper-bidiagonal polynomial matrix computing off-diagonal cofactor minors.
   - `cyclicWeightMatrix W`: $L \times L$ cyclic shift matrix on $\mathbb{Z}/L\mathbb{Z}$ with entry $(i, j) = W(j)$ if $i = j + 1 \pmod L$.
 - **Key Theorems**:
-  - `charpoly_shiftMatrix`: $\operatorname{charpoly}(\text{shiftMatrix } n\ W) = X^n$.
+  - `charpoly_shiftMatrix`: $\mathrm{charpoly}(\text{shiftMatrix } n\ W) = X^n$.
   - `det_upperBidiagonal`: $\det(\text{upperBidiagonal } n\ W) = \prod_{i=0}^{n-1} (-C(W_i))$.
   - `charpoly_cyclicWeightMatrix`: For any $L \ge 1$ and weights $W : \mathbb{Z}/L\mathbb{Z} \to R$,
-    $$\operatorname{charpoly}(\text{cyclicWeightMatrix } W) = X^L - C\left(\prod_{k=0}^{L-1} W_k\right)$$
+
+$$\mathrm{charpoly}(\text{cyclicWeightMatrix } W) = X^L - C\left(\prod_{k=0}^{L-1} W_k\right)$$
 
 ### 2.2. Unitary Discrete Fourier Transform on Finite Cyclic Groups
 - **Module**: `MathlibUpstream.Analysis.DFT`
@@ -67,9 +68,13 @@ Every component in `MathlibUpstream` is formatted strictly according to Mathlib 
 - **Scope**: General algebraic identities for products of cyclic characteristic polynomial factors.
 - **Key Theorems**:
   - `cyclic_block_polynomial_prod`: For any commutative ring $R$, cycle length $L$, and weights $W_1, W_2 \in R$:
-    $$(1 - C(W_1) X^L)(1 - C(W_2) X^L) = 1 - C(W_1 + W_2) X^L + C(W_1 W_2) X^{2L}$$
+
+$$(1 - C(W_1) X^L)(1 - C(W_2) X^L) = 1 - C(W_1 + W_2) X^L + C(W_1 W_2) X^{2L}$$
+
   - `cyclic_block_fredholm_product`: When $W_1 + W_2 = 0$ and $W_1 W_2 = c$, the cross terms cancel:
-    $$(1 - C(W_1) X^L)(1 - C(W_2) X^L) = 1 + C(c) X^{2L}$$
+
+$$(1 - C(W_1) X^L)(1 - C(W_2) X^L) = 1 + C(c) X^{2L}$$
+
   - `cyclic_block_fredholm_two`: Specialization to $c = 2$, yielding $(1 - C(W_1) X^L)(1 - C(W_2) X^L) = 1 + 2 X^{2L}$.
 
 ### 2.4. Real Logarithmic Bounds and Base-2 Real Analysis
@@ -88,7 +93,7 @@ Every component in `MathlibUpstream` is formatted strictly according to Mathlib 
 - **Target Upstream**: `Mathlib.LinearAlgebra.Matrix.Spectrum` / `Mathlib.LinearAlgebra.Matrix.PosDef`
 - **Scope**: Graph connectivity, walks, eigenvector uniqueness, and spectral radius bounds for real symmetric non-negative matrices.
 - **Key Theorems**:
-  - `pow_pos_of_walk`: A walk in the support graph ensures strict positivity of matrix power entries: $0 < (A^{\text{length}(w)})_{i, j}$.
+  - `pow_pos_of_walk`: A walk in the support graph ensures strict positivity of matrix power entries: $0 \lt (A^{\text{length}(w)})_{i, j}$.
   - `eigenvector_unique_of_connected`: 1-dimensionality of the positive eigenspace for connected support graphs.
   - `eigenvalue_le_of_symm_of_nonneg`: The Perron-Frobenius positive eigenvalue dominates all other real eigenvalues ($|\lambda| \le \mu$).
   - `eigenvalue_le_maxEig_add_one`: Variational bound on identity-shifted operators via Hermitian spectral decomposition.
@@ -100,7 +105,7 @@ Every component in `MathlibUpstream` is formatted strictly according to Mathlib 
 - **Key Theorems**:
   - `card_shared_prefix`: Exact cardinality $p^r \cdot p^{d-r} \cdot p^{d-r} = p^{2d-r}$.
   - `fraction_eq_p_inv_r`: Exact shared fraction $\frac{p^{2d-r}}{p^{2d}} = \frac{1}{p^r}$.
-  - `sparsity_bound`: For any $p > 0$ and $r \le d$, $\text{sparsity}(d, p, r) = 1 - \frac{1}{p^r}$.
+  - `sparsity_bound`: For any $p \gt 0$ and $r \le d$, $\text{sparsity}(d, p, r) = 1 - \frac{1}{p^r}$.
   - Specializations: $\text{sparsity}(d, 2, 1) = 1/2$ (50%), $\text{sparsity}(d, 2, 3) = 7/8$ (87.5%), $\text{sparsity}(d, 2, 6) = 63/64$ (98.4375%).
 
 ---

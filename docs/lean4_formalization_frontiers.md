@@ -17,11 +17,15 @@
 We present the complete formal mathematical verification in Lean 4 with Mathlib of two foundational breakthrough theorems governing the spectral theory of arithmetic dynamical systems and Collatz–Schreier graph towers:
 
 1. **Exact Undirected Gap Exponent Theorem:** We formalize the exact closed-form algebraic expressions and dualities for the undirected power-law spectral gap collapse exponent:
-   $$\alpha = \frac{3}{2} - \log_2(1 + \sqrt{2}) = 1 + \log_2(2 - \sqrt{2}) = \log_2(4 - 2\sqrt{2}) = \log_2\left(\frac{2\sqrt{2}}{1 + \sqrt{2}}\right) \approx 0.2284467,$$
-   proving the algebraic equivalences, the fundamental Silver Ratio duality $\Delta(D) \cdot \delta_S = \sqrt{2}$, the 2-adic exponential scaling action $2^\alpha = 4 - 2\sqrt{2}$, and the analytical bounds $0 < \alpha < 1/2 < 1$.
+
+$$\alpha = \frac{3}{2} - \log_2(1 + \sqrt{2}) = 1 + \log_2(2 - \sqrt{2}) = \log_2(4 - 2\sqrt{2}) = \log_2\left(\frac{2\sqrt{2}}{1 + \sqrt{2}}\right) \approx 0.2284467,$$
+
+   proving the algebraic equivalences, the fundamental Silver Ratio duality $\Delta(D) \cdot \delta_S = \sqrt{2}$, the 2-adic exponential scaling action $2^\alpha = 4 - 2\sqrt{2}$, and the analytical bounds $0 \lt \alpha \lt 1/2 \lt 1$.
 
 2. **Dynamical Fredholm Determinant Factorization Theorem:** We formalize the exact polynomial identity for the dynamical Fredholm determinant of the Collatz transfer operator $D_n$:
-   $$\det(I - u D_n) = (1 - 2u)(1 - 2u^2) \prod_{k=3}^n \left(1 + 2u^{2^{k-1}}\right),$$
+
+$$\det(I - u D_n) = (1 - 2u)(1 - 2u^2) \prod_{k=3}^n \left(1 + 2u^{2^{k-1}}\right),$$
+
    valid over an arbitrary commutative ring $R$, proved via cyclic block product identities $(1 - W_1 u^L)(1 - W_2 u^L) = 1 + 2u^{2L}$ (under $W_1 + W_2 = 0, W_1 W_2 = 2$), the recursive step $\det(I - u D_{n+1}) = \det(I - u D_n)(1 + 2u^{2^n})$, and the total spectral dimension theorem $\deg(\det(I - u D_n)) = 2^n - 1$ matching the full $2^n = |V_n|$ state space when including the 1-dimensional kernel mode.
 
 All theorems are fully compiled and checked with **zero `sorry`s** under the Lean 4.8.0 compiler and lake build toolchain.
@@ -44,6 +48,7 @@ The following table summarizes the formal status of the new formalization module
 ### 2.1 Theoretical Framework
 
 In the study of the symmetrized Collatz–Schreier graph family $A_n = D_n + D_n^\top$ on the cyclic rings $\mathbb{Z}/2^n\mathbb{Z}$, the non-Hermitian operator $D_n$ possesses a constant directed spectral gap $\Delta(D_n) = 2 - \sqrt{2} \approx 0.5858$, whereas the symmetrized adjacency matrix $A_n$ undergoes algebraic gap collapse:
+
 $$\Delta(A_n) = 4 - \lambda_2(A_n) = \Theta(|V|^{-\alpha}).$$
 
 The exact exponent $\alpha$ is derived via dyadic renormalization and acoustic variational calculus on the 1D tight-binding ring $T_n$ of length $L = 2^{n-2}$, where the hopping modulation is governed by the 3-adic angle multiplication $x \mapsto 3x \pmod 1$.
@@ -140,16 +145,19 @@ The module formally proves the complete chain of algebraic representations:
 
 ### 3.1 Mathematical Architecture
 
-The dynamical Fredholm determinant $d_n(u) = \det(I - u D_n)$ serves as the reciprocal of the Artin–Mazur dynamical zeta function $\zeta_n(u) = \exp\left(\sum_{m=1}^\infty \frac{u^m}{m} \operatorname{Tr}(D_n^m)\right)$.
+The dynamical Fredholm determinant $d_n(u) = \det(I - u D_n)$ serves as the reciprocal of the Artin–Mazur dynamical zeta function $\zeta_n(u) = \exp\left(\sum_{m=1}^\infty \frac{u^m}{m} \mathrm{Tr}(D_n^m)\right)$.
 
 Through the deck involution $\tau(x) = x + 2^{n-1} \pmod{2^n}$ and the discrete Fourier transform on the multiplicative unit group $(\mathbb{Z}/2^n\mathbb{Z})^\times$, the transfer operator decomposes across the inductive tower:
+
 $$D_n \sim D_1 \oplus S_2 \oplus S_3 \oplus \dots \oplus S_n$$
+
 where:
 - $D_1$ has eigenvalue $\lambda_1 = 2$, contributing $(1 - 2u)$.
 - $S_2$ has eigenvalues $\lambda = \pm \sqrt{2}$, contributing $(1 - 2u^2)$.
 - For each $k \ge 3$, $S_k$ decomposes into two cyclic blocks of length $L = 2^{k-2}$ with cycle weight product $W_1 W_2 = 2$ and $W_1 + W_2 = 0$, contributing $(1 + 2u^{2^{k-1}})$.
 
 Thus, the Fredholm determinant factors as:
+
 $$\det(I - u D_n) = (1 - 2u)(1 - 2u^2) \prod_{k=3}^n \left(1 + 2u^{2^{k-1}}\right).$$
 
 ### 3.2 Formal Polynomial Definitions in Lean 4

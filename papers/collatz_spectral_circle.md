@@ -1,6 +1,6 @@
 # Spectral Circle Theorem for the Collatz Relation Matrix on $\mathbb{Z}/2^n\mathbb{Z}$
 
-**Abstract.** We study the directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, defined by the affine generators $y \equiv 3x$ and $y \equiv 3x - 1 \pmod{2^n}$. Viewed representation-theoretically, $D_n$ is a finite-dimensional projection of a 2-adic transfer operator, and its spectrum decomposes recursively as $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n)$, where $S_n$ is the twisted block. We show that $D_n$ acts as a monomial matrix in the additive character basis, reflecting the induced representation of the semidirect product $\mathbb{Z}_2 \rtimes \langle 3 \rangle$, and that all eigenvalues of $S_n$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof combines the Hadamard $\tau$-decomposition, the cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ ($n \ge 2$), and the orbit structure of the multiplication-by-3 map on odd residues modulo $2^n$. The core algebraic modules and structural decompositions have been formally verified in the Lean 4 proof assistant with zero `sorry`s and zero custom axioms.
+**Abstract.** We study the directed Collatz relation matrix $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$, defined by the affine generators $y \equiv 3x$ and $y \equiv 3x - 1 \pmod{2^n}$. Viewed representation-theoretically, $D_n$ is a finite-dimensional projection of a 2-adic transfer operator, and its spectrum decomposes recursively as $\mathrm{spec}(D_n) = \mathrm{spec}(D_{n-1}) \cup \mathrm{spec}(S_n)$, where $S_n$ is the twisted block. We show that $D_n$ acts as a monomial matrix in the additive character basis, reflecting the induced representation of the semidirect product $\mathbb{Z}_2 \rtimes \langle 3 \rangle$, and that all eigenvalues of $S_n$ lie on a circle of radius $2^{2^{-(n-1)}}$. The proof combines the Hadamard $\tau$-decomposition, the cyclotomic product identity $\prod_{k \text{ odd}} (1 + \omega^{-k}) = 2$ ($n \ge 2$), and the orbit structure of the multiplication-by-3 map on odd residues modulo $2^n$. The core algebraic modules and structural decompositions have been formally verified in the Lean 4 proof assistant with zero `sorry`s and zero custom axioms.
 
 ---
 
@@ -12,7 +12,9 @@ In this paper, we show that the orbit structure of the Collatz relation modulo $
 
 ### Theorem 1.1 (Spectral Circle Theorem)
 For any $n \ge 2$, the spectrum of $D_n$ decomposes as
-$$\operatorname{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}.$$
+
+$$\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}.$$
+
 In particular, all eigenvalues of the twisted block $S_n$ satisfy $|\lambda| = 2^{2^{-(n-1)}}$.
 
 The proof combines four primary ingredients:
@@ -27,13 +29,15 @@ The proof combines four primary ingredients:
 
 ### Definition 2.1
 The **directed Collatz relation matrix** $D_n$ is the $N \times N$ matrix ($N = 2^n$) with entries in $\{0, 1\}$ defined by:
+
 $$D_n(x, y) = \begin{cases} 1 & \text{if } y \equiv 3x \pmod{2^n} \text{ or } y \equiv 3x - 1 \pmod{2^n}, \\ 0 & \text{otherwise.} \end{cases}$$
 
 Every row of $D_n$ has exactly two $1$s for $n \ge 1$, since $3x \not\equiv 3x - 1 \pmod{2^n}$.
 
 ### Example 2.4 ($n = 2$, $N = 4$)
 $$D_2 = \begin{pmatrix} 1 & 0 & 0 & 1 \\ 0 & 0 & 1 & 1 \\ 0 & 1 & 1 & 0 \\ 1 & 1 & 0 & 0 \end{pmatrix}$$
-Eigenvalues: $\{2, 0, \sqrt{2}, -\sqrt{2}\}$, where $\operatorname{spec}(D_1) = \{2, 0\}$ and $\operatorname{spec}(S_2) = \{\pm\sqrt{2}\}$.
+
+Eigenvalues: $\{2, 0, \sqrt{2}, -\sqrt{2}\}$, where $\mathrm{spec}(D_1) = \{2, 0\}$ and $\mathrm{spec}(S_2) = \{\pm\sqrt{2}\}$.
 
 ---
 
@@ -43,16 +47,21 @@ Let $\tau(x) = x + 2^{n-1} \pmod{2^n}$ denote the sheet involution.
 
 ### Lemma 3.2 (Deck Commutativity)
 $$3 \cdot \tau(x) \equiv \tau(3x) \pmod{2^n}, \qquad 3 \cdot \tau(x) - 1 \equiv \tau(3x - 1) \pmod{2^n}.$$
+
 Thus $D_n(\tau x, \tau y) = D_n(x, y)$.
 
 ### Theorem 3.3 (Hadamard Block Diagonalization)
 With $H = \frac{1}{\sqrt{2}}\begin{pmatrix} I & I \\ I & -I \end{pmatrix}$:
+
 $$H D_n H^{-1} = \begin{pmatrix} W_n & 0 \\ 0 & S_n \end{pmatrix} = \begin{pmatrix} D_{n-1} & 0 \\ 0 & S_n \end{pmatrix}$$
+
 where:
+
 $$W_n(v, u) = D_n(v, u) + D_n(v, u + 2^{n-1}) = D_{n-1}(v, u),$$
+
 $$S_n(v, u) = D_n(v, u) - D_n(v, u + 2^{n-1}).$$
 
-Hence $\operatorname{spec}(D_n) = \operatorname{spec}(D_{n-1}) \cup \operatorname{spec}(S_n) = \operatorname{spec}(D_1) \cup \bigcup_{k=2}^n \operatorname{spec}(S_k)$.
+Hence $\mathrm{spec}(D_n) = \mathrm{spec}(D_{n-1}) \cup \mathrm{spec}(S_n) = \mathrm{spec}(D_1) \cup \bigcup_{k=2}^n \mathrm{spec}(S_k)$.
 
 ---
 
@@ -71,8 +80,9 @@ In the character basis, $D_n$ acts as a monomial matrix: column $k$ has its entr
 
 - Characters $\chi_k$ spanning the twisted subspace $S_n$ are exactly those with $k$ odd ($\chi_k(\tau x) = -\chi_k(x)$).
 - **Scale $n = 2$**: $(\mathbb{Z}/4\mathbb{Z})^\times = \{1, 3\}$ forms $1$ cycle $(1 \; 3)$ of length $2 = 2^{n-1}$.
-- **Scale $n \ge 3$**: $\operatorname{ord}(3, 2^n) = 2^{n-2}$, splitting $(\mathbb{Z}/2^n\mathbb{Z})^\times$ into exactly $2$ disjoint orbits of length $2^{n-2}$:
-  $$C_1 = \langle 3 \rangle, \qquad C_2 = -C_1 = 2^n - C_1.$$
+- **Scale $n \ge 3$**: $\mathrm{ord}(3, 2^n) = 2^{n-2}$, splitting $(\mathbb{Z}/2^n\mathbb{Z})^\times$ into exactly $2$ disjoint orbits of length $2^{n-2}$:
+
+$$C_1 = \langle 3 \rangle, \qquad C_2 = -C_1 = 2^n - C_1.$$
 
 ---
 
@@ -80,6 +90,7 @@ In the character basis, $D_n$ acts as a monomial matrix: column $k$ has its entr
 
 ### Theorem 6.1 (Cyclotomic Product Identity)
 For any $n \ge 2$:
+
 $$\prod_{\substack{k=1 \\ k \text{ odd}}}^{2^n - 1} (1 + \omega^{-k}) = 2.$$
 
 *Proof.* For $n \ge 2$, $\Phi_{2^n}(x) = x^{2^{n-1}} + 1 = \prod_{k \text{ odd}} (x - \omega^k)$. Evaluating at $x = -1$ gives $\Phi_{2^n}(-1) = (-1)^{2^{n-1}} + 1 = 1 + 1 = 2$. Factoring signs and using $k \mapsto -k$ gives the result. $\square$
@@ -94,6 +105,7 @@ $$\prod_{\substack{k=1 \\ k \text{ odd}}}^{2^n - 1} (1 + \omega^{-k}) = 2.$$
 
 ### Lemma 7.3 (Cyclic Monomial Charpoly)
 A monomial matrix on a directed cycle of length $m$ with weight product $W$ has characteristic polynomial:
+
 $$\det(\lambda I - M) = \lambda^m - W \implies |\lambda| = |W|^{1/m}.$$
 
 ### Eigenvalue Magnitudes for $S_n$:
@@ -123,7 +135,7 @@ This proves Theorem 1.1.
 ## 9. Lean 4 Formalization Architecture
 
 All core algebraic modules are formally verified in Lean 4 without custom axioms:
-- `CollatzRelMatrix.lean`: $\tau$-invariance and block diagonalization $H D_n H^{-1} = \operatorname{diag}(D_{n-1}, S_n)$.
+- `CollatzRelMatrix.lean`: $\tau$-invariance and block diagonalization $H D_n H^{-1} = \mathrm{diag}(D_{n-1}, S_n)$.
 - `CyclotomicProduct.lean`: Product identity $\prod_{k \text{ odd}} (1 + \zeta^{-k}) = 2$ and cycle product $W_1 W_2 = 2$ ($n \ge 2$).
 - `CyclicWeightCharpoly.lean`: General cyclic monomial charpoly $\det(\lambda I - M) = \lambda^L - \prod W_k$.
 - `SpectralCircle.lean`: Character action lemma, 3-order mod $2^n$, orbit weight magnitude $|W_C|^2 = 2$.

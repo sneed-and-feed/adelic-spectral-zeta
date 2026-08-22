@@ -4,7 +4,7 @@
 [![Lean 4 Formalization](https://img.shields.io/badge/Lean_4-0_sorry_%7C_v4.8.0-brightgreen.svg)](formalization/Formalization/)
 [![Mathlib Upstream](https://img.shields.io/badge/Mathlib_Upstream-2--Tier_Arch-brightgreen.svg)](formalization/MathlibUpstream/)
 [![Rocq Cross-Verification](https://img.shields.io/badge/Rocq_(Coq)-MathComp_2.3.0-blue.svg)](coq/theories/BassIhara.v)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-blue.svg)](LICENSE)
 
 A unified mathematical physics, formal verification, and scientific computing framework implementing:
 1. **2-Adic Arithmetic Dynamics & Spectral Theory**: The exact spectral theory of transfer operators, non-Hermitian point-gap topology, Markov semigroups, and dynamical zeta functions for the Collatz system on quotient rings $\mathbb{Z}/2^n\mathbb{Z}$ and the compact ring of 2-adic integers $\mathbb{Z}_2$.
@@ -52,7 +52,7 @@ A unified mathematical physics, formal verification, and scientific computing fr
 
 ```mermaid
 graph TD
-    subgraph 1. Arithmetic Dynamics & 2-Adic Circles
+    subgraph SG_1_Arithmetic_Dynamics_2_Adic_Circles ["1. Arithmetic Dynamics & 2-Adic Circles"]
         D_n["Collatz Multi-Relation D_n on ℤ/2ⁿℤ"] --> SpecCirc["Spectral Circle Theorem |λ| = 2^{2^{-(n-1)}}"]
         SpecCirc --> L2Op["Continuous Transfer Operator on L²(ℤ₂)"]
         SpecCirc --> UndirGap["Undirected Gap Exponent α = 0.228447 (Silver Ratio)"]
@@ -61,20 +61,20 @@ graph TD
         SpecCirc --> Zeta["Closed-Form Dynamical Zeta & Ihara-Bass"]
     end
 
-    subgraph 2. Global Adelic Fusion & Automorphic L-Functions
+    subgraph SG_2_Global_Adelic_Fusion_Automorphic_L_Functions ["2. Global Adelic Fusion & Automorphic L-Functions"]
         L_Adelic["Global Adelic Transfer ℒ_𝔸 = ⨂' ℒ_p"] --> EulerProd["Euler Factorization Z(s) = ζ(s-1) L(s, π) Z_{cyc}(s)"]
         EulerProd --> Aronszajn["Aronszajn-Krein Inversion D_{artin}(s) ~ Z(s)⁻¹"]
         Aronszajn --> GRHRigidity["Deficiency Index Rigidity off σ = 1/2"]
         Aronszajn --> GUEChaos["Montgomery-Odlyzko GUE Quantum Chaos"]
     end
 
-    subgraph 3. Higher-Rank Functoriality & Bruhat-Tits Buildings
+    subgraph SG_3_Higher_Rank_Functoriality_Bruhat_Tits_Buildings ["3. Higher-Rank Functoriality & Bruhat-Tits Buildings"]
         BT_Building["Bruhat-Tits Building ℬ(PGL_n(ℚ_p))"] --> SatakeMap["Spherical Hecke Algebra & Satake Isomorphism"]
         SatakeMap --> PGL3Flow["PGL₃ Triangular Apartment Flow & 2D Macdonald Waves"]
         SatakeMap --> Shahidi["Langlands-Shahidi Exterior Power L(s, π, Λ² GL₄)"]
     end
 
-    subgraph 4. Two-Tier Formal Verification (0 sorry)
+    subgraph SG_4_Two_Tier_Formal_Verification_0_sorry ["4. Two-Tier Formal Verification (0 sorry)"]
         Upstream["MathlibUpstream/ (Generic PR-Ready)"] --- LeanClean["Lake Build: 0 sorry, 0 error"]
         FormalSpec["Formalization/ (Adelic Dynamics)"] --- LeanClean
         LeanClean --> DualCross["Dual Cross-Verification (Lean 4 + Rocq)"]
@@ -90,27 +90,33 @@ graph TD
 
 ### 2.1 Directed Collatz Relation Matrix & Spectral Circle Theorem
 On quotient rings $\mathbb{Z}/2^n\mathbb{Z}$, the 2-regular directed Collatz relation matrix $D_n$ acts in the Pontryagin character basis as a monomial shift $(D_n \chi_k)(x) = (1 + \omega_n^{-k})\chi_{3k}(x)$. For $n \ge 3$, the multiplication-by-3 endomorphism partitions odd units $(\mathbb{Z}/2^n\mathbb{Z})^\times$ into two cyclic orbits $C_1 = \langle 3 \rangle$ and $C_2 = -C_1$ of length $2^{n-2}$ with weight $|W_{C_1}| = |W_{C_2}| = \sqrt{2}$, establishing:
-$$\operatorname{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}$$
+
+$$\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}$$
 
 ### 2.2 Continuous 2-Adic Transfer Operator on $L^2(\mathbb{Z}_2)$ & Exponential Mixing
 In the continuous limit on $\mathbb{Z}_2$, $(\mathcal{L} f)(x) = f(3x) + f(3x-1)$ admits the uniform Haar measure $\mu$ as its **unique conformal Gibbs state** ($\mathcal{L}^*\mu = 2\mu$). On $C^\alpha(\mathbb{Z}_2)$, the essential spectral radius is $r_{\text{ess}} = 1$, and correlations decay exponentially at rate $O((\sqrt{2})^t)$ with Lyapunov exponent $\gamma = \frac{1}{2}\ln 2 \approx 0.3466$.
 
 ### 2.3 Analytic Derivation of the Undirected Gap Exponent $\alpha$ (Silver Ratio)
 For the symmetrized undirected adjacency matrix $A_n = D_n + D_n^\top$, we derived the continuous acoustic kinetic Rayleigh quotient on 1D tight-binding rings of length $L = 2^{n-2}$, yielding the exact closed-form formula for the power-law gap collapse $\Delta(A_n) \sim \Theta(|V|^{-\alpha})$:
+
 $$\alpha = \frac{\ln(4 - 2\sqrt{2})}{\ln 2} = \frac{3}{2} - \log_2(1 + \sqrt{2}) = 0.2284466968\dots$$
+
 revealing a fundamental duality with the **Silver Ratio** $\delta_S = 1 + \sqrt{2}$.
 
 ### 2.4 Non-Hermitian Point-Gap Topology, GBZ & Skin Effect
 We proved that the concentric spectral circles form topologically protected **point gaps** with $\mathbb{Z}$-valued winding invariant $W(\Gamma_k) = 2^{k-1}$. Under open boundary conditions, all $2^n$ extended wavemodes collapse onto the spatial boundary via the **Non-Hermitian Skin Effect (NHSE)** with universal skin depth:
+
 $$\xi = \frac{2}{\ln 2} \approx 2.88539 \text{ sites}, \quad r_{\text{GBZ}} = \frac{1}{\sqrt{2}} \approx 0.707107$$
 
 ### 2.5 2-Adic Markov Semigroups & Tao-Terras Stopping Times
-Using the exact Fourier circle projectors, we formulated the $t$-step transition kernel $(P_n^t)_{x,y}$ and proved the universal sub-leading circle survival bound $P(T > t) \le \sqrt{|A^c|} \cdot 2^{-t/2}$, deriving Riho Terras stopping moments and Terence Tao's logarithmic concentration directly from $\Delta = 2 - \sqrt{2}$.
+Using the exact Fourier circle projectors, we formulated the $t$-step transition kernel $(P_n^t)_{x,y}$ and proved the universal sub-leading circle survival bound $P(T \gt t) \le \sqrt{|A^c|} \cdot 2^{-t/2}$, deriving Riho Terras stopping moments and Terence Tao's logarithmic concentration directly from $\Delta = 2 - \sqrt{2}$.
 
 ### 2.6 Closed-Form Dynamical Zeta Functions & Ihara-Bass Geodesic Duality
 We derived the exact rational Fredholm determinant:
+
 $$\det(I - u D_n) = (1 - 2u)(1 - 2u^2)\prod_{k=3}^n \left(1 + 2u^{2^{k-1}}\right)$$
-proving exact parity filtering $\operatorname{Tr}(D_n^m) = 2^m$ for all odd $m$.
+
+proving exact parity filtering $\mathrm{Tr}(D_n^m) = 2^m$ for all odd $m$.
 
 ### 2.7 Classification of Generalized Affine Cyclotomic Systems
 We established the 5-regime classification across general affine dynamics $y \equiv qx \pmod{p^n}$ and $y \equiv qx - r \pmod{p^n}$, discovering the **Golden Ratio reciprocal tori** ($\phi \approx 1.618, \phi^{-1} \approx 0.618$) on $\mathbb{Z}/5\mathbb{Z}$.
@@ -137,6 +143,7 @@ GLOBAL ADELIC FUSION, ARTIN L-FUNCTIONS & QUANTUM CHAOS SUITE (VERIFIED)
 
 ### 3.1 Global Adelic Transfer Operator on $\mathbb{A}_\mathbb{Q}$
 The global operator $\mathcal{L}_\mathbb{A} = \mathcal{L}_\infty \otimes \bigotimes'_p \mathcal{L}_p$ acts on the Bruhat-Schwartz space $\mathcal{S}(\mathbb{A}_\mathbb{Q})$, yielding the global Fredholm determinant Euler product:
+
 $$\mathcal{Z}(s) = \Gamma_\mathbb{R}(s) \prod_{p < \infty} \det(I - p^{-s}\mathcal{L}_p)^{-1} = \zeta(s - 1) \cdot L(s, \pi) \cdot \mathcal{Z}_{\mathrm{cyclotomic}}(s)$$
 
 ### 3.2 Aronszajn-Krein Inversion & Polarity/Zero Duality Bridge
@@ -162,16 +169,18 @@ Incommensurate logarithmic frequency mixing $\{\ln p\}$ across primes breaks int
 ### 4.1 Hecke Transfer Operators on $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ & Satake Isomorphism
 We formulated the transfer operator on the vertices and chambers of Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ driven by the spherical Hecke algebra $\mathcal{H}(\mathrm{GL}_n(\mathbb{Q}_p), \mathrm{GL}_n(\mathbb{Z}_p))$. The Satake isomorphism maps transfer trace invariants directly to the Dirichlet coefficients of:
 - **$\mathrm{GL}_2$**: Ramanujan cusp form $\Delta \in S_{12}(\mathrm{SL}_2(\mathbb{Z}))$.
-- **$\mathrm{GL}_3$**: Gelbart-Jacquet symmetric square $\operatorname{Sym}^2(\Delta)$ and Buhler's icosahedral $A_5$ representation.
+- **$\mathrm{GL}_3$**: Gelbart-Jacquet symmetric square $\mathrm{Sym}^2(\Delta)$ and Buhler's icosahedral $A_5$ representation.
 - **$\mathrm{GL}_4$**: Rankin-Selberg convolution $\Delta \times \Delta$.
 
 ### 4.2 $\mathrm{PGL}_3(\mathbb{Q}_p)$ Bruhat-Tits Apartment Flow & 2D Macdonald Waves ($\tilde{A}_2$)
-We constructed the 2D discrete Helmholtz operator on the triangular apartments $\mathcal{A} \cong \mathbb{Z}^2$ of type $\tilde{A}_2$. We proved that normalized 2D Macdonald spherical functions $\Phi_z(m, n)$ form the exact joint eigenbasis, and derived the exact **Ramanujan spectral gap** $\operatorname{Gap}(\Delta) = 2(q-1)^2 = 8$ (for $q=3$).
+We constructed the 2D discrete Helmholtz operator on the triangular apartments $\mathcal{A} \cong \mathbb{Z}^2$ of type $\tilde{A}_2$. We proved that normalized 2D Macdonald spherical functions $\Phi_z(m, n)$ form the exact joint eigenbasis, and derived the exact **Ramanujan spectral gap** $\mathrm{Gap}(\Delta) = 2(q-1)^2 = 8$ (for $q=3$).
 - **Interactive Visualizer:** [`docs/building_visualizer.html`](docs/building_visualizer.html) · [User Guide](docs/interactive_building_visualizer_guide.md) (Live WebGL/Canvas rendering of $\tilde{A}_2$ 3-coloring, $\tilde{G}_2$ 12-neighbor hexagonal root systems, Macdonald wavefields, probability flux streamlines, and dual Satake deltoid spectrum).
 
 ### 4.3 Langlands-Shahidi Exterior Power $L$-Functions ($\Lambda^2 \mathrm{GL}_4$) & Deficiency Rigidity
-We injected the Aronszajn-Krein rank-1 boundary perturbation into the exterior square Dirac operator $D_{\Lambda^2}(\sigma, t)$ for $\mathrm{GL}_4$. Using the Lie algebra isomorphism $\mathfrak{sl}_4(\mathbb{C}) \cong \mathfrak{so}_6(\mathbb{C})$ and symplectic branching $\Lambda^2 \mathbb{C}^4 |_{\mathrm{Sp}_4} \cong \mathbf{1} \oplus \operatorname{std}_{\mathrm{SO}_5}$, we proved that non-abelian representations on $\mathrm{GL}_4$ satisfy exact deficiency-index rigidity:
+We injected the Aronszajn-Krein rank-1 boundary perturbation into the exterior square Dirac operator $D_{\Lambda^2}(\sigma, t)$ for $\mathrm{GL}_4$. Using the Lie algebra isomorphism $\mathfrak{sl}_4(\mathbb{C}) \cong \mathfrak{so}_6(\mathbb{C})$ and symplectic branching $\Lambda^2 \mathbb{C}^4 |_{\mathrm{Sp}_4} \cong \mathbf{1} \oplus \mathrm{std}_{\mathrm{SO}_5}$, we proved that non-abelian representations on $\mathrm{GL}_4$ satisfy exact deficiency-index rigidity:
+
 $$\sigma_{\min}(D_{\mathrm{phys}}(\sigma, t)) \ge \left|\sigma - \frac{1}{2}\right| > 0 \quad \forall \sigma \neq \frac{1}{2}$$
+
 strictly excluding any zero-modes off $\sigma = 1/2$.
 
 ---
@@ -220,7 +229,7 @@ The **Bass-Ihara determinant formula** is cross-verified across two independent 
 > **Papers:** [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md) · [*Llama Surgery*](papers/llama_surgery.md)  
 > **Benchmarks:** Complete evaluation metrics in [`BENCHMARKS.md`](BENCHMARKS.md).
 
-- **Bruhat-Tits Tree Attention**: Maps sequence tokens into $p$-adic tree metrics $d_p(u, v) = p^{-\operatorname{LCA}(u, v)}$, reducing Transformer complexity to $O(N \log N)$.
+- **Bruhat-Tits Tree Attention**: Maps sequence tokens into $p$-adic tree metrics $d_p(u, v) = p^{-\mathrm{LCA}(u, v)}$, reducing Transformer complexity to $O(N \log N)$.
 - **Llama Surgery**: Differentiable $p$-adic injection into pre-trained LLMs with RoPE-coherent medoid KV condensation.
 
 ---
@@ -305,13 +314,13 @@ python experiments/affine_cyclotomic_classifier.py
    - Formally proved commutativity $[T_1, T_2] = 0$, Macdonald spherical eigenbasis, and Ramanujan spectral gap $2(q-1)^2 = 8$ with **0 `sorry`s** in [`formalization/Formalization/BuildingPGL3.lean`](formalization/Formalization/BuildingPGL3.lean).
    - Documented in [`docs/lean4_simplicial_buildings.md`](docs/lean4_simplicial_buildings.md).
 2. **Exceptional $\tilde{G}_2$ Buildings & Standard $L$-Functions in Lean 4** :white_check_mark: **[Completed]**:
-   - Formalized 12-neighbor hexagonal root system, $[T_{\text{short}}, T_{\text{long}}] = 0$, $D_6$ Weyl group invariance, Macdonald spherical joint eigenbasis, Ramanujan gap $\operatorname{Gap}(\Delta_{G2}) = (q-1)^2(q+1)(q+3)$, and degree-7 standard Langlands $L$-factor in [`formalization/Formalization/BuildingG2.lean`](formalization/Formalization/BuildingG2.lean) and [`formalization/Formalization/BuildingG2LFunction.lean`](formalization/Formalization/BuildingG2LFunction.lean) with **0 `sorry`s**.
+   - Formalized 12-neighbor hexagonal root system, $[T_{\text{short}}, T_{\text{long}}] = 0$, $D_6$ Weyl group invariance, Macdonald spherical joint eigenbasis, Ramanujan gap $\mathrm{Gap}(\Delta_{G2}) = (q-1)^2(q+1)(q+3)$, and degree-7 standard Langlands $L$-factor in [`formalization/Formalization/BuildingG2.lean`](formalization/Formalization/BuildingG2.lean) and [`formalization/Formalization/BuildingG2LFunction.lean`](formalization/Formalization/BuildingG2LFunction.lean) with **0 `sorry`s**.
 3. **Multi-Variable Weil-Arthur-Selberg Explicit Trace Formula** :white_check_mark: **[Completed]**:
-   - Coupled the 2D transfer operator trace $\operatorname{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
+   - Coupled the 2D transfer operator trace $\mathrm{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
    - Proved that geometric orbital integrals along the maximal split torus match 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$.
    - Verified high-precision numerical simulation in [`experiments/multivariable_weil_arthur_selberg.py`](experiments/multivariable_weil_arthur_selberg.py) and generated [`figures/multivariable_weil_arthur_selberg.png`](figures/multivariable_weil_arthur_selberg.png).
 4. **$p$-Adic Holographic Tensor Networks & Ryu-Takayanagi Entanglement** :white_check_mark: **[Completed]**:
-   - Verified the discrete $p$-adic Ryu-Takayanagi formula $S(A) = \frac{\operatorname{Length}(\gamma_A)}{4 G_N^{(p)}}$ with slope $\alpha = 2.0000$ ($R^2 = 1.000000$) across $p \in \{2, 3, 5\}$, perfect tensor code conditions, and Page curve transitions in [`experiments/padic_ryu_takayanagi_tensor_networks.py`](experiments/padic_ryu_takayanagi_tensor_networks.py).
+   - Verified the discrete $p$-adic Ryu-Takayanagi formula $S(A) = \frac{\mathrm{Length}(\gamma_A)}{4 G_N^{(p)}}$ with slope $\alpha = 2.0000$ ($R^2 = 1.000000$) across $p \in \{2, 3, 5\}$, perfect tensor code conditions, and Page curve transitions in [`experiments/padic_ryu_takayanagi_tensor_networks.py`](experiments/padic_ryu_takayanagi_tensor_networks.py).
 5. **Interactive WebGL / Canvas Building Visualizer** :white_check_mark: **[Completed]**:
    - Built standalone 60 FPS visualizer in [`docs/building_visualizer.html`](docs/building_visualizer.html) for real-time Macdonald waves, probability fluxes, and hypocycloid Satake deltoids.
 
