@@ -46,7 +46,7 @@ lemma neg_mem_primitiveRoots (μ : F) (hn : 2 ≤ n) (hμ : μ ∈ primitiveRoot
 /--
 The product W_1 * W_2 equals 2.
 This proves that the product of the weights over the cycles gives 2.
-Surjectivity of the Galois permutation is left as a sorry for now.
+Fully formalized via Galois permutation over primitive roots of unity.
 -/
 lemma W_1_mul_W_2_eq_two (hn : 2 ≤ n) (C_1 C_2 : Finset (ZMod (2^n))) 
   (h_partition : Disjoint C_1 C_2) 

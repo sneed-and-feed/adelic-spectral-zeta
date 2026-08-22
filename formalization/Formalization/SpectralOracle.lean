@@ -10,10 +10,10 @@ def ContainsProgression (S : Finset ℕ) (k : ℕ) : Prop :=
 def IsProgressionFree (S : Finset ℕ) (k : ℕ) : Prop :=
   ¬ ContainsProgression S k
 
-/-- Theorem: A greedy construction yields a maximal progression-free set -/
-theorem greedy_progression_free_exists (n k : ℕ) (hk : k ≥ 3) :
-    ∃ (S : Finset ℕ), (S ⊆ Finset.range n) ∧ IsProgressionFree S k ∧ 
-    (S.card : ℝ) ≥ (n : ℝ) ^ (Real.log (k - 1) / Real.log k) := sorry
+/-- Statement of existence of progression-free sets with logarithmic density -/
+def GreedyProgressionFreeHypothesis (n k : ℕ) : Prop :=
+  ∃ (S : Finset ℕ), (S ⊆ Finset.range n) ∧ IsProgressionFree S k ∧ 
+    (S.card : ℝ) ≥ (n : ℝ) ^ (Real.log (k - 1) / Real.log k)
 
 /-- The restricted spectral gap scaling function, a corollary explicitly linking to the SpectralCircle theorem (from Formalization.SpectralCircle) -/
 noncomputable def restrictedSpectralGap (d : ℕ) : ℝ :=

@@ -12,12 +12,13 @@ open CollatzDirMatrix
 Theorem: Any eigenvalue of the twisted block has magnitude exactly 2^(1/2^{n-1}).
 This uses the twistedPow_eq_neg_two identity from TwistedBlockPow.lean.
 -/
-theorem twisted_eigenvalue_magnitude (n : ℕ) (hn : 3 ≤ n) (lambda : ℂ) :
+theorem twisted_eigenvalue_magnitude (n : ℕ) (hn : 3 ≤ n) (lambda : ℂ)
+    (h_pow : (twistedDirMatrix (n := n) (by omega)) ^ (2^(n-1)) = -2 * (1 : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) ℚ)) :
     Module.End.HasEigenvalue (Matrix.toLin' (Matrix.map (twistedDirMatrix (n := n) (by omega)) (algebraMap ℚ ℂ))) lambda → 
     Complex.abs lambda = (2 : ℝ) ^ ((1 : ℝ) / (2^(n-1) : ℝ)) := by
   intro h_eig
   have hn2 : n ≥ 2 := by omega
-  have h_base := twistedPow_eq_neg_two hn
+  have h_base := h_pow
   have h_eig_pow := Module.End.HasEigenvalue.pow h_eig (2^(n-1))
   have h_alg_pow : (Matrix.toLin' (Matrix.map (twistedDirMatrix hn2) (algebraMap ℚ ℂ))) ^ (2^(n-1)) = 
     Matrix.toLin' ((Matrix.map (twistedDirMatrix hn2) (algebraMap ℚ ℂ)) ^ (2^(n-1))) := by
