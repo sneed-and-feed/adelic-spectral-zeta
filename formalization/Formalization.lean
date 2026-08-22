@@ -29,4 +29,5 @@ import Formalization.DynamicalZetaFactorization
 import Formalization.BuildingPGL3
 import Formalization.BuildingG2
 import Formalization.BuildingG2LFunction
-import Formalization.BuildingF4
+import Formalization.BuildingF4
+import Formalization.BuildingE8

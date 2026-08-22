@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adelic Spectral Zeta Research Group
 -/
 import Mathlib.Algebra.Ring.Basic
-import Mathlib.Algebra.BigOperators.Group.Finset
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Fin.Basic
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic
