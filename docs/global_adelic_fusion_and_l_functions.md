@@ -67,7 +67,7 @@ graph TD
 ### 1.1 The Adele Ring $\mathbb{A}_\mathbb{Q}$ and Bruhat-Schwartz Test Functions
 The ring of adeles $\mathbb{A}_\mathbb{Q}$ is the restricted topological product of all local fields $\mathbb{Q}_v$ with respect to the local rings of integers $\mathbb{Z}_p$:
 
-$$\mathbb{A}_\mathbb{Q} = \mathbb{R} \times \prod_{p < \infty}' \mathbb{Q}_p = \left\{ (x_\infty, x_2, x_3, x_5, \dots) \mid x_\infty \in \mathbb{R}, \, x_p \in \mathbb{Q}_p, \, x_p \in \mathbb{Z}_p \text{ for almost all } p \right\}$$
+$$\mathbb{A}_\mathbb{Q} = \mathbb{R} \times \prod_{p < \infty}' \mathbb{Q}_p = \left\lbrace (x_\infty, x_2, x_3, x_5, \dots) \mid x_\infty \in \mathbb{R}, \, x_p \in \mathbb{Q}_p, \, x_p \in \mathbb{Z}_p \text{ for almost all } p \right\rbrace$$
 
 The Bruhat-Schwartz space of smooth, rapidly decreasing functions on $\mathbb{A}_\mathbb{Q}$ is the restricted tensor product:
 
@@ -124,7 +124,7 @@ The standard Gamma factor $\Gamma_\mathbb{R}(s)$ has simple poles at $s = 0, -2,
 
 To eliminate these artifacts, we restrict the Archimedean domain to the canonical test function subspace:
 
-$$\boxed{\mathcal{S}_0(\mathbb{R}) = \left\{ f \in \mathcal{S}(\mathbb{R}) \;\middle|\; f(0) = 0, \quad \hat{f}(0) = \int_{-\infty}^\infty f(x)\,dx = 0 \right\}}$$
+$$\boxed{\mathcal{S}_0(\mathbb{R}) = \left\lbrace f \in \mathcal{S}(\mathbb{R}) \;\middle|\; f(0) = 0, \quad \hat{f}(0) = \int_{-\infty}^\infty f(x)\,dx = 0 \right\rbrace}$$
 
 #### Theorem 2.1 (Archimedean Regularization Theorem)
 *Let $f \in \mathcal{S}_0(\mathbb{R})$. Then:*

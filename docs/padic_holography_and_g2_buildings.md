@@ -209,11 +209,11 @@ The structure constants are Gaussian and cyclotomic polynomials in $q$:
 The root system of $G_2$ consists of 12 roots in $\mathbb{R}^2$:
 - **6 Short Roots (length 1):**
 
-$$\Phi_{\text{short}} = \left\{ \pm (1, 0), \pm \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right) \right\}.$$
+$$\Phi_{\text{short}} = \left\lbrace \pm (1, 0), \pm \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right) \right\rbrace.$$
 
 - **6 Long Roots (length $\sqrt{3}$):**
 
-$$\Phi_{\text{long}} = \left\{ \pm \left(-\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm (0, \sqrt{3}) \right\}.$$
+$$\Phi_{\text{long}} = \left\lbrace \pm \left(-\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm (0, \sqrt{3}) \right\rbrace.$$
 
 Simple roots: $\alpha_1 = (1, 0)$ (short) and $\alpha_2 = (-3/2, \sqrt{3}/2)$ (long) with angle $\theta = 150^\circ = 5\pi/6$.
 Coroots: $\alpha_1^\vee = 2\alpha_1$, $\alpha_2^\vee = \frac{2}{3}\alpha_2$.

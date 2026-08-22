@@ -75,11 +75,11 @@ Each vertex has:
 For the exceptional Lie group $G_2$, the apartment $\mathcal{A}(G_2)$ is a 2D hexagonal lattice with 12 root directions:
 - **6 Short Roots (Length 1):**
 
-$$\Phi_{\text{short}} = \left\{ \pm (1, 0), \pm \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right) \right\}.$$
+$$\Phi_{\text{short}} = \left\lbrace \pm (1, 0), \pm \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right) \right\rbrace.$$
 
 - **6 Long Roots (Length $\sqrt{3}$):**
 
-$$\Phi_{\text{long}} = \left\{ \pm \left(-\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm (0, \sqrt{3}) \right\}.$$
+$$\Phi_{\text{long}} = \left\lbrace \pm \left(-\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm (0, \sqrt{3}) \right\rbrace.$$
 
 The Weyl group is the dihedral group $W(G_2) \cong D_6$ of order 12, generating the 12-fold star symmetric standing waves visualized in the application.
 

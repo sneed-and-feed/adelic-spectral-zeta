@@ -29,7 +29,7 @@ The foundation of the Hecke algebra is the double coset decomposition. We must d
 For $`\Gamma = \text{SL}_2(\mathbb{Z})`$ and a prime $p$, the explicit left coset representatives $`R_p`$ are:
 
 $$
-R_p = \left\{ \begin{pmatrix} 1 & j \\ 0 & p \end{pmatrix} \;\middle|\; 0 \le j \lt p \right\} \cup \left\{ \begin{pmatrix} p & 0 \\ 0 & 1 \end{pmatrix} \right\}
+R_p = \left\lbrace \begin{pmatrix} 1 & j \\ 0 & p \end{pmatrix} \;\middle|\; 0 \le j \lt p \right\rbrace \cup \left\lbrace \begin{pmatrix} p & 0 \\ 0 & 1 \end{pmatrix} \right\rbrace
 $$
 
 **Lean Tasks:**

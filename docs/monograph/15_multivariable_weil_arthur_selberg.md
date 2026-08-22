@@ -59,7 +59,7 @@ $$e_1(z) = e_2(z) = \tilde{\tau}(p)^2 - 1.$$
 2. **Buhler's Icosahedral $A_5$ Galois Representation ($N = 800$)**:
    The Satake parameters are rigid roots of unity matching $A_5$ conjugacy classes:
 
-$$\{e_1(z)\} = \left\{ 3, \, \frac{1+\sqrt{5}}{2}, \, 0, \, \frac{1-\sqrt{5}}{2}, \, -1 \right\}.$$
+$$\{e_1(z)\} = \left\lbrace 3, \, \frac{1+\sqrt{5}}{2}, \, 0, \, \frac{1-\sqrt{5}}{2}, \, -1 \right\rbrace.$$
 
 ---
 
