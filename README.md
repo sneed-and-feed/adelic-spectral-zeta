@@ -1,10 +1,19 @@
 # Adèlic Spectral Geometry & 2-Adic Dynamical Systems
 
 [![DOI](https://zenodo.org/badge/20327753.svg)](https://doi.org/10.5281/zenodo.20327753)
-[![Lean 4 Formalization](https://img.shields.io/badge/Lean_4-0_sorry_%7C_v4.8.0-brightgreen.svg)](formalization/Formalization/)
+[![Complete Monograph Markdown](https://img.shields.io/badge/Monograph-Complete_Treatise_MD-blue.svg)](papers/adelic_spectral_geometry_complete_monograph.md)
+[![Interactive HTML Edition](https://img.shields.io/badge/Publication-Interactive_HTML_Edition-cyan.svg)](docs/adelic_spectral_geometry_complete_monograph.html)
+[![3D WebGL Building Visualizer](https://img.shields.io/badge/Interactive_3D-WebGL_Building_Visualizer-purple.svg)](docs/building_visualizer.html)
+[![Lean 4 Formalization](https://img.shields.io/badge/Lean_4-0_sorry_%7C_3006%2F3006_Jobs-brightgreen.svg)](formalization/Formalization/)
 [![Mathlib Upstream](https://img.shields.io/badge/Mathlib_Upstream-2--Tier_Arch-brightgreen.svg)](formalization/MathlibUpstream/)
 [![Rocq Cross-Verification](https://img.shields.io/badge/Rocq_(Coq)-MathComp_2.3.0-blue.svg)](coq/theories/BassIhara.v)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-blue.svg)](LICENSE)
+
+> 🌟 **Primary Publication Treatise:**  
+> - **Complete Master Monograph (Markdown):** [`papers/adelic_spectral_geometry_complete_monograph.md`](papers/adelic_spectral_geometry_complete_monograph.md)  
+> - **Interactive Standalone HTML Publication:** [`docs/adelic_spectral_geometry_complete_monograph.html`](docs/adelic_spectral_geometry_complete_monograph.html)  
+> - **Interactive 3D WebGL Building Visualizer:** [`docs/building_visualizer.html`](docs/building_visualizer.html) ([User Guide](docs/interactive_building_visualizer_guide.md))  
+> - **Master Monograph Summary & Architecture:** [`docs/unified_monograph.md`](docs/unified_monograph.md)
 
 A unified mathematical physics, formal verification, and scientific computing framework implementing:
 1. **2-Adic Arithmetic Dynamics & Spectral Theory**: The exact spectral theory of transfer operators, non-Hermitian point-gap topology, Markov semigroups, and dynamical zeta functions for the Collatz system on quotient rings $\mathbb{Z}/2^n\mathbb{Z}$ and the compact ring of 2-adic integers $\mathbb{Z}_2$.
@@ -283,15 +292,18 @@ python experiments/f4_exceptional_building.py
 
 ## 9. Primary Research Papers & Monograph Series
 
-### Research Papers & Master Monograph
-- [*Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas*](papers/adelic_spectral_geometry_monograph.md) ([LaTeX](papers/adelic_spectral_geometry_monograph.tex))
-- [*Spectral Circle Theorem for the Collatz Relation Matrix on $\mathbb{Z}/2^n\mathbb{Z}$*](papers/collatz_spectral_circle.md) ([LaTeX](papers/collatz_spectral_circle.tex))
+### Primary Publication Treatise
+- **[*Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas: A Unified Publication Treatise on the Spectral Realization of the Generalized Riemann Hypothesis*](papers/adelic_spectral_geometry_complete_monograph.md)**
+- **[Interactive Standalone HTML Edition](docs/adelic_spectral_geometry_complete_monograph.html)**
+- **[Unified Monograph Architecture & Overview](docs/unified_monograph.md)**
+
+### Primary Research Papers & Monograph Series
+1. [*Spectral Circle Theorem for the Collatz Relation Matrix on $\mathbb{Z}/2^n\mathbb{Z}$*](papers/collatz_spectral_circle.md) ([LaTeX](papers/collatz_spectral_circle.tex))
 - [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex))
 - [*Llama Surgery: Injecting Differentiable p-Adic Topology into Pre-Trained LLMs*](papers/llama_surgery.md) ([LaTeX](papers/llama_surgery.tex))
 
 ### Interactive WebGL / WASM Visualizer
 - **[Live Bruhat-Tits Building & Macdonald Wave Visualizer](docs/building_visualizer.html)** (WebGL & 2D/3D Canvas)
-- **[Visualizer Architecture & User Guide](docs/interactive_building_visualizer_guide.md)**
 
 ### Monograph Series (`docs/`)
 1. [`docs/e8_moonshine_building_formalization.md`](docs/e8_moonshine_building_formalization.md) (Exceptional $\widetilde{E}_8$ 240-Root Building, Leech Lattice $\Lambda_{24}$ & Monstrous Moonshine in Lean 4)
