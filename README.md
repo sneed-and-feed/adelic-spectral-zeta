@@ -192,7 +192,8 @@ Universally reusable mathematical components adhering strictly to Mathlib 4 conv
 - [`PrefixSparsity.lean`](formalization/MathlibUpstream/Combinatorics/PrefixSparsity.lean): Exact rational prefix-sharing sparsity on $p$-ary trees.
 
 ### 5.2 Tier 2: Domain-Specific Formalization Modules (`formalization/Formalization/`)
-58 specialized modules covering:
+59 specialized modules covering:
+- [`BuildingPGL3.lean`](formalization/Formalization/BuildingPGL3.lean): Formalization of 2D simplicial building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$, commuting adjacency operators $[T_1, T_2] = 0$, Macdonald joint eigenbasis, and Ramanujan spectral gap $2(q-1)^2 = 8$.
 - [`UndirectedGapExponent.lean`](formalization/Formalization/UndirectedGapExponent.lean): Formal verification of $\alpha = 3/2 - \log_2(1+\sqrt{2})$.
 - [`DynamicalZetaFactorization.lean`](formalization/Formalization/DynamicalZetaFactorization.lean): Tower factorization $\det(I-uD_n) = (1-2u)(1-2u^2)\prod_{k=3}^n (1+2u^{2^{k-1}})$.
 - [`AdelicTopology.lean`](formalization/Formalization/AdelicTopology.lean): Dirac decomposition and Cayley deformations.
@@ -240,22 +241,25 @@ python experiments/bruhat_tits_pgl3_apartment_flow.py
 # --- 4. Langlands-Shahidi Exterior Power (Λ² GL₄) Rigidity ---
 python experiments/langlands_shahidi_exterior_power.py
 
-# --- 5. Continuous 2-Adic Transfer Operator on L²(ℤ₂) ---
+# --- 5. Multi-Variable Weil-Arthur-Selberg Trace Formula ---
+python experiments/multivariable_weil_arthur_selberg.py
+
+# --- 6. Continuous 2-Adic Transfer Operator on L²(ℤ₂) ---
 python experiments/continuous_2adic_transfer_operator.py
 
-# --- 6. Analytic Undirected Gap Exponent (Silver Ratio α) ---
+# --- 7. Analytic Undirected Gap Exponent (Silver Ratio α) ---
 python experiments/analytic_undirected_gap_exponent.py
 
-# --- 7. Non-Hermitian Point-Gap Topology & Skin Effect ---
+# --- 8. Non-Hermitian Point-Gap Topology & Skin Effect ---
 python experiments/collatz_non_hermitian_topology.py
 
-# --- 8. Markov Mixing & Tao-Terras Stopping Times ---
+# --- 9. Markov Mixing & Tao-Terras Stopping Times ---
 python experiments/collatz_markov_stopping_times.py
 
-# --- 9. Dynamical Zeta Functions & Monomial Cycles ---
+# --- 10. Dynamical Zeta Functions & Monomial Cycles ---
 python experiments/collatz_dynamical_zeta.py
 
-# --- 10. Generalized Affine Cyclotomic Classifier ---
+# --- 11. Generalized Affine Cyclotomic Classifier ---
 python experiments/affine_cyclotomic_classifier.py
 ```
 
@@ -273,23 +277,25 @@ python experiments/affine_cyclotomic_classifier.py
 2. [`docs/higher_rank_gln_functoriality.md`](docs/higher_rank_gln_functoriality.md) (Bruhat-Tits Buildings, Hecke Algebras & Satake Isomorphism)
 3. [`docs/bruhat_tits_pgl3_apartment_flow.md`](docs/bruhat_tits_pgl3_apartment_flow.md) ($\mathrm{PGL}_3$ Triangular Buildings & 2D Macdonald Waves)
 4. [`docs/langlands_shahidi_exterior_power.md`](docs/langlands_shahidi_exterior_power.md) (Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Exterior Powers & Deficiency Rigidity)
-5. [`docs/continuous_2adic_transfer_operator.md`](docs/continuous_2adic_transfer_operator.md) (Continuous Transfer Operators on $\mathbb{Z}_2$, Gibbs Measures & Mixing)
-6. [`docs/analytic_undirected_gap_exponent.md`](docs/analytic_undirected_gap_exponent.md) (Analytical Gap Exponent $\alpha$ & Silver Ratio Renormalization)
-7. [`docs/collatz_non_hermitian_topology.md`](docs/collatz_non_hermitian_topology.md) (Point-Gap Winding Invariants, GBZ & Non-Hermitian Skin Effect)
-8. [`docs/collatz_markov_mixing_stopping_times.md`](docs/collatz_markov_mixing_stopping_times.md) (Fourier Circle Projectors, Total Variation & Stopping Times)
-9. [`docs/collatz_dynamical_zeta_functions.md`](docs/collatz_dynamical_zeta_functions.md) (Rational Fredholm Determinants & Geodesic Duality)
-10. [`docs/generalized_affine_cyclotomic_circles.md`](docs/generalized_affine_cyclotomic_circles.md) (Classification of Generalized Affine Systems)
-11. [`docs/mathlib_upstream_architecture.md`](docs/mathlib_upstream_architecture.md) (Two-Tier Mathlib Upstream Specification)
-12. [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md) (Multi-Variable Weil-Arthur-Selberg Trace Formula & Simplicial Path Duality)
+5. [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md) (Multi-Variable Weil-Arthur-Selberg Trace Formula & Simplicial Path Duality)
+6. [`docs/lean4_simplicial_buildings.md`](docs/lean4_simplicial_buildings.md) (Simplicial Lean 4 Formalization of $\tilde{A}_2$ Affine Buildings)
+7. [`docs/continuous_2adic_transfer_operator.md`](docs/continuous_2adic_transfer_operator.md) (Continuous Transfer Operators on $\mathbb{Z}_2$, Gibbs Measures & Mixing)
+8. [`docs/analytic_undirected_gap_exponent.md`](docs/analytic_undirected_gap_exponent.md) (Analytical Gap Exponent $\alpha$ & Silver Ratio Renormalization)
+9. [`docs/collatz_non_hermitian_topology.md`](docs/collatz_non_hermitian_topology.md) (Point-Gap Winding Invariants, GBZ & Non-Hermitian Skin Effect)
+10. [`docs/collatz_markov_mixing_stopping_times.md`](docs/collatz_markov_mixing_stopping_times.md) (Fourier Circle Projectors, Total Variation & Stopping Times)
+11. [`docs/collatz_dynamical_zeta_functions.md`](docs/collatz_dynamical_zeta_functions.md) (Rational Fredholm Determinants & Geodesic Duality)
+12. [`docs/generalized_affine_cyclotomic_circles.md`](docs/generalized_affine_cyclotomic_circles.md) (Classification of Generalized Affine Systems)
+13. [`docs/mathlib_upstream_architecture.md`](docs/mathlib_upstream_architecture.md) (Two-Tier Mathlib Upstream Specification)
 
 ---
 
-## 10. Immediate Next Research Horizons
+## 10. Completed Research Horizons
 
-1. **Simplicial Lean 4 Formalization for $\tilde{A}_2$ Buildings**:
-   - Formalize the type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$ on $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$.
-   - Formally prove commutativity $[\mathcal{A}_1, \mathcal{A}_2] = 0$ and Macdonald polynomial recurrence relations with 0 `sorry`s.
-2. **Multi-Variable Weil Explicit Trace Formula** :white_check_mark: **[Completed - Horizon 2]**:
+1. **Simplicial Lean 4 Formalization for $\tilde{A}_2$ Buildings** :white_check_mark: **[Completed]**:
+   - Formalized type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$ on $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$.
+   - Formally proved commutativity $[T_1, T_2] = 0$, Macdonald spherical eigenbasis, and Ramanujan spectral gap $2(q-1)^2 = 8$ with **0 `sorry`s** in [`formalization/Formalization/BuildingPGL3.lean`](formalization/Formalization/BuildingPGL3.lean).
+   - Documented in [`docs/lean4_simplicial_buildings.md`](docs/lean4_simplicial_buildings.md).
+2. **Multi-Variable Weil Explicit Trace Formula** :white_check_mark: **[Completed]**:
    - Coupled the 2D transfer operator trace $\operatorname{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
    - Proved that geometric orbital integrals along the maximal split torus match 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$.
    - Verified high-precision numerical simulation in [`experiments/multivariable_weil_arthur_selberg.py`](experiments/multivariable_weil_arthur_selberg.py) and generated [`figures/multivariable_weil_arthur_selberg.png`](figures/multivariable_weil_arthur_selberg.png).
