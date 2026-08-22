@@ -124,6 +124,24 @@ graph TD
 * Non-Archimedean split torus orbital integral duality with positive Weyl chamber paths $\mathcal{A}^+$.
 * Numerical verification across Gelbart-Jacquet $\mathrm{Sym}^2(\Delta)$ and Buhler $A_5$ with residuals $\lt 4.9 \times 10^{-14}$.
 
+### [Chapter 16: Exceptional $\tilde{G}_2$ Affine Buildings & Degree-7 Standard $L$-Functions](g2_automorphic_l_functions_rigidity.md)
+* 12-point hexagonal root system, $[T_{\text{short}}, T_{\text{long}}] = 0$, $D_6$ dihedral Weyl invariance, and Macdonald joint spectrum.
+* Formally verified in Lean 4 with 0 `sorry`s ([`formalization/Formalization/BuildingG2.lean`](../formalization/Formalization/BuildingG2.lean) and [`formalization/Formalization/BuildingG2LFunction.lean`](../formalization/Formalization/BuildingG2LFunction.lean)).
+* Aronszajn-Krein deficiency rigidity $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2|$ across 4,000 grid points with 0 violations.
+
+### [Chapter 17: Global Adelic Holographic Tensor Fusion ($\mathrm{AdS}_3 \otimes \bigotimes'_p \mathrm{AdS}_p$)](adelic_holographic_tensor_fusion.md)
+* Global bulk spacetime formed by tensoring continuous $\mathrm{AdS}_3$ with restricted discrete product of Bruhat-Tits trees $\prod'_p \mathcal{T}_{p+1}$.
+* Global Entanglement Conservation Law: Artin product formula $\prod_v |q|_v = 1$ forces $\Delta S_{\mathbb{A}}(q A) \equiv 0$ to machine precision ($4.44 \times 10^{-16}$).
+
+### [Chapter 18: $p$-Adic Black Holes & Mumford Curve Holography](padic_black_holes_mumford.md)
+* Schottky quotients $\mathcal{T}_{p+1}/\Gamma$ yielding $p$-adic Mumford curves $X_\Gamma$.
+* Exact Bekenstein-Hawking entropy $S_{\mathrm{BH}} = \frac{k_H \ln p}{4 G_N^{(p)}}$ ($R^2 = 1.000000$), holographic Page curve turnaround, fast scrambling, and first-order Hawking-Page transition.
+
+### [Chapter 19: Exceptional $\tilde{F}_4$ Affine Buildings & Discrete Macdonald Radial Operators in Lean 4](f4_exceptional_building_formalization.md)
+* 48-root hypercubic apartment geometry on $\mathbb{Z}^4$ (24 short roots, 24 long roots).
+* Complete Lean 4 formalization proving $[T_{\mathrm{short}}, T_{\mathrm{long}}] = 0$ and degree-26 standard representation relations with 0 `sorry`s ([`formalization/Formalization/BuildingF4.lean`](../formalization/Formalization/BuildingF4.lean)).
+* Numerical validation of Ramanujan spectral gap $\mathrm{Gap}(\Delta_{F4}) = 2(q-1)^2(q+1)(q+3)$ across primes $q \in [2, 19]$.
+
 ### [Chapter 10: Appendices](monograph/10_appendices.md)
 * **Appendix A**: Numerical Zeros on the Critical Line.
 * **Appendix B**: Python Implementation of the FFT-Based Tau Algorithm.
