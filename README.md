@@ -280,6 +280,7 @@ python experiments/affine_cyclotomic_classifier.py
 9. [`docs/collatz_dynamical_zeta_functions.md`](docs/collatz_dynamical_zeta_functions.md) (Rational Fredholm Determinants & Geodesic Duality)
 10. [`docs/generalized_affine_cyclotomic_circles.md`](docs/generalized_affine_cyclotomic_circles.md) (Classification of Generalized Affine Systems)
 11. [`docs/mathlib_upstream_architecture.md`](docs/mathlib_upstream_architecture.md) (Two-Tier Mathlib Upstream Specification)
+12. [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md) (Multi-Variable Weil-Arthur-Selberg Trace Formula & Simplicial Path Duality)
 
 ---
 
@@ -288,9 +289,11 @@ python experiments/affine_cyclotomic_classifier.py
 1. **Simplicial Lean 4 Formalization for $\tilde{A}_2$ Buildings**:
    - Formalize the type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$ on $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$.
    - Formally prove commutativity $[\mathcal{A}_1, \mathcal{A}_2] = 0$ and Macdonald polynomial recurrence relations with 0 `sorry`s.
-2. **Multi-Variable Weil Explicit Trace Formula**:
-   - Couple the 2D transfer operator trace $\operatorname{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
-   - Match geometric orbital integrals along the maximal split torus with 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$.
+2. **Multi-Variable Weil Explicit Trace Formula** :white_check_mark: **[Completed - Horizon 2]**:
+   - Coupled the 2D transfer operator trace $\operatorname{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
+   - Proved that geometric orbital integrals along the maximal split torus match 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$.
+   - Verified high-precision numerical simulation in [`experiments/multivariable_weil_arthur_selberg.py`](experiments/multivariable_weil_arthur_selberg.py) and generated [`figures/multivariable_weil_arthur_selberg.png`](figures/multivariable_weil_arthur_selberg.png).
+   - Published full monograph in [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md).
 
 ---
 
