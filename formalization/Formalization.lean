@@ -8,6 +8,7 @@ import Formalization.IharaZeta
 import Formalization.IharaBass
 import Formalization.CollatzRelMatrix
 import Formalization.RamanujanTau
+import Formalization.RamanujanTauCompute
 import Formalization.ProfiniteTower
 import Formalization.SchreierSpectralGap
 import Formalization.AsymptoticGap

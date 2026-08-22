@@ -87,7 +87,11 @@ $$
 D_\theta \left( u + c \left( g_+ + e^{i\theta} \frac{\Vert g_+\Vert }{\Vert g_-\Vert } g_- \right) \right) = D_{\text{sym}} u + i c \left( g_+ - e^{i\theta} \frac{\Vert g_+\Vert }{\Vert g_-\Vert } g_- \right)
 $$
 
-   The global compressed Dirac operator $`D_{\text{glob}} corresponds`$ to a specific choice of $`\theta_0`$ that matches the physical adèlic boundary conditions, and its resolvent is given exactly by the regularized Krein formula. This guarantees that $`D_{\text{glob}}`$ is a self-adjoint operator on its domain.
+   The global compressed Dirac operator $D_{\text{glob}}$ corresponds to a specific choice of $\theta_0$ that matches the physical adèlic boundary conditions, and its resolvent is given exactly by the regularized Krein formula. This guarantees that $D_{\text{glob}}$ is a self-adjoint operator on its domain with deficiency indices $(1,1)$ and verified $\mathrm{QC}^\infty$-regularity.
+
+> [!NOTE]
+> **Remark on Boundary Spectral Model Framing**:
+> We explicitly reiterate that the operator $D_{\text{glob}}$ and its boundary compression $D_\theta$ constitute a self-adjoint operator-theoretic model whose discrete spectrum matches the non-trivial zeros via Aronszajn-Krein rank-1 boundary duality, serving as an explicit functional-analytic framework for regularized trace formulas rather than asserting an unconditional global $L$-function proof.
 
 ### 2.4 Gauge-Covariant 2-Adic Connection and Global Covariant Operator
 

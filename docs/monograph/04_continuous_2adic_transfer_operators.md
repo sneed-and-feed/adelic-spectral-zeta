@@ -25,7 +25,7 @@ accumulating exclusively onto the unit circle boundary $S^1 = \{z \in \mathbb{C}
 
 $$\left| \int_{\mathbb{Z}_2} (\mathcal{L}^t f) g \, d\mu - 2^t \left( \int_{\mathbb{Z}_2} f \, d\mu \right) \left( \int_{\mathbb{Z}_2} g \, d\mu \right) \right| \le C_\alpha (\sqrt{2})^t \|f\|_{C^\alpha} \|g\|_{L^1}$$
 
-which under the normalized Markov operator $\widetilde{\mathcal{L}} = \frac{1}{2} \mathcal{L}$ yields uniform exponential mixing of rate $2^{-t/2} = (\frac{1}{\sqrt{2}})^t$.
+which under the normalized Markov operator $\widetilde{\mathcal{L}} = \frac{1}{2} \mathcal{L}$ yields uniform exponential mixing of rate $2^{-t/2} = (\frac{1}{\sqrt{2}})^t$. The $\sigma = 1/2$ condition is rigorously framed as the conformal scaling parameter $\sigma = \frac{\ln \sqrt{2}}{\ln 2} = 1/2$ governing the leading non-trivial spectral circle $\mathcal{C}_2$ of the dyadic branching operator.
 
 These results provide an exact non-Archimedean solvable model for thermodynamic formalism and establish the continuous infinite-volume limit of the discrete Collatz relation matrices $D_n$.
 

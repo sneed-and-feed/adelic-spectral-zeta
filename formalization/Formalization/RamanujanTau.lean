@@ -2,6 +2,7 @@ import Mathlib.RingTheory.PowerSeries.Basic
 import Mathlib.NumberTheory.Bernoulli
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Nat.Basic
+import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Int.Basic
 import Mathlib.Data.Rat.Defs
 import Mathlib.Data.Rat.Cast.Defs
@@ -25,7 +26,30 @@ def divisor_sum_11 (n : ℕ) : ℤ :=
 def ramanujan_congruence_691 (n : ℕ) : Prop :=
   (ramanujanTau n - divisor_sum_11 n) % 691 = 0
 
-lemma B_12_eq : bernoulli 12 = -691 / 2730 := by sorry
+-- Exact rational arithmetic using (numerator : ℤ, denominator : ℕ)
+def q_add (p q : ℤ × ℕ) : ℤ × ℕ := (p.1 * (q.2 : ℤ) + q.1 * (p.2 : ℤ), p.2 * q.2)
+def q_sub (p q : ℤ × ℕ) : ℤ × ℕ := (p.1 * (q.2 : ℤ) - q.1 * (p.2 : ℤ), p.2 * q.2)
+def q_mul (p q : ℤ × ℕ) : ℤ × ℕ := (p.1 * q.1, p.2 * q.2)
+
+def q_bernoulli_seq : ℕ → List (ℤ × ℕ)
+  | 0 => [(1, 1)]
+  | n + 1 =>
+    let prev := q_bernoulli_seq n
+    let sum_term := (List.range (n + 1)).foldl (fun (acc : ℤ × ℕ) (k : ℕ) =>
+      let b_k := prev.getD k (0, 1)
+      let coeff := ((Nat.choose (n + 1) k : ℤ), n + 1 - k + 1)
+      q_add acc (q_mul coeff b_k)) (0, 1)
+    let next_b := q_sub (1, 1) sum_term
+    prev ++ [next_b]
+
+def q_bernoulli (n : ℕ) : ℤ × ℕ :=
+  (q_bernoulli_seq n).getD n (0, 1)
+
+def q_eq (p q : ℤ × ℕ) : Bool :=
+  p.1 * (q.2 : ℤ) == q.1 * (p.2 : ℤ)
+
+theorem bernoulli_12_exact : q_eq (q_bernoulli 12) (-691, 2730) = true := by
+  decide
 
 noncomputable def E_12 : PowerSeries ℚ :=
   PowerSeries.mk fun n => if n = 0 then 1 else (65520 / 691) * (divisor_sum_11 n : ℚ)

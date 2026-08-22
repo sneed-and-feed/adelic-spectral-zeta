@@ -151,9 +151,9 @@ theorem symmetrized_eigenvalue_laplacian (S : SatakeSystem R)
 
 ---
 
-### 14.5 Non-Archimedean Ramanujan Spectral Gap Formula
+### 10.5 Non-Archimedean Ramanujan Spectral Gap on Finite Quotients
 
-The continuous tempered band of the discrete building Laplacian $\Delta$ is bounded above by $6q - 2(q^2 + q + 1)$. The trivial constant state has eigenvalue $\lambda_0 = 0$. The exact Ramanujan spectral gap separating the continuous spectrum from the trivial bound state is:
+On finite Ramanujan quotient complexes $\Gamma \backslash \mathcal{B}$ of the discrete building, the tempered spectrum of the discrete building Laplacian $\Delta$ is bounded above by $6q - 2(q^2 + q + 1)$. The trivial constant state has eigenvalue $\lambda_0 = 0$. The exact Ramanujan spectral gap on finite Ramanujan quotients separating the tempered spectrum from the trivial bound state is:
 
 $$\mathrm{Gap}(\Delta) = 0 - \big(6q - 2(q^2 + q + 1)\big) = 2(q - 1)^2.$$
 
@@ -164,7 +164,7 @@ theorem ramanujan_gap_formula (q : R) :
   dsimp [maxTemperedLaplacianEigenvalue, regularDegree]
   ring
 ```
-For $q = 3$, $\mathrm{Gap}(\Delta) = 2(3-1)^2 = 8$, matching the numerical spectral sweep in [`figures/pgl3_apartment_flow.png`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/figures/pgl3_apartment_flow.png).
+For $q = 3$, $\mathrm{Gap}(\Delta) = 2(3-1)^2 = 8$, matching the discrete Ramanujan quotient spectral sweep in [`figures/pgl3_apartment_flow.png`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/figures/pgl3_apartment_flow.png).
 
 ---
 

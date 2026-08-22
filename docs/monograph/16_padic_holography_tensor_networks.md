@@ -35,6 +35,14 @@ $$\mathcal{F}(\mathcal{O}_v, \mathcal{O}_A) = 1.000000 \quad \text{and} \quad \|
    proving $100\%$ protection against erasures in $A^c$.
 6. **Simplicial Building Apartments ($\tilde{A}_2$ and $\tilde{G}_2$)**: We extend the min-cut geodesic formulation to 2D affine building apartments, demonstrating the geometric transition between hyperbolic logarithmic tree geodesics and flat Euclidean chordal geodesics ($\mathrm{Length}(\gamma_A) \propto 2 R \sin(\theta/2)$).
 
+### Relationship to Established $p$-Adic Holography Literature
+This framework directly builds on and connects to the foundational literature of $p$-adic AdS/CFT:
+* **Gubser, Knaute, Parikh, Samberg, & Nishimura (2017)**: *"$p$-Adic AdS/CFT"* (Commun. Math. Phys. 352, 1019) – Establishing scalar field propagation, Dirichlet problems, and bulk-to-boundary Green's functions on Bruhat-Tits trees.
+* **Heydeman, Marcolli, Saberi, & Stoica (2016–2018)**: *"$p$-Adic Holography, Quantum Error Correction and Tensor Networks"* – Formalizing holographic quantum error-correcting codes, HaPPY stabilizer models on Bruhat-Tits trees, and non-Archimedean holographic entanglement.
+* **Gubser, Heydeman, Jepsen, Marcolli, Parikh, Rangamani, Spodyneiko, & Stoica (2019)**: *"$p$-Adic Matrix Models, SYK, and Melonic Graphs"* – Delineating the non-Archimedean conformal bootstrap and melonic limits.
+
+---
+
 ```
 +----------------------------------------------------------------------------------------------------+
 |                p-ADIC HOLOGRAPHIC TENSOR NETWORK & RYU-TAKAYANAGI ARCHITECTURE                     |
