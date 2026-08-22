@@ -20,6 +20,5 @@ theorem block_sparse_memory_bound
   constructor
   · dsimp [mem_sparse, mem_dense]
     field_simp
-    ring
   · rw [h_sr, h_tree]
     ring

@@ -92,7 +92,6 @@ lemma log2_sqrt_two : log2 (Real.sqrt 2) = 1 / 2 := by
     rw [Real.log_sqrt h2]
   rw [h]
   field_simp
-  ring
 
 lemma log2_two_sqrt_two : log2 (2 * Real.sqrt 2) = 3 / 2 := by
   have h2 : (0 : ℝ) < 2 := by norm_num

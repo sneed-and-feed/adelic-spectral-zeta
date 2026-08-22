@@ -1,5 +1,6 @@
 import Mathlib
 import Mathlib.Topology.Category.LightProfinite.Basic
+import Mathlib.Topology.Category.LightProfinite.AsLimit
 
 open CategoryTheory
 open CategoryTheory.Limits
@@ -21,30 +22,18 @@ lemma cast_comp_cast {c d e : ℕ} (h1 : d ≤ c) (h2 : e ≤ d) (x : ZMod (2^c)
   have h_eval : (f2.comp f1) x = f3 x := by rw [h_comp]
   exact h_eval
 
-/-- The tower of finite rings `ZMod (2^d)`. -/
-def zmodTowerObj (d : ℕᵒᵖ) : FintypeCat :=
-  FintypeCat.of (ZMod (2^(unop d)))
-
-/-- The transition maps `ZMod (2^d) → ZMod (2^c)` for `c ≤ d`. -/
-def zmodTowerMap {c d : ℕᵒᵖ} (h : c ⟶ d) : zmodTowerObj c ⟶ zmodTowerObj d :=
-  let hc : unop d ≤ unop c := leOfHom h.unop
-  (ZMod.castHom (pow_dvd_pow 2 hc) (ZMod (2^(unop d))) : ZMod (2^(unop c)) → ZMod (2^(unop d)))
-
 /-- The functor defining the 2-adic projective system. -/
 @[simps]
 def zmodTower : ℕᵒᵖ ⥤ FintypeCat where
-  obj := zmodTowerObj
-  map := zmodTowerMap
+  obj d := FintypeCat.of (ZMod (2^(unop d)))
+  map {c d} h := FintypeCat.homMk (ZMod.castHom (pow_dvd_pow 2 (leOfHom h.unop)) (ZMod (2^(unop d))))
   map_id X := by
+    have h : ZMod.castHom (pow_dvd_pow 2 (leOfHom (𝟙 X).unop)) (ZMod (2 ^ unop X)) = RingHom.id _ := ZMod.castHom_self
+    simp [h]
+  map_comp {X Y Z} f g := by
     ext x
-    dsimp [zmodTowerMap]
-    rw [ZMod.cast_id]
-  map_comp f g := by
-    ext x
-    dsimp [zmodTowerMap]
-    let h1 : unop _ ≤ unop _ := leOfHom f.unop
-    let h2 : unop _ ≤ unop _ := leOfHom g.unop
-    exact (cast_comp_cast h1 h2 x).symm
+    dsimp
+    exact (cast_comp_cast (leOfHom f.unop) (leOfHom g.unop) x).symm
 
 -- ============================================================================
 -- 2. THE PROFINTIE LIMIT
@@ -53,6 +42,6 @@ def zmodTower : ℕᵒᵖ ⥤ FintypeCat where
 /-- The 2-adic integers $\mathbb{Z}_2$, constructed as a Light Profinite set.
     This provides the sequential limit topology automatically. -/
 noncomputable def Z_2_Profinite : LightProfinite :=
-  LightProfinite.of zmodTower
+  limit (zmodTower ⋙ FintypeCat.toLightProfinite)
 
 end AdelicSpectral

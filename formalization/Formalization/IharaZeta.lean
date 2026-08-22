@@ -1,6 +1,13 @@
-import Mathlib
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Dart
+import Mathlib.Combinatorics.SimpleGraph.AdjMatrix
+import Mathlib.Combinatorics.SimpleGraph.Finite
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Algebra.Polynomial.AlgebraMap
 
 open Polynomial Matrix
+
+set_option linter.unusedSectionVars false
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
 variable (G : SimpleGraph V) [DecidableRel G.Adj]
@@ -139,7 +146,7 @@ lemma targetMatrix_mul_targetMatrix_transpose :
     { toFun := fun x => ⟨x.val.fst, by
         have hh : G.Adj x.val.fst x.val.snd := x.val.adj
         rw [← x.property] at hh
-        exact G.symm hh⟩,
+        exact hh.symm⟩,
       invFun := fun y => ⟨SimpleGraph.Dart.mk (y.val, u) y.property.symm, rfl⟩,
       left_inv := fun x => by
         ext

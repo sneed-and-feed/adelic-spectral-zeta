@@ -1,9 +1,9 @@
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Connectivity
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.Group.Abs
-import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 open Matrix
@@ -15,10 +15,8 @@ variable {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
 
 def supportGraph (A : Matrix n n ℝ) (h_symm : ∀ i j, A i j = A j i) : SimpleGraph n where
   Adj i j := 0 < A i j ∧ i ≠ j
-  symm := by
-    intro i j h
-    exact ⟨by rw [h_symm j i]; exact h.1, h.2.symm⟩
-  loopless := by intro i h; exact h.2 rfl
+  symm := ⟨fun {i j} h => ⟨by rw [h_symm]; exact h.1, h.2.symm⟩⟩
+  loopless := ⟨fun i h => h.2 rfl⟩
 
 lemma matrix_pow_nonneg {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
     ∀ i j, 0 ≤ (A ^ k) i j := by

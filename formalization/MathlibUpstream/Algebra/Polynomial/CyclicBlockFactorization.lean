@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Algebra.Polynomial.Eval
+import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.BigOperators.Intervals
 

@@ -1,9 +1,9 @@
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Connectivity
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.Group.Abs
-import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 open Matrix
@@ -172,7 +172,7 @@ lemma pf_eigenvalue_is_max {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j 
       obtain ⟨j, hj⟩ := hw_pos_some
       use j, Finset.mem_univ j
       exact mul_pos (hv_pos j) hj
-  have h_le : |lam| ≤ μ := (mul_le_mul_right h_dot_pos).mp h_dot1
+  have h_le : |lam| ≤ μ := le_of_mul_le_mul_right h_dot1 h_dot_pos
   exact le_trans (le_abs_self lam) h_le
 
 end Matrix

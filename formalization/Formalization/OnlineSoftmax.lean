@@ -54,7 +54,7 @@ lemma online_step_correct (prev_elements : List ℝ) (l_old m_old : ℝ) (row : 
 lemma online_softmax_equivalence_general (rows : List (List ℝ)) (prev_elements : List ℝ) (init_m init_l : ℝ)
   (h_init_l : init_l = sum_exp_shifted prev_elements init_m) :
   (rows.foldl online_step (init_m, init_l)).2 =
-  sum_exp_shifted (prev_elements ++ rows.join) (rows.foldl online_step (init_m, init_l)).1 := by
+  sum_exp_shifted (prev_elements ++ rows.flatten) (rows.foldl online_step (init_m, init_l)).1 := by
   induction rows generalizing prev_elements init_m init_l with
   | nil =>
     simp [h_init_l]
@@ -76,7 +76,7 @@ Formalize in Lean 4: The online softmax recurrence (m_new = max(m_old, max(row))
 -/
 theorem online_softmax_equivalence (rows : List (List ℝ)) (init_m : ℝ) :
   (rows.foldl online_step (init_m, sum_exp_shifted [] init_m)).2 =
-  sum_exp_shifted (rows.join) (rows.foldl online_step (init_m, sum_exp_shifted [] init_m)).1 := by
+  sum_exp_shifted (rows.flatten) (rows.foldl online_step (init_m, sum_exp_shifted [] init_m)).1 := by
   have h := online_softmax_equivalence_general rows [] init_m (sum_exp_shifted [] init_m) rfl
   simp at h
   exact h

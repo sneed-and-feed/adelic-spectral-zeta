@@ -11,18 +11,17 @@ def compute_next_p_list (p_prev : List Int) (n : Nat) : Int :=
     let g1 := (k * (3 * k - 1)) / 2
     let g2 := (k * (3 * k + 1)) / 2
     let sign : Int := if k % 2 == 1 then 1 else -1
-    let term1 := if g1 ≤ n then sign * p_prev.get! (n - g1) else 0
-    let term2 := if g2 ≤ n then sign * p_prev.get! (n - g2) else 0
+    let term1 := if g1 ≤ n then sign * (p_prev[n - g1]?.getD 0) else 0
+    let term2 := if g2 ≤ n then sign * (p_prev[n - g2]?.getD 0) else 0
     acc + term1 + term2
 
-def compute_partitions_list : Nat → List Int
-  | 0 => [1]
-  | n + 1 =>
-    let p_prev := compute_partitions_list n
-    p_prev ++ [compute_next_p_list p_prev (n + 1)]
+def compute_partitions_list (n : Nat) : List Int :=
+  (List.range n).foldl (fun acc i =>
+    acc ++ [compute_next_p_list acc (i + 1)]
+  ) [1]
 
 def p (n : Nat) : Int :=
-  (compute_partitions_list n).get! n
+  (compute_partitions_list n)[n]?.getD 0
 
 -- Ramanujan's partition congruences
 -- We prove these for small bounds computationally (0 sorry, 0 axiom)

@@ -1,0 +1,23 @@
+name = "formalization"
+version = "0.1.0"
+defaultTargets = ["MathlibUpstream", "Formalization"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.1"
+
+[[require]]
+name = "«spectral-positivity-ext»"
+path = "spectral-positivity-ext"
+
+[[lean_lib]]
+name = "MathlibUpstream"
+
+[[lean_lib]]
+name = "Formalization"

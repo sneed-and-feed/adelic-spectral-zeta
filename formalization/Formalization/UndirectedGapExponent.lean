@@ -1,7 +1,12 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Order.GroupWithZero.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Undirected Spectral Gap Collapse Exponent α
@@ -152,7 +157,6 @@ lemma log2_sqrt_two : log2 (Real.sqrt 2) = 1 / 2 := by
     rw [Real.log_sqrt h2]
   rw [h]
   field_simp
-  ring
 
 lemma log2_two_sqrt_two : log2 (2 * Real.sqrt 2) = 3 / 2 := by
   have h2 : (0 : ℝ) < 2 := by norm_num
@@ -246,7 +250,7 @@ theorem undirectedGapExponent_lt_half : undirectedGapExponent < 1 / 2 := by
   have h_eq : (1 / 2 : ℝ) = (Real.log 2 / 2) / Real.log 2 := by
     field_simp
   rw [h_eq]
-  apply (div_lt_div_right log_two_pos).mpr
+  apply (div_lt_div_iff_of_pos_right log_two_pos).mpr
   have h_sqrt2 : Real.log 2 / 2 = Real.log (Real.sqrt 2) := (Real.log_sqrt (by norm_num)).symm
   rw [h_sqrt2]
   apply Real.log_lt_log baseUndirectedGap_pos

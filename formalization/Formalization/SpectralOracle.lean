@@ -1,6 +1,10 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Algebra.Order.GroupWithZero.Basic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Linarith
 
 /-- Predicate checking if a set of natural numbers contains a k-term arithmetic progression -/
 def ContainsProgression (S : Finset ℕ) (k : ℕ) : Prop :=
@@ -26,11 +30,11 @@ theorem restricted_spectral_gap_pos_and_monotone (d : ℕ) (hd : d ≥ 2) :
   constructor
   · have h1 : (2.0 : ℝ) = (2.0 : ℝ) ^ (1 : ℝ) := by norm_num
     have h2 : 1.0 / ((2 : ℝ) ^ (d - 1)) < 1 := by
-      rw [h_one, one_div, inv_lt_one_iff]
+      rw [h_one, one_div, inv_lt_one_iff₀]
       right
       have hd' : 1 ≤ d - 1 := by omega
       have h3 : (2 : ℝ) ^ 1 ≤ (2 : ℝ) ^ (d - 1) := by
-        exact pow_le_pow_right (by norm_num) hd'
+        exact pow_le_pow_right₀ (by norm_num) hd'
       linarith
     unfold restrictedSpectralGap
     have h3 : (2.0 : ℝ) ^ (1.0 / ((2 : ℝ) ^ (d - 1))) < (2.0 : ℝ) ^ (1 : ℝ) := by
@@ -42,9 +46,9 @@ theorem restricted_spectral_gap_pos_and_monotone (d : ℕ) (hd : d ≥ 2) :
     apply Real.rpow_lt_rpow_of_exponent_lt (by norm_num)
     have hd' : d - 1 < d + 1 - 1 := by omega
     have h2 : (2 : ℝ) ^ (d - 1) < (2 : ℝ) ^ (d + 1 - 1) := by
-      exact pow_lt_pow_right (by norm_num) hd'
+      exact pow_lt_pow_right₀ (by norm_num) hd'
     have h3 : 0 < (2 : ℝ) ^ (d - 1) := by positivity
     have h4 : 0 < (2 : ℝ) ^ (d + 1 - 1) := by positivity
     rw [h_one, one_div, one_div]
-    rw [inv_lt_inv h4 h3]
+    rw [inv_lt_inv₀ h4 h3]
     exact h2

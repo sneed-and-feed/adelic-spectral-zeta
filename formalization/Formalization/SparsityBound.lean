@@ -1,4 +1,16 @@
-import Mathlib
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Fintype.Prod
+import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Fintype.BigOperators
+import Mathlib.Logic.Equiv.Basic
+import Mathlib.Logic.Equiv.Fin.Basic
+import Mathlib.Data.Rat.Defs
+import Mathlib.Data.Rat.Cast.Defs
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.NormNum
+import Mathlib.Algebra.GroupWithZero.Units.Lemmas
+import Mathlib.Algebra.Order.Field.Basic
 
 open Nat Classical
 

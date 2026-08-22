@@ -1,9 +1,9 @@
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Connectivity
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.Group.Abs
-import Mathlib.LinearAlgebra.Matrix.Spectrum
+import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
@@ -34,6 +34,8 @@ perron-frobenius, spectral theory, support graph, non-negative matrix, symmetric
 -/
 
 open Matrix Classical
+open scoped InnerProductSpace
+
 namespace Matrix
 
 variable {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
@@ -42,10 +44,8 @@ variable {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
 /-- The support graph of a non-negative symmetric matrix, where edges correspond to positive entries. -/
 def supportGraph (A : Matrix n n ℝ) (h_symm : ∀ i j, A i j = A j i) : SimpleGraph n where
   Adj i j := 0 < A i j ∧ i ≠ j
-  symm := by
-    intro i j h
-    exact ⟨by rw [h_symm j i]; exact h.1, h.2.symm⟩
-  loopless := by intro i h; exact h.2 rfl
+  symm := ⟨fun {i j} h => ⟨by rw [h_symm]; exact h.1, h.2.symm⟩⟩
+  loopless := ⟨fun i h => h.2 rfl⟩
 
 /-- The powers of a non-negative matrix have non-negative entries. -/
 @[simp]
@@ -398,8 +398,9 @@ lemma eigenvalue_le_of_symm_of_nonneg {B : Matrix n n ℝ} (hB_symm : ∀ i j, B
       obtain ⟨j, hj⟩ := hw_pos_some
       use j, Finset.mem_univ j
       exact mul_pos (hv_pos j) hj
-  have h_le : |lam| ≤ μ := (mul_le_mul_right h_dot_pos).mp h_dot1
+  have h_le : |lam| ≤ μ := le_of_mul_le_mul_right h_dot1 h_dot_pos
   exact le_trans (le_abs_self lam) h_le
+
 /-- A real Hermitian matrix is symmetric. -/
 lemma IsHermitian.transpose_eq {n : Type*}
     (A : Matrix n n ℝ) (h : A.IsHermitian) : Aᵀ = A := by
@@ -421,11 +422,7 @@ lemma dotProduct_mulVec_of_symm {n : Type*} [Fintype n]
 lemma euclideanSpace_inner_eq_dotProduct {n : Type*} [Fintype n]
     (u : EuclideanSpace ℝ n) (w : n → ℝ) :
     ⟪u, (EuclideanSpace.equiv n ℝ).symm w⟫_ℝ = dotProduct (u : n → ℝ) w := by
-  simp only [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
-  apply Finset.sum_congr rfl
-  intro i _
-  simp only [star_trivial, EuclideanSpace.equiv]
-  congr 1
+  simp [EuclideanSpace.inner_eq_star_dotProduct, dotProduct, mul_comm]
 
 /-- Bound on eigenvalues shifted by the identity matrix, using the Hermitian spectral theorem. -/
 lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n]

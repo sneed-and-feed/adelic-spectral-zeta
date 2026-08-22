@@ -34,7 +34,7 @@ noncomputable def zmodChar_C : AddChar (ZMod N) ℂ :=
 
 /-- Evaluation of the character on negated argument equals the multiplicative inverse. -/
 lemma char_neg (x : ZMod N) : (zmodChar_C zeta hzeta) (-x) = ((zmodChar_C zeta hzeta) x)⁻¹ := 
-  eq_inv_of_mul_eq_one_left <| by rw [← AddChar.map_add_mul, add_left_neg, AddChar.map_zero_one]
+  eq_inv_of_mul_eq_one_left <| by rw [← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one]
 
 /-- Complex conjugation of the character equals evaluation on the negated argument. -/
 lemma char_star (x : ZMod N) : star (zmodChar_C zeta hzeta x) = zmodChar_C zeta hzeta (-x) := by
@@ -61,7 +61,7 @@ lemma dft_mul_star :
   ext i j
   simp only [mul_apply, one_apply, dftMatrix, dftMatrix_star]
   have hs : star (1 / (Real.sqrt N : ℂ)) = 1 / (Real.sqrt N : ℂ) := by
-    simp only [star_div', star_one, RCLike.star_def, conj_ofReal]
+    simp
   have hs2 : (Real.sqrt N : ℂ) ^ 2 = (N : ℂ) := by norm_cast; exact Real.sq_sqrt (by positivity)
   have hN : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr N.ne_zero
   have h_sum_congr : (∑ k : ZMod N, (1 / (Real.sqrt N : ℂ) * zmodChar_C zeta hzeta (i * k)) * star (1 / (Real.sqrt N : ℂ) * zmodChar_C zeta hzeta (j * k))) =
@@ -71,14 +71,14 @@ lemma dft_mul_star :
     rw [star_mul', char_star, hs]
     calc
       _ = (1 / (Real.sqrt N : ℂ) ^ 2) * (zmodChar_C zeta hzeta (i * k) * zmodChar_C zeta hzeta (-(j * k))) := by ring
-      _ = (1 / (N : ℂ)) * zmodChar_C zeta hzeta ((i - j) * k) := by rw [hs2, ← AddChar.map_add_mul]; congr 2; ring
+      _ = (1 / (N : ℂ)) * zmodChar_C zeta hzeta ((i - j) * k) := by rw [hs2, ← AddChar.map_add_eq_mul]; congr 2; ring
   rw [h_sum_congr, ← Finset.mul_sum]
   have h_sum_comm : (∑ i_1 : ZMod N, (zmodChar_C zeta hzeta) ((i - j) * i_1)) = ∑ i_1 : ZMod N, (AddChar.zmodChar N hzeta.pow_eq_one) (i_1 * (i - j)) := by
     apply sum_congr rfl; intro k _; exact congrArg _ (mul_comm _ _)
   rw [h_sum_comm, AddChar.sum_mulShift _ (AddChar.zmodChar_primitive_of_primitive_root N hzeta)]
   simp_rw [sub_eq_zero]
   split_ifs with h_eq
-  · rw [ZMod.card, one_div, inv_mul_cancel hN]
+  · rw [ZMod.card, one_div, inv_mul_cancel₀ hN]
   · simp
 
 /-- The DFT matrix is unitary: `Fᴴ * F = I`. -/
@@ -87,7 +87,7 @@ lemma dft_star_mul :
   ext i j
   simp only [mul_apply, one_apply, dftMatrix, dftMatrix_star]
   have hs : star (1 / (Real.sqrt N : ℂ)) = 1 / (Real.sqrt N : ℂ) := by
-    simp only [star_div', star_one, RCLike.star_def, conj_ofReal]
+    simp
   have hs2 : (Real.sqrt N : ℂ) ^ 2 = (N : ℂ) := by norm_cast; exact Real.sq_sqrt (by positivity)
   have hN : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr N.ne_zero
   have h_sum_congr : (∑ k : ZMod N, star (1 / (Real.sqrt N : ℂ) * zmodChar_C zeta hzeta (k * i)) * (1 / (Real.sqrt N : ℂ) * zmodChar_C zeta hzeta (k * j))) =
@@ -97,7 +97,7 @@ lemma dft_star_mul :
     rw [star_mul', char_star, hs]
     calc
       _ = (1 / (Real.sqrt N : ℂ) ^ 2) * (zmodChar_C zeta hzeta (-(k * i)) * zmodChar_C zeta hzeta (k * j)) := by ring
-      _ = (1 / (N : ℂ)) * zmodChar_C zeta hzeta ((j - i) * k) := by rw [hs2, ← AddChar.map_add_mul]; congr 2; ring
+      _ = (1 / (N : ℂ)) * zmodChar_C zeta hzeta ((j - i) * k) := by rw [hs2, ← AddChar.map_add_eq_mul]; congr 2; ring
   rw [h_sum_congr, ← Finset.mul_sum]
   have h_sum_comm : (∑ i_1 : ZMod N, (zmodChar_C zeta hzeta) ((j - i) * i_1)) = ∑ i_1 : ZMod N, (AddChar.zmodChar N hzeta.pow_eq_one) (i_1 * (j - i)) := by
     apply sum_congr rfl; intro k _; exact congrArg _ (mul_comm _ _)
@@ -105,5 +105,5 @@ lemma dft_star_mul :
   have h_iff : j - i = 0 ↔ i = j := by constructor <;> intro h <;> [exact sub_eq_zero.mp h |>.symm; rw [h, sub_self]]
   simp_rw [h_iff]
   split_ifs with h_eq
-  · rw [ZMod.card, one_div, inv_mul_cancel hN]
+  · rw [ZMod.card, one_div, inv_mul_cancel₀ hN]
   · simp
