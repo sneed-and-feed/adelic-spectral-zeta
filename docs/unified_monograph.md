@@ -84,37 +84,38 @@ graph TD
 * **[Chapter 1: Global Abstract & Architectural Synthesis](monograph/01_abstract_and_introduction.md)**
 * **[Chapter 2: The Global Adèlic Spectral Triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$](monograph/02_adelic_spectral_triple.md)**
 * **[Chapter 3: Rigorous Operator-Theoretic Proof of Connes' Spectral Triple Axioms](monograph/03_proof_of_axioms.md)**
-* **[Chapter 4: Continuous 2-Adic Transfer Operators & Cyclotomic Spectral Measures](continuous_2adic_transfer_operator.md)**
-* **[Chapter 5: Global Adèlic Fusion, Dirichlet Character Resonance & $\mathrm{GL}_1$ Explicit Formulas](monograph/13_trace_identity_gl1.md)**
+* **[Chapter 4: Continuous 2-Adic Transfer Operators & Cyclotomic Spectral Measures](monograph/04_continuous_2adic_transfer_operators.md)**
+* **[Chapter 5: Global Adèlic Fusion, Dirichlet Character Resonance & $\mathrm{GL}_1$ Explicit Formulas](monograph/05_global_adelic_fusion_gl1.md)**
 
 ### Part II: Higher-Rank Langlands Functoriality & Satake Transfer Engines
-* **[Chapter 6: Bruhat-Tits Buildings & Higher Langlands Functoriality ($\mathrm{GL}_2 \to \mathrm{GL}_3 \to \mathrm{GL}_4$)](monograph/04_higher_langlands_extensions.md)**
-* **[Chapter 7: Artin $L$-Functions, Icosahedral Representations & Critical Line Stability](monograph/05_artin_l_functions_rigidity.md)**
-* **[Chapter 8: Langlands-Shahidi Exterior Power $L$-Functions & Deficiency-Index Rigidity](langlands_shahidi_exterior_power.md)**
-* **[Chapter 9: Multi-Variable Weil-Arthur-Selberg Trace Formula & Positive Weyl Chamber Path Duality](monograph/15_multivariable_weil_arthur_selberg.md)**
+* **[Chapter 6: Bruhat-Tits Buildings & Higher Langlands Functoriality ($\mathrm{GL}_2 \to \mathrm{GL}_3 \to \mathrm{GL}_4$)](monograph/06_higher_langlands_extensions.md)**
+* **[Chapter 7: Artin $L$-Functions, Icosahedral Representations & Critical Line Stability](monograph/07_artin_l_functions_rigidity.md)**
+* **[Chapter 8: Langlands-Shahidi Exterior Power $L$-Functions & Deficiency-Index Rigidity](monograph/08_langlands_shahidi_exterior_power.md)**
+* **[Chapter 9: Multi-Variable Weil-Arthur-Selberg Trace Formula & Positive Weyl Chamber Path Duality](monograph/09_multivariable_weil_arthur_selberg.md)**
 
 ### Part III: Formal Verification of Simplicial & Exceptional Buildings in Lean 4
-* **[Chapter 10: Machine-Checked Discrete Geometry of 2D Affine Buildings of Type $\tilde{A}_2$](monograph/14_simplicial_buildings_a2_lean4.md)**
-* **[Chapter 11: Radial Macdonald Difference Engines & Commuting Hecke Algebras](bruhat_tits_pgl3_apartment_flow.md)**
-* **[Chapter 12: Exceptional Affine Buildings: $\tilde{G}_2, \tilde{F}_4,$ and $\tilde{E}_8$ Formal Architectures](f4_exceptional_building_formalization.md)**
-* **[Chapter 13: Non-Hermitian Spectral Positivity & Bass-Ihara Determinantal Duality](collatz_non_hermitian_topology.md)**
-* **[Chapter 14: Non-Archimedean Monster Vertex Operator Algebras & Borcherds Automorphic Products](monster_voa_and_borcherds_products.md)**
+* **[Chapter 10: Machine-Checked Discrete Geometry of 2D Affine Buildings of Type $\tilde{A}_2$](monograph/10_simplicial_buildings_a2_lean4.md)**
+* **[Chapter 11: Radial Macdonald Difference Engines & Commuting Hecke Algebras](monograph/11_radial_macdonald_difference_engines.md)**
+* **[Chapter 12: Exceptional Affine Buildings: $\tilde{G}_2, \tilde{F}_4,$ and $\tilde{E}_8$ Formal Architectures](monograph/12_exceptional_affine_buildings.md)**
+* **[Chapter 13: Non-Hermitian Spectral Positivity & Bass-Ihara Determinantal Duality](monograph/13_non_hermitian_spectral_positivity.md)**
+* **[Chapter 14: Non-Archimedean Monster Vertex Operator Algebras & Borcherds Automorphic Products](monograph/14_monster_voa_and_borcherds_products.md)**
 
 ### Part IV: Non-Archimedean Quantum Physics, Holography & String Theory
-* **[Chapter 15: Quantum Tight-Binding Hamiltonians, Many-Body Entanglement & Quantum Scars](monograph/06_quantum_physical_realization.md)**
-* **[Chapter 16: Non-Archimedean Holography: $p$-Adic AdS/CFT & Ryu-Takayanagi Tensor Networks](padic_ryu_takayanagi_tensor_networks.md)**
-* **[Chapter 17: Non-Archimedean Black Holes, Mumford Curves & Traversable Wormholes](padic_black_holes_mumford.md)**
-* **[Chapter 18: $p$-Adic Conformal Bootstrap & Spectral Holographic Fusion](padic_conformal_bootstrap.md)**
-* **[Chapter 19: Global Adelic Quantum Gravity & Arithmetic String Scattering Amplitudes](adelic_string_scattering_amplitudes.md)**
+* **[Chapter 15: Quantum Tight-Binding Hamiltonians, Many-Body Entanglement & Quantum Scars](monograph/15_quantum_tight_binding_scars.md)**
+* **[Chapter 16: Non-Archimedean Holography: $p$-Adic AdS/CFT & Ryu-Takayanagi Tensor Networks](monograph/16_padic_holography_tensor_networks.md)**
+* **[Chapter 17: Non-Archimedean Black Holes, Mumford Curves & Traversable Wormholes](monograph/17_padic_black_holes_and_wormholes.md)**
+* **[Chapter 18: $p$-Adic Conformal Bootstrap & Spectral Holographic Fusion](monograph/18_padic_conformal_bootstrap.md)**
+* **[Chapter 19: Global Adelic Quantum Gravity & Arithmetic String Scattering Amplitudes](monograph/19_adelic_string_scattering_amplitudes.md)**
 
 ### Part V: Arithmetic Statistics, Subconvexity Bounds & Systems Realization
-* **[Chapter 20: Arithmetic Statistics, Pair Correlations & Subconvexity Bounds](monograph/07_arithmetic_statistics_subconvexity.md)**
-* **[Chapter 21: High-Precision Spectral Decimation & Numerical Simulations](monograph/08_numerical_verification_simulations.md)**
-* **[Chapter 22: Systems Architecture: Dynamic $p$-Adic Routing in Ultra-Context Neural Transformers](v3_systems_implementation.md)**
-* **[Chapter 23: Survey of Connes' Spectral Triple Framework and Operator-Theoretic Open Problems](monograph/12_spectral_realization_grh.md)**
+* **[Chapter 20: Arithmetic Statistics, Pair Correlations & Subconvexity Bounds](monograph/20_arithmetic_statistics_subconvexity.md)**
+* **[Chapter 21: High-Precision Spectral Decimation & Numerical Simulations](monograph/21_numerical_verification_simulations.md)**
+* **[Chapter 22: Systems Architecture: Dynamic $p$-Adic Routing in Ultra-Context Neural Transformers](monograph/22_systems_architecture_transformers.md)**
+* **[Chapter 23: Survey of Connes' Spectral Triple Framework and Operator-Theoretic Open Problems](monograph/23_survey_connes_framework.md)**
 
-### Part VI: Appendices
-* **[Appendix A: Master Four-Tier Visual Suite & 63-Figure Atlas](monograph/10_appendices.md)**
+### Part VI: Conclusion & Appendices
+* **[Chapter 24: Conclusion & Verification Summary](monograph/24_conclusion.md)**
+* **[Chapter 25: Master Appendices: Visual Suite, WebGL Visualizer & Verification Manifest](monograph/25_appendices.md)**
 * **[Appendix B: Interactive WebGL Building Visualizer User Manual](interactive_building_visualizer_guide.md)**
 * **[Appendix C: Cryptographic Verification, Lake Target Manifest (3006/3006) & Proof Dependency DAG](../papers/adelic_spectral_geometry_complete_monograph.md#appendix-c-cryptographic-verification-lake-target-manifest--proof-dependency-dag)**
 * **[Appendix D: Master Bibliography & References](preprint/references.bib)**
