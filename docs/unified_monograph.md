@@ -73,6 +73,8 @@ graph TD
 * **[Figure 5: $p$-Adic Holographic Tensor Networks & Discrete Ryu-Takayanagi Min-Cuts](../figures/padic_ryu_takayanagi_tensor_networks.png)**
 * **[Figure 6: Exceptional $\tilde{F}_4$ 48-Root Building Geometry & Commuting Operators](../figures/f4_exceptional_building.png)**
 * **[Figure 7: Exceptional $\tilde{E}_8$ 240-Root Building & Leech Lattice $\Lambda_{24}$ Moonshine](../figures/e8_moonshine_building.png)**
+* **[Figure 8: Monster VOA $V^\natural$ Graded Spectrum & Borcherds Automorphic Product](../figures/monster_voa_borcherds.png)**
+* **[Figure 9: Global Adelic String Scattering Amplitudes & Freund-Witten Collapse](../figures/adelic_string_scattering_amplitudes.png)**
 
 ---
 
@@ -96,21 +98,23 @@ graph TD
 * **[Chapter 11: Radial Macdonald Difference Engines & Commuting Hecke Algebras](bruhat_tits_pgl3_apartment_flow.md)**
 * **[Chapter 12: Exceptional Affine Buildings: $\tilde{G}_2, \tilde{F}_4,$ and $\tilde{E}_8$ Formal Architectures](f4_exceptional_building_formalization.md)**
 * **[Chapter 13: Non-Hermitian Spectral Positivity & Bass-Ihara Determinantal Duality](collatz_non_hermitian_topology.md)**
+* **[Chapter 14: Non-Archimedean Monster Vertex Operator Algebras & Borcherds Automorphic Products](monster_voa_and_borcherds_products.md)**
 
-### Part IV: Non-Archimedean Quantum Physics, Holography & Tensor Networks
-* **[Chapter 14: Quantum Tight-Binding Hamiltonians, Many-Body Entanglement & Quantum Scars](monograph/06_quantum_physical_realization.md)**
-* **[Chapter 15: Non-Archimedean Holography: $p$-Adic AdS/CFT & Ryu-Takayanagi Tensor Networks](padic_ryu_takayanagi_tensor_networks.md)**
-* **[Chapter 16: Non-Archimedean Black Holes, Mumford Curves & Traversable Wormholes](padic_black_holes_mumford.md)**
-* **[Chapter 17: $p$-Adic Conformal Bootstrap & Spectral Holographic Fusion](padic_conformal_bootstrap.md)**
+### Part IV: Non-Archimedean Quantum Physics, Holography & String Theory
+* **[Chapter 15: Quantum Tight-Binding Hamiltonians, Many-Body Entanglement & Quantum Scars](monograph/06_quantum_physical_realization.md)**
+* **[Chapter 16: Non-Archimedean Holography: $p$-Adic AdS/CFT & Ryu-Takayanagi Tensor Networks](padic_ryu_takayanagi_tensor_networks.md)**
+* **[Chapter 17: Non-Archimedean Black Holes, Mumford Curves & Traversable Wormholes](padic_black_holes_mumford.md)**
+* **[Chapter 18: $p$-Adic Conformal Bootstrap & Spectral Holographic Fusion](padic_conformal_bootstrap.md)**
+* **[Chapter 19: Global Adelic Quantum Gravity & Arithmetic String Scattering Amplitudes](adelic_string_scattering_amplitudes.md)**
 
 ### Part V: Arithmetic Statistics, Subconvexity Bounds & Systems Realization
-* **[Chapter 18: Arithmetic Statistics, Pair Correlations & Subconvexity Bounds](monograph/07_arithmetic_statistics_subconvexity.md)**
-* **[Chapter 19: High-Precision Spectral Decimation & Numerical Simulations](monograph/08_numerical_verification_simulations.md)**
-* **[Chapter 20: Systems Architecture: Dynamic $p$-Adic Routing in Ultra-Context Neural Transformers](v3_systems_implementation.md)**
-* **[Chapter 21: The Adèlic Spectral Realization of the Generalized Riemann Hypothesis](monograph/12_spectral_realization_grh.md)**
+* **[Chapter 20: Arithmetic Statistics, Pair Correlations & Subconvexity Bounds](monograph/07_arithmetic_statistics_subconvexity.md)**
+* **[Chapter 21: High-Precision Spectral Decimation & Numerical Simulations](monograph/08_numerical_verification_simulations.md)**
+* **[Chapter 22: Systems Architecture: Dynamic $p$-Adic Routing in Ultra-Context Neural Transformers](v3_systems_implementation.md)**
+* **[Chapter 23: The Adèlic Spectral Realization of the Generalized Riemann Hypothesis](monograph/12_spectral_realization_grh.md)**
 
 ### Part VI: Appendices
-* **[Appendix A: Master Four-Tier Visual Suite & 61-Figure Atlas](monograph/10_appendices.md)**
+* **[Appendix A: Master Four-Tier Visual Suite & 63-Figure Atlas](monograph/10_appendices.md)**
 * **[Appendix B: Interactive WebGL Building Visualizer User Manual](interactive_building_visualizer_guide.md)**
 * **[Appendix C: Cryptographic Verification, Lake Target Manifest (3006/3006) & Proof Dependency DAG](../papers/adelic_spectral_geometry_complete_monograph.md#appendix-c-cryptographic-verification-lake-target-manifest--proof-dependency-dag)**
 * **[Appendix D: Master Bibliography & References](preprint/references.bib)**
