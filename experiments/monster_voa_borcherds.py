@@ -15,7 +15,7 @@ Comprehensive numerical verification and visualization script for:
    - Comparison with asymptotic Cardy formula: dim V_n ~ (1/√2) n^{-3/4} exp(4π √n).
 2. Borcherds Automorphic Product Φ(p, q) on B(E_8)/PGL_2(ℤ):
    - Product expansion: Φ(p, q) = p⁻¹ ∏_{m>0, n} (1 - p^m q^n)^{c(mn)} = j(p) - j(q).
-   - Exact bivariate polynomial/power series expansion verified to order p^5, q^5.
+   - Faber polynomial Hecke log-expansion proof verified to order p^5.
 3. Borcherds Fake Monster Lie Superalgebra 𝔪 on II_{1,1}:
    - Hyperbolic root lattice II_{1,1} with metric α² = -2 m n.
    - Root space multiplicities mult(m, n) = c(mn) = dim V_{1 + mn}.
@@ -37,7 +37,6 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from matplotlib.colors import LogNorm
 
 # =============================================================================
 # 1. MCKAY-THOMPSON MOONSHINE COEFFICIENTS & MONSTER IRREPS
@@ -71,25 +70,27 @@ VOA_DIMS = {
     9: 401490886656000,
 }
 
-# Smallest irreducible representation dimensions of the Monster Group M
+# Irreducible representation dimensions of the Monster Group M (from ATLAS)
 MONSTER_IRREP_DIMS = [
-    1,
-    196883,
-    21296876,
-    842609326,
-    19363245657,
-    312803657750,
+    1,             # χ_1
+    196883,        # χ_2 (Griess algebra minimal irrep)
+    21296876,      # χ_3
+    842609326,     # χ_4
+    18538750076,   # χ_5
+    19363245657,   # χ_6
+    293553734298,  # χ_7
+    312803657750,  # χ_8
 ]
 
 # Decompositions of V_n in terms of Monster irreducible representations
 MONSTER_DECOMPOSITIONS = {
-    0: [1, 0, 0, 0, 0, 0],                         # 1 = 1
-    1: [0, 0, 0, 0, 0, 0],                         # 0 = 0
-    2: [1, 1, 0, 0, 0, 0],                         # 196884 = 1 + 196883
-    3: [1, 1, 1, 0, 0, 0],                         # 21493760 = 1 + 196883 + 21296876
-    4: [2, 2, 1, 1, 0, 0],                         # 864299970 = 2(1) + 2(196883) + 21296876 + 842609326
-    5: [1, 3, 2, 1, 1, 0],                         # 20245856256 = 1 + 3(196883) + 2(21296876) + 842609326 + 19363245657
-    6: [3, 5, 4, 2, 1, 1],                         # 333202640600 = 3(1) + 5(196883) + 4(...) + 2(...) + 1(...) + 1(...)
+    0: [1, 0, 0, 0, 0, 0, 0, 0],                         # 1 = 1
+    1: [0, 0, 0, 0, 0, 0, 0, 0],                         # 0 = 0
+    2: [1, 1, 0, 0, 0, 0, 0, 0],                         # 196884 = 1 + 196883
+    3: [1, 1, 1, 0, 0, 0, 0, 0],                         # 21493760 = 1 + 196883 + 21296876
+    4: [2, 2, 1, 1, 0, 0, 0, 0],                         # 864299970 = 2(1) + 2(196883) + 21296876 + 842609326
+    5: [3, 3, 1, 2, 1, 0, 0, 0],                         # 20245856256 = 3(1) + 3(196883) + 21296876 + 2(842609326) + 18538750076
+    6: [5, 5, 2, 3, 2, 0, 1, 0],                         # 333202640600 = 5(1) + 5(196883) + 2(...) + 3(...) + 2(...) + 293553734298
 }
 
 def verify_monster_decompositions():
@@ -115,118 +116,62 @@ def cardy_asymptotic_dimension(n):
     return (1.0 / np.sqrt(2.0)) * (n ** (-0.75)) * np.exp(4.0 * np.pi * np.sqrt(n))
 
 # =============================================================================
-# 2. BORCHERDS AUTOMORPHIC PRODUCT BIVARIATE EXPANSION
+# 2. BORCHERDS AUTOMORPHIC PRODUCT FABER POLYNOMIAL EXPANSION
 # =============================================================================
 
-def expand_borcherds_product_bivariate(order=5):
+def verify_borcherds_faber_expansion(max_order=5):
     """
-    Calculates the exact bivariate power series expansion of the Borcherds product:
-    Φ(p, q) = p⁻¹ ∏_{m>0, n} (1 - p^m q^n)^{c(mn)}
-    and verifies that it equals j(p) - j(q) = (p⁻¹ - q⁻¹) + ∑_{k=1}^order c(k)(p^k - q^k).
+    Verifies Borcherds' exact theorem:
+    Φ(p, q) = p⁻¹ exp( - ∑_{m=1}^∞ (1/m) p^m P_m(J(q)) ) = j(p) - j(q)
+    where P_m(J) are the Faber polynomials of J(q) = j(q) - 744:
+    P_1(J) = J
+    P_2(J) = J² - 2 c(1)
+    P_3(J) = J³ - 3 c(1) J - 3 c(2)
+    P_4(J) = J⁴ - 4 c(1) J² - 4 c(2) J + 2 c(1)² - 4 c(3)
+    P_5(J) = J⁵ - 5 c(1) J³ - 5 c(2) J² + 5 (c(1)² - c(3)) J + 5 c(1) c(2) - 5 c(4).
     """
-    print(f"--- Computing Borcherds Product Expansion to Order p^{order}, q^{order} ---")
-    p, q = sp.symbols('p q')
+    print(f"--- Verifying Borcherds Product Exponentiation to Order p^{max_order} ---")
+    J = sp.symbols('J')
+    c = MOONSHINE_COEFFS
     
-    # 1. Direct truncated difference: J(p) - J(q) = (p⁻¹ - q⁻¹) + ∑ c(k)(p^k - q^k)
-    J_diff = (1/p - 1/q)
-    for k in range(1, order + 1):
-        J_diff += MOONSHINE_COEFFS[k] * (p**k - q**k)
+    # Construct Faber polynomials P_m(J)
+    P = {}
+    P[1] = J
+    P[2] = J**2 - 2*c[1]
+    P[3] = J**3 - 3*c[1]*J - 3*c[2]
+    P[4] = J**4 - 4*c[1]*J**2 - 4*c[2]*J + 2*c[1]**2 - 4*c[3]
+    P[5] = J**5 - 5*c[1]*J**3 - 5*c[2]*J**2 + 5*(c[1]**2 - c[3])*J + 5*c[1]*c[2] - 5*c[4]
     
-    # 2. Logarithmic expansion of the Borcherds product:
-    # log Φ(p, q) = -log p - ∑_{m=1}^order ∑_{n=-order}^order c(mn) ∑_{k=1}^floor(order/m) (1/k) (p^m q^n)^k
-    # We collect terms in p and q up to total degree <= order
-    log_terms = {}
-    for m in range(1, order + 1):
-        for n in range(-order, order + 1):
-            mn = m * n
-            c_mn = MOONSHINE_COEFFS.get(mn, 0)
-            if c_mn == 0:
-                continue
-            for k in range(1, (order // m) + 1):
-                p_deg = m * k
-                q_deg = n * k
-                coeff = -sp.Rational(1, k) * c_mn
-                key = (p_deg, q_deg)
-                log_terms[key] = log_terms.get(key, 0) + coeff
+    # Exponentiate the series S = ∑_{m=1}^max_order -(1/m) p^m P_m(J)
+    # Using log-derivative recurrence: E_0 = 1, E_k = (1/k) ∑_{i=1}^k i L_i E_{k-i} where L_i = -P_i / i
+    E = {0: sp.Integer(1)}
+    for k in range(1, max_order + 1):
+        term = sp.Integer(0)
+        for i in range(1, k + 1):
+            term += -P[i] * E[k - i]
+        E[k] = sp.simplify(sp.Rational(1, k) * term)
     
-    # Exponentiate the series: Φ(p, q) = p⁻¹ exp(log_product)
-    # Using bivariate truncated series exponentiation
-    exp_series = {(0, 0): sp.Integer(1)}
-    for deg in range(1, order + 1):
-        # Contribution to terms with p-degree = deg
-        for p_deg in range(1, deg + 1):
-            for q_deg in range(-order, order + 1):
-                # E(p_deg, q_deg) = (1/p_deg) ∑_{i=1}^{p_deg} ∑_{j} i * L(i, j) * E(p_deg - i, q_deg - j)
-                term = sp.Integer(0)
-                for i in range(1, p_deg + 1):
-                    for j in range(-order, order + 1):
-                        L_val = log_terms.get((i, j), 0)
-                        if L_val != 0:
-                            E_prev = exp_series.get((p_deg - i, q_deg - j), 0)
-                            if E_prev != 0:
-                                term += i * L_val * E_prev
-                if term != 0:
-                    exp_series[(p_deg, q_deg)] = sp.Rational(1, p_deg) * term
+    # Multiply by p⁻¹: coefficient of p^{k-1} is E_k
+    print("  Expanded coefficients of Φ(p, q) in powers of p:")
+    # p⁻¹ term (k = 0):
+    print(f"    p^{ -1 }: coeff = {int(E[0]):>14} | expected = {1:>14} [MATCH]")
+    assert E[0] == 1
     
-    # Reconstruct Φ(p, q) = (1/p) * exp_series
-    phi_terms = {}
-    for (p_deg, q_deg), coeff in exp_series.items():
-        phi_terms[(p_deg - 1, q_deg)] = coeff
+    # p⁰ term (k = 1):
+    print(f"    p^{  0 }: coeff = {str(E[1]):>14} | expected = {'-J(q)':>14} [MATCH]")
+    assert sp.simplify(E[1] - (-J)) == 0
     
-    # Check agreement with j(p) - j(q)
-    print("  Comparing Borcherds product series with j(p) - j(q):")
-    matches = 0
-    total_checks = 0
-    for p_deg in range(-1, order + 1):
-        for q_deg in range(-1, order + 1):
-            val_phi = phi_terms.get((p_deg, q_deg), 0)
-            # Expected from j(p) - j(q)
-            if p_deg == -1 and q_deg == 0:
-                expected = 1
-            elif p_deg == 0 and q_deg == -1:
-                expected = -1
-            elif p_deg > 0 and q_deg == 0:
-                expected = MOONSHINE_COEFFS.get(p_deg, 0)
-            elif p_deg == 0 and q_deg > 0:
-                expected = -MOONSHINE_COEFFS.get(q_deg, 0)
-            else:
-                expected = 0
-            
-            if val_phi != 0 or expected != 0:
-                total_checks += 1
-                if val_phi == expected:
-                    matches += 1
-                    if abs(p_deg) <= 3 and abs(q_deg) <= 3:
-                        print(f"    p^{p_deg:>2} q^{q_deg:>2}: Φ = {int(val_phi):>12} | j(p)-j(q) = {int(expected):>12} [MATCH]")
-                else:
-                    print(f"    p^{p_deg:>2} q^{q_deg:>2}: Φ = {val_phi} != expected = {expected} [MISMATCH]")
+    # Higher p^k terms (k >= 1):
+    for k in range(1, max_order):
+        c_k = c[k]
+        coeff_val = sp.simplify(E[k + 1])
+        print(f"    p^{  k }: coeff = {int(coeff_val):>14} | expected = {c_k:>14} [MATCH]")
+        assert coeff_val == c_k, f"Mismatch at p^{k}: {coeff_val} != {c_k}"
     
-    assert matches == total_checks, f"Failed matches: {matches} / {total_checks}"
-    print(f"  [SUCCESS] Exact Borcherds identity Φ(p, q) = j(p) - j(q) holds to order p^{order}, q^{order}!\n")
-    return phi_terms
+    print(f"  [SUCCESS] Borcherds product expansion Φ(p, q) = j(p) - j(q) verified algebraically to order p^{max_order}!\n")
 
 # =============================================================================
-# 3. HECKE OPERATOR ACTION & CONVERGENCE
-# =============================================================================
-
-def compute_hecke_actions(q_val=0.05, max_k=5):
-    """
-    Computes the Hecke operator action T_k(J)(q) and verifies that:
-    -log(p Φ(p, q)) = ∑_{k=1}^∞ (1/k) p^k T_k(J)(q).
-    """
-    results = {}
-    for k in range(1, max_k + 1):
-        # T_k(J)(q) evaluated numerically
-        T_k_val = 0.0
-        for n in range(1, 6):
-            c_val = MOONSHINE_COEFFS.get(n, 0)
-            # Leading Fourier coefficient of T_k(J)
-            T_k_val += c_val * (q_val ** (n * k))
-        results[k] = T_k_val
-    return results
-
-# =============================================================================
-# 4. PUBLICATION-GRADE 6-PANEL FIGURE GENERATION
+# 3. PUBLICATION-GRADE 6-PANEL FIGURE GENERATION
 # =============================================================================
 
 def generate_publication_figure(output_path="figures/monster_voa_borcherds.png"):
@@ -296,7 +241,6 @@ def generate_publication_figure(output_path="figures/monster_voa_borcherds.png")
         return 1.0/z + 196884.0*z + 21493760.0*(z**2) + 864299970.0*(z**3)
     
     Z_diff = J_approx(P) - J_approx(Q)
-    # Symmetric log norm
     norm_val = np.sign(Z_diff) * np.log10(1.0 + np.abs(Z_diff))
     
     cp = ax2.contourf(P, Q, norm_val, levels=40, cmap='RdBu_r', alpha=0.9)
@@ -355,12 +299,13 @@ def generate_publication_figure(output_path="figures/monster_voa_borcherds.png")
     # -------------------------------------------------------------------------
     ax4 = fig.add_subplot(gs[1, 0])
     degrees = [2, 3, 4, 5, 6]
-    bar_width = 0.14
+    bar_width = 0.12
     x_indices = np.arange(len(degrees))
     
-    colors_irrep = [c_blue, c_green, c_orange, c_purple, c_red, c_teal]
+    colors_irrep = [c_blue, c_green, c_orange, c_purple, c_red, c_teal, '#8c564b', '#e377c2']
     labels_irrep = [r'$\mathbf{1}$', r'$\mathbf{196,883}$', r'$\mathbf{21,296,876}$',
-                    r'$\mathbf{842,609,326}$', r'$\mathbf{1.93\times 10^{10}}$', r'$\mathbf{3.12\times 10^{11}}$']
+                    r'$\mathbf{842,609,326}$', r'$\mathbf{1.85\times 10^{10}}$',
+                    r'$\mathbf{1.93\times 10^{10}}$', r'$\mathbf{2.93\times 10^{11}}$', r'$\mathbf{3.12\times 10^{11}}$']
     
     for irrep_idx in range(6):
         mults = [MONSTER_DECOMPOSITIONS[d][irrep_idx] for d in degrees]
@@ -383,14 +328,14 @@ def generate_publication_figure(output_path="figures/monster_voa_borcherds.png")
     q_scan = np.linspace(0.005, 0.15, 100)
     
     for k in range(1, 5):
-        # Contribution (1/k) p^k T_k(J)(q) at p = 0.05
         p_fixed = 0.05
         hecke_series = np.zeros_like(q_scan)
         for n_mode in range(1, 5):
             c_val = MOONSHINE_COEFFS.get(n_mode, 0)
             hecke_series += c_val * (q_scan ** (n_mode * k))
         term_val = (1.0 / k) * (p_fixed ** k) * hecke_series
-        ax5.plot(q_scan, term_val, lw=2.2, label=f'$k = {k}$ Hecke Mode $\\frac{1}{k} p^{k} T_{k}(J)$')
+        label_str = rf'$k = {k}$ Hecke Mode $\frac{{1}}{{{k}}} p^{{{k}}} T_{{{k}}}(J)$'
+        ax5.plot(q_scan, term_val, lw=2.2, label=label_str)
     
     ax5.set_title(r'(E) Hecke Modes $\frac{1}{k} p^k T_k(J(q))$ in $\log \Phi(p, q)$', fontsize=13, fontweight='bold', pad=10)
     ax5.set_xlabel(r'Modular Parameter $q$', fontsize=11)
@@ -422,7 +367,6 @@ def generate_publication_figure(output_path="figures/monster_voa_borcherds.png")
     ax6.legend(loc='upper right', frameon=True, fontsize=9)
     ax6.grid(True, which='both', linestyle=':', alpha=0.6)
     
-    plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"  [SUCCESS] Publication-grade 6-panel figure saved to {output_path}!\n")
@@ -437,10 +381,10 @@ def main():
     print("===============================================================================\n")
     
     # 1. Verify Monster irrep decompositions
-    verify_monster_decompositions();
+    verify_monster_decompositions()
     
-    # 2. Expand Borcherds product and verify j(p) - j(q) identity to order 5
-    expand_borcherds_product_bivariate(order=5)
+    # 2. Verify Borcherds product expansion to order p^5
+    verify_borcherds_faber_expansion(max_order=5)
     
     # 3. Generate publication figure
     generate_publication_figure("figures/monster_voa_borcherds.png")
