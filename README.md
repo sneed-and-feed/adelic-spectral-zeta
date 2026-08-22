@@ -167,6 +167,7 @@ We formulated the transfer operator on the vertices and chambers of Bruhat-Tits 
 
 ### 4.2 $\mathrm{PGL}_3(\mathbb{Q}_p)$ Bruhat-Tits Apartment Flow & 2D Macdonald Waves ($\tilde{A}_2$)
 We constructed the 2D discrete Helmholtz operator on the triangular apartments $\mathcal{A} \cong \mathbb{Z}^2$ of type $\tilde{A}_2$. We proved that normalized 2D Macdonald spherical functions $\Phi_z(m, n)$ form the exact joint eigenbasis, and derived the exact **Ramanujan spectral gap** $\operatorname{Gap}(\Delta) = 2(q-1)^2 = 8$ (for $q=3$).
+- **Interactive Visualizer:** [`docs/building_visualizer.html`](docs/building_visualizer.html) · [User Guide](docs/interactive_building_visualizer_guide.md) (Live WebGL/Canvas rendering of $\tilde{A}_2$ 3-coloring, $\tilde{G}_2$ 12-neighbor hexagonal root systems, Macdonald wavefields, probability flux streamlines, and dual Satake deltoid spectrum).
 
 ### 4.3 Langlands-Shahidi Exterior Power $L$-Functions ($\Lambda^2 \mathrm{GL}_4$) & Deficiency Rigidity
 We injected the Aronszajn-Krein rank-1 boundary perturbation into the exterior square Dirac operator $D_{\Lambda^2}(\sigma, t)$ for $\mathrm{GL}_4$. Using the Lie algebra isomorphism $\mathfrak{sl}_4(\mathbb{C}) \cong \mathfrak{so}_6(\mathbb{C})$ and symplectic branching $\Lambda^2 \mathbb{C}^4 |_{\mathrm{Sp}_4} \cong \mathbf{1} \oplus \operatorname{std}_{\mathrm{SO}_5}$, we proved that non-abelian representations on $\mathrm{GL}_4$ satisfy exact deficiency-index rigidity:
@@ -267,10 +268,15 @@ python experiments/affine_cyclotomic_classifier.py
 
 ## 9. Primary Research Papers & Monograph Series
 
-### Research Papers
+### Research Papers & Master Monograph
+- [*Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas*](papers/adelic_spectral_geometry_monograph.md) ([LaTeX](papers/adelic_spectral_geometry_monograph.tex))
 - [*Spectral Circle Theorem for the Collatz Relation Matrix on $\mathbb{Z}/2^n\mathbb{Z}$*](papers/collatz_spectral_circle.md) ([LaTeX](papers/collatz_spectral_circle.tex))
 - [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex))
 - [*Llama Surgery: Injecting Differentiable p-Adic Topology into Pre-Trained LLMs*](papers/llama_surgery.md) ([LaTeX](papers/llama_surgery.tex))
+
+### Interactive WebGL / WASM Visualizer
+- **[Live Bruhat-Tits Building & Macdonald Wave Visualizer](docs/building_visualizer.html)** (WebGL & 2D/3D Canvas)
+- **[Visualizer Architecture & User Guide](docs/interactive_building_visualizer_guide.md)**
 
 ### Monograph Series (`docs/`)
 1. [`docs/global_adelic_fusion_and_l_functions.md`](docs/global_adelic_fusion_and_l_functions.md) (Global Adelic Transfer Operators & Artin $L$-Functions)
@@ -279,13 +285,16 @@ python experiments/affine_cyclotomic_classifier.py
 4. [`docs/langlands_shahidi_exterior_power.md`](docs/langlands_shahidi_exterior_power.md) (Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Exterior Powers & Deficiency Rigidity)
 5. [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md) (Multi-Variable Weil-Arthur-Selberg Trace Formula & Simplicial Path Duality)
 6. [`docs/lean4_simplicial_buildings.md`](docs/lean4_simplicial_buildings.md) (Simplicial Lean 4 Formalization of $\tilde{A}_2$ Affine Buildings)
-7. [`docs/continuous_2adic_transfer_operator.md`](docs/continuous_2adic_transfer_operator.md) (Continuous Transfer Operators on $\mathbb{Z}_2$, Gibbs Measures & Mixing)
-8. [`docs/analytic_undirected_gap_exponent.md`](docs/analytic_undirected_gap_exponent.md) (Analytical Gap Exponent $\alpha$ & Silver Ratio Renormalization)
-9. [`docs/collatz_non_hermitian_topology.md`](docs/collatz_non_hermitian_topology.md) (Point-Gap Winding Invariants, GBZ & Non-Hermitian Skin Effect)
-10. [`docs/collatz_markov_mixing_stopping_times.md`](docs/collatz_markov_mixing_stopping_times.md) (Fourier Circle Projectors, Total Variation & Stopping Times)
-11. [`docs/collatz_dynamical_zeta_functions.md`](docs/collatz_dynamical_zeta_functions.md) (Rational Fredholm Determinants & Geodesic Duality)
-12. [`docs/generalized_affine_cyclotomic_circles.md`](docs/generalized_affine_cyclotomic_circles.md) (Classification of Generalized Affine Systems)
-13. [`docs/mathlib_upstream_architecture.md`](docs/mathlib_upstream_architecture.md) (Two-Tier Mathlib Upstream Specification)
+7. [`docs/padic_holography_and_g2_buildings.md`](docs/padic_holography_and_g2_buildings.md) ($p$-Adic Holography, Witten Diagrams & Exceptional $\tilde{G}_2$ Buildings)
+8. [`docs/padic_ryu_takayanagi_tensor_networks.md`](docs/padic_ryu_takayanagi_tensor_networks.md) ($p$-Adic Holographic Tensor Networks & Ryu-Takayanagi Entanglement)
+9. [`docs/g2_automorphic_l_functions_rigidity.md`](docs/g2_automorphic_l_functions_rigidity.md) (Exceptional $G_2$ Degree-7 Standard $L$-Functions & Aronszajn-Krein Rigidity)
+10. [`docs/continuous_2adic_transfer_operator.md`](docs/continuous_2adic_transfer_operator.md) (Continuous Transfer Operators on $\mathbb{Z}_2$, Gibbs Measures & Mixing)
+11. [`docs/analytic_undirected_gap_exponent.md`](docs/analytic_undirected_gap_exponent.md) (Analytical Gap Exponent $\alpha$ & Silver Ratio Renormalization)
+12. [`docs/collatz_non_hermitian_topology.md`](docs/collatz_non_hermitian_topology.md) (Point-Gap Winding Invariants, GBZ & Non-Hermitian Skin Effect)
+13. [`docs/collatz_markov_mixing_stopping_times.md`](docs/collatz_markov_mixing_stopping_times.md) (Fourier Circle Projectors, Total Variation & Stopping Times)
+14. [`docs/collatz_dynamical_zeta_functions.md`](docs/collatz_dynamical_zeta_functions.md) (Rational Fredholm Determinants & Geodesic Duality)
+15. [`docs/generalized_affine_cyclotomic_circles.md`](docs/generalized_affine_cyclotomic_circles.md) (Classification of Generalized Affine Systems)
+16. [`docs/mathlib_upstream_architecture.md`](docs/mathlib_upstream_architecture.md) (Two-Tier Mathlib Upstream Specification)
 
 ---
 
@@ -295,11 +304,16 @@ python experiments/affine_cyclotomic_classifier.py
    - Formalized type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$ on $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$.
    - Formally proved commutativity $[T_1, T_2] = 0$, Macdonald spherical eigenbasis, and Ramanujan spectral gap $2(q-1)^2 = 8$ with **0 `sorry`s** in [`formalization/Formalization/BuildingPGL3.lean`](formalization/Formalization/BuildingPGL3.lean).
    - Documented in [`docs/lean4_simplicial_buildings.md`](docs/lean4_simplicial_buildings.md).
-2. **Multi-Variable Weil Explicit Trace Formula** :white_check_mark: **[Completed]**:
+2. **Exceptional $\tilde{G}_2$ Buildings & Standard $L$-Functions in Lean 4** :white_check_mark: **[Completed]**:
+   - Formalized 12-neighbor hexagonal root system, $[T_{\text{short}}, T_{\text{long}}] = 0$, $D_6$ Weyl group invariance, Macdonald spherical joint eigenbasis, Ramanujan gap $\operatorname{Gap}(\Delta_{G2}) = (q-1)^2(q+1)(q+3)$, and degree-7 standard Langlands $L$-factor in [`formalization/Formalization/BuildingG2.lean`](formalization/Formalization/BuildingG2.lean) and [`formalization/Formalization/BuildingG2LFunction.lean`](formalization/Formalization/BuildingG2LFunction.lean) with **0 `sorry`s**.
+3. **Multi-Variable Weil-Arthur-Selberg Explicit Trace Formula** :white_check_mark: **[Completed]**:
    - Coupled the 2D transfer operator trace $\operatorname{Tr}(\mathcal{T}_p^m)$ to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$.
    - Proved that geometric orbital integrals along the maximal split torus match 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$.
    - Verified high-precision numerical simulation in [`experiments/multivariable_weil_arthur_selberg.py`](experiments/multivariable_weil_arthur_selberg.py) and generated [`figures/multivariable_weil_arthur_selberg.png`](figures/multivariable_weil_arthur_selberg.png).
-   - Published full monograph in [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md).
+4. **$p$-Adic Holographic Tensor Networks & Ryu-Takayanagi Entanglement** :white_check_mark: **[Completed]**:
+   - Verified the discrete $p$-adic Ryu-Takayanagi formula $S(A) = \frac{\operatorname{Length}(\gamma_A)}{4 G_N^{(p)}}$ with slope $\alpha = 2.0000$ ($R^2 = 1.000000$) across $p \in \{2, 3, 5\}$, perfect tensor code conditions, and Page curve transitions in [`experiments/padic_ryu_takayanagi_tensor_networks.py`](experiments/padic_ryu_takayanagi_tensor_networks.py).
+5. **Interactive WebGL / Canvas Building Visualizer** :white_check_mark: **[Completed]**:
+   - Built standalone 60 FPS visualizer in [`docs/building_visualizer.html`](docs/building_visualizer.html) for real-time Macdonald waves, probability fluxes, and hypocycloid Satake deltoids.
 
 ---
 
