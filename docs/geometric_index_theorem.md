@@ -556,4 +556,3 @@ where $`B_{k+1}`$ are Bernoulli numbers. These contribute to the higher-order cy
 
 > [!NOTE]
 > This derivation operates within the framework of non-commutative geometry. The regularity, summability, and discrete dimension spectrum conditions of the global spectral triple $`(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}, \Delta})`$ have now been formally established in the accompanying Unification Monograph (specifically in [§3.2](monograph/03_proof_of_axioms.md#32-regularity) and [§3.3](monograph/03_proof_of_axioms.md#33-discrete-dimension-spectrum)).
-

@@ -22,12 +22,12 @@ This monograph establishes a modified framework where the zeros are regularized 
 
 ```mermaid
 graph TD
-    A[Adèle Class Space] --> B[Archimedean Clock wire R_+]
-    A --> C[non-Archimedean Bruhat-Tits Trees T_p]
-    B --> D[Global Dirac Operator D_glob]
+    A[Adèle Class Space] --> B["Archimedean Clock wire R_+"]
+    A --> C["non-Archimedean Bruhat-Tits Trees T_p"]
+    B --> D["Global Dirac Operator D_glob"]
     C --> D
     D --> E[Discrete Dimension Spectrum]
-    D --> F[Quantum Hamiltonian H = D^2]
+    D --> F["Quantum Hamiltonian H = D^2"]
     F --> G[Entanglement Spikes at Zeros]
 ```
 

@@ -9,6 +9,7 @@ This document tracks novel mathematical conjectures discovered during the formal
 
 ### Background
 During the formalization of `SpectralOracle.lean`, it was proven that the `restrictedSpectralGap` for dimension $d \ge 2$ is strictly positive and monotonically increasing, bounded by:
+
 $$\text{Gap}(d) = 2.0 - 2^{1/2^{d-1}}$$
 
 The oracle heavily leverages a greedy progression-free set generator to construct these subsets.

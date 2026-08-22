@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This monograph develops the rigorous theory and computational implementation of the **Higher-Rank Transfer Operator** $\mathcal{L}_p$ acting on the vertices and chamber complexes of the Bruhat-Tits building $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$. Driven by the spherical Hecke algebra $\mathcal{H}(\mathrm{GL}_n(\mathbb{Q}_p), \mathrm{GL}_n(\mathbb{Z}_p))$, this operator maps the geometric adjacency structure of the non-Archimedean symmetric space directly into the Langlands Satake parameters $A_p = \operatorname{diag}(\alpha_{1, p}, \dots, \alpha_{n, p}) \in \mathrm{GL}_n(\mathbb{C}) / S_n$.
+This monograph develops the rigorous theory and computational implementation of the **Higher-Rank Transfer Operator** $\mathcal{L}_p$ acting on the vertices and chamber complexes of the Bruhat-Tits building $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$. Driven by the spherical Hecke algebra $\mathcal{H}(\mathrm{GL}_n(\mathbb{Q}_p), \mathrm{GL}_n(\mathbb{Z}_p))$, this operator maps the geometric adjacency structure of the non-Archimedean symmetric space directly into the Langlands Satake parameters $A_p = \mathrm{diag}(\alpha_{1, p}, \dots, \alpha_{n, p}) \in \mathrm{GL}_n(\mathbb{C}) / S_n$.
 
 We establish and computationally verify:
 1. **The Satake Isomorphism on Buildings**: The radial action of the elementary spherical Hecke generators $T_{p, r}$ on Macdonald spherical waves $\phi_\pi$ exactly matches the exterior power traces $p^{\frac{r(n-r)}{2}} e_r(\alpha_{1, p}, \dots, \alpha_{n, p})$.
@@ -18,7 +18,7 @@ We establish and computationally verify:
    - **Gelbart-Jacquet Symmetric Square $\mathrm{Sym}^2(\Delta)$**: Produces continuous spectral bands on the 2D simplicial building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$ with self-dual invariants $e_1 = e_2 = \tilde{\tau}(p)^2 - 1$.
    - **Buhler's Icosahedral $A_5$ Representation ($N=800$)**: Produces rigid discrete Galois spectral levels $\{3, \phi, 0, 1-\phi, -1\}$ governed by the conjugacy classes of $A_5$.
 4. **$\mathrm{GL}_4$ Rankin-Selberg Convolution $\Delta \times \Delta$**: Decomposes as $\mathrm{Sym}^2(\Delta) \boxplus \mathbf{1}$, with transfer invariants $e_1 = \tilde{\tau}(p)^2, e_2 = 2\tilde{\tau}(p)^2 - 2, e_3 = \tilde{\tau}(p)^2, e_4 = 1$, matching the isobaric sum on the 3D building $\mathcal{B}(\mathrm{PGL}_4(\mathbb{Q}_p))$.
-5. **Exact Newton-Girard Spectral Trace Matching**: Numerical verification demonstrates that the logarithmic derivative of the Euler factors $\log L_p(s, \pi) = \sum_{m=1}^\infty \frac{\operatorname{Tr}(A_p^m)}{m} p^{-ms}$ matches the building transfer trace invariants to double-precision machine epsilon ($< 3.8 \times 10^{-16}$) across all primes $p \le 100$.
+5. **Exact Newton-Girard Spectral Trace Matching**: Numerical verification demonstrates that the logarithmic derivative of the Euler factors $\log L_p(s, \pi) = \sum_{m=1}^\infty \frac{\mathrm{Tr}(A_p^m)}{m} p^{-ms}$ matches the building transfer trace invariants to double-precision machine epsilon ($\lt 3.8 \times 10^{-16}$) across all primes $p \le 100$.
 
 ```
 +---------------------------------------------------------------------------------------------------+
@@ -51,18 +51,22 @@ Let $F = \mathbb{Q}_p$ be the field of $p$-adic numbers, $\mathcal{O}_p = \mathb
 A $\mathbb{Z}_p$-lattice $L \subset \mathbb{Q}_p^n$ is a free $\mathbb{Z}_p$-submodule of rank $n$. Two lattices $L, L'$ are homothetic ($L \sim L'$) if $L' = c L$ for some $c \in \mathbb{Q}_p^\times$.
 
 The set of vertices $V(\mathcal{B})$ of the Bruhat-Tits building $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ is defined as the set of homothety classes of lattices:
+
 $$V(\mathcal{B}) = \{ [L] \mid L \subset \mathbb{Q}_p^n \text{ lattice} \} \cong \mathrm{PGL}_n(\mathbb{Q}_p) / \mathrm{PGL}_n(\mathbb{Z}_p) \cong \mathrm{GL}_n(\mathbb{Q}_p) / (\mathbb{Q}_p^\times \mathrm{GL}_n(\mathbb{Z}_p)).$$
 
 The standard base vertex is $v_0 = [\mathbb{Z}_p^n]$.
 
 ### 1.2 Invariant Factors and Directional Adjacency
 For any two vertices $u = [L]$ and $v = [L']$, by the Invariant Factor Theorem for principal ideal domains, we can choose representatives $L, L'$ such that:
+
 $$p L \subset L' \subset L, \quad L / L' \cong (\mathbb{Z} / p\mathbb{Z})^r,$$
+
 for a uniquely determined integer $r \in \{0, 1, \dots, n-1\}$.
 
 * **Definition (Type-$r$ Neighbor):** We say that $v$ is a neighbor of type $r$ of $u$ (denoted $u \xrightarrow{r} v$) if $[L : L'] = p^r$ with $p L \subset L' \subset L$.
 * **Stratum Degree:** The number of type-$r$ neighbors of any vertex $u$ is the number of $r$-dimensional subspaces in the residue vector space $\mathbb{F}_p^n$, given by the Gaussian (or $q$-)binomial coefficient:
-  $$d_{n, r}(p) = \binom{n}{r}_p = \prod_{i=0}^{r-1} \frac{p^{n-i} - 1}{p^{r-i} - 1}.$$
+
+$$d_{n, r}(p) = \binom{n}{r}_p = \prod_{i=0}^{r-1} \frac{p^{n-i} - 1}{p^{r-i} - 1}.$$
 
 For small ranks:
 * **$n = 2$ ($T_{p+1}$ Tree):** $d_{2, 1}(p) = \binom{2}{1}_p = p + 1$.
@@ -71,7 +75,9 @@ For small ranks:
 
 ### 1.3 Chamber Complex Structure
 A chamber $C$ of $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ is an $(n-1)$-simplex given by a maximal flag of lattice classes:
+
 $$[L_0] < [L_1] < \dots < [L_{n-1}],$$
+
 such that $p L_0 \subset L_{n-1} \subset \dots \subset L_1 \subset L_0$ with $[L_{i-1} : L_i] = p$ for all $i=1, \dots, n-1$. The building $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ is a contractible, thick affine Tits building of type $\tilde{A}_{n-1}$.
 
 ---
@@ -82,25 +88,34 @@ Let $G_p = \mathrm{GL}_n(\mathbb{Q}_p)$ and $K_p = \mathrm{GL}_n(\mathbb{Z}_p)$.
 
 ### 2.1 Double Coset Generators
 The spherical Hecke algebra $\mathcal{H}(G_p, K_p) = C_c(K_p \backslash G_p / K_p)$ is the convolution algebra of compactly supported, $K_p$-bi-invariant functions on $G_p$. By the Cartan decomposition $G_p = \bigsqcup_{\lambda} K_p p^\lambda K_p$, $\mathcal{H}(G_p, K_p)$ is generated by the characteristic functions of the elementary double cosets:
-$$T_{p, r} = \mathbf{1}_{K_p \operatorname{diag}(\underbrace{p, \dots, p}_r, \underbrace{1, \dots, 1}_{n-r}) K_p}, \quad r \in \{1, \dots, n\}.$$
+
+$$T_{p, r} = \mathbf{1}_{K_p \mathrm{diag}(\underbrace{p, \dots, p}_r, \underbrace{1, \dots, 1}_{n-r}) K_p}, \quad r \in \{1, \dots, n\}.$$
 
 ### 2.2 The Satake Isomorphism
-Let $T \subset G_p$ be the diagonal maximal torus. The unramified principal series representation $I(\chi) = \operatorname{Ind}_{B_p}^{G_p}(\chi)$ is parameterized by the character $\chi(t_1, \dots, t_n) = |t_1|_p^{s_1} \dots |t_n|_p^{s_n}$ with Satake parameters $\alpha_{i, p} = p^{-s_i}$.
+Let $T \subset G_p$ be the diagonal maximal torus. The unramified principal series representation $I(\chi) = \mathrm{Ind}_{B_p}^{G_p}(\chi)$ is parameterized by the character $\chi(t_1, \dots, t_n) = |t_1|_p^{s_1} \dots |t_n|_p^{s_n}$ with Satake parameters $\alpha_{i, p} = p^{-s_i}$.
 
 The normalized Satake transform is an isomorphism of $\mathbb{C}$-algebras:
+
 $$\mathcal{S}: \mathcal{H}(\mathrm{GL}_n(\mathbb{Q}_p), \mathrm{GL}_n(\mathbb{Z}_p)) \xrightarrow{\sim} \mathbb{C}[z_1^{\pm 1}, \dots, z_n^{\pm 1}]^{S_n},$$
+
 defined by:
+
 $$\mathcal{S}(f)(z_1, \dots, z_n) = \delta_B^{1/2}(t) \int_{N_p} f(t n) \, dn,$$
-where $\delta_B(t) = \prod_{1 \le i < j \le n} |t_i / t_j|_p$ is the modular character of the Borel subgroup.
+
+where $\delta_B(t) = \prod_{1 \le i \lt j \le n} |t_i / t_j|_p$ is the modular character of the Borel subgroup.
 
 ### 2.3 Satake Transform of Elementary Generators
 Under the normalized Satake isomorphism, the elementary generator $T_{p, r}$ transforms into the $r$-th elementary symmetric polynomial scaled by the root modulus:
+
 $$\mathcal{S}(T_{p, r}) = p^{\frac{r(n-r)}{2}} e_r(z_1, \dots, z_n) = p^{\frac{r(n-r)}{2}} \sum_{1 \le i_1 < \dots < i_r \le n} z_{i_1} \dots z_{i_r}.$$
 
-* **Eigenvalue on Spherical Vector:** If $\pi_p$ is an unramified representation with Satake matrix $A_p = \operatorname{diag}(\alpha_{1, p}, \dots, \alpha_{n, p})$, and $\phi_0 \in \pi_p^{K_p}$ is the spherical vector normalized by $\phi_0(1) = 1$, then:
-  $$T_{p, r} \phi_0 = \lambda_\pi(p, r) \phi_0, \quad \text{where } \lambda_\pi(p, r) = p^{\frac{r(n-r)}{2}} e_r(\alpha_{1, p}, \dots, \alpha_{n, p}).$$
+* **Eigenvalue on Spherical Vector:** If $\pi_p$ is an unramified representation with Satake matrix $A_p = \mathrm{diag}(\alpha_{1, p}, \dots, \alpha_{n, p})$, and $\phi_0 \in \pi_p^{K_p}$ is the spherical vector normalized by $\phi_0(1) = 1$, then:
+
+$$T_{p, r} \phi_0 = \lambda_\pi(p, r) \phi_0, \quad \text{where } \lambda_\pi(p, r) = p^{\frac{r(n-r)}{2}} e_r(\alpha_{1, p}, \dots, \alpha_{n, p}).$$
+
 * **Normalized Trace Invariant:**
-  $$A_r(p) = e_r(\alpha_{1, p}, \dots, \alpha_{n, p}) = p^{-\frac{r(n-r)}{2}} \lambda_\pi(p, r).$$
+
+$$A_r(p) = e_r(\alpha_{1, p}, \dots, \alpha_{n, p}) = p^{-\frac{r(n-r)}{2}} \lambda_\pi(p, r).$$
 
 ---
 
@@ -108,20 +123,25 @@ $$\mathcal{S}(T_{p, r}) = p^{\frac{r(n-r)}{2}} e_r(z_1, \dots, z_n) = p^{\frac{r
 
 ### 3.1 Adjacency Operators on the Building Complex
 Let $\ell^2(V(\mathcal{B}))$ be the Hilbert space of square-summable functions on the vertices of $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$. For each neighbor type $r \in \{1, \dots, n-1\}$, the type-$r$ adjacency operator $A_{p, r}$ is defined by:
+
 $$(A_{p, r} f)(u) = \sum_{v \in V(\mathcal{B}): \, u \xrightarrow{r} v} f(v).$$
 
 ### 3.2 Definition of the Transfer Operator
 We define the **higher-rank building transfer operator** $\mathcal{L}_p$ on $\ell^2(V(\mathcal{B}))$ (or on finite quotient complexes $X_\Gamma = \Gamma \backslash \mathcal{B}_n$) by:
+
 $$\mathcal{L}_p = \sum_{r=1}^{n-1} \omega_r p^{-\frac{r(n-r)}{2}} A_{p, r},$$
+
 where $\omega_r \in \mathbb{C}$ are spectral weight parameters (with standard canonical weights $\omega_r = 1$).
 
 ### 3.3 Macdonald Spherical Waves
 A function $\phi: V(\mathcal{B}) \to \mathbb{C}$ is radial (centered at $v_0$) if $\phi(u)$ depends only on the relative position of $[L_u]$ relative to $[\mathbb{Z}_p^n]$.
 
 On the radial strata $S_r = \{ v \in V(\mathcal{B}) \mid v_0 \xrightarrow{r} v \}$, the Macdonald spherical function evaluated on the spherical representation $\pi_p$ satisfies:
+
 $$\phi_\pi(v) = \frac{\lambda_\pi(p, r)}{\binom{n}{r}_p} = \frac{p^{\frac{r(n-r)}{2}} e_r(\alpha_{1, p}, \dots, \alpha_{n, p})}{\binom{n}{r}_p} \quad \forall v \in S_r.$$
 
 This establishes that the local building transfer operator acts on the base vertex $v_0$ by:
+
 $$(\mathcal{L}_p \phi_\pi)(v_0) = \sum_{r=1}^{n-1} \omega_r p^{-\frac{r(n-r)}{2}} \sum_{v \in S_r} \phi_\pi(v) = \sum_{r=1}^{n-1} \omega_r e_r(\alpha_{1, p}, \dots, \alpha_{n, p}) \phi_\pi(v_0).$$
 
 ---
@@ -133,30 +153,44 @@ $$(\mathcal{L}_p \phi_\pi)(v_0) = \sum_{r=1}^{n-1} \omega_r p^{-\frac{r(n-r)}{2}
 ### 4.1 Case I: $\mathrm{GL}_2$ — Ramanujan Cusp Form $\Delta \in S_{12}(\mathrm{SL}_2(\mathbb{Z}))$
 
 For the Ramanujan cusp form $\Delta(z) = q \prod_{n=1}^\infty (1-q^n)^{24} = \sum_{n=1}^\infty \tau(n) q^n$, the normalized Hecke eigenvalue at prime $p$ is:
+
 $$\tilde{\tau}(p) = \tau(p) p^{-11/2} = 2\cos\theta_p, \quad \theta_p \in [0, \pi].$$
+
 * **Satake Parameters:** $\alpha_{1, p} = e^{i\theta_p}, \alpha_{2, p} = e^{-i\theta_p}$, with $\alpha_{1, p} \alpha_{2, p} = 1$.
 * **Building Transfer:** $\mathcal{B}(\mathrm{PGL}_2(\mathbb{Q}_p))$ is a $(p+1)$-regular tree $T_{p+1}$.
-  $$\mathcal{L}_p = p^{-1/2} A_{p, 1} \implies \lambda_\Delta(p, 1) = \tilde{\tau}(p) \in [-2, 2].$$
+
+$$\mathcal{L}_p = p^{-1/2} A_{p, 1} \implies \lambda_\Delta(p, 1) = \tilde{\tau}(p) \in [-2, 2].$$
+
 * **Sato-Tate Equidistribution:** As confirmed in Panel (b) of the figure, the normalized traces $\cos\theta_p = \tilde{\tau}(p)/2$ conform to the Wigner-Sato-Tate semi-circle measure:
-  $$d\mu_{\mathrm{ST}}(\theta) = \frac{2}{\pi} \sin^2\theta \, d\theta = \frac{2}{\pi} \sqrt{1 - x^2} \, dx.$$
+
+$$d\mu_{\mathrm{ST}}(\theta) = \frac{2}{\pi} \sin^2\theta \, d\theta = \frac{2}{\pi} \sqrt{1 - x^2} \, dx.$$
 
 ### 4.2 Case II: $\mathrm{GL}_3$ — Gelbart-Jacquet Symmetric Square Lift $\mathrm{Sym}^2(\Delta)$
 
 The functorial lift $\mathrm{Sym}^2: \mathrm{GL}_2 \to \mathrm{GL}_3$ maps the 2-dimensional representation to its symmetric square.
 * **Satake Parameters:**
-  $$\alpha_{1, p} = \alpha_p^2 = e^{2i\theta_p}, \quad \alpha_{2, p} = 1, \quad \alpha_{3, p} = \beta_p^2 = e^{-2i\theta_p}.$$
+
+$$\alpha_{1, p} = \alpha_p^2 = e^{2i\theta_p}, \quad \alpha_{2, p} = 1, \quad \alpha_{3, p} = \beta_p^2 = e^{-2i\theta_p}.$$
+
 * **Elementary Symmetric Invariants:**
-  $$e_1(\mathrm{Sym}^2) = \alpha_p^2 + 1 + \beta_p^2 = (\alpha_p + \beta_p)^2 - 1 = \tilde{\tau}(p)^2 - 1,$$
-  $$e_2(\mathrm{Sym}^2) = \alpha_p^2 + \beta_p^2 + 1 = \tilde{\tau}(p)^2 - 1 = e_1(\mathrm{Sym}^2) \quad (\text{Self-Dual}),$$
-  $$e_3(\mathrm{Sym}^2) = \alpha_p^2 \cdot 1 \cdot \beta_p^2 = 1.$$
+
+$$e_1(\mathrm{Sym}^2) = \alpha_p^2 + 1 + \beta_p^2 = (\alpha_p + \beta_p)^2 - 1 = \tilde{\tau}(p)^2 - 1,$$
+
+$$e_2(\mathrm{Sym}^2) = \alpha_p^2 + \beta_p^2 + 1 = \tilde{\tau}(p)^2 - 1 = e_1(\mathrm{Sym}^2) \quad (\text{Self-Dual}),$$
+
+$$e_3(\mathrm{Sym}^2) = \alpha_p^2 \cdot 1 \cdot \beta_p^2 = 1.$$
+
 * **Building Transfer Eigenvalues on $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$:**
-  $$\lambda_{\mathrm{Sym}^2}(p, 1) = p (\tilde{\tau}(p)^2 - 1), \quad \lambda_{\mathrm{Sym}^2}(p, 2) = p (\tilde{\tau}(p)^2 - 1).$$
+
+$$\lambda_{\mathrm{Sym}^2}(p, 1) = p (\tilde{\tau}(p)^2 - 1), \quad \lambda_{\mathrm{Sym}^2}(p, 2) = p (\tilde{\tau}(p)^2 - 1).$$
+
 * **Local Euler Factor:**
-  $$L_p(s, \mathrm{Sym}^2\Delta)^{-1} = 1 - (\tilde{\tau}(p)^2 - 1) p^{-s} + (\tilde{\tau}(p)^2 - 1) p^{-2s} - p^{-3s}.$$
+
+$$L_p(s, \mathrm{Sym}^2\Delta)^{-1} = 1 - (\tilde{\tau}(p)^2 - 1) p^{-s} + (\tilde{\tau}(p)^2 - 1) p^{-2s} - p^{-3s}.$$
 
 ### 4.3 Case III: $\mathrm{GL}_3$ — Buhler's Icosahedral $A_5$ Galois Representation
 
-Joe Buhler (1977) constructed the first authentic example of an icosahedral Galois representation $\rho_0: \operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}) \to \mathrm{SL}_2(\mathbb{F}_5) \subset \mathrm{GL}_2(\mathbb{C})$ with conductor $N = 800$. Its adjoint representation $\rho = \operatorname{Ad}(\rho_0): \operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}) \to \mathrm{PGL}_2(\mathbb{C}) \cong A_5 \subset \mathrm{SO}_3(\mathbb{R}) \subset \mathrm{GL}_3(\mathbb{C})$ defines a 3-dimensional cuspidal automorphic representation $\pi_{A_5}$ on $\mathrm{GL}_3(\mathbb{A}_{\mathbb{Q}})$.
+Joe Buhler (1977) constructed the first authentic example of an icosahedral Galois representation $\rho_0: \mathrm{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}) \to \mathrm{SL}_2(\mathbb{F}_5) \subset \mathrm{GL}_2(\mathbb{C})$ with conductor $N = 800$. Its adjoint representation $\rho = \mathrm{Ad}(\rho_0): \mathrm{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}) \to \mathrm{PGL}_2(\mathbb{C}) \cong A_5 \subset \mathrm{SO}_3(\mathbb{R}) \subset \mathrm{GL}_3(\mathbb{C})$ defines a 3-dimensional cuspidal automorphic representation $\pi_{A_5}$ on $\mathrm{GL}_3(\mathbb{A}_{\mathbb{Q}})$.
 
 For unramified primes $p \nmid 800$, the Frobenius conjugacy classes in $A_5$ govern the transfer spectrum:
 
@@ -173,25 +207,38 @@ As demonstrated in Panel (d), while the Gelbart-Jacquet symmetric square $\mathr
 ### 4.4 Case IV: $\mathrm{GL}_4$ — Rankin-Selberg Convolution $\Delta \times \Delta$
 
 The Rankin-Selberg tensor product representation on $\mathrm{GL}_2 \times \mathrm{GL}_2 \to \mathrm{GL}_4$ for $\Delta \boxtimes \Delta$ decomposes isobarically as:
+
 $$\Delta \times \Delta = \mathrm{Sym}^2(\Delta) \boxplus \mathbf{1}.$$
+
 * **Satake Parameters:**
-  $$\{\alpha_p^2, 1, 1, \beta_p^2\}.$$
+
+$$\{\alpha_p^2, 1, 1, \beta_p^2\}.$$
+
 * **Elementary Symmetric Polynomials:**
-  $$e_1(\Delta \times \Delta) = \alpha_p^2 + 1 + 1 + \beta_p^2 = \tilde{\tau}(p)^2,$$
-  $$e_2(\Delta \times \Delta) = 2\tilde{\tau}(p)^2 - 2,$$
-  $$e_3(\Delta \times \Delta) = \tilde{\tau}(p)^2 = e_1(\Delta \times \Delta),$$
-  $$e_4(\Delta \times \Delta) = 1.$$
+
+$$e_1(\Delta \times \Delta) = \alpha_p^2 + 1 + 1 + \beta_p^2 = \tilde{\tau}(p)^2,$$
+
+$$e_2(\Delta \times \Delta) = 2\tilde{\tau}(p)^2 - 2,$$
+
+$$e_3(\Delta \times \Delta) = \tilde{\tau}(p)^2 = e_1(\Delta \times \Delta),$$
+
+$$e_4(\Delta \times \Delta) = 1.$$
+
 * **Building Transfer Eigenvalues on $\mathcal{B}(\mathrm{PGL}_4(\mathbb{Q}_p))$:**
-  $$\lambda_{\Delta \times \Delta}(p, 1) = p^{3/2} \tilde{\tau}(p)^2, \quad \lambda_{\Delta \times \Delta}(p, 2) = p^2 (2\tilde{\tau}(p)^2 - 2), \quad \lambda_{\Delta \times \Delta}(p, 3) = p^{3/2} \tilde{\tau}(p)^2.$$
+
+$$\lambda_{\Delta \times \Delta}(p, 1) = p^{3/2} \tilde{\tau}(p)^2, \quad \lambda_{\Delta \times \Delta}(p, 2) = p^2 (2\tilde{\tau}(p)^2 - 2), \quad \lambda_{\Delta \times \Delta}(p, 3) = p^{3/2} \tilde{\tau}(p)^2.$$
+
 * **Euler Factor Factorization:**
-  $$L_p(s, \Delta \times \Delta) = \zeta_p(s) L_p(s, \mathrm{Sym}^2\Delta) = (1 - p^{-s})^{-1} (1 - (\tilde{\tau}(p)^2-1)p^{-s} + (\tilde{\tau}(p)^2-1)p^{-2s} - p^{-3s})^{-1}.$$
+
+$$L_p(s, \Delta \times \Delta) = \zeta_p(s) L_p(s, \mathrm{Sym}^2\Delta) = (1 - p^{-s})^{-1} (1 - (\tilde{\tau}(p)^2-1)p^{-s} + (\tilde{\tau}(p)^2-1)p^{-2s} - p^{-3s})^{-1}.$$
 
 ---
 
 ## 5. Newton-Girard Trace Invariant Matching and Dirichlet Series
 
 ### 5.1 Power Sums and Newton-Girard Recurrence
-The power sum traces $p_m = \operatorname{Tr}(A_p^m) = \sum_{i=1}^n \alpha_{i, p}^m$ are computed recursively from the elementary symmetric polynomials $e_1, \dots, e_n$ via the Newton-Girard relations:
+The power sum traces $p_m = \mathrm{Tr}(A_p^m) = \sum_{i=1}^n \alpha_{i, p}^m$ are computed recursively from the elementary symmetric polynomials $e_1, \dots, e_n$ via the Newton-Girard relations:
+
 $$p_m = (-1)^{m-1} m e_m + \sum_{j=1}^{\min(m-1, n)} (-1)^{j-1} e_j p_{m-j}.$$
 
 Explicitly for low degrees:
@@ -202,13 +249,14 @@ Explicitly for low degrees:
 
 ### 5.2 Logarithmic Derivative Identity
 The local Langlands $L$-factor satisfies the exact Taylor identity:
-$$\log L_p(s, \pi) = -\log \det(I_n - A_p p^{-s}) = \sum_{m=1}^\infty \frac{\operatorname{Tr}(A_p^m)}{m} p^{-ms}.$$
+
+$$\log L_p(s, \pi) = -\log \det(I_n - A_p p^{-s}) = \sum_{m=1}^\infty \frac{\mathrm{Tr}(A_p^m)}{m} p^{-ms}.$$
 
 ### 5.3 Empirical Verification Telemetry ($p \le 100$)
 
 The following table reports the numerical output generated by `experiments/higher_rank_gln_functoriality.py` at $s = 2.0 + 0.5i$:
 
-| $p$ | $\tilde{\tau}(p)$ | $\mathrm{Sym}^2(\Delta) \; e_1$ | Buhler Class | Buhler $\operatorname{Tr}$ | $\Delta \times \Delta \; e_1$ | Newton-Girard Residual |
+| $p$ | $\tilde{\tau}(p)$ | $\mathrm{Sym}^2(\Delta) \; e_1$ | Buhler Class | Buhler $\mathrm{Tr}$ | $\Delta \times \Delta \; e_1$ | Newton-Girard Residual |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **2** | $-0.53033$ | $-0.71875$ | RAM | $0.0000$ | $0.28125$ | $1.00 \times 10^{-16}$ |
 | **3** | $0.59873$ | $-0.64152$ | 3A | $0.0000$ | $0.35848$ | $7.64 \times 10^{-17}$ |
@@ -243,6 +291,7 @@ The following table reports the numerical output generated by `experiments/highe
 ## 6. Global Synthesis: The Adelic Spectral Zeta Function
 
 The global adelic spectral zeta function $\mathcal{Z}_\pi(s)$ of an automorphic representation $\pi = \bigotimes_v \pi_v$ is reconstructed from the Euler product of building transfer operators:
+
 $$\mathcal{Z}_\pi(s) = \prod_{p < \infty} \det\left( I - \mathcal{L}_p p^{-s} \right)^{-1} = L(s, \pi).$$
 
 On the noncommutative geometry side, the adelic Dirac operator $\mathcal{D}_{\mathbb{A}}$ on the adele ring $\mathbb{A}_{\mathbb{Q}}$ couples the non-Archimedean building transfer operators $\mathcal{L}_p$ across all primes $p$ with the Archimedean infinitesimal generator $D_\infty = -i \frac{d}{dt} + \frac{1}{2} \psi(\frac{1}{2} + it)$. The spectral zeros of $\mathcal{Z}_\pi(s)$ arise as the resonant eigenvalues of the global transfer operator, unifying non-Archimedean building geometry, automorphic functoriality, and the spectral interpretation of $L$-functions.

@@ -68,4 +68,4 @@ To prevent the model from instantly losing grammatical momentum while the sparse
 
 Currently, the `v3` architecture simulates sparsity using `scores.masked_fill()`. This mathematically proves the effectiveness of the ultrametric topology on language generation, but still requires computing the full $O(N^2)$ dense attention matrix before masking.
 
-The ultimate deployment of this architecture will require a custom **Triton kernel** written for NVIDIA architectures, similar to FlashAttention. This kernel will explicitly skip the query-key dot products for blocks where $d_p(x, y) > 3$, effectively collapsing the wall-clock time and memory bottleneck from $O(N^2)$ to $O(N)$.
+The ultimate deployment of this architecture will require a custom **Triton kernel** written for NVIDIA architectures, similar to FlashAttention. This kernel will explicitly skip the query-key dot products for blocks where $d_p(x, y) \gt 3$, effectively collapsing the wall-clock time and memory bottleneck from $O(N^2)$ to $O(N)$.

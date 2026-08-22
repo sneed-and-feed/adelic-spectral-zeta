@@ -634,4 +634,3 @@ where the weights $`c_{k, j}`$ and $`d_{k, j}`$ represent the sheet-mixing ratio
 
 For a complete, referee-grade proof of the block-diagonalization, chiral symmetry ($`J_{d-1} H_{d-1} + H_{d-1} J_{d-1} = 0`$), and scale-crossing alignment, see the detailed note:
 [eigenvector_alignment_note.md](eigenvector_alignment_note.md).
-

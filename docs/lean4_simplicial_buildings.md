@@ -21,22 +21,29 @@ This research monograph documents the complete formal verification in Lean 4 wit
 We formally construct and prove:
 1. **Simplicial Building Geometry & Type-Preserving Adjacency**:
    The 3-colored vertex structure $\tau : V \to \mathbb{Z}/3\mathbb{Z}$ based on $p$-adic determinant valuation, the dual directed adjacency relations $u \sim_1 v$ and $u \sim_2 v$, the regular degree $d_{3,1}(q) = d_{3,2}(q) = q^2 + q + 1$, and the building adjacency operators:
-   $$A_1 f(v) = \sum_{w \sim_1 v} f(w), \quad A_2 f(v) = \sum_{w \sim_2 v} f(w), \quad \Delta f(v) = (A_1 f)(v) + (A_2 f)(v) - 2(q^2 + q + 1) f(v).$$
+
+$$A_1 f(v) = \sum_{w \sim_1 v} f(w), \quad A_2 f(v) = \sum_{w \sim_2 v} f(w), \quad \Delta f(v) = (A_1 f)(v) + (A_2 f)(v) - 2(q^2 + q + 1) f(v).$$
 
 2. **Commuting Radial Weyl Chamber Difference Operators**:
    The radial Hecke difference operators on functions $f : \mathbb{Z} \times \mathbb{Z} \to R$ on the triangular weight lattice:
-   $$(T_1 f)(m, n) = q^2 f(m+1, n) + q f(m-1, n+1) + f(m, n-1),$$
-   $$(T_2 f)(m, n) = q^2 f(m, n+1) + q f(m+1, n-1) + f(m-1, n),$$
+
+$$(T_1 f)(m, n) = q^2 f(m+1, n) + q f(m-1, n+1) + f(m, n-1),$$
+
+$$(T_2 f)(m, n) = q^2 f(m, n+1) + q f(m+1, n-1) + f(m-1, n),$$
+
    satisfying the exact commutation theorem $[T_1, T_2] = T_1 \circ T_2 - T_2 \circ T_1 = 0$ over an arbitrary commutative ring $R$, along with the symmetric 7-point convolution stencil.
 
 3. **Macdonald Spherical Recurrence & Joint Eigenbasis**:
    The exact eigenvalue equations for radial Macdonald wave components $\psi$ and $S_3$-symmetrized spherical wavefunctions $\Phi$:
-   $$T_1 \Phi = q e_1(z) \Phi, \quad T_2 \Phi = q e_2(z) \Phi, \quad \Delta \Phi = \big(q(e_1(z) + e_2(z)) - 2(q^2 + q + 1)\big) \Phi,$$
+
+$$T_1 \Phi = q e_1(z) \Phi, \quad T_2 \Phi = q e_2(z) \Phi, \quad \Delta \Phi = \big(q(e_1(z) + e_2(z)) - 2(q^2 + q + 1)\big) \Phi,$$
+
    establishing that the 2D Macdonald spherical functions $P_\lambda(z; q, t=q^{-1})$ constitute the exact joint eigenbasis with zero boundary defect.
 
 4. **Non-Archimedean Ramanujan Spectral Gap**:
    The exact algebraic formula separating the trivial bound state $\lambda_0 = 0$ from the continuous tempered band $[-3q - 2(q^2+q+1), \, 6q - 2(q^2+q+1)]$:
-   $$\operatorname{Gap}(\Delta) = 0 - (6q - 2(q^2 + q + 1)) = 2(q - 1)^2.$$
+
+$$\mathrm{Gap}(\Delta) = 0 - (6q - 2(q^2 + q + 1)) = 2(q - 1)^2.$$
 
 All definitions and theorems are compiled and checked with **zero `sorry`s** in Lean 4.8.0.
 
@@ -82,7 +89,7 @@ The newly implemented formal module [`formalization/Formalization/BuildingPGL3.l
 | | `symmetrized_eigenvalue_T2` | Joint eigenvalue theorem: $T_2 \Phi = q e_2(z) \Phi$ | **Verified (0 sorry)** |
 | | `symmetrized_eigenvalue_laplacian` | Symmetrized Laplacian relation: $\Delta \Phi = \lambda_\Delta(z) \Phi$ | **Verified (0 sorry)** |
 | **6. Ramanujan Spectral Gap** | `ramanujan_spectral_gap_identity` | Algebraic identity: $0 - (6q - 2(q^2+q+1)) = 2(q-1)^2$ | **Verified (0 sorry)** |
-| | `ramanujan_gap_formula` | Explicit Ramanujan spectral gap on $\tilde{A}_2$: $\operatorname{Gap}(\Delta) = 2(q-1)^2$ | **Verified (0 sorry)** |
+| | `ramanujan_gap_formula` | Explicit Ramanujan spectral gap on $\tilde{A}_2$: $\mathrm{Gap}(\Delta) = 2(q-1)^2$ | **Verified (0 sorry)** |
 
 ---
 
@@ -91,10 +98,12 @@ The newly implemented formal module [`formalization/Formalization/BuildingPGL3.l
 ### 2.1 Vertex Homothety Classes and 3-Coloring
 
 The vertices of the Bruhat-Tits building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$ are homothety classes of $\mathbb{Z}_p$-lattices $L \subset \mathbb{Q}_p^3$:
+
 $$V(\mathcal{B}) = \{ [L] \mid L \subset \mathbb{Q}_p^3 \text{ rank 3 lattice} \} \cong \mathrm{PGL}_3(\mathbb{Q}_p) / \mathrm{PGL}_3(\mathbb{Z}_p).$$
 
 Each vertex $v = [L]$ has a well-defined coloring $\tau(v) \in \mathbb{Z}/3\mathbb{Z}$ given by the $p$-adic determinant valuation:
-$$\tau(v) \equiv \operatorname{ord}_p(\det g) \pmod 3, \quad \text{where } L = g \mathbb{Z}_p^3.$$
+
+$$\tau(v) \equiv \mathrm{ord}_p(\det g) \pmod 3, \quad \text{where } L = g \mathbb{Z}_p^3.$$
 
 ### 2.2 Formalization in Lean 4
 
@@ -196,7 +205,9 @@ def aptNeighbors2 (v : ApartmentSite) : Finset ApartmentSite :=
 ### 4.1 Radial Difference Formulation
 
 For radial spherical wavefunctions $f(m, n)$ on the dominant Weyl chamber, the Hecke operators $T_1$ and $T_2$ act via the 3-point interior difference stencils:
+
 $$(T_1 f)(m, n) = q^2 f(m+1, n) + q f(m-1, n+1) + f(m, n-1),$$
+
 $$(T_2 f)(m, n) = q^2 f(m, n+1) + q f(m+1, n-1) + f(m-1, n).$$
 
 ```lean
@@ -355,7 +366,9 @@ theorem weyl_invar_e2 (w : WeylA2) (S : SatakeSystem R) :
 ```
 
 Consequently, the full Macdonald spherical wave:
+
 $$\Phi(m, n) = \sum_{w \in S_3} c(w(z)) \psi_{w(z)}(m, n)$$
+
 is a simultaneous eigenfunction:
 
 ```lean
@@ -389,7 +402,8 @@ theorem symmetrized_eigenvalue_laplacian (S : SatakeSystem R)
 The continuous tempered band of the discrete building Laplacian is bounded above by $6q - 2(q^2 + q + 1)$.
 The trivial bound state $\mathbf{1}$ has eigenvalue $\lambda_0 = 0$.
 The spectral gap is:
-$$\operatorname{Gap}(\Delta) = 0 - (6q - 2(q^2 + q + 1)) = 2(q - 1)^2.$$
+
+$$\mathrm{Gap}(\Delta) = 0 - (6q - 2(q^2 + q + 1)) = 2(q - 1)^2.$$
 
 ```lean
 /-- The regular vertex degree on the Ã₂ building: d_{reg}(q) = 2(q² + q + 1). -/
@@ -417,7 +431,7 @@ theorem ramanujan_gap_formula (q : R) :
 For $q = 3$:
 - Regular Degree: $2(3^2 + 3 + 1) = 26$
 - Tempered Spectrum: $[-35, -8]$
-- Ramanujan Gap: $\operatorname{Gap}(\Delta) = 2(3-1)^2 = 8$.
+- Ramanujan Gap: $\mathrm{Gap}(\Delta) = 2(3-1)^2 = 8$.
 
 ---
 

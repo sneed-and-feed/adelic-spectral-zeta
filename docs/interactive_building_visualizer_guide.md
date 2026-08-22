@@ -16,8 +16,8 @@ The engine interactively computes and visualizes:
 1. **Affine $\tilde{A}_2$ Simplicial Buildings**: The 2D equilateral apartment triangulation $\mathcal{A}(\mathrm{PGL}_3(\mathbb{Q}_p)) \cong \mathbb{Z}^2$, color-coded by determinant valuation mod 3 into vertex types 0 (cyan), 1 (gold), and 2 (magenta).
 2. **Exceptional $\tilde{G}_2$ 12-Root Lattices**: The 12-neighbor root system distinguishing 6 short roots (cyan) and 6 long roots (gold) with full $D_6$ dihedral Weyl group symmetry.
 3. **Exact Non-Archimedean Macdonald Spherical Functions**: Live evaluation of $\Phi_z(m, n) = q^{-(m+n)} W(q^{-1})^{-1} \sum_{w \in W} c(w(z)) w(z)_1^{m+n} w(z)_2^n$ weighted by the Harish-Chandra / Gindikin-Karpelevich $c$-function.
-4. **Poynting-Like Probability Flux Fields**: Real-time discrete quantum currents $j_{u \to v} = \operatorname{Im}(\psi(u)^* \psi(v))$ rendered as animated vector arrows and glowing particle streamlines tracing simplicial energy circulation and chiral vortices.
-5. **Dual Satake Deltoid Spectrum**: Simultaneous dual-canvas telemetry plotting Hecke eigenvalues $\lambda_1(T_1), \lambda_2(T_2)$, the discrete Helmholtz eigenvalue $\lambda_\Delta$, and the exact Ramanujan spectral gap $\operatorname{Gap}(\Delta) = 2(q-1)^2$ across base primes $q \in \{2, 3, 5, 7\}$.
+4. **Poynting-Like Probability Flux Fields**: Real-time discrete quantum currents $j_{u \to v} = \mathrm{Im}(\psi(u)^* \psi(v))$ rendered as animated vector arrows and glowing particle streamlines tracing simplicial energy circulation and chiral vortices.
+5. **Dual Satake Deltoid Spectrum**: Simultaneous dual-canvas telemetry plotting Hecke eigenvalues $\lambda_1(T_1), \lambda_2(T_2)$, the discrete Helmholtz eigenvalue $\lambda_\Delta$, and the exact Ramanujan spectral gap $\mathrm{Gap}(\Delta) = 2(q-1)^2$ across base primes $q \in \{2, 3, 5, 7\}$.
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -49,17 +49,19 @@ The engine interactively computes and visualizes:
 Let $F = \mathbb{Q}_p$ be the field of $p$-adic numbers, $\mathcal{O}_F = \mathbb{Z}_p$ its maximal compact subring of integers, and $k = \mathbb{F}_p \cong \mathbb{Z}/p\mathbb{Z}$ the residue field of order $q = p$.
 
 The 0-simplices (vertices) of the Bruhat-Tits building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$ are homothety classes $[L]$ of rank-3 $\mathbb{Z}_p$-lattices $L \subset \mathbb{Q}_p^3$. For $L = g \mathbb{Z}_p^3$ with $g \in \mathrm{GL}_3(\mathbb{Q}_p)$, the **vertex type** (3-coloring) is given by:
-$$\tau(v) \equiv \operatorname{ord}_p(\det g) \pmod 3 \in \{0, 1, 2\}.$$
+
+$$\tau(v) \equiv \mathrm{ord}_p(\det g) \pmod 3 \in \{0, 1, 2\}.$$
 
 In apartment coordinates $(u, v) \in \mathbb{Z}^2$ along the fundamental weight basis $\varpi_1 = (1, 0)$ and $\varpi_2 = (1/2, \sqrt{3}/2)$:
+
 $$\tau(u, v) = (u + 2v) \bmod 3.$$
 
 Each vertex has:
 - $d_{3, 1}(q) = q^2 + q + 1$ neighbors of type 1 (corresponding to 1D lines in $\mathbb{F}_p^3$).
 - $d_{3, 2}(q) = q^2 + q + 1$ neighbors of type 2 (corresponding to 2D planes in $\mathbb{F}_p^3$).
-- Total vertex degree $\operatorname{deg}(v) = 2(q^2 + q + 1)$.
+- Total vertex degree $\mathrm{deg}(v) = 2(q^2 + q + 1)$.
 
-| Prime $q$ | Type 1 Neighbors $d_{3,1}(q)$ | Type 2 Neighbors $d_{3,2}(q)$ | Total Vertex Degree $\operatorname{deg}(v)$ |
+| Prime $q$ | Type 1 Neighbors $d_{3,1}(q)$ | Type 2 Neighbors $d_{3,2}(q)$ | Total Vertex Degree $\mathrm{deg}(v)$ |
 | :---: | :---: | :---: | :---: |
 | $q = 2$ | $2^2 + 2 + 1 = \mathbf{7}$ | $2^2 + 2 + 1 = \mathbf{7}$ | $\mathbf{14}$ |
 | $q = 3$ | $3^2 + 3 + 1 = \mathbf{13}$ | $3^2 + 3 + 1 = \mathbf{13}$ | $\mathbf{26}$ |
@@ -72,9 +74,12 @@ Each vertex has:
 
 For the exceptional Lie group $G_2$, the apartment $\mathcal{A}(G_2)$ is a 2D hexagonal lattice with 12 root directions:
 - **6 Short Roots (Length 1):**
-  $$\Phi_{\text{short}} = \left\{ \pm (1, 0), \pm \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right) \right\}.$$
+
+$$\Phi_{\text{short}} = \left\{ \pm (1, 0), \pm \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right) \right\}.$$
+
 - **6 Long Roots (Length $\sqrt{3}$):**
-  $$\Phi_{\text{long}} = \left\{ \pm \left(-\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm (0, \sqrt{3}) \right\}.$$
+
+$$\Phi_{\text{long}} = \left\{ \pm \left(-\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm \left(\frac{3}{2}, \frac{\sqrt{3}}{2}\right), \pm (0, \sqrt{3}) \right\}.$$
 
 The Weyl group is the dihedral group $W(G_2) \cong D_6$ of order 12, generating the 12-fold star symmetric standing waves visualized in the application.
 
@@ -83,28 +88,38 @@ The Weyl group is the dihedral group $W(G_2) \cong D_6$ of order 12, generating 
 ### 1.3 Exact Macdonald Spherical Eigenbasis & $c$-Functions
 
 On the dominant Weyl chamber $\mathcal{A}^+ = \{(m, n) \in \mathbb{Z}^2 : m \ge 0, n \ge 0\}$, the normalized Macdonald spherical functions are given by:
+
 $$\Phi_z(m, n) = q^{-(m+n)} \frac{1}{W(q^{-1})} \sum_{w \in S_3} c(w(z)) w(z)_1^{m+n} w(z)_2^n,$$
+
 where:
 - The Satake parameters $z = (z_1, z_2, z_3) \in \mathbb{C}^3$ satisfy $z_1 z_2 z_3 = 1$.
 - The Harish-Chandra / Gindikin-Karpelevich $c$-function is:
-  $$c(z) = \prod_{1 \le i < j \le 3} \frac{z_i - q^{-1} z_j}{z_i - z_j}.$$
+
+$$c(z) = \prod_{1 \le i < j \le 3} \frac{z_i - q^{-1} z_j}{z_i - z_j}.$$
+
 - The Poincaré polynomial normalization is:
-  $$W(q^{-1}) = 1 + 2 q^{-1} + 2 q^{-2} + q^{-3}.$$
+
+$$W(q^{-1}) = 1 + 2 q^{-1} + 2 q^{-2} + q^{-3}.$$
 
 #### Hecke Eigenvalues:
 The function $\Phi_z$ satisfies the joint eigenvalue equations:
+
 $$T_1 \Phi_z = q e_1(z) \Phi_z = \lambda_1 \Phi_z, \quad T_2 \Phi_z = q e_2(z) \Phi_z = \lambda_2 \Phi_z,$$
+
 where $e_1(z) = z_1 + z_2 + z_3$ and $e_2(z) = z_1 z_2 + z_2 z_3 + z_3 z_1$.
 
 #### Discrete Building Laplacian & Ramanujan Spectral Gap:
 The non-Archimedean discrete Laplacian $\Delta = T_1 + T_2 - 2(q^2+q+1)I$ acts on $\Phi_z$ with eigenvalue:
-$$\lambda_\Delta(z) = 2 q \operatorname{Re}(e_1(z)) - 2(q^2+q+1).$$
+
+$$\lambda_\Delta(z) = 2 q \mathrm{Re}(e_1(z)) - 2(q^2+q+1).$$
 
 For unitary Satake parameters $z_j = e^{i \theta_j}$, the continuous tempered spectrum spans the compact interval:
+
 $$\sigma_{\text{temp}}(\Delta) = [-3q - 2(q^2+q+1), \, 6q - 2(q^2+q+1)].$$
 
 This continuous band is separated from the trivial bound state $\lambda_0 = 0$ by the exact non-Archimedean **Ramanujan Spectral Gap**:
-$$\boxed{\operatorname{Gap}(\Delta) = 0 - (6q - 2(q^2+q+1)) = 2(q^2+q+1) - 6q = 2(q^2 - 2q + 1) = 2(q - 1)^2.}$$
+
+$$\boxed{\mathrm{Gap}(\Delta) = 0 - (6q - 2(q^2+q+1)) = 2(q^2+q+1) - 6q = 2(q^2 - 2q + 1) = 2(q - 1)^2.}$$
 
 | Prime $q$ | Tempered Band Top $\lambda_{\max}$ | Trivial State $\lambda_0$ | Exact Ramanujan Gap $2(q-1)^2$ |
 | :---: | :---: | :---: | :---: |
@@ -118,10 +133,12 @@ $$\boxed{\operatorname{Gap}(\Delta) = 0 - (6q - 2(q^2+q+1)) = 2(q^2+q+1) - 6q = 
 ### 1.4 Discrete Probability Current & Poynting Flux
 
 For a complex building wavefunction $\psi(u, v, t) = \Phi_z(u, v) e^{-i \omega t}$, the non-Archimedean probability current along any directed edge $u \to v$ is:
-$$j_{u \to v} = \operatorname{Im}(\psi(u)^* \psi(v)).$$
+
+$$j_{u \to v} = \mathrm{Im}(\psi(u)^* \psi(v)).$$
 
 In the continuum apartment coordinates, this maps to the 2D vector field:
-$$\vec{j}(x, y) = \operatorname{Im}(\psi^* \nabla \psi) = \left( \operatorname{Im}\left(\psi^* \frac{\partial \psi}{\partial x}\right), \operatorname{Im}\left(\psi^* \frac{\partial \psi}{\partial y}\right) \right).$$
+
+$$\vec{j}(x, y) = \mathrm{Im}(\psi^* \nabla \psi) = \left( \mathrm{Im}\left(\psi^* \frac{\partial \psi}{\partial x}\right), \mathrm{Im}\left(\psi^* \frac{\partial \psi}{\partial y}\right) \right).$$
 
 When the Satake parameters possess asymmetric phases ($\theta_1 \ne \theta_2$), the building exhibits stationary circulating probability current vortices with non-vanishing simplicial circulation $\oint_{\partial C} \vec{j} \cdot d\vec{\ell} \ne 0$.
 
@@ -164,7 +181,7 @@ The sidebar features 4 modular panels:
    - **Animated Flow Particles**: Launch dynamic glowing particles that trace streamlines along vector field lines.
    - **Particle Density & Arrow Scaling**: Fine-tune particle count (50–600) and vector arrow exaggeration.
 4. **Render (Colormaps Tab)**:
-   - **Field Component**: Switch between $\operatorname{Re}(\psi)$, $\operatorname{Im}(\psi)$, $|\psi|$, $\operatorname{Arg}(\psi)$ (chiral phase), and $|\psi|^2$ (probability density).
+   - **Field Component**: Switch between $\mathrm{Re}(\psi)$, $\mathrm{Im}(\psi)$, $|\psi|$, $\mathrm{Arg}(\psi)$ (chiral phase), and $|\psi|^2$ (probability density).
    - **Scientific Colormap**: Choose from Viridis, Plasma, Turbo, Magma, and Chiral Cyclic Phase.
    - **Contour Isolines**: Enable up to 20 level curve isolines.
 
@@ -222,9 +239,9 @@ python scripts/verify_visualizer.py
 ### Verification Checklist:
 - [x] **HTML & DOM Structure**: Canvas elements, HUD panels, and responsive layout valid.
 - [x] **JavaScript Syntax**: Validated with Node.js parser with 0 errors / 0 warnings.
-- [x] **$A_2$ Macdonald Normalization**: Verified $\Phi_z(0, 0) = 1.000000000000$ to machine precision ($< 10^{-14}$).
-- [x] **Hecke Eigenvalue Residuals**: Verified $\|T_1 \Phi_z - \lambda_1 \Phi_z\|_\infty < 10^{-12}$.
-- [x] **Ramanujan Spectral Gap**: Verified exact algebraic identity $\operatorname{Gap}(\Delta) = 2(q-1)^2$ across $q \in \{2, 3, 5, 7\}$.
+- [x] **$A_2$ Macdonald Normalization**: Verified $\Phi_z(0, 0) = 1.000000000000$ to machine precision ($\lt 10^{-14}$).
+- [x] **Hecke Eigenvalue Residuals**: Verified $\|T_1 \Phi_z - \lambda_1 \Phi_z\|_\infty \lt 10^{-12}$.
+- [x] **Ramanujan Spectral Gap**: Verified exact algebraic identity $\mathrm{Gap}(\Delta) = 2(q-1)^2$ across $q \in \{2, 3, 5, 7\}$.
 - [x] **Discrete Flux Conservation**: Simplicial probability currents satisfy $\sum_{v \sim u} j_{u \to v} = 0$ on stationary states.
 
 ---
