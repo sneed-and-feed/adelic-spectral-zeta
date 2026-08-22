@@ -248,7 +248,7 @@ We establish the properties of this spectral triple rigorously below:
 *The Taibleson-Vladimirov operator $D$ is a self-adjoint operator on the dense domain:*
 
 $$
-\text{Dom}(D) = \left\{ f \in L^2(\mathbb{Z}_2, \mu_2) \ \middle|\ \sum_{j=1}^\infty \lambda_j^2 \|P_j f\|^2 \lt \infty \right\}
+\text{Dom}(D) = \left\lbrace f \in L^2(\mathbb{Z}_2, \mu_2) \ \middle|\ \sum_{j=1}^\infty \lambda_j^2 \|P_j f\|^2 \lt \infty \right\rbrace
 $$
 
 *where $`P_j`$ is the orthogonal projection onto the $j$-th wavelet scale eigenspace, and $`\lambda_j = \frac{3 \cdot 2^{j-1} - 1}{2}`$.*

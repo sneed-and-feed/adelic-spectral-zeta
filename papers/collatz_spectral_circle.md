@@ -13,7 +13,7 @@ In this paper, we show that the orbit structure of the Collatz relation modulo $
 ### Theorem 1.1 (Spectral Circle Theorem)
 For any $n \ge 2$, the spectrum of $D_n$ decomposes as
 
-$$\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}.$$
+$$\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\lbrace \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\rbrace.$$
 
 In particular, all eigenvalues of the twisted block $S_n$ satisfy $|\lambda| = 2^{2^{-(n-1)}}$.
 

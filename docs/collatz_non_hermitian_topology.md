@@ -149,7 +149,7 @@ $$|\lambda| = |W_{C_i}|^{1/L_n} = (\sqrt{2})^{1/2^{n-2}} = 2^{2^{-(n-1)}} = r_n$
 
 *The complete spectrum of $D_n$ is:*
 
-$$\mathrm{Spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^n \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}$$
+$$\mathrm{Spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^n \left\lbrace \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\rbrace$$
 
 ---
 

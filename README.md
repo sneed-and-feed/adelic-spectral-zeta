@@ -91,7 +91,7 @@ graph TD
 ### 2.1 Directed Collatz Relation Matrix & Spectral Circle Theorem
 On quotient rings $\mathbb{Z}/2^n\mathbb{Z}$, the 2-regular directed Collatz relation matrix $D_n$ acts in the Pontryagin character basis as a monomial shift $(D_n \chi_k)(x) = (1 + \omega_n^{-k})\chi_{3k}(x)$. For $n \ge 3$, the multiplication-by-3 endomorphism partitions odd units $(\mathbb{Z}/2^n\mathbb{Z})^\times$ into two cyclic orbits $C_1 = \langle 3 \rangle$ and $C_2 = -C_1$ of length $2^{n-2}$ with weight $|W_{C_1}| = |W_{C_2}| = \sqrt{2}$, establishing:
 
-$$\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\{ \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\}$$
+$$\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^{n} \left\lbrace \lambda \in \mathbb{C} : |\lambda| = 2^{2^{-(k-1)}} \right\rbrace$$
 
 ### 2.2 Continuous 2-Adic Transfer Operator on $L^2(\mathbb{Z}_2)$ & Exponential Mixing
 In the continuous limit on $\mathbb{Z}_2$, $(\mathcal{L} f)(x) = f(3x) + f(3x-1)$ admits the uniform Haar measure $\mu$ as its **unique conformal Gibbs state** ($\mathcal{L}^*\mu = 2\mu$). On $C^\alpha(\mathbb{Z}_2)$, the essential spectral radius is $r_{\text{ess}} = 1$, and correlations decay exponentially at rate $O((\sqrt{2})^t)$ with Lyapunov exponent $\gamma = \frac{1}{2}\ln 2 \approx 0.3466$.

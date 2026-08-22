@@ -116,7 +116,7 @@ The state space of characters $\mathbb{Z}/2^n\mathbb{Z}$ stratifies naturally in
 
 $$\mathbb{Z}/2^n\mathbb{Z} = \{0\} \cup \bigcup_{m=1}^n \mathcal{U}_m$$
 
-where $\mathcal{U}_m = \left\{ k \in \mathbb{Z}/2^n\mathbb{Z} \mid v_2(k) = n - m \right\} = 2^{n-m} (\mathbb{Z}/2^m\mathbb{Z})^\times$.
+where $\mathcal{U}_m = \left\lbrace k \in \mathbb{Z}/2^n\mathbb{Z} \mid v_2(k) = n - m \right\rbrace = 2^{n-m} (\mathbb{Z}/2^m\mathbb{Z})^\times$.
 
 For any $k = 2^{n-m} u \in \mathcal{U}_m$ with $u \in (\mathbb{Z}/2^m\mathbb{Z})^\times$:
 
