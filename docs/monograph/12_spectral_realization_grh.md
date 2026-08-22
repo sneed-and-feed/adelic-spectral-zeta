@@ -1,12 +1,12 @@
-# Chapter 12: Conditional Spectral Realization of the Generalized Riemann Hypothesis
+# Chapter 12: Survey of Connes' Spectral Triple Framework and Operator-Theoretic Open Problems
 
 ---
 
 # 12.1 Introduction and Operator Setup
 
-Building on the foundation laid in Chapter 7 regarding automorphic $L$-functions and Chapter 11 regarding the Adèlic Spectral Diagnostic Framework, we outline a conditional spectral reduction program for the Generalized Riemann Hypothesis (GRH).
+Building on the foundation laid in Chapter 7 regarding automorphic $L$-functions and Chapter 11 regarding the Adèlic Spectral Framework, we survey Alain Connes' spectral triple approach and the operator-theoretic formulation of automorphic trace formulas.
 
-The GRH posits that for a completed automorphic $L$-function $\Lambda(s, \pi)$ attached to a cusp form or automorphic representation $\pi$, all non-trivial zeros lie strictly on the critical line $\text{Re}(s) = 1/2$. The classical Hilbert-Pólya conjecture proposes that the imaginary parts of these zeros correspond to the eigenvalues of a self-adjoint operator on a Hilbert space. If such a self-adjoint operator can be constructed, the real-valued nature of its spectrum would mathematically force the zeros to lie on the critical line.
+The Generalized Riemann Hypothesis (GRH) posits that for a completed automorphic $L$-function $\Lambda(s, \pi)$ attached to a cusp form or automorphic representation $\pi$, all non-trivial zeros lie strictly on the critical line $\text{Re}(s) = 1/2$. The classical Hilbert-Pólya conjecture proposes that the imaginary parts of these zeros correspond to the eigenvalues of a self-adjoint operator on a Hilbert space. If such a self-adjoint operator can be constructed, the real-valued nature of its spectrum would mathematically force the zeros to lie on the critical line. Here, we review the mathematical requirements, spectral determinant analogies, and functional-analytic obstructions involved in this program.
 
 We formalize a conditional version of this program by defining a global adèlic Dirac operator $`D_{\text{glob}}`$ acting on a global Hilbert space $`\mathcal{H}_{\text{glob}}`$:
 

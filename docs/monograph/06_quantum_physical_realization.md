@@ -1,5 +1,5 @@
 # Adèlic Spectral Geometry, Quantum Criticality, and Automorphic L-Functions
-### A Unification Monograph on the Spectral Realization of the Generalized Riemann Hypothesis
+### A Unified Monograph on Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas
 
 ---
 

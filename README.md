@@ -141,12 +141,12 @@ We established the 5-regime classification across general affine dynamics $y \eq
 =====================================================================================
 GLOBAL ADELIC FUSION, ARTIN L-FUNCTIONS & QUANTUM CHAOS SUITE (VERIFIED)
 =====================================================================================
-1. Cyclotomic Orbit Poles: p=2 -> σ = 0.5000 (Critical Line) | p=3..29 -> σ = 0.0000 (Unitary Axis)
+1. Cyclotomic Orbit Poles: p=2 -> σ = 0.5000 (Cyclotomic Radius) | p=3..29 -> σ = 0.0000 (Unitary Axis)
 2. Aronszajn-Krein Inversion: Im(d_∞(σ, t)) ≠ 0 for all σ ≠ 1/2 -> Rigorous Invertibility
 3. Archimedean S₀(ℝ) Regularization: Holomorphic agreement to within 7.90 × 10⁻¹⁵
 4. CRT Multi-Prime Fusion: Multiplicative Perron eigenvalues λ₀ = 2ᵏ, Gap Δ ≥ 1.17
 5. Montgomery-Odlyzko GUE Statistics: ⟨s⟩ = 1.00558, Spacing variance = 0.12396
-6. 2D Artin Dirac Rigidity Gap: min_{|σ-0.5| > 0.05} |λ_phys| = 0.068966 > 0 (Strict GRH Stability)
+6. 2D Artin Dirac Rigidity Gap: min_{|σ-0.5| > 0.05} |λ_phys| = 0.068966 > 0 (Secular Gap Positivity)
 =====================================================================================
 ```
 
@@ -156,11 +156,11 @@ The global operator $\mathcal{L}_\mathbb{A} = \mathcal{L}_\infty \otimes \bigoti
 $$\mathcal{Z}(s) = \Gamma_\mathbb{R}(s) \prod_{p < \infty} \det(I - p^{-s}\mathcal{L}_p)^{-1} = \zeta(s - 1) \cdot L(s, \pi) \cdot \mathcal{Z}_{\mathrm{cyclotomic}}(s)$$
 
 ### 3.2 Aronszajn-Krein Inversion & Polarity/Zero Duality Bridge
-Using Aronszajn-Krein rank-1 perturbation theory on the bulk Dirac operator $D_{\text{cov}}(s)$, the poles of the unperturbed Fredholm determinant $\mathcal{Z}(s)$ map directly via boundary compression to the physical zero-modes of the boundary Dirac operator $D_{\text{artin}}(s) \sim \mathcal{Z}(s)^{-1}$, proving that completed automorphic $L$-function zeros emerge strictly from boundary rank-1 perturbations.
+Using Aronszajn-Krein rank-1 perturbation theory on the bulk Dirac operator $D_{\text{cov}}(s)$, the poles of the unperturbed Fredholm determinant $\mathcal{Z}(s)$ map directly via boundary compression to the physical zero-modes of the boundary Dirac operator $D_{\text{artin}}(s) \sim \mathcal{Z}(s)^{-1}$, illustrating how automorphic $L$-function zeros emerge as boundary bound states.
 
-### 3.3 Odd Prime Unitary Shielding vs 2-Adic Scale Dominance
-- **2-Adic Scale Anchor ($\sigma = 1/2$):** At $p=2, n=2$, orbit weight $|W_C| = 2$ gives $R_C = \sqrt{2}$ and real pole locus $\sigma = \frac{\ln\sqrt{2}}{\ln 2} = \mathbf{1/2}$, fixing the critical line conformal symmetry.
-- **Odd Prime Unitary Shielding ($\sigma = 0$):** Unramified odd primes $p \ge 3$ reside on the unitary axis $\sigma = 0$ (or symmetric shells $\pm\sigma_0$), providing unitary phase rotations $e^{i\theta_p}$ without perturbing the critical scale.
+### 3.3 Odd Prime Unitary Shielding vs 2-Adic Dynamics
+- **2-Adic Cyclotomic Circles:** At $p=2, n=2$, orbit weight $|W_C| = 2$ gives $R_C = \sqrt{2}$ and spectral circle radius $\sigma = \frac{\ln\sqrt{2}}{\ln 2} = 1/2$.
+- **Odd Prime Unitary Shielding ($\sigma = 0$):** Unramified odd primes $p \ge 3$ reside on the unitary axis $\sigma = 0$ (or symmetric shells $\pm\sigma_0$), providing unitary phase rotations $e^{i\theta_p}$ without perturbing the fundamental scale.
 
 ### 3.4 Archimedean Regularization on $\mathcal{S}_0(\mathbb{R})$
 Test functions restricted to $\mathcal{S}_0(\mathbb{R}) = \{f \in \mathcal{S}(\mathbb{R}) : f(0) = \hat{f}(0) = 0\}$ cancel the Archimedean Gamma poles $\Gamma(s/2)$ at $s = 0, -2, -4, \dots$ and eliminate trivial zero artifacts.
@@ -293,7 +293,7 @@ python experiments/f4_exceptional_building.py
 ## 9. Primary Research Papers & Monograph Series
 
 ### Primary Publication Treatise
-- **[*Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas: A Unified Publication Treatise on the Spectral Realization of the Generalized Riemann Hypothesis*](papers/adelic_spectral_geometry_complete_monograph.md)**
+- **[*Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas: A Unified Mathematical Treatise*](papers/adelic_spectral_geometry_complete_monograph.md)**
 - **[Interactive Standalone HTML Edition](docs/adelic_spectral_geometry_complete_monograph.html)**
 - **[Unified Monograph Architecture & Overview](docs/unified_monograph.md)**
 

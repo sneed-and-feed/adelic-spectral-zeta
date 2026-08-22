@@ -3,7 +3,7 @@
 **Authors:** Adelic Spectral Zeta Research Group  
 **Date:** August 2026  
 **Subject Classification (MSC 2020):** 11F70, 11M36, 11R39, 47A10, 47A55, 47B25, 22E55, 58J50  
-**Keywords:** Langlands-Shahidi method, exterior square $L$-functions, $\mathrm{GL}_4$ automorphic representations, symplectic functoriality, $\mathrm{Sp}_4 \hookrightarrow \mathrm{SO}_5 \hookrightarrow \mathrm{SO}_6 \cong \Lambda^2 \mathrm{SL}_4$, Aronszajn-Krein perturbation theory, Dirac operators, deficiency indices, Generalized Riemann Hypothesis  
+**Keywords:** Langlands-Shahidi method, exterior square $L$-functions, $\mathrm{GL}_4$ automorphic representations, symplectic functoriality, $\mathrm{Sp}_4 \hookrightarrow \mathrm{SO}_5 \hookrightarrow \mathrm{SO}_6 \cong \Lambda^2 \mathrm{SL}_4$, Aronszajn-Krein perturbation theory, Dirac operators, deficiency indices  
 **Artifact Figure:** [`figures/langlands_shahidi_exterior_power.png`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/figures/langlands_shahidi_exterior_power.png)  
 **Verification Script:** [`experiments/langlands_shahidi_exterior_power.py`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/experiments/langlands_shahidi_exterior_power.py)
 
@@ -24,7 +24,7 @@ $$\mathrm{sgn}\left(\mathrm{Im} d_{\Lambda^2}(\sigma, t)\right) = \mathrm{sgn}\l
 
 $$\sigma_{\min}\left(D_{\mathrm{phys}}(\sigma, t)\right) \ge \left|\sigma - \frac{1}{2}\right| > 0 \quad \forall \sigma \neq \frac{1}{2}$$
 
-   rigorously excluding any zero-modes off the critical line and establishing an operator-theoretic realization of the Generalized Riemann Hypothesis for $L(s, \pi, \Lambda^2)$.
+   illustrating how Aronszajn-Krein boundary coupling enforces secular non-vanishing for model self-adjoint operators away from $\sigma = 1/2$.
 
 All analytical structures and spectral bounds are numerically verified across $4,000$ complex evaluation points in [`experiments/langlands_shahidi_exterior_power.py`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/experiments/langlands_shahidi_exterior_power.py) with zero bound violations, and illustrated in the 6-panel publication figure [`figures/langlands_shahidi_exterior_power.png`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/figures/langlands_shahidi_exterior_power.png).
 
