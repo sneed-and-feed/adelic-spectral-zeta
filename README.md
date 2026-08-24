@@ -217,7 +217,7 @@ The Lean 4 formalization is organized into a clean, two-tier architecture compil
 - [`Combinatorics/PrefixSparsity.lean`](formalization/MathlibUpstream/Combinatorics/PrefixSparsity.lean): Exact rational prefix-sharing sparsity on $p$-ary trees.
 
 ### 5.2 Tier 2: Domain-Specific Formalization Modules (5 Domains)
-67 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
+68 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
 
 #### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 11 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
 Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and online numerical operators:
@@ -270,8 +270,9 @@ Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, t
 - [`OrbitShadowing.lean`](formalization/Formalization/Dynamics/OrbitShadowing.lean): Hyperbolic shadowing lemmas for 2-adic pseudo-orbits.
 - [`L2Mixing.lean`](formalization/Formalization/Dynamics/L2Mixing.lean): $L^2$ exponential mixing and decay of correlations for the transfer operator.
 
-#### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 8 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
+#### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 9 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
 Non-Archimedean quantum physics, operator algebras, error correction, and entanglement geometry:
+- [`ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean): Connes-Consani-Moscovici semilocal prolate operator $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \mathcal{L}_2$, discrete Collatz Galerkin projections, Aronszajn-Krein boundary rigidity, and critical-line zero-mode confinement.
 - [`AFAlgebraBratteli.lean`](formalization/Formalization/Quantum/AFAlgebraBratteli.lean): Approximately Finite-dimensional (AF) $C^*$-algebras and Bratteli diagrams.
 - [`AFAlgebraCategory.lean`](formalization/Formalization/Quantum/AFAlgebraCategory.lean): Category of AF $C^*$-algebras, dimension groups, and Elliott invariants.
 - [`AdelicTopology.lean`](formalization/Formalization/Quantum/AdelicTopology.lean): Adelic Dirac operators, boundary compression, and Cayley deformations.
@@ -280,6 +281,7 @@ Non-Archimedean quantum physics, operator algebras, error correction, and entang
 - [`ManyBodyEntanglement.lean`](formalization/Formalization/Quantum/ManyBodyEntanglement.lean): Bipartite entanglement entropy and Ryu-Takayanagi area laws.
 - [`ManyBodyPhaseTransition.lean`](formalization/Formalization/Quantum/ManyBodyPhaseTransition.lean): Quantum phase transitions in arithmetic spin chains and non-thermal eigenstates.
 - [`QuantumScars.lean`](formalization/Formalization/Quantum/QuantumScars.lean): Quantum many-body scars, ETH violation, and exact zero-entropy eigenstates.
+
 
 #### Domain 5: Spectral (`formalization/Formalization/Spectral/` — 17 modules + [`Spectral.lean`](formalization/Formalization/Spectral.lean))
 Graph zeta functions, Ramanujan graphs, Schreier coset spectra, and trace formulas:
@@ -311,6 +313,7 @@ The **Bass-Ihara determinant formula** is cross-verified across two independent 
 ## 6. Adèlic Spectral Triples, Dirac Operators & Quantum Physics
 
 - **Singular Rank-1 Perturbation**: The global Dirac operator $D_{\text{glob}}$ has deficiency indices $(1, 1)$ on $\mathcal{H} = \ell^2(\mathbb{Z})$.
+- **Zeta Spectral Triples & Semilocal Prolate Operators**: Connects Alain Connes, Caterina Consani, and Henri Moscovici's framework (*Zeta Spectral Triples*, 2024/2026) to the repository's adelic transfer kernel $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \widetilde{\mathcal{L}}_2$ on $\mathbb{A}_{\mathbb{Q}, \{2\}}$, proving discrete zero-mode confinement to $\operatorname{Re}(s) = 1/2$ via Aronszajn-Krein resolvent rigidity ([`ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean)).
 - **Weierstrass Canonical Determinant**: $\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)$, matching the non-trivial zeros of completed $L$-functions.
 - **Quantum Many-Body Scars**: The arithmetic zero-mode $|Z\rangle$ violates Strong ETH with an exact Area Law entropy $S_A^{(2)} = 0$ in Fermionic Fock space ([`ManyBodyPhaseTransition.lean`](formalization/Formalization/Quantum/ManyBodyPhaseTransition.lean)).
 
@@ -387,7 +390,11 @@ python experiments/padic_traversable_wormholes.py
 
 # --- 19. p-Adic Conformal Bootstrap on P¹(ℚ_p) ---
 python experiments/padic_conformal_bootstrap.py
+
+# --- 20. Prolate Adelic Scaling & Galerkin Trace Convergence ---
+python experiments/prolate_adelic_scaling.py
 ```
+
 
 ---
 
@@ -464,13 +471,18 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
 
 ## 10. Completed Research Horizons
 
-1. **Non-Archimedean Vertex Operator Algebras (VOAs) & Automorphic Borcherds Products** :white_check_mark: **[Completed]**:
+1. **Zeta Spectral Triples & Semilocal Prolate Wave Operators (Connes-Consani-Moscovici Framework)** :white_check_mark: **[Completed]**:
+   - Formalized the bridge connecting Alain Connes, Caterina Consani, and Henri Moscovici's framework (*Zeta Spectral Triples*, EMS Lectures 2026; *Annals of Functional Analysis*, 2024) to the repository's adelic transfer kernel $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \widetilde{\mathcal{L}}_2$ on restricted adèle space $\mathbb{A}_{\mathbb{Q}, \{2\}}$.
+   - Formally proved the deck transformation $\tau$-invariance of the complex Collatz matrix $D_n$, finite-rank Galerkin prolate basis projections $D_{n, K}^{\mathrm{Gal}} = V_K^* (D_n / 2) V_K$, Aronszajn-Krein secular determinant factorization $\operatorname{Im}(d_S(\sigma + i t)) = (\sigma - 1/2) \kappa \sum \dots$, strict non-vanishing off $\sigma = 1/2$, and the universal normal Dirac gap bound $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2|$ with **0 `sorry`s** in [`formalization/Formalization/Quantum/ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean).
+   - Numerically verified finite-rank Galerkin trace-norm convergence $\|D_n^{\mathrm{Gal}} - H_{\mathrm{ref}}\|_{\mathrm{tr}} \to 0$ ($O(2^{-2.096 n})$ decay), semilocal spectrum $\mathcal{P}_S(s)$ at critical and off-critical parameters, and Aronszajn-Krein resolvent zero-mode spacing in [`experiments/prolate_adelic_scaling.py`](experiments/prolate_adelic_scaling.py) with telemetry figure saved to [`data/prolate_adelic_scaling_convergence.png`](data/prolate_adelic_scaling_convergence.png).
+
+2. **Non-Archimedean Vertex Operator Algebras (VOAs) & Automorphic Borcherds Products** :white_check_mark: **[Completed]**:
    - Formalized the graded Monster VOA $V^\natural = \bigoplus_{n=0}^\infty V_n$ with central charge $c = 24$, vacuum $V_0 = R$, vanishing currents $V_1 = 0$, Griess algebra $V_2$ ($\dim V_2 = 196,884 = 1 + 196,883$), and McKay-Thompson dimension hierarchy $\dim V_n = c(n-1)$ in Lean 4.
    - Formally proved Virasoro commutation brackets ($[L_1, L_{-1}] = 2L_0$, $[L_2, L_{-2}] = 4L_0 + 12\,\mathrm{id}$), Borcherds Fake Monster Lie superalgebra root multiplicities $\mathrm{mult}(m, n) = c(mn)$ on $\mathrm{II}_{1,1}$, automorphic Borcherds product difference identities $\Phi_N(p, q) = j_N(p) - j_N(q)$, and McKay-Thompson character trace $\mathrm{Tr}_{V^\natural}(q^{L_0 - 1}) = j(\tau) - 744$ across all orders with **0 `sorry`s** in [`formalization/Formalization/Buildings/MonsterVOA.lean`](formalization/Formalization/Buildings/MonsterVOA.lean).
    - Numerically verified exact Monster irreducible representation decompositions up to $V_6$ ($\dim V_6 = 333,202,640,600$), Faber polynomial logarithmic Hecke exponentiation $\log \Phi(p, q) = -\log p - \sum \frac{1}{k} p^k T_k(j(q) - 744)$, and Cardy asymptotic growth in [`experiments/monster_voa_borcherds.py`](experiments/monster_voa_borcherds.py) with 6-panel figure in [`figures/monster_voa_borcherds.png`](figures/monster_voa_borcherds.png).
    - Documented in [`docs/monograph/14_monster_voa_and_borcherds_products.md`](docs/monograph/14_monster_voa_and_borcherds_products.md) and [`docs/monster_voa_and_borcherds_products.md`](docs/monster_voa_and_borcherds_products.md).
 
-2. **Global Adelic Quantum Gravity & Arithmetic String Scattering Amplitudes** :white_check_mark: **[Completed]**:
+3. **Global Adelic Quantum Gravity & Arithmetic String Scattering Amplitudes** :white_check_mark: **[Completed]**:
    - Formulated continuous Archimedean 4-point Veneziano open string amplitude $A_\infty(s, t, u)$ on $\mathbb{R}$ and discrete non-Archimedean Freund-Witten amplitudes $A_p(s, t, u) = \Gamma_p(-\alpha(s))\Gamma_p(-\alpha(t))\Gamma_p(-\alpha(u))$ on Bruhat-Tits trees $\mathcal{T}_{p+1}$.
    - Proved the **Freund-Witten Adelic String Product Collapse**:
      $$A_{\mathbb{A}}(s, t, u) = A_\infty(s, t, u) \prod_{p < \infty} A_p(s, t, u) = \prod_{i=1}^3 \frac{\xi(z_i)}{\xi(1-z_i)} \equiv 1.0$$
@@ -478,52 +490,52 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
    - Verified 6/6 test suites in [`experiments/adelic_string_scattering_amplitudes.py`](experiments/adelic_string_scattering_amplitudes.py) with residual $< 2.22 \times 10^{-16}$ in float64 and 50-digit multi-precision `mpmath`.
    - Documented in [`docs/monograph/19_adelic_string_scattering_amplitudes.md`](docs/monograph/19_adelic_string_scattering_amplitudes.md), [`docs/adelic_string_scattering_amplitudes.md`](docs/adelic_string_scattering_amplitudes.md) and [`figures/adelic_string_scattering_amplitudes.png`](figures/adelic_string_scattering_amplitudes.png).
 
-3. **Master Monograph Synthesis & Interactive Publication Deployment** :white_check_mark: **[Completed]**:
+4. **Master Monograph Synthesis & Interactive Publication Deployment** :white_check_mark: **[Completed]**:
    - Consolidated the complete sequence of research into the 25-chapter Master Publication Treatise [`papers/adelic_spectral_geometry_complete_monograph.md`](papers/adelic_spectral_geometry_complete_monograph.md) and modularized series in [`docs/monograph/`](docs/monograph/).
    - Deployed the standalone interactive HTML publication [`docs/adelic_spectral_geometry_complete_monograph.html`](docs/adelic_spectral_geometry_complete_monograph.html) with MathJax 3, interactive search, image modals, and cryptographic audit of all formalization modules across completed Lake targets (0 `sorry`s).
 
-4. **The Exceptional Peak: $\widetilde{E}_8$ Affine Building & Leech Lattice Moonshine** :white_check_mark: **[Completed]**:
+5. **The Exceptional Peak: $\widetilde{E}_8$ Affine Building & Leech Lattice Moonshine** :white_check_mark: **[Completed]**:
    - Modeled the 240 roots of $E_8$ (112 integer roots, 128 half-integer roots) on $\mathbb{Z}^8$ in Lean 4.
    - Formally proved the isotropic 240-neighbor adjacency operator $T_{E8}$, discrete Laplacian annihilation $\Delta_{E8}(c) = 0$, Macdonald spherical eigenbasis, and McKay-Thompson Moonshine central charge identity $Z_{\Lambda24} - Z_{\mathrm{CFT}} = 24$ with **0 `sorry`s** in [`formalization/Formalization/Buildings/BuildingE8.lean`](formalization/Formalization/Buildings/BuildingE8.lean).
    - Numerically verified the $240 \times 240$ Gram matrix spectrum (8 eigenvalues of 60, 232 zeros), 2D Coxeter plane regular 30-gon projection, McKay-Thompson Griess algebra dimensions ($c_1 = 1 + 196883$, $c_2 = 1 + 196883 + 21296876$), and non-Archimedean Ramanujan spectral gap $\mathrm{Gap}(\Delta_{E8}) = 240(q^4+q^3+q^2+1)$.
    - Documented in [`docs/e8_moonshine_building_formalization.md`](docs/e8_moonshine_building_formalization.md) and [`figures/e8_moonshine_building.png`](figures/e8_moonshine_building.png).
 
-5. **Non-Archimedean Traversable Wormholes ($p$-Adic $\text{ER}=\text{EPR}$)** :white_check_mark: **[Completed]**:
+6. **Non-Archimedean Traversable Wormholes ($p$-Adic $\text{ER}=\text{EPR}$)** :white_check_mark: **[Completed]**:
    - Modeled two entangled Mumford black holes $X_{\Gamma_p}, X_{\Gamma_q}$ across distinct prime places $p=2, q=3$ coupled via global adelic double-trace deformation $\Delta H_{\mathbb{A}} = h \int \int \mathcal{O}_p(x) \mathcal{O}_q(y) d\mu_p d\mu_q$.
    - Verified that inter-adic quantum entanglement generates negative Gao-Jafferis-Wall average null energy $\langle \mathcal{E}_{\mathbb{A}} \rangle = -0.163833 < 0$, inducing a positive Shapiro time advance $\Delta v = +0.096372 > 0$ that renders the non-Archimedean bridge traversable.
    - Verified resonant transmission peak $P_{\mathrm{trans}} = 0.7387$ at $t_r = t_w$ and non-Archimedean Lyapunov chaos $\lambda_L = \sqrt{\ln 2 \ln 3} \approx 0.8726$.
    - Documented in [`docs/padic_traversable_wormholes.md`](docs/padic_traversable_wormholes.md) and [`figures/padic_traversable_wormholes.png`](figures/padic_traversable_wormholes.png).
 
-6. **$p$-Adic Conformal Bootstrap on $\mathbb{P}^1(\mathbb{Q}_p)$ & Hecke Crossing Symmetry** :white_check_mark: **[Completed]**:
+7. **$p$-Adic Conformal Bootstrap on $\mathbb{P}^1(\mathbb{Q}_p)$ & Hecke Crossing Symmetry** :white_check_mark: **[Completed]**:
    - Formulated the non-Archimedean 4-point conformal block expansion and crossing symmetry equations on valuation shells $|x|_p = p^{-k}$.
    - Proved that non-Archimedean crossing symmetry maps to a Hausdorff moment problem on $[0, 1]$, where the unique unitary solution forces Mean Field Theory $\Delta^* = 2\Delta_\phi$ and establishes the universal unitary gap bound $\Delta_{\mathrm{gap}}^*(\Delta_\phi) = 2\Delta_\phi$ across all primes $p$.
    - Proved that bulk spherical Hecke algebra structure constants $c_{m, n}^k(p)$ on Bruhat-Tits trees $T_{p+1}$ directly generate boundary OPE coefficients, with unitary gap bounds exactly matching Deligne-Satake spectral bounds $|\lambda_p| \le 2\sqrt{p}$ on the critical line.
    - Documented in [`docs/monograph/18_padic_conformal_bootstrap.md`](docs/monograph/18_padic_conformal_bootstrap.md), [`docs/padic_conformal_bootstrap.md`](docs/padic_conformal_bootstrap.md) and [`figures/padic_conformal_bootstrap.png`](figures/padic_conformal_bootstrap.png).
 
-7. **Global Adelic Holographic Tensor Fusion ($\mathrm{AdS}_3 \otimes \bigotimes'_p \mathrm{AdS}_p$)** :white_check_mark: **[Completed]**:
+8. **Global Adelic Holographic Tensor Fusion ($\mathrm{AdS}_3 \otimes \bigotimes'_p \mathrm{AdS}_p$)** :white_check_mark: **[Completed]**:
    - Constructed the global bulk spacetime tensoring continuous hyperbolic space $\mathbb{H}^3 \cong \mathrm{AdS}_3$ with the restricted product of Bruhat-Tits trees $\prod'_p \mathcal{T}_{p+1}$.
    - Proved and numerically verified the **Global Entanglement Conservation Law**: under rational boundary dilations $x \mapsto q x$ ($q \in \mathbb{Q}^\times$), the Artin Adèle product formula $\prod_v |q|_v = 1$ forces $\Delta S_{\mathbb{A}}(q A) \equiv 0$ with residual **$4.44 \times 10^{-16}$** across all places.
    - Documented in [`docs/adelic_holographic_tensor_fusion.md`](docs/adelic_holographic_tensor_fusion.md) and [`figures/adelic_holographic_tensor_fusion.png`](figures/adelic_holographic_tensor_fusion.png).
 
-8. **$p$-Adic Black Holes, Mumford Curves & Hawking-Page Transitions** :white_check_mark: **[Completed]**:
+9. **$p$-Adic Black Holes, Mumford Curves & Hawking-Page Transitions** :white_check_mark: **[Completed]**:
    - Constructed non-Archimedean black holes as Schottky quotients $\mathcal{T}_{p+1}/\Gamma$ yielding Mumford curves $X_\Gamma$.
    - Formulated and verified $p$-adic Bekenstein-Hawking entropy $S_{\mathrm{BH}} = \frac{k_H \ln p}{4 G_N^{(p)}}$ ($R^2 = 1.000000$), holographic Page curve turnaround via quantum extremal islands, fast scrambling time $\tau_{\mathrm{scramble}} = \log_p S_{\mathrm{BH}}$, and first-order Hawking-Page transition at $T_c \approx 0.225079$.
    - Documented in [`docs/monograph/17_padic_black_holes_and_wormholes.md`](docs/monograph/17_padic_black_holes_and_wormholes.md), [`docs/padic_black_holes_mumford.md`](docs/padic_black_holes_mumford.md) and [`figures/padic_black_holes_mumford.png`](figures/padic_black_holes_mumford.png).
 
-9. **Exceptional Langlands Beyond $G_2$ ($\tilde{F}_4$ Affine Buildings & Lean 4 Formalization)** :white_check_mark: **[Completed]**:
-   - Modeled the 48-root system of $F_4$ (24 short roots, 24 long roots) on $\mathbb{Z}^4$.
-   - Formally proved the exact commutation of radial difference operators $[T_{\mathrm{short}}, T_{\mathrm{long}}] = 0$, Laplacian annihilation of constants $\Delta_{F4}(c) = 0$, Macdonald spherical eigenbasis, and degree-26 standard representation relations with **0 `sorry`s** in [`formalization/Formalization/Buildings/BuildingF4.lean`](formalization/Formalization/Buildings/BuildingF4.lean).
-   - Numerically verified $[T_{\mathrm{short}}, T_{\mathrm{long}}] = 0$ with residual $0.00 \times 10^{-16}$, analytical Macdonald plane wave residuals $< 3 \times 10^{-14}$, and exact Ramanujan spectral gap $\mathrm{Gap}(\Delta_{F4}) = 2(q-1)^2(q+1)(q+3)$ across primes $q \in [2, 19]$.
-   - Documented in [`docs/monograph/12_exceptional_affine_buildings.md`](docs/monograph/12_exceptional_affine_buildings.md), [`docs/f4_exceptional_building_formalization.md`](docs/f4_exceptional_building_formalization.md) and [`figures/f4_exceptional_building.png`](figures/f4_exceptional_building.png).
+10. **Exceptional Langlands Beyond $G_2$ ($\tilde{F}_4$ Affine Buildings & Lean 4 Formalization)** :white_check_mark: **[Completed]**:
+    - Modeled the 48-root system of $F_4$ (24 short roots, 24 long roots) on $\mathbb{Z}^4$.
+    - Formally proved the exact commutation of radial difference operators $[T_{\mathrm{short}}, T_{\mathrm{long}}] = 0$, Laplacian annihilation of constants $\Delta_{F4}(c) = 0$, Macdonald spherical eigenbasis, and degree-26 standard representation relations with **0 `sorry`s** in [`formalization/Formalization/Buildings/BuildingF4.lean`](formalization/Formalization/Buildings/BuildingF4.lean).
+    - Numerically verified $[T_{\mathrm{short}}, T_{\mathrm{long}}] = 0$ with residual $0.00 \times 10^{-16}$, analytical Macdonald plane wave residuals $< 3 \times 10^{-14}$, and exact Ramanujan spectral gap $\mathrm{Gap}(\Delta_{F4}) = 2(q-1)^2(q+1)(q+3)$ across primes $q \in [2, 19]$.
+    - Documented in [`docs/monograph/12_exceptional_affine_buildings.md`](docs/monograph/12_exceptional_affine_buildings.md), [`docs/f4_exceptional_building_formalization.md`](docs/f4_exceptional_building_formalization.md) and [`figures/f4_exceptional_building.png`](figures/f4_exceptional_building.png).
 
-10. **Simplicial Lean 4 Formalization for $\tilde{A}_2$ and $\tilde{G}_2$ Buildings** :white_check_mark: **[Completed]**:
+11. **Simplicial Lean 4 Formalization for $\tilde{A}_2$ and $\tilde{G}_2$ Buildings** :white_check_mark: **[Completed]**:
     - Formalized $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$ ($[T_1, T_2] = 0$) in [`formalization/Formalization/Buildings/BuildingPGL3.lean`](formalization/Formalization/Buildings/BuildingPGL3.lean) and exceptional $\tilde{G}_2$ buildings in [`formalization/Formalization/Buildings/BuildingG2.lean`](formalization/Formalization/Buildings/BuildingG2.lean) and [`formalization/Formalization/Buildings/BuildingG2LFunction.lean`](formalization/Formalization/Buildings/BuildingG2LFunction.lean) with **0 `sorry`s**.
 
-11. **Multi-Variable Weil-Arthur-Selberg Explicit Trace Formula** :white_check_mark: **[Completed]**:
+12. **Multi-Variable Weil-Arthur-Selberg Explicit Trace Formula** :white_check_mark: **[Completed]**:
     - Coupled 2D transfer operator trace $\mathrm{Tr}(\mathcal{T}_p^m)$ to Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$ in [`experiments/multivariable_weil_arthur_selberg.py`](experiments/multivariable_weil_arthur_selberg.py).
     - Documented in [`docs/monograph/09_multivariable_weil_arthur_selberg.md`](docs/monograph/09_multivariable_weil_arthur_selberg.md) and [`docs/multivariable_weil_trace_formula.md`](docs/multivariable_weil_trace_formula.md).
 
-12. **$p$-Adic Holographic Tensor Networks & Ryu-Takayanagi Entanglement** :white_check_mark: **[Completed]**:
+13. **$p$-Adic Holographic Tensor Networks & Ryu-Takayanagi Entanglement** :white_check_mark: **[Completed]**:
     - Proved discrete $p$-adic Ryu-Takayanagi slope $\alpha = 2.0000$ ($R^2 = 1.000000$) and Page curve transitions in [`experiments/padic_ryu_takayanagi_tensor_networks.py`](experiments/padic_ryu_takayanagi_tensor_networks.py).
     - Documented in [`docs/monograph/16_padic_holography_tensor_networks.md`](docs/monograph/16_padic_holography_tensor_networks.md) and [`docs/padic_ryu_takayanagi_tensor_networks.md`](docs/padic_ryu_takayanagi_tensor_networks.md).
 

@@ -27,6 +27,8 @@ node_modules/
 # Local text/data outputs
 charpoly_results.txt
 openalex_search.json
+arxiv_out.json
+.licenses/
 
 # Pruned development scripts (kept locally, not tracked)
 scripts/
