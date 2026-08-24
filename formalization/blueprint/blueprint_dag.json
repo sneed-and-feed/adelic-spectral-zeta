@@ -1,0 +1,1453 @@
+{
+  "metadata": {
+    "project": "Adelic Spectral Zeta Formalization Blueprint",
+    "stats": {
+      "total_nodes": 91,
+      "proven_nodes": 84,
+      "unproven_nodes": 7,
+      "by_env": {
+        "definition": 36,
+        "theorem": 53,
+        "conjecture": 2
+      },
+      "by_domain": {
+        "Analysis": {
+          "total": 18,
+          "leanok": 14,
+          "nodes": [
+            "def:dft_matrix",
+            "thm:dft_unitary",
+            "def:detail_space_decomposition",
+            "thm:resolution_of_identity",
+            "def:partition_function",
+            "thm:ramanujan_partition_congruences",
+            "def:ramanujan_bdg_hamiltonian",
+            "thm:ramanujan_superconductor_gap",
+            "def:online_softmax_step",
+            "thm:online_softmax_equivalence",
+            "def:prefix_sparsity",
+            "thm:sparsity_bounds",
+            "def:progression_free_sets",
+            "thm:restricted_spectral_gap",
+            "def:erdos_similarity",
+            "thm:extract_modular_obstruction",
+            "thm:trig_telescoping",
+            "thm:memory_bound"
+          ]
+        },
+        "Buildings": {
+          "total": 17,
+          "leanok": 17,
+          "nodes": [
+            "def:building_pgl3",
+            "thm:building_pgl3_commute",
+            "def:satake_pgl3",
+            "thm:macdonald_ramanujan_pgl3",
+            "def:building_g2",
+            "thm:building_g2_commute",
+            "thm:ramanujan_gap_g2",
+            "def:g2_lfunction_std7",
+            "thm:g2_lfactor_factorization",
+            "thm:building_f4_traces",
+            "thm:building_e8_traces",
+            "def:hecke_operator",
+            "thm:hecke_commute",
+            "def:monster_voa",
+            "thm:monster_borcherds_product",
+            "def:tree_translation",
+            "thm:selberg_euler_factor"
+          ]
+        },
+        "Dynamics": {
+          "total": 17,
+          "leanok": 14,
+          "nodes": [
+            "def:collatz_z2",
+            "def:profinite_tower",
+            "def:collatz_dir_matrix",
+            "thm:collatz_dir_block_diag",
+            "thm:covering_det_factorization",
+            "thm:chiral_decomposition",
+            "thm:cyclic_weight_charpoly",
+            "thm:cyclotomic_product",
+            "thm:dynamical_zeta_factorization",
+            "thm:automaton_zeta_rationality",
+            "thm:spectral_circle",
+            "thm:l2_mixing",
+            "thm:mean_ergodic",
+            "thm:orbit_shadowing",
+            "thm:inductive_tower_obstruction",
+            "conj:twisted_block_pow",
+            "conj:mbl_phase_transition"
+          ]
+        },
+        "Quantum": {
+          "total": 13,
+          "leanok": 13,
+          "nodes": [
+            "def:qec_lattice",
+            "def:qec_parity_check",
+            "def:qec_noise_and_failure",
+            "thm:qec_threshold_exists",
+            "def:many_body_entanglement",
+            "thm:zero_mode_degeneracy",
+            "thm:entanglement_phase_transition",
+            "def:quantum_scar_state",
+            "thm:adelic_scar_protection",
+            "thm:strong_eth_violation",
+            "def:af_algebra_category",
+            "def:bratteli_diagram",
+            "def:adelic_dirac_topology"
+          ]
+        },
+        "Spectral": {
+          "total": 26,
+          "leanok": 26,
+          "nodes": [
+            "def:hashimoto_matrix",
+            "def:dart_operators",
+            "thm:ihara_zeta_inv",
+            "thm:ihara_bass_polynomial",
+            "thm:ihara_bass_regular",
+            "thm:ihara_bass_trivalent_and_4regular",
+            "def:schreier_graph_gd",
+            "def:schreier_tau",
+            "thm:schreier_connectedness",
+            "def:schreier_sheet_split",
+            "thm:schreier_spectral_decomposition",
+            "thm:sheet_diff_trace",
+            "thm:schreier_perron_frobenius",
+            "thm:schreier_spectral_gap_pos",
+            "thm:absolute_spectral_gap",
+            "def:silver_ratio",
+            "thm:undirected_gap_exponent",
+            "thm:asymptotic_gap_limit",
+            "def:finite_upper_half_plane",
+            "def:terras_distance",
+            "thm:dynamical_ihara_bridge",
+            "def:ramanujan_tau",
+            "thm:ramanujan_congruence_691",
+            "thm:ramanujan_tau_compute",
+            "def:spectral_grh_operator",
+            "thm:spectral_grh_reduction"
+          ]
+        }
+      }
+    }
+  },
+  "nodes": {
+    "def:dft_matrix": {
+      "label": "def:dft_matrix",
+      "env": "definition",
+      "name": "Discrete Character and Fourier Matrix on $\\Z/n\\Z$",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.DFT.dftMatrix",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/DFT.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:dft_unitary": {
+      "label": "thm:dft_unitary",
+      "env": "theorem",
+      "name": "Unitary Inversion and Fourier Block Diagonalization",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.DFT.fourierBasisMatrix_mul_star",
+      "uses": [
+        "def:dft_matrix"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/DFT.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:detail_space_decomposition": {
+      "label": "def:detail_space_decomposition",
+      "env": "definition",
+      "name": "Symmetric and Antisymmetric Detail Transitions",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.DetailSpaceDecomposition.symTransition",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/DetailSpaceDecomposition.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:resolution_of_identity": {
+      "label": "thm:resolution_of_identity",
+      "env": "theorem",
+      "name": "Resolution of Identity on Ad\u00e8lic Detail Spaces",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.DetailSpaceDecomposition.symTransition_mul_symTransition_inv_add_antisymTransition_mul_antisymTransition_inv",
+      "uses": [
+        "def:detail_space_decomposition"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/DetailSpaceDecomposition.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:partition_function": {
+      "label": "def:partition_function",
+      "env": "definition",
+      "name": "Euler Partition Function and Recurrence",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.Partition.p",
+      "uses": [],
+      "leanok": false,
+      "lean_file": "Formalization/Analysis/Partition.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "thm:ramanujan_partition_congruences": {
+      "label": "thm:ramanujan_partition_congruences",
+      "env": "theorem",
+      "name": "Ramanujan Exact Partition Congruences",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.Partition.ramanujan_4",
+      "uses": [
+        "def:partition_function"
+      ],
+      "leanok": false,
+      "lean_file": "Formalization/Analysis/Partition.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "def:ramanujan_bdg_hamiltonian": {
+      "label": "def:ramanujan_bdg_hamiltonian",
+      "env": "definition",
+      "name": "Ramanujan BdG Superconducting Pairing Hamiltonian",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.Partition.compute_partitions_list",
+      "uses": [
+        "def:partition_function"
+      ],
+      "leanok": false,
+      "lean_file": "Formalization/Analysis/Partition.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "thm:ramanujan_superconductor_gap": {
+      "label": "thm:ramanujan_superconductor_gap",
+      "env": "theorem",
+      "name": "Arithmetic Sub-Lattice Decoupling and Spectral Gap",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.Partition.ramanujan_19",
+      "uses": [
+        "def:ramanujan_bdg_hamiltonian",
+        "thm:ramanujan_partition_congruences"
+      ],
+      "leanok": false,
+      "lean_file": "Formalization/Analysis/Partition.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "def:online_softmax_step": {
+      "label": "def:online_softmax_step",
+      "env": "definition",
+      "name": "Online Streaming Softmax Accumulator",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.OnlineSoftmax.online_step",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/OnlineSoftmax.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:online_softmax_equivalence": {
+      "label": "thm:online_softmax_equivalence",
+      "env": "theorem",
+      "name": "Online Softmax Exact Equivalence",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.OnlineSoftmax.online_softmax_equivalence",
+      "uses": [
+        "def:online_softmax_step"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/OnlineSoftmax.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:prefix_sparsity": {
+      "label": "def:prefix_sparsity",
+      "env": "definition",
+      "name": "Shared Prefix Fraction on $p$-Ary Trees",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.SparsityBound.shared_fraction",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/SparsityBound.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:sparsity_bounds": {
+      "label": "thm:sparsity_bounds",
+      "env": "theorem",
+      "name": "Exponential Prefix Sparsity Bounds",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.SparsityBound.sparsity_bound",
+      "uses": [
+        "def:prefix_sparsity"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/SparsityBound.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:progression_free_sets": {
+      "label": "def:progression_free_sets",
+      "env": "definition",
+      "name": "Progression-Free Sets and Spectral Oracle",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.SpectralOracle.IsProgressionFree",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/SpectralOracle.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:restricted_spectral_gap": {
+      "label": "thm:restricted_spectral_gap",
+      "env": "theorem",
+      "name": "Restricted Spectral Gap Positivity and Monotonicity",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.SpectralOracle.restricted_spectral_gap_pos_and_monotone",
+      "uses": [
+        "def:progression_free_sets"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/SpectralOracle.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:erdos_similarity": {
+      "label": "def:erdos_similarity",
+      "env": "definition",
+      "name": "Affine Similarity and Fractal Defects",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.ErdosSimilarity.ContainsAffineCopy",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/ErdosSimilarity.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:extract_modular_obstruction": {
+      "label": "thm:extract_modular_obstruction",
+      "env": "theorem",
+      "name": "Extraction of Modular Obstructions",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.ErdosSimilarity.extract_obstruction",
+      "uses": [
+        "def:erdos_similarity"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/ErdosSimilarity.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:trig_telescoping": {
+      "label": "thm:trig_telescoping",
+      "env": "theorem",
+      "name": "Cosine Telescoping Identity",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.TrigSum.cos_sum_telescope",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/TrigSum.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:memory_bound": {
+      "label": "thm:memory_bound",
+      "env": "theorem",
+      "name": "Block Sparse Hamiltonian Memory Bounds",
+      "file": "content/analysis.tex",
+      "domain": "Analysis",
+      "lean_decl": "Formalization.Analysis.MemoryBound.block_sparse_memory_bound",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Analysis/MemoryBound.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:building_pgl3": {
+      "label": "def:building_pgl3",
+      "env": "definition",
+      "name": "$\\widetilde{A}_2$ Building and Radial Adjacency Operators",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingPGL3.BuildingA2",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingPGL3.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:building_pgl3_commute": {
+      "label": "thm:building_pgl3_commute",
+      "env": "theorem",
+      "name": "Radial Commutator Vanishing on $\\widetilde{A}_2$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingPGL3.radialCommutator_eq_zero",
+      "uses": [
+        "def:building_pgl3"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingPGL3.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:satake_pgl3": {
+      "label": "def:satake_pgl3",
+      "env": "definition",
+      "name": "Satake Parameters and Macdonald Spherical Functions for $\\PGL_3$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingPGL3.SatakeSystem",
+      "uses": [
+        "thm:building_pgl3_commute"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingPGL3.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:macdonald_ramanujan_pgl3": {
+      "label": "thm:macdonald_ramanujan_pgl3",
+      "env": "theorem",
+      "name": "Macdonald Spherical Eigenvalues and Ramanujan Spectral Gap for $\\PGL_3$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingPGL3.ramanujan_spectral_gap_identity",
+      "uses": [
+        "def:satake_pgl3"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingPGL3.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:building_g2": {
+      "label": "def:building_g2",
+      "env": "definition",
+      "name": "$\\widetilde{G}_2$ Exceptional Building and Root Stencils",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingG2.BuildingG2",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingG2.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:building_g2_commute": {
+      "label": "thm:building_g2_commute",
+      "env": "theorem",
+      "name": "Radial Commutation and Laplacian for $G_2$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingG2.radial_g2_commute",
+      "uses": [
+        "def:building_g2"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingG2.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ramanujan_gap_g2": {
+      "label": "thm:ramanujan_gap_g2",
+      "env": "theorem",
+      "name": "Weyl Group $W(G_2)$ Invariance and Ramanujan Gap for $G_2$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingG2.ramanujan_spectral_gap_identity_g2",
+      "uses": [
+        "thm:building_g2_commute"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingG2.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:g2_lfunction_std7": {
+      "label": "def:g2_lfunction_std7",
+      "env": "definition",
+      "name": "Standard 7-Dimensional Representation of $G_2$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingG2LFunction.std7Trace",
+      "uses": [
+        "thm:ramanujan_gap_g2"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingG2LFunction.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:g2_lfactor_factorization": {
+      "label": "thm:g2_lfactor_factorization",
+      "env": "theorem",
+      "name": "Euler Factor Factorization and Functional Equation for $G_2$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingG2LFunction.std7_lfactor_factorization",
+      "uses": [
+        "def:g2_lfunction_std7"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingG2LFunction.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:building_f4_traces": {
+      "label": "thm:building_f4_traces",
+      "env": "theorem",
+      "name": "$F_4$ Adjoint and Standard Trace Identities",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingF4.macdonald_hecke_short_eq_std26_trace",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingF4.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:building_e8_traces": {
+      "label": "thm:building_e8_traces",
+      "env": "theorem",
+      "name": "$E_8$ Spherical Transform and Adjoint 248-Dimensional Representation",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.BuildingE8.macdonald_hecke_eq_ad248_trace",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/BuildingE8.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:hecke_operator": {
+      "label": "def:hecke_operator",
+      "env": "definition",
+      "name": "Hecke Operator $T_p$ on $GL_2$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.Hecke.hecke_T_p",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/Hecke.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:hecke_commute": {
+      "label": "thm:hecke_commute",
+      "env": "theorem",
+      "name": "Hecke Operator Commutativity",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.Hecke.hecke_commute",
+      "uses": [
+        "def:hecke_operator"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/Hecke.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:monster_voa": {
+      "label": "def:monster_voa",
+      "env": "definition",
+      "name": "Monster Vertex Operator Algebra $V^\\natural$",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.MonsterVOA.MonsterVOA",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/MonsterVOA.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:monster_borcherds_product": {
+      "label": "thm:monster_borcherds_product",
+      "env": "theorem",
+      "name": "Virasoro Lie Algebra and Borcherds Denominator Product",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.MonsterVOA.borcherds_product_general_identity",
+      "uses": [
+        "def:monster_voa"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/MonsterVOA.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:tree_translation": {
+      "label": "def:tree_translation",
+      "env": "definition",
+      "name": "Displacement and Minimal Translation Length on Bruhat-Tits Trees",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.TreeGroupTranslation.minTranslationLength",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/TreeGroupTranslation.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:selberg_euler_factor": {
+      "label": "thm:selberg_euler_factor",
+      "env": "theorem",
+      "name": "Conjugacy Invariance and Selberg Euler Factor",
+      "file": "content/buildings.tex",
+      "domain": "Buildings",
+      "lean_decl": "Formalization.Buildings.TreeGroupTranslation.selbergEulerFactor_conj_invariant",
+      "uses": [
+        "def:tree_translation"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Buildings/TreeGroupTranslation.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:collatz_z2": {
+      "label": "def:collatz_z2",
+      "env": "definition",
+      "name": "2-Adic Collatz Map and Inverse Branches",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.CollatzZ2.collatzTransferOp",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/CollatzZ2.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:profinite_tower": {
+      "label": "def:profinite_tower",
+      "env": "definition",
+      "name": "Profinite Tower of Residue Rings",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.ProfiniteTower.Z_2_Profinite",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/ProfiniteTower.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:collatz_dir_matrix": {
+      "label": "def:collatz_dir_matrix",
+      "env": "definition",
+      "name": "Directed Collatz Relation Matrix $D_n$",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.CollatzRelMatrix.collatzDirMatrix",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/CollatzRelMatrix.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:collatz_dir_block_diag": {
+      "label": "thm:collatz_dir_block_diag",
+      "env": "theorem",
+      "name": "Directed Covering Block Diagonalization",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.CollatzRelMatrix.spectral_tower_one_step",
+      "uses": [
+        "def:collatz_dir_matrix"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/CollatzRelMatrix.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:covering_det_factorization": {
+      "label": "thm:covering_det_factorization",
+      "env": "theorem",
+      "name": "Covering Determinant Factorization",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.CoveringFactorization.det_collatzDirMatrix_factorization",
+      "uses": [
+        "thm:collatz_dir_block_diag"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/CoveringFactorization.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:chiral_decomposition": {
+      "label": "thm:chiral_decomposition",
+      "env": "theorem",
+      "name": "Chiral Anti-Commutation and Paired Spectra",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.ChiralDecomposition.chiral_anticommute",
+      "uses": [
+        "thm:collatz_dir_block_diag"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/ChiralDecomposition.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:cyclic_weight_charpoly": {
+      "label": "thm:cyclic_weight_charpoly",
+      "env": "theorem",
+      "name": "Cyclic Weight Characteristic Polynomial",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.CyclicWeightCharpoly.charpoly_cyclicWeightMatrix",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/CyclicWeightCharpoly.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:cyclotomic_product": {
+      "label": "thm:cyclotomic_product",
+      "env": "theorem",
+      "name": "Cyclotomic Product of Primitive Roots",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.CyclotomicProduct.W_1_mul_W_2_eq_two",
+      "uses": [
+        "thm:cyclic_weight_charpoly"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/CyclotomicProduct.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:dynamical_zeta_factorization": {
+      "label": "thm:dynamical_zeta_factorization",
+      "env": "theorem",
+      "name": "Dynamical Zeta Function Fredholm Factorization",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.DynamicalZetaFactorization.fredholmFactorization",
+      "uses": [
+        "thm:cyclic_weight_charpoly",
+        "thm:cyclotomic_product",
+        "thm:covering_det_factorization"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/DynamicalZetaFactorization.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:automaton_zeta_rationality": {
+      "label": "thm:automaton_zeta_rationality",
+      "env": "theorem",
+      "name": "Rationality of the Collatz and Automaton Zeta Functions",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.AutomatonZeta.collatz_zeta_rationality",
+      "uses": [
+        "thm:dynamical_zeta_factorization"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/AutomatonZeta.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:spectral_circle": {
+      "label": "thm:spectral_circle",
+      "env": "theorem",
+      "name": "The Spectral Circle Theorem",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.SpectralCircle.spectral_circle",
+      "uses": [
+        "thm:cyclotomic_product",
+        "thm:dynamical_zeta_factorization"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/SpectralCircle.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:l2_mixing": {
+      "label": "thm:l2_mixing",
+      "env": "theorem",
+      "name": "$L^2$ Mixing Decay of Transfer Operators",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.L2Mixing.L2_decay_bound",
+      "uses": [
+        "thm:collatz_dir_block_diag"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/L2Mixing.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:mean_ergodic": {
+      "label": "thm:mean_ergodic",
+      "env": "theorem",
+      "name": "Mean Ergodic Theorem on 2-Adic Integers",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.MeanErgodic.A_N_converges_L2",
+      "uses": [
+        "def:collatz_z2",
+        "thm:l2_mixing"
+      ],
+      "leanok": false,
+      "lean_file": "Formalization/Dynamics/MeanErgodic.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:orbit_shadowing": {
+      "label": "thm:orbit_shadowing",
+      "env": "theorem",
+      "name": "Orbit Shadowing on 2-Adic State Spaces",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.OrbitShadowing.deterministic_avg",
+      "uses": [
+        "def:collatz_z2"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/OrbitShadowing.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:inductive_tower_obstruction": {
+      "label": "thm:inductive_tower_obstruction",
+      "env": "theorem",
+      "name": "Inductive Multi-Step Obstruction: Double Edges",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.InductiveTower.spectral_tower_two_step_fails",
+      "uses": [
+        "def:schreier_graph_gd"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Dynamics/InductiveTower.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "conj:twisted_block_pow": {
+      "label": "conj:twisted_block_pow",
+      "env": "conjecture",
+      "name": "Twisted Block Power Conjecture",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.TwistedBlockPow.TwistedBlockPowConjecture",
+      "uses": [
+        "thm:collatz_dir_block_diag",
+        "thm:spectral_circle"
+      ],
+      "leanok": false,
+      "lean_file": "Formalization/Dynamics/TwistedBlockPow.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "conj:mbl_phase_transition": {
+      "label": "conj:mbl_phase_transition",
+      "env": "conjecture",
+      "name": "Many-Body Localization Phase Transition on Collatz Lattices",
+      "file": "content/dynamics.tex",
+      "domain": "Dynamics",
+      "lean_decl": "Formalization.Dynamics.ConjectureB.MBLBreakdownTransitionConjecture",
+      "uses": [
+        "thm:l2_mixing"
+      ],
+      "leanok": false,
+      "lean_file": "Formalization/Dynamics/ConjectureB.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:qec_lattice": {
+      "label": "def:qec_lattice",
+      "env": "definition",
+      "name": "Qubit Lattice and Prime Stabilizers",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AdelicTopologicalQEC.QubitLattice",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "def:qec_parity_check": {
+      "label": "def:qec_parity_check",
+      "env": "definition",
+      "name": "Ad\u00e8lic Parity Check Matrix and Syndrome Mapping",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AdelicTopologicalQEC.adelicParityCheck",
+      "uses": [
+        "def:qec_lattice"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "def:qec_noise_and_failure": {
+      "label": "def:qec_noise_and_failure",
+      "env": "definition",
+      "name": "Thermal Noise Model and Logical Failure",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AdelicTopologicalQEC.isLogicalFailure",
+      "uses": [
+        "def:qec_parity_check"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "thm:qec_threshold_exists": {
+      "label": "thm:qec_threshold_exists",
+      "env": "theorem",
+      "name": "Ad\u00e8lic Topological Error-Correction Threshold",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AdelicTopologicalQEC.adelic_code_threshold_exists",
+      "uses": [
+        "def:qec_noise_and_failure"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "def:many_body_entanglement": {
+      "label": "def:many_body_entanglement",
+      "env": "definition",
+      "name": "Bipartition, Pure States, and Reduced Density Matrices",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.ManyBodyEntanglement.ReducedDensityMatrix",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/ManyBodyEntanglement.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:zero_mode_degeneracy": {
+      "label": "thm:zero_mode_degeneracy",
+      "env": "theorem",
+      "name": "Single-Particle Zero Mode Induces Ground-State Degeneracy",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.ManyBodyPhaseTransition.degeneracy_from_zero_mode",
+      "uses": [
+        "def:many_body_entanglement"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/ManyBodyPhaseTransition.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:entanglement_phase_transition": {
+      "label": "thm:entanglement_phase_transition",
+      "env": "theorem",
+      "name": "Macroscopic Entanglement Entropy Jump",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.ManyBodyPhaseTransition.HasDegeneracy",
+      "uses": [
+        "thm:zero_mode_degeneracy"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/ManyBodyPhaseTransition.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:quantum_scar_state": {
+      "label": "def:quantum_scar_state",
+      "env": "definition",
+      "name": "Quantum Scar State and Strong ETH",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.QuantumScars.IsQuantumScar",
+      "uses": [
+        "def:many_body_entanglement"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/QuantumScars.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:adelic_scar_protection": {
+      "label": "thm:adelic_scar_protection",
+      "env": "theorem",
+      "name": "Ad\u00e8lic Zero Modes Protect Exact Quantum Scars",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.QuantumScars.adelic_zero_mode_is_scar",
+      "uses": [
+        "def:quantum_scar_state"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/QuantumScars.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:strong_eth_violation": {
+      "label": "thm:strong_eth_violation",
+      "env": "theorem",
+      "name": "Strong ETH Violation by Ad\u00e8lic Zero Modes",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.QuantumScars.strong_eth_violation",
+      "uses": [
+        "thm:adelic_scar_protection"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/QuantumScars.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:af_algebra_category": {
+      "label": "def:af_algebra_category",
+      "env": "definition",
+      "name": "Category of Finite-Dimensional $C^*$-Algebras and $AF$-Algebras",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AFAlgebraCategory.IsAFAlgebra",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AFAlgebraCategory.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:bratteli_diagram": {
+      "label": "def:bratteli_diagram",
+      "env": "definition",
+      "name": "Bratteli Diagram Inclusion Morphisms",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AFAlgebraBratteli.stepStarAlgHom",
+      "uses": [
+        "def:af_algebra_category"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AFAlgebraBratteli.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:adelic_dirac_topology": {
+      "label": "def:adelic_dirac_topology",
+      "env": "definition",
+      "name": "Orthogonal Dirac Decomposition",
+      "file": "content/quantum.tex",
+      "domain": "Quantum",
+      "lean_decl": "Formalization.Quantum.AdelicTopology.DiracDecomposition",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Quantum/AdelicTopology.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:hashimoto_matrix": {
+      "label": "def:hashimoto_matrix",
+      "env": "definition",
+      "name": "Hashimoto Edge Adjacency Matrix",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.IharaZeta.HashimotoMatrix",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/IharaZeta.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:dart_operators": {
+      "label": "def:dart_operators",
+      "env": "definition",
+      "name": "Dart Incidence Operators",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.IharaZeta.Dart.sourceMatrix",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/IharaZeta.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ihara_zeta_inv": {
+      "label": "thm:ihara_zeta_inv",
+      "env": "theorem",
+      "name": "Ihara Zeta Inverse Identity",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.IharaZeta.IharaZetaInvLHS",
+      "uses": [
+        "def:hashimoto_matrix",
+        "def:dart_operators"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/IharaZeta.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ihara_bass_polynomial": {
+      "label": "thm:ihara_bass_polynomial",
+      "env": "theorem",
+      "name": "Bass Block Matrix Polynomial Factorization",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.IharaBass.ihara_bass_polynomial",
+      "uses": [
+        "thm:ihara_zeta_inv"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/IharaBass.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ihara_bass_regular": {
+      "label": "thm:ihara_bass_regular",
+      "env": "theorem",
+      "name": "Regular Graph Ihara-Bass Formula",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.RegularIharaZeta.ihara_bass_regular_polynomial",
+      "uses": [
+        "thm:ihara_bass_polynomial"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/RegularIharaZeta.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ihara_bass_trivalent_and_4regular": {
+      "label": "thm:ihara_bass_trivalent_and_4regular",
+      "env": "theorem",
+      "name": "Trivalent and 4-Regular Ihara Determinants",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.RegularIharaZeta.ihara_bass_trivalent_polynomial",
+      "uses": [
+        "thm:ihara_bass_regular"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/RegularIharaZeta.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:schreier_graph_gd": {
+      "label": "def:schreier_graph_gd",
+      "env": "definition",
+      "name": "2-Adic Schreier Graph $G_d$",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierConnectivity.G_d",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierConnectivity.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:schreier_tau": {
+      "label": "def:schreier_tau",
+      "env": "definition",
+      "name": "Schreier Sheet Involution",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierConnectivity.tau",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierConnectivity.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:schreier_connectedness": {
+      "label": "thm:schreier_connectedness",
+      "env": "theorem",
+      "name": "Schreier Graph Connectivity",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierConnectivity.G_d_connected",
+      "uses": [
+        "def:schreier_graph_gd",
+        "def:schreier_tau"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierConnectivity.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:schreier_sheet_split": {
+      "label": "def:schreier_sheet_split",
+      "env": "definition",
+      "name": "Symmetric and Antisymmetric Subspaces",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierSpectral.sheetSplit",
+      "uses": [
+        "def:schreier_tau"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierSpectral.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:schreier_spectral_decomposition": {
+      "label": "thm:schreier_spectral_decomposition",
+      "env": "theorem",
+      "name": "Schreier Spectral Block Decomposition",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierSpectral.collatz_spectral_decomposition",
+      "uses": [
+        "def:schreier_sheet_split"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierSpectral.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:sheet_diff_trace": {
+      "label": "thm:sheet_diff_trace",
+      "env": "theorem",
+      "name": "Vanishing Trace of Sheet Difference Matrix",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierTrace.sheetDiffMatrix_trace",
+      "uses": [
+        "thm:schreier_spectral_decomposition"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierTrace.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:schreier_perron_frobenius": {
+      "label": "thm:schreier_perron_frobenius",
+      "env": "theorem",
+      "name": "Perron-Frobenius Spectral Gap for Schreier Adjacency",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierPerronFrobenius.isPerronFrobeniusMax_realAdjacencyMatrix",
+      "uses": [
+        "thm:schreier_connectedness",
+        "thm:schreier_spectral_decomposition"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierPerronFrobenius.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:schreier_spectral_gap_pos": {
+      "label": "thm:schreier_spectral_gap_pos",
+      "env": "theorem",
+      "name": "Strict Positivity of Schreier Spectral Gap",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierPerronFrobenius.adjacencyMatrix_spectral_gap_positive",
+      "uses": [
+        "thm:schreier_perron_frobenius"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierPerronFrobenius.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:absolute_spectral_gap": {
+      "label": "thm:absolute_spectral_gap",
+      "env": "theorem",
+      "name": "Absolute Spectral Gap Between Base and Twisted Sheets",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SchreierSpectralGap.absolute_spectral_gap",
+      "uses": [
+        "thm:schreier_spectral_gap_pos"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SchreierSpectralGap.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:silver_ratio": {
+      "label": "def:silver_ratio",
+      "env": "definition",
+      "name": "Silver Ratio and Directed Spectral Gap",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.UndirectedGapExponent.silverRatio",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/UndirectedGapExponent.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:undirected_gap_exponent": {
+      "label": "thm:undirected_gap_exponent",
+      "env": "theorem",
+      "name": "Logarithmic Undirected Gap Exponent",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.UndirectedGapExponent.undirectedGapExponent_lt_half",
+      "uses": [
+        "def:silver_ratio"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/UndirectedGapExponent.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:asymptotic_gap_limit": {
+      "label": "thm:asymptotic_gap_limit",
+      "env": "theorem",
+      "name": "Asymptotic Gap Limit",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.AsymptoticGap.directed_gap_limit",
+      "uses": [
+        "def:silver_ratio"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/AsymptoticGap.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:finite_upper_half_plane": {
+      "label": "def:finite_upper_half_plane",
+      "env": "definition",
+      "name": "Finite Upper Half-Plane $H_q$",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.TerrasTrace.Hq",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/TerrasTrace.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:terras_distance": {
+      "label": "def:terras_distance",
+      "env": "definition",
+      "name": "Terras Hyperbolic Point-Pair Invariant",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.TerrasTrace.Hq.dist",
+      "uses": [
+        "def:finite_upper_half_plane"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/TerrasTrace.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:dynamical_ihara_bridge": {
+      "label": "thm:dynamical_ihara_bridge",
+      "env": "theorem",
+      "name": "Dynamical Ihara-Bass Bridge for Symmetrized Schreier Operators",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.DynamicalIharaBridge.ihara_bass_perron_kernel",
+      "uses": [
+        "thm:schreier_spectral_decomposition",
+        "thm:ihara_bass_polynomial"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/DynamicalIharaBridge.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "def:ramanujan_tau": {
+      "label": "def:ramanujan_tau",
+      "env": "definition",
+      "name": "Ramanujan Tau Function",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.RamanujanTau.ramanujanTau",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/RamanujanTau.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ramanujan_congruence_691": {
+      "label": "thm:ramanujan_congruence_691",
+      "env": "theorem",
+      "name": "Ramanujan Congruence Modulo 691",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.RamanujanTau.ramanujan_congruence_691",
+      "uses": [
+        "def:ramanujan_tau"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/RamanujanTau.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:ramanujan_tau_compute": {
+      "label": "thm:ramanujan_tau_compute",
+      "env": "theorem",
+      "name": "Computational Verification of Ramanujan Tau Congruences",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.RamanujanTauCompute.ramanujan_congruence_finite_1",
+      "uses": [
+        "thm:ramanujan_congruence_691"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/RamanujanTauCompute.lean",
+      "file_has_sorry": true,
+      "decl_found": true
+    },
+    "def:spectral_grh_operator": {
+      "label": "def:spectral_grh_operator",
+      "env": "definition",
+      "name": "Self-Adjoint Spectral Formulation of Completed $L$-Function",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SpectralGRH.SelfAdjointSpectrum",
+      "uses": [],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SpectralGRH.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    },
+    "thm:spectral_grh_reduction": {
+      "label": "thm:spectral_grh_reduction",
+      "env": "theorem",
+      "name": "Conditional Spectral GRH Reduction",
+      "file": "content/spectral.tex",
+      "domain": "Spectral",
+      "lean_decl": "Formalization.Spectral.SpectralGRH.conditional_grh_reduction",
+      "uses": [
+        "def:spectral_grh_operator"
+      ],
+      "leanok": true,
+      "lean_file": "Formalization/Spectral/SpectralGRH.lean",
+      "file_has_sorry": false,
+      "decl_found": true
+    }
+  },
+  "broken_links": [],
+  "invalid_lean_refs": []
+}

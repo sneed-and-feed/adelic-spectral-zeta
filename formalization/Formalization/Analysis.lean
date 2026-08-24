@@ -1,0 +1,11 @@
+import Formalization.Analysis.DFT
+import Formalization.Analysis.DetailSpaceDecomposition
+import Formalization.Analysis.ErdosSimilarity
+import Formalization.Analysis.MagnitudeProof
+import Formalization.Analysis.Partition
+import Formalization.Analysis.SparsityBound
+import Formalization.Analysis.TrigSum
+import Formalization.Analysis.SpectralOracle
+import Formalization.Analysis.OnlineSoftmax
+import Formalization.Analysis.MemoryBound
+import Formalization.Analysis.OptimalRestrictedRewiring

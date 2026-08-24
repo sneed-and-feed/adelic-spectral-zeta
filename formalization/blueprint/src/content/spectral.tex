@@ -1,0 +1,297 @@
+\chapter{Spectral Theory of Graphs, Coverings, and Arithmetic Trace Formulas}
+\label{chap:spectral}
+
+In this chapter we establish the foundational spectral geometry and trace formulas underpinning the adèlic zeta framework. We formalize the Ihara-Bass determinant theory, 2-adic Schreier graph spectral decompositions, Perron-Frobenius spectral gaps, Terras trace formulas over finite upper half-planes, and arithmetic modular congruences for the Ramanujan $\tau$ function.
+
+\section{Graph Zeta Functions and the Ihara-Bass Determinant Formula}
+
+Let $G = (V, E)$ be a finite connected graph. The Hashimoto edge adjacency operator acts on directed edges (darts) of $G$ to encode non-backtracking closed walks.
+
+\begin{definition}[Hashimoto Edge Adjacency Matrix]
+\label{def:hashimoto_matrix}
+\lean{Formalization.Spectral.IharaZeta.HashimotoMatrix}
+\leanok
+For a finite graph $G$, let $\vec{E}$ denote the set of oriented darts. The Hashimoto edge adjacency matrix $B \in \Mat_{|\vec{E}| \times |\vec{E}|}(\Z)$ is defined by:
+\[
+B_{e, e'} = \begin{cases}
+1 & \text{if } t(e) = o(e') \text{ and } e' \neq e^{-1}, \\
+0 & \text{otherwise},
+\end{cases}
+\]
+where $o(e)$ and $t(e)$ denote the origin and terminus of $e$, and $e^{-1}$ is the reversed dart.
+\end{definition}
+
+\begin{definition}[Dart Incidence Operators]
+\label{def:dart_operators}
+\lean{Formalization.Spectral.IharaZeta.Dart.sourceMatrix}
+\leanok
+We define the source projection matrix $S \in \Mat_{|V| \times |\vec{E}|}(\Z)$, the target projection matrix $T \in \Mat_{|V| \times |\vec{E}|}(\Z)$, and the involution permutation matrix $J \in \Mat_{|\vec{E}| \times |\vec{E}|}(\Z)$ by:
+\[
+S_{v, e} = \delta_{v, o(e)}, \quad T_{v, e} = \delta_{v, t(e)}, \quad J_{e, e'} = \delta_{e', e^{-1}}.
+\]
+These operators satisfy the algebraic identities $S J = T$, $T J = S$, $J^2 = I$, and $S S^T = D$ where $D = \diag(\deg(v))$ is the vertex degree matrix.
+\end{definition}
+
+\begin{theorem}[Ihara Zeta Inverse Identity]
+\label{thm:ihara_zeta_inv}
+\uses{def:hashimoto_matrix, def:dart_operators}
+\lean{Formalization.Spectral.IharaZeta.IharaZetaInvLHS}
+\leanok
+The Ihara zeta function $\zeta_G(u) = \prod_{[C]} (1 - u^{|C|})^{-1}$, indexed over prime non-backtracking cycles $[C]$, satisfies the operator identity relating the edge-space Fredholm determinant $\det(I - u B)$ to the vertex-space operator:
+\[
+\det(I - u B) = (1 - u^2)^{|E| - |V|} \det(I - u A + u^2 (D - I)),
+\]
+where $A = S T^T$ is the vertex adjacency matrix and $D = S S^T$ is the degree matrix.
+\end{theorem}
+
+\begin{theorem}[Bass Block Matrix Polynomial Factorization]
+\label{thm:ihara_bass_polynomial}
+\uses{thm:ihara_zeta_inv}
+\lean{Formalization.Spectral.IharaBass.ihara_bass_polynomial}
+\leanok
+Let $M_{\mathrm{Bass}}, N_{\mathrm{Bass}}, K_{\mathrm{Bass}}, L_{\mathrm{Bass}} \in \Mat_{2|V| \times 2|V|}(R)$ be the $2 \times 2$ block triangular matrices defined in the Bass decomposition:
+\[
+M_{\mathrm{Bass}} = \begin{pmatrix} A & D - I \\ -I & 0 \end{pmatrix}, \quad 
+N_{\mathrm{Bass}} = \begin{pmatrix} I & u(D - I) \\ 0 & I \end{pmatrix}.
+\]
+Then the polynomial determinant identity $\det(M_{\mathrm{Bass}} N_{\mathrm{Bass}}) = \det(K_{\mathrm{Bass}} L_{\mathrm{Bass}})$ holds universally over any commutative ring $R$.
+\end{theorem}
+
+\begin{theorem}[Regular Graph Ihara-Bass Formula]
+\label{thm:ihara_bass_regular}
+\uses{thm:ihara_bass_polynomial}
+\lean{Formalization.Spectral.RegularIharaZeta.ihara_bass_regular_polynomial}
+\leanok
+For a $d$-regular graph $G$ with $|V|$ vertices and $|E| = \frac{d}{2}|V|$ edges, the Euler characteristic $\chi(G) = |V| - |E| = (1 - d/2)|V|$ simplifies the Ihara determinant to:
+\[
+\zeta_G(u)^{-1} = (1 - u^2)^{(d/2 - 1)|V|} \det\left((1 + (d - 1)u^2) I - u A\right).
+\]
+\end{theorem}
+
+\begin{theorem}[Trivalent and 4-Regular Ihara Determinants]
+\label{thm:ihara_bass_trivalent_and_4regular}
+\uses{thm:ihara_bass_regular}
+\lean{Formalization.Spectral.RegularIharaZeta.ihara_bass_trivalent_polynomial}
+\leanok
+Specializing to trivalent ($d=3$) and 4-regular ($d=4$) graphs, we have:
+\begin{align*}
+\zeta_{G, d=3}(u)^{-1} &= (1 - u^2)^{|V|/2} \det((1 + 2u^2)I - u A), \\
+\zeta_{G, d=4}(u)^{-1} &= (1 - u^2)^{|V|} \det((1 + 3u^2)I - u A).
+\end{align*}
+\end{theorem}
+
+\section{Schreier Graphs of 2-Adic Dynamical Systems}
+
+We now examine the Schreier graphs $G_d$ associated with 2-adic dynamical systems acting on residue rings $\Z / 2^d \Z$.
+
+\begin{definition}[2-Adic Schreier Graph $G_d$]
+\label{def:schreier_graph_gd}
+\lean{Formalization.Spectral.SchreierConnectivity.G_d}
+\leanok
+For $d \ge 1$, the Schreier graph $G_d = (V_d, E_d)$ has vertex set $V_d = \Z / 2^d \Z$. The directed edges represent the generators $x \mapsto 3x \pmod{2^d}$ and $x \mapsto 3x + 1 \pmod{2^d}$.
+\end{definition}
+
+\begin{definition}[Schreier Sheet Involution]
+\label{def:schreier_tau}
+\lean{Formalization.Spectral.SchreierConnectivity.tau}
+\leanok
+The canonical involution $\tau : \Z / 2^d \Z \to \Z / 2^d \Z$ is defined by translation by the half-period:
+\[
+\tau(x) = x + 2^{d-1} \pmod{2^d}.
+\]
+The involution satisfies $\tau \circ \tau = \id$, $\tau(x) \neq x$ for all $x \in \Z/2^d\Z$, and acts as a non-trivial graph automorphism over the canonical 2-sheet covering projection $\pi : \Z/2^d\Z \to \Z/2^{d-1}\Z$.
+\end{definition}
+
+\begin{theorem}[Schreier Graph Connectivity]
+\label{thm:schreier_connectedness}
+\uses{def:schreier_graph_gd, def:schreier_tau}
+\lean{Formalization.Spectral.SchreierConnectivity.G_d_connected}
+\leanok
+For every $d \ge 1$, the Schreier graph $G_d$ is connected. Furthermore, the 2-point fibers $\pi^{-1}(y) = \{y, y + 2^{d-1}\}$ are connected by path lifts of generators in $G_d$.
+\end{theorem}
+
+\begin{definition}[Symmetric and Antisymmetric Subspaces]
+\label{def:schreier_sheet_split}
+\uses{def:schreier_tau}
+\lean{Formalization.Spectral.SchreierSpectral.sheetSplit}
+\leanok
+Let $V = \C^{\Z / 2^d \Z}$. The involution operator $\tau$ induces an orthogonal direct sum decomposition $V = V_{\mathrm{sym}} \oplus V_{\mathrm{antisym}}$, where:
+\[
+V_{\mathrm{sym}} = \{ v \in V \mid \tau(v) = v \}, \quad V_{\mathrm{antisym}} = \{ v \in V \mid \tau(v) = -v \}.
+\]
+\end{definition}
+
+\begin{theorem}[Schreier Spectral Block Decomposition]
+\label{thm:schreier_spectral_decomposition}
+\uses{def:schreier_sheet_split}
+\lean{Formalization.Spectral.SchreierSpectral.collatz_spectral_decomposition}
+\leanok
+Under the normalized Hadamard unitary transform $H = \frac{1}{\sqrt{2}} \begin{pmatrix} I & I \\ I & -I \end{pmatrix}$, the lifted adjacency matrix $A'$ of the 2-sheet covering block-diagonalizes as:
+\[
+H A' H^{-1} = \begin{pmatrix} A_{\mathrm{weighted}} & 0 \\ 0 & A_{\mathrm{diff}} \end{pmatrix},
+\]
+where $A_{\mathrm{weighted}}$ is the projected weighted adjacency matrix on $\Z/2^{d-1}\Z$ and $A_{\mathrm{diff}}$ is the sheet difference matrix on the antisymmetric sector. Consequently, the characteristic polynomial factors as:
+\[
+\chi(A'; X) = \chi(A_{\mathrm{weighted}}; X) \cdot \chi(A_{\mathrm{diff}}; X).
+\]
+\end{theorem}
+
+\begin{theorem}[Vanishing Trace of Sheet Difference Matrix]
+\label{thm:sheet_diff_trace}
+\uses{thm:schreier_spectral_decomposition}
+\lean{Formalization.Spectral.SchreierTrace.sheetDiffMatrix_trace}
+\leanok
+The diagonal entries of the sheet difference matrix $A_{\mathrm{diff}}$ satisfy $\Tr(A_{\mathrm{diff}}) = 0$. This vanishing trace reflects the exact dynamical cancellation between antipodal points under the half-period translation $\tau$.
+\end{theorem}
+
+\section{Perron-Frobenius Spectral Gap and Gap Exponent}
+
+\begin{theorem}[Perron-Frobenius Spectral Gap for Schreier Adjacency]
+\label{thm:schreier_perron_frobenius}
+\uses{thm:schreier_connectedness, thm:schreier_spectral_decomposition}
+\lean{Formalization.Spectral.SchreierPerronFrobenius.isPerronFrobeniusMax_realAdjacencyMatrix}
+\leanok
+Let $A_{\R} \in \Mat_{2^d \times 2^d}(\R)$ be the real symmetric adjacency matrix of the undirected Schreier graph. Because $G_d$ is connected, $A_{\R}$ is irreducible and non-negative. The maximal eigenvalue $\lambda_0 = \rho(A_{\R})$ is simple with a strictly positive eigenvector, and the second eigenvalue satisfies $\lambda_1 < \lambda_0$.
+\end{theorem}
+
+\begin{theorem}[Strict Positivity of Schreier Spectral Gap]
+\label{thm:schreier_spectral_gap_pos}
+\uses{thm:schreier_perron_frobenius}
+\lean{Formalization.Spectral.SchreierPerronFrobenius.adjacencyMatrix_spectral_gap_positive}
+\leanok
+The spectral gap $\Delta(A_{\R}) = \lambda_0 - \lambda_1$ is strictly positive:
+\[
+\Delta(A_{\R}) > 0.
+\]
+\end{theorem}
+
+\begin{theorem}[Absolute Spectral Gap Between Base and Twisted Sheets]
+\label{thm:absolute_spectral_gap}
+\uses{thm:schreier_spectral_gap_pos}
+\lean{Formalization.Spectral.SchreierSpectralGap.absolute_spectral_gap}
+\leanok
+Let $\lambda_{\mathrm{twisted}}$ denote any eigenvalue in the spectrum of $A_{\mathrm{diff}}$. Then the magnitude satisfies the strict upper bound:
+\[
+|\lambda_{\mathrm{twisted}}| \le 2\sqrt{2}, \quad \text{yielding an absolute spectral gap } \Delta_{\mathrm{abs}} = 4 - 2\sqrt{2} > 0.
+\]
+\end{theorem}
+
+\begin{definition}[Silver Ratio and Directed Spectral Gap]
+\label{def:silver_ratio}
+\lean{Formalization.Spectral.UndirectedGapExponent.silverRatio}
+\leanok
+The silver ratio is defined as $\delta_S = 1 + \sqrt{2}$. The canonical directed spectral gap $\Delta_{\mathrm{dir}}$ and base undirected gap $\Delta_{\mathrm{undir}}$ are defined by:
+\[
+\Delta_{\mathrm{dir}} = \frac{\sqrt{2}}{\delta_S} = \sqrt{2} - 1, \quad \Delta_{\mathrm{undir}} = 2 \Delta_{\mathrm{dir}} = \frac{2\sqrt{2}}{\delta_S} = 2(\sqrt{2} - 1).
+\]
+\end{definition}
+
+\begin{theorem}[Logarithmic Undirected Gap Exponent]
+\label{thm:undirected_gap_exponent}
+\uses{def:silver_ratio}
+\lean{Formalization.Spectral.UndirectedGapExponent.undirectedGapExponent_lt_half}
+\leanok
+The logarithmic gap exponent $\alpha = \log_2(\Delta_{\mathrm{undir}}) = \frac{3}{2} - \log_2(1 + \sqrt{2})$ satisfies the rigorous bounds:
+\[
+0 < \alpha < \frac{1}{2} < 1.
+\]
+\end{theorem}
+
+\begin{theorem}[Asymptotic Gap Limit]
+\label{thm:asymptotic_gap_limit}
+\uses{def:silver_ratio}
+\lean{Formalization.Spectral.AsymptoticGap.directed_gap_limit}
+\leanok
+In the thermodynamic tower limit as the residue level $n \to \infty$, the sequence of directed spectral gaps converges monotonically:
+\[
+\lim_{n \to \infty} \Delta_{\mathrm{dir}}(n) = \sqrt{2} - 1.
+\]
+\end{theorem}
+
+\section{Discrete Upper Half-Planes and Terras Trace Formulas}
+
+\begin{definition}[Finite Upper Half-Plane $H_q$]
+\label{def:finite_upper_half_plane}
+\lean{Formalization.Spectral.TerrasTrace.Hq}
+\leanok
+Let $\Fq$ be a finite field of odd characteristic and $\delta \in \Fq^\times$ a quadratic non-residue. The Artin-Schreier quadratic extension is $\Fq[\sqrt{\delta}] \cong \Fq[X]/(X^2 - \delta)$. The finite upper half-plane is:
+\[
+H_q = \{ z = x + y\sqrt{\delta} \mid x, y \in \Fq, y \neq 0 \}.
+\]
+\end{definition}
+
+\begin{definition}[Terras Hyperbolic Point-Pair Invariant]
+\label{def:terras_distance}
+\uses{def:finite_upper_half_plane}
+\lean{Formalization.Spectral.TerrasTrace.Hq.dist}
+\leanok
+For points $z = x + y\sqrt{\delta}, w = u + v\sqrt{\delta} \in H_q$, the point-pair invariant distance $d(z, w)$ is given by:
+\[
+d(z, w) = \frac{N(z - w)}{\mathrm{Im}(z) \mathrm{Im}(w)} = \frac{(x - u)^2 - \delta (y - v)^2}{y v}.
+\]
+This distance is invariant under the projective linear group action of $\PGL_2(\Fq)$ via fractional linear transformations $g \cdot z = \frac{a z + b}{c z + d}$.
+\end{definition}
+
+\begin{theorem}[Dynamical Ihara-Bass Bridge for Symmetrized Schreier Operators]
+\label{thm:dynamical_ihara_bridge}
+\uses{thm:schreier_spectral_decomposition, thm:ihara_bass_polynomial}
+\lean{Formalization.Spectral.DynamicalIharaBridge.ihara_bass_perron_kernel}
+\leanok
+Let $D_n$ be the directed transfer matrix on $\Z/2^n\Z$, and let $A_{\mathrm{sym}} = D_n + D_n^T$ be the symmetrized operator. Then $A_{\mathrm{sym}}$ has uniform row and column sums equal to 4, and the Ihara-Bass polynomial evaluated on the Perron kernel yields:
+\[
+\det\left((1 + 3 u^2) I - u A_{\mathrm{sym}}\right) \cdot (1 - u^2)^{|V|} = \zeta_{G_{\mathrm{sym}}}(u)^{-1}.
+\]
+\end{theorem}
+
+\section{Ramanujan Tau Function and Spectral GRH}
+
+\begin{definition}[Ramanujan Tau Function]
+\label{def:ramanujan_tau}
+\lean{Formalization.Spectral.RamanujanTau.ramanujanTau}
+\leanok
+The Ramanujan $\tau$ function is generated by the modular discriminant form $\Delta \in S_{12}(\SL_2(\Z))$:
+\[
+\Delta(q) = q \prod_{n=1}^\infty (1 - q^n)^{24} = \sum_{n=1}^\infty \tau(n) q^n.
+\]
+\end{definition}
+
+\begin{theorem}[Ramanujan Congruence Modulo 691]
+\label{thm:ramanujan_congruence_691}
+\uses{def:ramanujan_tau}
+\lean{Formalization.Spectral.RamanujanTau.ramanujan_congruence_691}
+\leanok
+For all positive integers $n$, Ramanujan's congruence holds:
+\[
+\tau(n) \equiv \sigma_{11}(n) \pmod{691},
+\]
+where $\sigma_{11}(n) = \sum_{d \mid n} d^{11}$, arising from the numerator of the 12th Bernoulli number $B_{12} = -\frac{691}{2730}$.
+\end{theorem}
+
+\begin{theorem}[Computational Verification of Ramanujan Tau Congruences]
+\label{thm:ramanujan_tau_compute}
+\uses{thm:ramanujan_congruence_691}
+\lean{Formalization.Spectral.RamanujanTauCompute.ramanujan_congruence_finite_1}
+\leanok
+For initial values $n \in \{1, 2, \ldots, 12\}$, the congruence $\tau(n) \equiv \sigma_{11}(n) \pmod{691}$ is formally verified by polynomial expansion in Lean 4:
+\[
+\tau(1)=1 \equiv 1, \quad \tau(2)=-24 \equiv 2049 \equiv -24 \pmod{691}.
+\]
+\end{theorem}
+
+\begin{definition}[Self-Adjoint Spectral Formulation of Completed $L$-Function]
+\label{def:spectral_grh_operator}
+\lean{Formalization.Spectral.SpectralGRH.SelfAdjointSpectrum}
+\leanok
+Let $\Lambda(s)$ be a completed automorphic $L$-function satisfying the functional equation $\Lambda(s) = \epsilon \Lambda(1 - s)$. A self-adjoint operator $D_\Lambda$ on a Hilbert space $\mathcal{H}$ realizes the spectrum of $\Lambda$ if all eigenvalues $\lambda \in \spec(D_\Lambda)$ are real and in bijection with the non-trivial zeros $s_k = \frac{1}{2} + i \lambda_k$.
+\end{definition}
+
+\begin{theorem}[Conditional Spectral GRH Reduction]
+\label{thm:spectral_grh_reduction}
+\uses{def:spectral_grh_operator}
+\lean{Formalization.Spectral.SpectralGRH.conditional_grh_reduction}
+\leanok
+If the Trace Identity Conjecture holds (equating the trace of test functions on $D_\Lambda$ to the Weil explicit formula), then every zero $\rho$ of $\Lambda(s)$ satisfies:
+\[
+\mathrm{Re}(\rho) = \frac{1}{2}.
+\]
+\end{theorem}

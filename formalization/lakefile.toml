@@ -2,15 +2,13 @@ name = "formalization"
 version = "0.1.0"
 defaultTargets = ["MathlibUpstream", "Formalization"]
 
-[leanOptions]
+[lean_options]
 pp.unicode.fun = true
-relaxedAutoImplicit = false
-maxSynthPendingDepth = 3
+autoImplicit = false
 
 [[require]]
 name = "mathlib"
-scope = "leanprover-community"
-rev = "v4.33.1"
+git = "https://github.com/leanprover-community/mathlib4.git"
 
 [[require]]
 name = "«spectral-positivity-ext»"

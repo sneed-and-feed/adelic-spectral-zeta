@@ -1,0 +1,191 @@
+\chapter{Bruhat-Tits Buildings, Automorphic Forms, and Exceptional Lie Symmetries}
+\label{chap:buildings}
+
+This chapter formalizes the harmonic analysis on $p$-adic symmetric spaces and Bruhat-Tits buildings for classical and exceptional algebraic groups. We present the spectral theory for the affine buildings of $\PGL_3(\Qp)$, $G_2(\Qp)$, $F_4(\Qp)$, and $E_8(\Qp)$, establish the Macdonald spherical function transforms, prove the Satake isomorphism for $L$-functions, construct the Monster Vertex Operator Algebra $V^\natural$, and analyze hyperbolic group translations on Bruhat-Tits trees.
+
+\section{The $\widetilde{A}_2$ Affine Building for $\PGL_3(\Qp)$}
+
+\begin{definition}[$\widetilde{A}_2$ Building and Radial Adjacency Operators]
+\label{def:building_pgl3}
+\lean{Formalization.Buildings.BuildingPGL3.BuildingA2}
+\leanok
+Let $\mathcal{B}_2(\PGL_3(\Qp))$ be the 2-dimensional simplicial Bruhat-Tits building of type $\widetilde{A}_2$. The vertices are homothety classes of $\Zp$-lattices in $\Qp^3$. The two fundamental radial adjacency operators $T_1, T_2 \in \End(C(V))$ and the discrete Laplacian $\Delta \in \End(C(V))$ are defined by:
+\[
+(T_1 f)(x) = \sum_{y \sim_1 x} f(y), \quad (T_2 f)(x) = \sum_{y \sim_2 x} f(y), \quad \Delta = T_1 + T_2 - (q^2 + q + 1) I,
+\]
+where $y \sim_1 x$ and $y \sim_2 x$ correspond to type-1 and type-2 neighbors of lattice homothety index $p$ and $p^2$.
+\end{definition}
+
+\begin{theorem}[Radial Commutator Vanishing on $\widetilde{A}_2$]
+\label{thm:building_pgl3_commute}
+\uses{def:building_pgl3}
+\lean{Formalization.Buildings.BuildingPGL3.radialCommutator_eq_zero}
+\leanok
+The radial adjacency operators $T_1$ and $T_2$ commute on the apartment:
+\[
+[T_1, T_2] = T_1 T_2 - T_2 T_1 = 0.
+\]
+\end{theorem}
+
+\begin{definition}[Satake Parameters and Macdonald Spherical Functions for $\PGL_3$]
+\label{def:satake_pgl3}
+\uses{thm:building_pgl3_commute}
+\lean{Formalization.Buildings.BuildingPGL3.SatakeSystem}
+\leanok
+A Satake system for $\PGL_3(\Qp)$ is an unramified character parameterized by $(e_1, e_2, e_3) \in (\C^\times)^3$ satisfying the unimodular constraint $e_1 e_2 e_3 = 1$. The elementary symmetric invariants are:
+\[
+\chi_1 = e_1 + e_2 + e_3, \quad \chi_2 = e_1^{-1} + e_2^{-1} + e_3^{-1} = e_1 e_2 + e_2 e_3 + e_3 e_1.
+\]
+\end{definition}
+
+\begin{theorem}[Macdonald Spherical Eigenvalues and Ramanujan Spectral Gap for $\PGL_3$]
+\label{thm:macdonald_ramanujan_pgl3}
+\uses{def:satake_pgl3}
+\lean{Formalization.Buildings.BuildingPGL3.ramanujan_spectral_gap_identity}
+\leanok
+The Macdonald spherical wave $\phi_{(e_1, e_2, e_3)}$ is a simultaneous eigenfunction of $T_1, T_2$, and $\Delta$:
+\[
+T_1 \phi = \left(q^{1/2} \chi_1 + q^{-1/2} \chi_2\right) \phi, \quad T_2 \phi = \left(q^{1/2} \chi_2 + q^{-1/2} \chi_1\right) \phi.
+\]
+For tempered representations ($|e_i| = 1$), the maximal Laplacian eigenvalue satisfies the Ramanujan bound $\lambda_{\max} = 2\sqrt{q} + \frac{1}{\sqrt{q}}$, yielding the exact spectral gap:
+\[
+\Delta_{\mathrm{PGL}_3} = (q^2 + q + 1) - \left(2\sqrt{q} + \frac{1}{\sqrt{q}}\right) > 0.
+\]
+\end{theorem}
+
+\section{The Exceptional Building of Type $\widetilde{G}_2$ and Standard $L$-Functions}
+
+\begin{definition}[$\widetilde{G}_2$ Exceptional Building and Root Stencils]
+\label{def:building_g2}
+\lean{Formalization.Buildings.BuildingG2.BuildingG2}
+\leanok
+The Bruhat-Tits building $\mathcal{B}(G_2(\Qp))$ has an apartment root system $\Phi(G_2) = \Phi_{\mathrm{short}} \sqcup \Phi_{\mathrm{long}}$, comprising 6 short roots and 6 long roots. The short root operator $T_s$ and long root operator $T_\ell$ act with degrees $q(q^3+1)$ and $q^3(q+1)$.
+\end{definition}
+
+\begin{theorem}[Radial Commutation and Laplacian for $G_2$]
+\label{thm:building_g2_commute}
+\uses{def:building_g2}
+\lean{Formalization.Buildings.BuildingG2.radial_g2_commute}
+\leanok
+The radial operators commute $[T_s, T_\ell] = 0$, and the discrete Laplacian $\Delta_{G_2} = T_s + T_\ell - \deg(G_2) I$ is symmetric and positivity-preserving.
+\end{theorem}
+
+\begin{theorem}[Weyl Group $W(G_2)$ Invariance and Ramanujan Gap for $G_2$]
+\label{thm:ramanujan_gap_g2}
+\uses{thm:building_g2_commute}
+\lean{Formalization.Buildings.BuildingG2.ramanujan_spectral_gap_identity_g2}
+\leanok
+The symmetrized Macdonald spherical transform is invariant under the dihedral Weyl group $W(G_2)$ of order 12. For all tempered spherical representations, the maximal eigenvalue is bounded by $\lambda_{\max}(G_2) = 2 q^{3/2} + 2 q^{1/2}$, yielding the strict Ramanujan spectral gap $\Delta_{G_2} > 0$.
+\end{theorem}
+
+\begin{definition}[Standard 7-Dimensional Representation of $G_2$]
+\label{def:g2_lfunction_std7}
+\uses{thm:ramanujan_gap_g2}
+\lean{Formalization.Buildings.BuildingG2LFunction.std7Trace}
+\leanok
+For Satake parameters $(e_1, e_2, e_3)$ with $e_1 e_2 e_3 = 1$, the standard 7-dimensional representation trace is:
+\[
+\Tr(\mathrm{std}_7) = e_1 + e_2 + e_3 + e_1^{-1} + e_2^{-1} + e_3^{-1} + 1 = \chi_{\mathrm{short}} + 1.
+\]
+\end{definition}
+
+\begin{theorem}[Euler Factor Factorization and Functional Equation for $G_2$]
+\label{thm:g2_lfactor_factorization}
+\uses{def:g2_lfunction_std7}
+\lean{Formalization.Buildings.BuildingG2LFunction.std7_lfactor_factorization}
+\leanok
+The standard local $L$-factor $L_p(s, \pi, \mathrm{std}_7)^{-1} = \det(I - p^{-s} \mathrm{std}_7(\varpi_p))$ factors over $\C[p^{-s}]$ as:
+\[
+L_p(s, \pi, \mathrm{std}_7)^{-1} = (1 - p^{-s}) \prod_{i=1}^3 (1 - e_i p^{-s})(1 - e_i^{-1} p^{-s}).
+\]
+This polynomial satisfies the functional duality $P(p^{-s}) = -p^{-7s} P(p^s)$, implying the automorphic functional equation on the critical line $\mathrm{Re}(s) = 1/2$.
+\end{theorem}
+
+\section{The Exceptional Buildings of Type $\widetilde{F}_4$ and $\widetilde{E}_8$}
+
+\begin{theorem}[$F_4$ Adjoint and Standard Trace Identities]
+\label{thm:building_f4_traces}
+\lean{Formalization.Buildings.BuildingF4.macdonald_hecke_short_eq_std26_trace}
+\leanok
+For the affine building of $F_4(\Qp)$, the Macdonald-Hecke spherical operator traces on the 26-dimensional standard representation $\mathrm{std}_{26}$ and the 52-dimensional adjoint representation $\mathrm{ad}_{52}$ satisfy:
+\[
+\Tr(\mathrm{ad}_{52}) = \Tr(\mathrm{std}_{26}) + \Tr(\chi_{\mathrm{long}}) + 4.
+\]
+The tempered spectrum is strictly bounded by $\lambda_{\max}(F_4)$, establishing the Ramanujan property for $F_4(\Qp)$.
+\end{theorem}
+
+\begin{theorem}[$E_8$ Spherical Transform and Adjoint 248-Dimensional Representation]
+\label{thm:building_e8_traces}
+\lean{Formalization.Buildings.BuildingE8.macdonald_hecke_eq_ad248_trace}
+\leanok
+For the 8-dimensional exceptional building $\widetilde{E}_8(\Qp)$ with degree $q(q^7+1)(q^5+1)(q^3+1)$ and Weyl group $W(E_8)$ of order $696{,}729{,}600$, the Macdonald spherical operator is identical to the trace of the 248-dimensional adjoint representation $\mathrm{ad}_{248}$. The tempered spectral gap $\Delta_{E_8} > 0$ holds unconditionally.
+\end{theorem}
+
+\section{Hecke Operators and Commutativity}
+
+\begin{definition}[Hecke Operator $T_p$ on $GL_2$]
+\label{def:hecke_operator}
+\lean{Formalization.Buildings.Hecke.hecke_T_p}
+\leanok
+The Hecke operator $T_p$ acting on modular forms of weight $k$ for $\SL_2(\Z)$ is defined via double coset decomposition $\GL_2(\Z) \begin{pmatrix} 1 & 0 \\ 0 & p \end{pmatrix} \GL_2(\Z)$:
+\[
+(T_p f)(z) = p^{k-1} f(p z) + \frac{1}{p} \sum_{b=0}^{p-1} f\left(\frac{z + b}{p}\right).
+\]
+\end{definition}
+
+\begin{theorem}[Hecke Operator Commutativity]
+\label{thm:hecke_commute}
+\uses{def:hecke_operator}
+\lean{Formalization.Buildings.Hecke.hecke_commute}
+\leanok
+For distinct primes $p \neq q$, the Hecke operators commute: $[T_p, T_q] = 0$.
+\end{theorem}
+
+\section{The Monster Vertex Operator Algebra $V^\natural$ and Borcherds Identities}
+
+\begin{definition}[Monster Vertex Operator Algebra $V^\natural$]
+\label{def:monster_voa}
+\lean{Formalization.Buildings.MonsterVOA.MonsterVOA}
+\leanok
+The Frenkel-Lepowsky-Meurman Monster Vertex Operator Algebra $V^\natural = \bigoplus_{n=0}^\infty V_n^\natural$ has central charge $c = 24$. The graded component dimensions match the Fourier coefficients of the elliptic modular $j$-function $j(\tau) - 744 = q^{-1} + 196884 q + 21493760 q^2 + \cdots$:
+\[
+\dim V_0^\natural = 1, \quad \dim V_1^\natural = 0, \quad \dim V_2^\natural = 196884 = 1 + 196883,
+\]
+where $V_2^\natural$ is the Griess non-associative algebra.
+\end{definition}
+
+\begin{theorem}[Virasoro Lie Algebra and Borcherds Denominator Product]
+\label{thm:monster_borcherds_product}
+\uses{def:monster_voa}
+\lean{Formalization.Buildings.MonsterVOA.borcherds_product_general_identity}
+\leanok
+The Virasoro generators $L_n$ satisfy $[L_m, L_n] = (m - n) L_{m+n} + 2 m (m^2 - 1) \delta_{m+n, 0} I$. The denominator formula for the Monster Lie algebra evaluates to the product:
+\[
+j(p) - j(q) = p^{-1} \prod_{m=1}^\infty \prod_{n=1}^\infty (1 - p^m q^n)^{c(m n)},
+\]
+where $c(n)$ are the graded trace dimensions of $V^\natural$.
+\end{theorem}
+
+\section{Tree Isometries, Translation Lengths, and Selberg Zeta Functions}
+
+\begin{definition}[Displacement and Minimal Translation Length on Bruhat-Tits Trees]
+\label{def:tree_translation}
+\lean{Formalization.Buildings.TreeGroupTranslation.minTranslationLength}
+\leanok
+Let $T = (V, E)$ be a Bruhat-Tits tree and $g \in \Aut(T)$ an automorphism. The displacement function is $d_g(x) = \mathrm{dist}(x, g \cdot x)$, and the minimal translation length is:
+\[
+\ell(g) = \inf_{x \in V} d_g(x).
+\]
+An element $g$ is \emph{elliptic} if $\ell(g) = 0$ (has a fixed vertex) and \emph{hyperbolic} if $\ell(g) > 0$ (translates along an invariant geodesic axis).
+\end{definition}
+
+\begin{theorem}[Conjugacy Invariance and Selberg Euler Factor]
+\label{thm:selberg_euler_factor}
+\uses{def:tree_translation}
+\lean{Formalization.Buildings.TreeGroupTranslation.selbergEulerFactor_conj_invariant}
+\leanok
+The translation length is a conjugacy class invariant: $\ell(h g h^{-1}) = \ell(g)$. For a discrete torsion-free subgroup $\Gamma \le \Aut(T)$, the Selberg zeta function factorizes over primitive hyperbolic conjugacy classes $[\gamma]$:
+\[
+Z_\Gamma(s) = \prod_{[\gamma]} \left(1 - q^{-s \ell(\gamma)}\right)^{-1}.
+\]
+\end{theorem}

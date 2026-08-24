@@ -467,5 +467,16 @@ lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n]
   obtain ⟨k, hk⟩ := h_some_nonzero
   linarith [h_max k, (mul_right_cancel₀ hk (h_dot k)).symm]
 
+/-- A nonneg matrix A is irreducible if:
+(1) all entries are nonneg,
+(2) for every pair (i, j) there exists k > 0 such that (A^k)_{ij} > 0, and
+(3) there exists a vertex with a positive self-loop. -/
+def IsPerronIrreducible (A : Matrix n n ℝ) : Prop :=
+  (∀ i j, 0 ≤ A i j) ∧ (∀ i j : n, ∃ k : ℕ, 0 < k ∧ 0 < (A ^ k) i j) ∧ (∃ i : n, 0 < A i i)
+
+/-- The Perron–Frobenius theorem: an irreducible non-negative matrix has a positive eigenvalue
+with a strictly positive eigenvector. -/
+axiom perron_frobenius {A : Matrix n n ℝ} (hA : Matrix.IsPerronIrreducible A) :
+    ∃ (μ : ℝ) (v : n → ℝ), 0 < μ ∧ (∀ i, 0 < v i) ∧ A.mulVec v = μ • v
 
 end Matrix

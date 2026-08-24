@@ -8,8 +8,7 @@ relaxedAutoImplicit = false
 
 [[require]]
 name = "mathlib"
-scope = "leanprover-community"
-rev = "v4.33.1"
+git = "https://github.com/leanprover-community/mathlib4.git"
 
 [[lean_lib]]
 name = "SpectralPositivityExt"

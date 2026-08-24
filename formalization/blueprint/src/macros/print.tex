@@ -1,0 +1,45 @@
+% Print / PDF specific macros and layout configurations
+% Adelic Spectral Zeta Formalization Project
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=green!50!black,
+    urlcolor=blue!80!black
+}
+
+% Theorem Environments for Print/PDF
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{axiom}[theorem]{Axiom}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% In print mode, render Lean declarations and dependency metadata gracefully
+\renewcommand{\lean}[1]{\marginpar{\raggedright\tiny\ttfamily #1}}
+\renewcommand{\leanok}{\marginpar{\raggedright\tiny\color{green!60!black} \textbf{[Lean: OK]}}}
+\renewcommand{\uses}[1]{\marginpar{\raggedright\tiny\color{gray} \textit{uses: #1}}}

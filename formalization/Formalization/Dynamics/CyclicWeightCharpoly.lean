@@ -6,7 +6,7 @@ import Mathlib.RingTheory.Polynomial.Basic
 /-!
 # Characteristic Polynomial of Cyclic Shift and Weighted Cyclic Matrices
 
-This file proves the characteristic polynomial of a general weighted cyclic shift matrix
+This file formalizes the characteristic polynomial of a general weighted cyclic shift matrix
 over an arbitrary commutative ring `R`.
 
 ## Main Definitions
@@ -21,9 +21,6 @@ over an arbitrary commutative ring `R`.
 - `det_upperBidiagonal`: The determinant of `upperBidiagonal n W` is `∏ i, - C (W i)`.
 - `charpoly_cyclicWeightMatrix`: For any `L : ℕ` with `[NeZero L]` and any `W : ZMod L → R`,
   the characteristic polynomial of `cyclicWeightMatrix W` is `X ^ L - C (∏ k, W k)`.
-
-## Tags
-matrix, charpoly, cyclic shift, determinant, characteristic polynomial
 -/
 
 open Matrix Polynomial Finset
