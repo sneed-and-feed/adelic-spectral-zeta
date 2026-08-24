@@ -58,8 +58,8 @@ noncomputable def collatzMarkovMatrixC (n : ℕ) : Matrix (ZMod (2^n)) (ZMod (2^
   (1 / 2 : ℂ) • collatzMatrixC n
 
 /-- Tau involution at level n: `τ(x) = x + 2^(n-1)`. -/
-def tauDir (n : ℕ) (x : ZMod (2^n)) : ZMod (2^n) :=
-  x + (2^(n-1) : ℕ)
+abbrev tauDir (n : ℕ) : ZMod (2^n) → ZMod (2^n) :=
+  CollatzDirMatrix.tauDir n
 
 /-- Key arithmetic modulo 2^n: `3 * 2^(n-1) ≡ 2^(n-1) (mod 2^n)` for `n ≥ 1`. -/
 lemma three_mul_half_mod (n : ℕ) (hn : n ≥ 1) :
@@ -69,20 +69,12 @@ lemma three_mul_half_mod (n : ℕ) (hn : n ≥ 1) :
 /-- The complex Collatz matrix is invariant under the deck transformation tau. -/
 theorem collatzMatrixC_tau_invariant (n : ℕ) (hn : n ≥ 1) (x y : ZMod (2^n)) :
     collatzMatrixC n (tauDir n x) (tauDir n y) = collatzMatrixC n x y := by
-  simp only [collatzMatrixC]
-  have h1 : 3 * tauDir n x = tauDir n (3 * x) := CollatzDirMatrix.three_mul_tauDir n hn x
-  have h2 : 3 * tauDir n x - 1 = tauDir n (3 * x - 1) := CollatzDirMatrix.three_mul_tauDir_sub n hn x
-  have h_left : tauDir n y = 3 * tauDir n x ↔ y = 3 * x := by
-    rw [h1]
-    dsimp [tauDir]; constructor <;> intro h
-    · exact add_right_cancel h
-    · rw [h]
-  have h_right : tauDir n y = 3 * tauDir n x - 1 ↔ y = 3 * x - 1 := by
-    rw [h2]
-    dsimp [tauDir]; constructor <;> intro h
-    · exact add_right_cancel h
-    · rw [h]
-  simp only [h_left, h_right]
+  dsimp [collatzMatrixC]
+  rw [CollatzDirMatrix.three_mul_tauDir_sub n hn, CollatzDirMatrix.three_mul_tauDir n hn]
+  simp only [CollatzDirMatrix.tauDir, add_right_cancel_iff]
+
+
+
 
 /-- Structure formalizing a finite-rank Galerkin prolate basis:
     An isometry $V : \mathbb{C}^K \to \mathbb{C}^{2^n}$ spanning the top $K$ prolate wave modes. -/
@@ -170,8 +162,7 @@ theorem secular_imaginary_factorization (sigma t kappa : ℝ) (weights : Finset 
 theorem secular_imaginary_on_critical_line (t kappa : ℝ) (weights : Finset ℕ)
     (w lam : ℕ → ℝ) :
     secularImaginaryPart (1/2) t kappa weights w lam = 0 := by
-  dsimp [secularImaginaryPart]
-  ring
+  dsimp [secularImaginaryPart]; ring
 
 /-- **Theorem (Strict Spectral Confinement off the Critical Line)**:
     If the coupling is positive $\kappa > 0$ and the effective spectral weight sum is strictly positive
@@ -183,12 +174,7 @@ theorem secular_imaginary_nonzero_off_critical_line (sigma t kappa : ℝ) (weigh
     (h_pos : ∑ j ∈ weights, (w j / ((lam j - t)^2 + (sigma - 1/2)^2)) > 0) :
     secularImaginaryPart sigma t kappa weights w lam ≠ 0 := by
   rw [secular_imaginary_factorization]
-  have h_eta : sigma - 1/2 ≠ 0 := sub_ne_zero.mpr h_sigma
-  have h_prod_pos : kappa * ∑ j ∈ weights, (w j / ((lam j - t)^2 + (sigma - 1/2)^2)) > 0 :=
-    mul_pos h_kappa h_pos
-  have h_prod_ne : kappa * ∑ j ∈ weights, (w j / ((lam j - t)^2 + (sigma - 1/2)^2)) ≠ 0 :=
-    ne_of_gt h_prod_pos
-  exact mul_ne_zero h_eta h_prod_ne
+  exact mul_ne_zero (sub_ne_zero.mpr h_sigma) (ne_of_gt (mul_pos h_kappa h_pos))
 
 -- ============================================================================
 -- 4. Universal Normal Dirac Spectral Lower Bound
@@ -207,8 +193,7 @@ theorem normal_dirac_gap_bound (mu t sigma : ℝ) :
 /-- The squared norm is strictly bounded below by $(\sigma - 1/2)^2$. -/
 theorem normal_dirac_ge_eta_sq (mu t sigma : ℝ) :
     (mu - t)^2 + (sigma - 1/2)^2 ≥ (sigma - 1/2)^2 := by
-  have h : 0 ≤ (mu - t)^2 := sq_nonneg (mu - t)
-  linarith
+  linarith [sq_nonneg (mu - t)]
 
 -- ============================================================================
 -- 5. Cauchy Convergence for Galerkin Approximations
@@ -227,21 +212,10 @@ theorem rational_decay_vanishing_increments (G : ℕ → ℝ) (C : ℝ) (_hC : C
     ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |G (n + 1) - G n| < ε := by
   intro ε hε
   obtain ⟨N, hN⟩ := exists_nat_gt (C / ε)
-  use N
-  intro n hn
-  have hn_pos : (n + 1 : ℝ) > 0 := by positivity
-  have h_bound := h_decay n
-  have h_step : C / (n + 1 : ℝ) < ε := by
-    have h_n_gt : (n : ℝ) > C / ε := by
-      calc (n : ℝ) ≥ (N : ℝ) := by exact_mod_cast hn
-        _ > C / ε := hN
-    have h_np1_gt : (n + 1 : ℝ) > C / ε := by linarith
-    have h_div : C / (n + 1 : ℝ) < ε := by
-      rw [div_lt_iff₀ hn_pos]
-      have h_eps_pos : ε > 0 := hε
-      rw [← div_lt_iff₀' h_eps_pos]
-      exact h_np1_gt
-    exact h_div
-  exact lt_of_le_of_lt h_bound h_step
+  refine ⟨N, fun n hn => (h_decay n).trans_lt ?_⟩
+  rw [div_lt_iff₀ (by positivity), ← div_lt_iff₀' hε]
+  have : (n : ℝ) ≥ (N : ℝ) := by exact_mod_cast hn
+  linarith
+
 
 end ProlateScaling
