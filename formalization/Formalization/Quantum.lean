@@ -8,3 +8,5 @@ import Formalization.Quantum.ManyBodyPhaseTransition
 import Formalization.Quantum.QuantumScars
 import Formalization.Quantum.ProlateScaling
 import Formalization.Quantum.ArithmeticChernSimons
+import Formalization.Quantum.BuildingSYK
+import Formalization.Quantum.BuildingOTOC
