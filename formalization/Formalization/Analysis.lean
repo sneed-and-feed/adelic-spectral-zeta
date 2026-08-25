@@ -11,3 +11,4 @@ import Formalization.Analysis.MemoryBound
 import Formalization.Analysis.OptimalRestrictedRewiring
 import Formalization.Analysis.AttentionError
 import Formalization.Analysis.ConjectureA
+import Formalization.Analysis.VerifiableAttention

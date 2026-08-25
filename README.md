@@ -470,6 +470,7 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
 22. [`docs/monster_voa_and_borcherds_products.md`](docs/monster_voa_and_borcherds_products.md): Non-Archimedean Monster VOA & Borcherds Automorphic Products
 23. [`docs/adelic_string_scattering_amplitudes.md`](docs/adelic_string_scattering_amplitudes.md): Global Adelic Quantum Gravity & Arithmetic String Scattering Amplitudes
 24. [`docs/mathlib_upstream_architecture.md`](docs/mathlib_upstream_architecture.md): Two-Tier Mathlib Upstream Specification
+25. [`docs/zk_verifiable_ultrametric_attention.md`](docs/zk_verifiable_ultrametric_attention.md): Zero-Knowledge Verifiable Ultrametric Attention & Faithful Arithmetization (Thrust 3)
 
 ---
 
@@ -542,6 +543,13 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
 13. **$p$-Adic Holographic Tensor Networks & Ryu-Takayanagi Entanglement** :white_check_mark: **[Completed]**:
     - Proved discrete $p$-adic Ryu-Takayanagi slope $\alpha = 2.0000$ ($R^2 = 1.000000$) and Page curve transitions in [`experiments/padic_ryu_takayanagi_tensor_networks.py`](experiments/padic_ryu_takayanagi_tensor_networks.py).
     - Documented in [`docs/monograph/16_padic_holography_tensor_networks.md`](docs/monograph/16_padic_holography_tensor_networks.md) and [`docs/padic_ryu_takayanagi_tensor_networks.md`](docs/padic_ryu_takayanagi_tensor_networks.md).
+
+14. **Zero-Knowledge Verifiable Ultrametric Attention & Faithful Arithmetization (Thrust 3)** :white_check_mark: **[Completed]**:
+    - Exploited the discrete $p$-adic tree structure on Bruhat-Tits trees to construct the first zero-overhead verifiable attention proof system, collapsing non-linear transcendental softmax verification into exact $p$-adic integer arithmetic in under 5,000 Rank-1 constraints.
+    - Formally proved the **Faithful Arithmetization Soundness & Completeness Theorem**, **Wire Uniqueness Theorem**, and **Attention Cluster Non-Interference Safety Theorem** with **0 `sorry`s** and standard Lean 4 axioms in [`formalization/Formalization/Analysis/VerifiableAttention.lean`](formalization/Formalization/Analysis/VerifiableAttention.lean).
+    - Synthesized pure-Python algebraic R1CS compiler in [`src/adelic_spectral_zeta/circuits/padic_r1cs.py`](src/adelic_spectral_zeta/circuits/padic_r1cs.py) and Circom 2.1+ templates in [`circuits/padic_lca.circom`](circuits/padic_lca.circom).
+    - Implemented end-to-end runtime prover in [`tools/zk_attention_prover.py`](tools/zk_attention_prover.py) with 23/23 tests passing in [`tests/test_zk_attention.py`](tests/test_zk_attention.py).
+    - Documented in [`docs/zk_verifiable_ultrametric_attention.md`](docs/zk_verifiable_ultrametric_attention.md).
 
 ### BibTeX Citation
 ```bibtex
