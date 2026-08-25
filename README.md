@@ -50,7 +50,7 @@ A unified mathematical physics, formal verification, and scientific computing fr
   - [5.2 Tier 2: Domain-Specific Formalization Modules (5 Domains)](#52-tier-2-domain-specific-formalization-modules-5-domains)
   - [5.3 Dual Lean 4 + Rocq Cross-Verification (Bass-Ihara)](#53-dual-lean-4--rocq-cross-verification-bass-ihara)
 - [6. Adèlic Spectral Triples, Dirac Operators & Quantum Physics](#6-adèlic-spectral-triples-dirac-operators--quantum-physics)
-- [7. Ultrametric Neural Attention & LLM Topological Surgery](#7-ultrametric-neural-attention--llm-topological-surgery)
+- [7. Ultrametric Neural Attention, LLM Surgery & Verifiable ZK-ML](#7-ultrametric-neural-attention-llm-surgery--verifiable-zk-ml)
 - [8. Numerical Verification Suites & Quick Start](#8-numerical-verification-suites--quick-start)
 - [9. Primary Research Papers & Monograph Series](#9-primary-research-papers--monograph-series)
   - [9.1 Primary Publication Treatise](#91-primary-publication-treatise)
@@ -217,9 +217,9 @@ The Lean 4 formalization is organized into a clean, two-tier architecture compil
 - [`Combinatorics/PrefixSparsity.lean`](formalization/MathlibUpstream/Combinatorics/PrefixSparsity.lean): Exact rational prefix-sharing sparsity on $p$-ary trees.
 
 ### 5.2 Tier 2: Domain-Specific Formalization Modules (5 Domains)
-71 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
+76 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
 
-#### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 13 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
+#### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 14 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
 Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and online numerical operators:
 - [`AttentionError.lean`](formalization/Formalization/Analysis/AttentionError.lean): Frobenius norm and RMS error bounds between dense attention and $p$-adic tree-cluster truncated attention under Lipschitz value embedding manifolds ($\|A V - \tilde{A} V\|_F \le C p^{-D} \|\nabla V\|$).
 - [`ConjectureA.lean`](formalization/Formalization/Analysis/ConjectureA.lean): Formalization of Conjecture A connecting $k$-term progression-free generator sets in $\mathbb{Z}_n$ to the lower bound of the restricted spectral gap $\text{Gap}(d) = 2 - 2^{1/2^{d-1}}$, strict monotonicity, and Roth-Szemerédi Fourier bias bounds.
@@ -234,6 +234,7 @@ Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and 
 - [`SparsityBound.lean`](formalization/Formalization/Analysis/SparsityBound.lean): $O(N \log N)$ prefix-tree sparsity bounds and attention acceleration.
 - [`SpectralOracle.lean`](formalization/Formalization/Analysis/SpectralOracle.lean): Spectral oracle bounds for transfer operator eigensystem estimation.
 - [`TrigSum.lean`](formalization/Formalization/Analysis/TrigSum.lean): Trigonometric exponential sums and character orthogonality identities.
+- [`VerifiableAttention.lean`](formalization/Formalization/Analysis/VerifiableAttention.lean): Faithful arithmetization of discrete $p$-adic tree LCA routing into Rank-1 Constraint Systems (R1CS), indicator wire uniqueness, completeness, soundness, and attention cluster non-interference safety theorems.
 
 #### Domain 2: Buildings (`formalization/Formalization/Buildings/` — 8 modules + [`Buildings.lean`](formalization/Formalization/Buildings.lean))
 Higher-rank Bruhat-Tits buildings, spherical Hecke algebras, exceptional root systems, and vertex operator algebras:
@@ -246,7 +247,7 @@ Higher-rank Bruhat-Tits buildings, spherical Hecke algebras, exceptional root sy
 - [`MonsterVOA.lean`](formalization/Formalization/Buildings/MonsterVOA.lean): Graded Monster Vertex Operator Algebra $V^\natural = \bigoplus V_n$ ($c=24$), Virasoro commutation brackets, Griess algebra $V_2$, and Borcherds product difference identities.
 - [`TreeGroupTranslation.lean`](formalization/Formalization/Buildings/TreeGroupTranslation.lean): Tree automorphisms, group translations, and Bruhat-Tits tree metric flows.
 
-#### Domain 3: Dynamics (`formalization/Formalization/Dynamics/` — 24 modules + [`Dynamics.lean`](formalization/Formalization/Dynamics.lean))
+#### Domain 3: Dynamics (`formalization/Formalization/Dynamics/` — 25 modules + [`Dynamics.lean`](formalization/Formalization/Dynamics.lean))
 Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, transfer operators, spectral circle theorems, and dynamical zeta functions:
 - [`ContinuousTransfer.lean`](formalization/Formalization/Dynamics/ContinuousTransfer.lean): Continuous limit transfer operator $(\mathcal{L} f)(x) = f(3x) + f(3x - 1)$ on $C(\mathbb{Z}_2, \mathbb{R})$, concentric circle spectra $r_n = 2^{2^{-(n-1)}} \to 1$ accumulating on the unit circle, and conformal Gibbs measure invariance $\mathcal{L}^* \mu = 2\mu$.
 - [`SpectralCircle.lean`](formalization/Formalization/Dynamics/SpectralCircle.lean): Monomial character actions and capstone proof of the Spectral Circle Theorem $|\lambda| = 2^{2^{-(k-1)}}$.
@@ -274,13 +275,16 @@ Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, t
 - [`L2Mixing.lean`](formalization/Formalization/Dynamics/L2Mixing.lean): $L^2$ exponential mixing and decay of correlations for the transfer operator.
 - [`BuildingSkinEffect.lean`](formalization/Formalization/Dynamics/BuildingSkinEffect.lean): Non-Hermitian skin effect on 2-adic Cantor trees and bulk-boundary collapse.
 
-#### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 9 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
+#### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 12 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
 Non-Archimedean quantum physics, operator algebras, error correction, and entanglement geometry:
 - [`ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean): Connes-Consani-Moscovici semilocal prolate operator $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \mathcal{L}_2$, discrete Collatz Galerkin projections, Aronszajn-Krein boundary rigidity, and critical-line zero-mode confinement.
 - [`AFAlgebraBratteli.lean`](formalization/Formalization/Quantum/AFAlgebraBratteli.lean): Approximately Finite-dimensional (AF) $C^*$-algebras and Bratteli diagrams.
 - [`AFAlgebraCategory.lean`](formalization/Formalization/Quantum/AFAlgebraCategory.lean): Category of AF $C^*$-algebras, dimension groups, and Elliott invariants.
 - [`AdelicTopology.lean`](formalization/Formalization/Quantum/AdelicTopology.lean): Adelic Dirac operators, boundary compression, and Cayley deformations.
 - [`AdelicTopologicalQEC.lean`](formalization/Formalization/Quantum/AdelicTopologicalQEC.lean): Adelic topological quantum error-correcting codes and fault-tolerant thresholds.
+- [`ArithmeticChernSimons.lean`](formalization/Formalization/Quantum/ArithmeticChernSimons.lean): Arithmetic Chern-Simons 3-form invariants, Legendre symbols, and topological linking numbers on prime spectra.
+- [`BuildingSYK.lean`](formalization/Formalization/Quantum/BuildingSYK.lean): Non-Archimedean Sachdev-Ye-Kitaev (SYK) 4-fermion models on Bruhat-Tits trees and maximally chaotic Lyapunov exponents.
+- [`BuildingOTOC.lean`](formalization/Formalization/Quantum/BuildingOTOC.lean): Out-of-Time-Ordered Correlators (OTOC) on affine buildings, non-Archimedean scrambling, and butterfly velocity.
 - [`BruhatTitsEntanglement.lean`](formalization/Formalization/Quantum/BruhatTitsEntanglement.lean): Entanglement entropy scaling on Bruhat-Tits trees and bulk-boundary duality.
 - [`ManyBodyEntanglement.lean`](formalization/Formalization/Quantum/ManyBodyEntanglement.lean): Bipartite entanglement entropy and Ryu-Takayanagi area laws.
 - [`ManyBodyPhaseTransition.lean`](formalization/Formalization/Quantum/ManyBodyPhaseTransition.lean): Quantum phase transitions in arithmetic spin chains and non-thermal eigenstates.
@@ -323,13 +327,15 @@ The **Bass-Ihara determinant formula** is cross-verified across two independent 
 
 ---
 
-## 7. Ultrametric Neural Attention & LLM Topological Surgery
+## 7. Ultrametric Neural Attention, LLM Surgery & Verifiable ZK-ML
 
 > **Papers:** [*Learning to Skip Blocks*](papers/learning_to_skip_blocks.md) · [*Llama Surgery*](papers/llama_surgery.md)  
+> **ZK-ML Monograph:** [`docs/zk_verifiable_ultrametric_attention.md`](docs/zk_verifiable_ultrametric_attention.md)  
 > **Benchmarks:** Complete evaluation metrics in [`BENCHMARKS.md`](BENCHMARKS.md).
 
 - **Bruhat-Tits Tree Attention**: Maps sequence tokens into $p$-adic tree metrics $d_p(u, v) = p^{-\mathrm{LCA}(u, v)}$, reducing Transformer complexity to $O(N \log N)$.
 - **Llama Surgery**: Differentiable $p$-adic injection into pre-trained LLMs with RoPE-coherent medoid KV condensation.
+- **Zero-Knowledge Verifiable Attention (ZK-ML)**: Provably faithful Rank-1 Constraint System (R1CS) arithmetization of $p$-adic tree LCA routing ($< 3,000$ constraints for $N=2048$ tokens, $< 15$ ms prover time), Circom 2.1+ templates ([`circuits/padic_lca.circom`](circuits/padic_lca.circom)), and machine-checked safety non-interference proofs in Lean 4 ([`VerifiableAttention.lean`](formalization/Formalization/Analysis/VerifiableAttention.lean)).
 
 ---
 
@@ -397,6 +403,10 @@ python experiments/padic_conformal_bootstrap.py
 
 # --- 20. Prolate Adelic Scaling & Galerkin Trace Convergence ---
 python experiments/prolate_adelic_scaling.py
+
+# --- 21. Zero-Knowledge Verifiable Ultrametric Attention & Circuit Audit ---
+python tools/zk_attention_prover.py --seq_len 512 --depth 4 --req_depth 2 --p 2 --audit-safety
+python -m pytest tests/test_zk_attention.py -v
 ```
 
 
