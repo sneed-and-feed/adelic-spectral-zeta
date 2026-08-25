@@ -102,8 +102,27 @@ python tools/zk_attention_prover.py --seq_len 512 --depth 4 --req_depth 2 --p 2 
 
 ### 5.3 Test Coverage & Scalability
 ```powershell
-pytest tests/test_zk_attention.py -v
-# 23 passed in 10.09s
+python -m pytest tests/test_zk_attention.py -v
+# 23 passed in 13.97s
 ```
 
 For $N=2048$ tokens with block size $B=64$ ($32$ blocks, depth $D=5$, required depth $r=2$), full R1CS witness generation and constraint verification executes in **$< 15$ ms** on consumer CPU hardware across $2,704$ Rank-1 constraints.
+
+---
+
+## 6. Integration Architecture & Frequently Asked Questions
+
+### Q1: Does this verify the entire attention mechanism or just the routing mask?
+This circuit verifies the **discrete dynamic block-sparsity topology** $M \in \{0, 1\}^{B \times B}$ and its security invariants. In an end-to-end ZK-ML pipeline, the verified mask $M$ gates block-sparse inner-product arguments:
+
+$$\mathbf{Y}_i = \sum_{j : M_{ij} = 1} \mathrm{AttentionBlock}(Q_i, K_j, V_j)$$
+
+By proving $M_{ij} = 0$ algebraically, the prover completely bypasses non-linear softmax evaluation and matrix multiplication for all inactive pairs $(i, j)$, achieving quadratic-to-subquadratic speedups.
+
+### Q2: Why use tree LCA metrics instead of arbitrary sparse attention masks?
+1. **Algebraic Compactness:** Arbitrary sparse masks require storing and checking an explicit $O(B^2)$ adjacency graph. In contrast, tree routing compresses token cluster addresses into $D$ digits, requiring only limb range checks and prefix equality.
+2. **Provable Transitivity & Domain Isolation:** The ultrametric valuation inequality ($\mathrm{LCA}(u, w) \ge \min(\mathrm{LCA}(u, v), \mathrm{LCA}(v, w))$) guarantees that cluster partitions are mathematically transitive. Proving isolation between two cluster roots unconditionally guarantees isolation for all sub-branches.
+
+### Q3: Why is Lean 4 verification necessary?
+Handcrafted R1CS gadgets are notoriously prone to under-constrained wire bugs and field overflow vulnerabilities. Machine-checking the completeness, soundness, and uniqueness theorems in Lean 4 ensures that no rogue witness assignment can force $M_r = 1$ on divergent prefixes or bypass safety exclusions.
+
