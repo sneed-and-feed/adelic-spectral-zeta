@@ -5,7 +5,7 @@ This document tracks novel mathematical conjectures discovered during the formal
 ## Conjecture A: Progression-Free Cayley Graph Spectral Expansion
 
 **Date Formulated:** May 2026
-**Status:** Open (Formalization stubs mapped, proof pending)
+**Status:** Formalized in Lean 4 ([`formalization/Formalization/Analysis/ConjectureA.lean`](../formalization/Formalization/Analysis/ConjectureA.lean), 0 sorries)
 
 ### Background
 During the formalization of `SpectralOracle.lean`, it was proven that the `restrictedSpectralGap` for dimension $d \ge 2$ is strictly positive and monotonically increasing, bounded by:

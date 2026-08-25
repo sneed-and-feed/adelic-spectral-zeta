@@ -217,10 +217,12 @@ The Lean 4 formalization is organized into a clean, two-tier architecture compil
 - [`Combinatorics/PrefixSparsity.lean`](formalization/MathlibUpstream/Combinatorics/PrefixSparsity.lean): Exact rational prefix-sharing sparsity on $p$-ary trees.
 
 ### 5.2 Tier 2: Domain-Specific Formalization Modules (5 Domains)
-68 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
+71 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
 
-#### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 11 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
+#### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 13 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
 Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and online numerical operators:
+- [`AttentionError.lean`](formalization/Formalization/Analysis/AttentionError.lean): Frobenius norm and RMS error bounds between dense attention and $p$-adic tree-cluster truncated attention under Lipschitz value embedding manifolds ($\|A V - \tilde{A} V\|_F \le C p^{-D} \|\nabla V\|$).
+- [`ConjectureA.lean`](formalization/Formalization/Analysis/ConjectureA.lean): Formalization of Conjecture A connecting $k$-term progression-free generator sets in $\mathbb{Z}_n$ to the lower bound of the restricted spectral gap $\text{Gap}(d) = 2 - 2^{1/2^{d-1}}$, strict monotonicity, and Roth-Szemerédi Fourier bias bounds.
 - [`DFT.lean`](formalization/Formalization/Analysis/DFT.lean): Discrete Fourier transform matrix algebra and character evaluations.
 - [`DetailSpaceDecomposition.lean`](formalization/Formalization/Analysis/DetailSpaceDecomposition.lean): Wavelet detail space orthogonal projections.
 - [`ErdosSimilarity.lean`](formalization/Formalization/Analysis/ErdosSimilarity.lean): Erdős similarity problem bounds and spectral projections on Cantor sets.
@@ -244,8 +246,9 @@ Higher-rank Bruhat-Tits buildings, spherical Hecke algebras, exceptional root sy
 - [`MonsterVOA.lean`](formalization/Formalization/Buildings/MonsterVOA.lean): Graded Monster Vertex Operator Algebra $V^\natural = \bigoplus V_n$ ($c=24$), Virasoro commutation brackets, Griess algebra $V_2$, and Borcherds product difference identities.
 - [`TreeGroupTranslation.lean`](formalization/Formalization/Buildings/TreeGroupTranslation.lean): Tree automorphisms, group translations, and Bruhat-Tits tree metric flows.
 
-#### Domain 3: Dynamics (`formalization/Formalization/Dynamics/` — 23 modules + [`Dynamics.lean`](formalization/Formalization/Dynamics.lean))
+#### Domain 3: Dynamics (`formalization/Formalization/Dynamics/` — 24 modules + [`Dynamics.lean`](formalization/Formalization/Dynamics.lean))
 Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, transfer operators, spectral circle theorems, and dynamical zeta functions:
+- [`ContinuousTransfer.lean`](formalization/Formalization/Dynamics/ContinuousTransfer.lean): Continuous limit transfer operator $(\mathcal{L} f)(x) = f(3x) + f(3x - 1)$ on $C(\mathbb{Z}_2, \mathbb{R})$, concentric circle spectra $r_n = 2^{2^{-(n-1)}} \to 1$ accumulating on the unit circle, and conformal Gibbs measure invariance $\mathcal{L}^* \mu = 2\mu$.
 - [`SpectralCircle.lean`](formalization/Formalization/Dynamics/SpectralCircle.lean): Monomial character actions and capstone proof of the Spectral Circle Theorem $|\lambda| = 2^{2^{-(k-1)}}$.
 - [`DynamicalZetaFactorization.lean`](formalization/Formalization/Dynamics/DynamicalZetaFactorization.lean): Tower factorization $\det(I - u D_n) = (1 - 2u)(1 - 2u^2)\prod_{k=3}^n (1 + 2u^{2^{k-1}})$.
 - [`CollatzRelMatrix.lean`](formalization/Formalization/Dynamics/CollatzRelMatrix.lean): Full 2-adic Collatz relation matrix $D_n$, monomial Pontryagin character action, and block decomposition.
@@ -269,6 +272,7 @@ Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, t
 - [`MeanErgodic.lean`](formalization/Formalization/Dynamics/MeanErgodic.lean): Mean ergodic theorem and uniform Cesàro convergence on $\mathbb{Z}_2$.
 - [`OrbitShadowing.lean`](formalization/Formalization/Dynamics/OrbitShadowing.lean): Hyperbolic shadowing lemmas for 2-adic pseudo-orbits.
 - [`L2Mixing.lean`](formalization/Formalization/Dynamics/L2Mixing.lean): $L^2$ exponential mixing and decay of correlations for the transfer operator.
+- [`BuildingSkinEffect.lean`](formalization/Formalization/Dynamics/BuildingSkinEffect.lean): Non-Hermitian skin effect on 2-adic Cantor trees and bulk-boundary collapse.
 
 #### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 9 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
 Non-Archimedean quantum physics, operator algebras, error correction, and entanglement geometry:

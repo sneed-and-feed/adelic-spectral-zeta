@@ -9,3 +9,5 @@ import Formalization.Analysis.SpectralOracle
 import Formalization.Analysis.OnlineSoftmax
 import Formalization.Analysis.MemoryBound
 import Formalization.Analysis.OptimalRestrictedRewiring
+import Formalization.Analysis.AttentionError
+import Formalization.Analysis.ConjectureA
