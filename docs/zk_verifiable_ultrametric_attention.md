@@ -1,4 +1,4 @@
-# Zero-Knowledge Verifiable Ultrametric Attention & Faithful Arithmetization (Thrust 3)
+# Zero-Knowledge Verifiable Ultrametric Attention & Faithful Arithmetization
 
 **Classification:** Mathematical Cryptography & Verifiable AI Monograph  
 **Module:** [`formalization/Formalization/Analysis/VerifiableAttention.lean`](../formalization/Formalization/Analysis/VerifiableAttention.lean) (0 `sorry`s, 100% verified)  
@@ -12,7 +12,7 @@
 
 Standard Transformer attention verification in Zero-Knowledge Proofs (ZK-SNARKs) is notoriously bottlenecked by the quadratic $O(N^2)$ density of attention matrices and transcendental non-linear activations ($\text{softmax}(x) = \exp(x_i) / \sum \exp(x_j)$). Proving a 2048-token sequence in dense ZK-ML requires millions of high-degree non-linear constraints and minutes of proving time.
 
-In **Thrust 3**, we exploit the exact algebraic number-theoretic structure discovered in **Dynamic Ultrametric Attention**: attention routing is governed by an **exact $p$-adic tree distance** on Bruhat-Tits trees:
+Here, we exploit the exact algebraic number-theoretic structure discovered in **Dynamic Ultrametric Attention**: attention routing is governed by an **exact $p$-adic tree distance** on Bruhat-Tits trees:
 
 $$T_{ij} = D - \min\{k \ge 1 : \lfloor i/p^k \rfloor = \lfloor j/p^k \rfloor\}$$
 
