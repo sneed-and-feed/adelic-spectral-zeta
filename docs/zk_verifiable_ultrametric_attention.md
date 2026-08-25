@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-Standard Transformer attention verification in Zero-Knowledge Proofs (ZK-SNARKs) is notoriously bottlenecked by the quadratic $O(N^2)$ density of attention matrices and transcendental non-linear activations ($\text{softmax}(x) = \exp(x_i) / \sum \exp(x_j)$). Proving a 2048-token sequence in dense ZK-ML requires millions of high-degree non-linear constraints and minutes of proving time.
+Standard Transformer attention verification in Zero-Knowledge Proofs (ZK-SNARKs) is notoriously bottlenecked by the quadratic $O(N^2)$ density of attention matrices and transcendental non-linear activations, such as $\text{softmax}(\mathbf{x})_i = \frac{\exp(x_i)}{\sum_j \exp(x_j)}$. Proving a 2048-token sequence in dense ZK-ML requires millions of high-degree non-linear constraints and minutes of proving time.
 
 Here, we exploit the exact algebraic number-theoretic structure discovered in **Dynamic Ultrametric Attention**: attention routing is governed by an **exact $p$-adic tree distance** on Bruhat-Tits trees:
 
