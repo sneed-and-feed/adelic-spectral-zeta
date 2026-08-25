@@ -70,7 +70,7 @@ For each level $k < r$, let $\Delta_k = u_k - v_k$. We allocate an equality indi
    *(Enforced via recursive accumulator chain: $C_0 = eq_0$, $C_k = C_{k-1} \cdot eq_k$ for $k \ge 1$, with output $M_r = C_{r-1}$)*.
 
 ### Proved Soundness & Completeness Properties
-* **Completeness:** If $\mathrm{PrefixEq}(u, v, r)$, there exists an assignment ($eq_k = 1, inv_k = 0$) such that $M_r = 1$.
+* **Completeness:** If $\mathrm{PrefixEq}(u, v, r)$, there exists an assignment with $eq_k = 1$ and $inv_k = 0$ such that $M_r = 1$.
 * **Soundness:** If $\neg \mathrm{PrefixEq}(u, v, r)$, any satisfying assignment forces $M_r = 0$.
 * **Indicator Uniqueness:** The equality wire vector $eq$ is uniquely determined for all satisfying assignments. When $u_k = v_k$, $inv_k$ is unconstrained ($0 \cdot inv_k = 0$), which does not affect circuit soundness as $eq_k = 1$ is already fixed.
 
@@ -106,7 +106,7 @@ python -m pytest tests/test_zk_attention.py -v
 # 23 passed in 13.97s
 ```
 
-For $N=2048$ tokens with block size $B=64$ ($32$ blocks, depth $D=5$, required depth $r=2$), full R1CS witness generation and constraint verification executes in **$< 15$ ms** on consumer CPU hardware across $2,704$ Rank-1 constraints.
+For $N=2048$ tokens with block size $B=64$ (32 blocks, depth $D=5$, required depth $r=2$), full R1CS witness generation and constraint verification executes in under **15 ms** on consumer CPU hardware across $2,704$ Rank-1 constraints.
 
 ---
 
@@ -121,7 +121,7 @@ By proving $M_{ij} = 0$ algebraically, the prover completely bypasses non-linear
 
 ### Q2: Why use tree LCA metrics instead of arbitrary sparse attention masks?
 1. **Algebraic Compactness:** Arbitrary sparse masks require storing and checking an explicit $O(B^2)$ adjacency graph. In contrast, tree routing compresses token cluster addresses into $D$ digits, requiring only limb range checks and prefix equality.
-2. **Provable Transitivity & Domain Isolation:** The ultrametric valuation inequality ($\mathrm{LCA}(u, w) \ge \min(\mathrm{LCA}(u, v), \mathrm{LCA}(v, w))$) guarantees that cluster partitions are mathematically transitive. Proving isolation between two cluster roots unconditionally guarantees isolation for all sub-branches.
+2. **Provable Transitivity & Domain Isolation:** The ultrametric valuation inequality, $\mathrm{LCA}(u, w) \ge \min(\mathrm{LCA}(u, v), \mathrm{LCA}(v, w))$, guarantees that cluster partitions are mathematically transitive. Proving isolation between two cluster roots unconditionally guarantees isolation for all sub-branches.
 
 ### Q3: Why is Lean 4 verification necessary?
 Handcrafted R1CS gadgets are notoriously prone to under-constrained wire bugs and field overflow vulnerabilities. Machine-checking the completeness, soundness, and uniqueness theorems in Lean 4 ensures that no rogue witness assignment can force $M_r = 1$ on divergent prefixes or bypass safety exclusions.
