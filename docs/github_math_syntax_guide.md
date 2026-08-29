@@ -137,13 +137,18 @@ $$
 ### Post-Equation Text Indentation
 Never indent prose lines following a display math block by $\ge 4$ spaces (e.g. `     where W = C^{-1}...`). CommonMark parses any line indented by 4 or more spaces following a blank line as an **indented code block**, which prints the prose and math as literal code text inside a gray box. Keep follow-up descriptions flush with the list indentation or at Column 0.
 
-### Set-Builder Delimiters
-In KaTeX / MathJax on GitHub, never use `\left\{ ... \;\middle|\; ... \right\}` or `;\middle|;` for set definitions. Instead, use standard LaTeX set notation with `\{ ... \mid ... \}` or `\{ ... : ... \}`:
+### Matrix Row Line Breaks (`\\` in `pmatrix` / `bmatrix`)
+In GFM, placing a matrix with `\\` on a single line causes CommonMark to treat `\\` as an escaped backslash (`\`), stripping the row break and collapsing a $3 \times 3$ matrix into a single flat row vector.
+Always format matrices across multiple lines in display math:
 
 ```markdown
-<!-- CORRECT: Universal, never fails in KaTeX or GFM -->
+<!-- CORRECT: Renders true 3x3 matrix on GitHub -->
 $$
-S^3 = \{ q \in \mathbb{H} \mid \lvert q \rvert^2 = 1 \}
+\mathbf{R} = \begin{pmatrix}
+1.000 & 0.420 & -0.460 \\
+0.420 & 1.000 & -0.660 \\
+-0.460 & -0.660 & 1.000
+\end{pmatrix}
 $$
 ```
 
