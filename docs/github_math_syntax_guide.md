@@ -1,6 +1,6 @@
 # Guide to Writing Math on GitHub (GFM) with KaTeX/MathJax
 
-This guide documents the strict rules and edge cases for writing complex mathematical equations in GitHub-Flavored Markdown (GFM) to ensure they render correctly. These rules were learned through empirical trial and error with the GitHub Markdown API.
+This guide documents the strict rules, edge cases, and best practices for writing complex mathematical equations, tables, and typography in GitHub-Flavored Markdown (GFM) to ensure 100% compliant KaTeX/MathJax rendering. These rules were learned through empirical trial and error with the GitHub Markdown API and CommonMark parsers.
 
 ---
 
@@ -19,70 +19,164 @@ The GFM parser processes standard Markdown rules (like italics via `_` and HTML 
     *   **Correct**: `$\langle 1_0, Bf \rangle$`
     *   **Incorrect**: `$<1_0, Bf>$`
 
-### The Backtick-Dollar Delimiters (`$` `...` `$`) for Underscore/Italics Shielding
-If a paragraph contains multiple inline math blocks with subscripts (underscores `_`), or if an inline math block containing subscripts/braces is nested inside an emphasized (italicized `*...*` or `_..._`) text block, GFM may pair up the underscores or asterisks, stripping them and inserting HTML tags (`<em>`/`<i>`) inside the math delimiters. This breaks KaTeX/MathJax rendering.
+---
 
-To shield these characters:
-*   Wrap the math expression in backticks inside the dollar signs: `$` `S = \{\alpha q^{-n}\}_{n=1}^\infty` `$`.
-*   The backticks force the Markdown parser to treat the formula as a code span, preserving backslashes, braces, and subscripts exactly as written before passing them to the math rendering engine.
-*   **Correct (Renders successfully)**: `$` `S = \{\alpha q^{-n}\}_{n=1}^\infty` `$`
-*   **Incorrect (Mangled by Markdown parser)**: `$S = \{\alpha q^{-n}\}_{n=1}^\infty$`
+## 2. Prohibition Against Wrapping Math in Markdown Italics
+
+### The Problem
+Wrapping a paragraph or caption containing inline math inside outer Markdown emphasis (`*...*` or `_..._`) causes severe parser corruption:
+```markdown
+<!-- INCORRECT: Parser inserts <em> inside math tags, breaking KaTeX -->
+*Figure 1: Observed power $\mathcal{D}_\ell^{TT}$ on $S^3 / I^\ast$ with $\ell = 1..5$.*
+```
+*Why this fails*: The CommonMark tokenizer processes the outer asterisks/underscores first, pairing them across or within the math delimiters and injecting `<em>` or `<i>` tags into the formula string before KaTeX sees it.
+
+### The Solution: Bold Prefixes and Clean Prose
+Never wrap full captions, sentences, or paragraphs containing math in outer italics. Instead, use bold structural prefixes:
+*   **Correct (Renders)**: `**Figure 1:** Observed power $\mathcal{D}_\ell^{TT}$ on $S^3 / I^\ast$ with $\ell = 1..5$.`
+*   **Correct (Renders)**: `**Table 2:** Multiplicity spectrum of $\mathrm{SU}(2)$ representations.`
+*   **Incorrect (Fails)**: `*Figure 1: Observed power $\mathcal{D}_\ell^{TT}$ on $S^3 / I^\ast$ with $\ell = 1..5$.*`
 
 ---
 
-## 2. Display Math Blocks (`$$ ... $$`)
+## 3. Escaping Math Asterisks (`\ast` vs `*`)
 
-Display math should be written on its own lines:
+### The Problem
+Using raw asterisks `*` inside math expressions (such as group duals, conjugates, or quotient spaces $I^*$, $S^3/I^*$, $f^*(x)$) collides with GFM emphasis parsing. When multiple math expressions containing `*` appear in the same paragraph, GFM interprets the asterisks as markdown italic/bold toggles.
+
+### The Solution: Use `\ast` or `\star`
+Always use `\ast` or `\star` inside LaTeX math mode:
+*   **Correct (Renders)**: `$I^\ast$`, `$S^3 / I^\ast$`, `$\mathcal{H}^\ast$`, `$f^\ast(x)$`
+*   **Incorrect (Collides)**: `$I^*$`, `$S^3 / I^*$`, `$\mathcal{H}^*$`, `$f^*(x)$`
+
+---
+
+## 4. Table Pipe Delimiter Protection (`\lvert ... \rvert` vs `|...|`)
+
+### The Problem
+In Markdown tables, the pipe character `|` is the structural cell delimiter. If raw vertical bars `|` are used inside inline math (e.g. `$|x|$`, `$|C_i|$`, `$|\psi\rangle$`), GFM splits the cell at the pipe character **before** passing content to KaTeX, destroying the table layout.
+
+### The Solution: Absolute Value Macros
+Always use LaTeX delimiter macros inside table cells:
+*   **Absolute values / Cardinality**: Use `\lvert ... \rvert` or `\vert ... \vert`.
+    *   **Correct**: `$\lvert C_i \rvert = 120$`, `$\lvert q \rvert^2 = 1$`
+    *   **Incorrect**: `$|C_i| = 120$`, `$|q|^2 = 1$`
+*   **Norms**: Use `\lVert ... \rVert`.
+    *   **Correct**: `$\lVert v \rVert \le 1$`
+    *   **Incorrect**: `$||v|| \le 1$`
+*   **Set Conditioning in Tables**: Use `\mid`.
+    *   **Correct**: `$\{x \in X \mid f(x) = 0\}$`
+
+---
+
+## 5. KaTeX Delimiter Matching Rules for Sets
+
+### The Problem
+Constructs using improper delimiter balancing (such as `\left\{ ... ;\middle\vert; ... \right\}`) cause KaTeX syntax errors because `\middle` requires an exact delimiter symbol without attached punctuation.
+
+### The Solution: Clean Set Notation
+*   **Standard Set Notation (Preferred)**:
+    ```latex
+    \{ q \in \mathbb{H} \mid \lvert q \rvert^2 = 1 \}
+    ```
+*   **Scalable Delimiter Set Notation**:
+    ```latex
+    \left\{ q \in \mathbb{H} \;\middle|\; \lvert q \rvert^2 = 1 \right\}
+    ```
+    or
+    ```latex
+    \left\{ q \in \mathbb{H} \;\middle\vert\; \lvert q \rvert^2 = 1 \right\}
+    ```
+
+---
+
+## 6. Display Math Blocks (`$$ ... $$`) & Column 0 Alignment
+
+Display math must be written on its own lines with blank lines before and after:
+
 ```markdown
 $$
 E = mc^2
 $$
 ```
 
-*   Ensure there are blank lines before and after the `$$` block. **CRITICAL:** If you omit the blank line after the closing `$$`, the GFM parser may collapse the newline and merge the block delimiter directly into the subsequent paragraph, treating the entire display block as raw inline text and failing to compile/render the math.
-*   Do not put spaces between the `$$` delimiters and the math if they are on the same line, e.g. `$$E = mc^2$$` is acceptable but `$$ E = mc^2 $$` is prone to parsing errors. Keeping them on separate lines is always preferred.
+### The List Item Rendering Conflict
+If a Markdown list item contains **indented display math blocks**, GFM parses the indented lines as code blocks, preventing KaTeX compilation:
 
-### Prefer `$$` over ```` ```math ````
-While GitHub's parser officially supports both `$$` and ```` ```math ```` code fences, ```` ```math ```` is much more prone to rendering failures (especially when nested, indented, or parsed by third-party tools/IDE extensions). Always use `$$` for block math.
-
----
-
-## 3. The List Item Rendering Conflict (Critical Edge Case)
-
-### The Problem
-If a Markdown list item contains **inline math** in its header, and contains a **nested/indented display math block**, the display math will **fail to render**, showing up instead as a raw text block or code box.
 ```markdown
-*   **Example of what FAILS**:
-    - For $B\omega$, since ... we have:
-      $$
-      B\omega = \frac{1}{2} |1\rangle \langle 1|
-      $$
+<!-- INCORRECT: Indented $$ inside list item fails to compile -->
+1. The physical radius is:
+   $$
+   R_c = \frac{c}{H_0 \sqrt{|\Omega_K|}}
+   $$
 ```
-*Why this happens*: GFM parses any indented block inside a list item as a code block first, preventing the math engine from identifying and rendering the equation.
 
 ### The Solution: Column 0 Alignment
-To display lists with display equations:
-1.  Align the display math block (`$$`) at **Column 0** (completely unindented).
-2.  Add blank lines before and after the display block.
-3.  Optionally use **bold pseudo-lists** (`- **1. ...**`) or standard bullet points.
+Unindent the display math block completely to **Column 0**, preceded and followed by blank lines:
 
-#### Correct Pattern:
 ```markdown
-- **1. For $B\omega$, since $B |1_0\rangle = B |1_1\rangle = \frac{1}{\sqrt{2}} |1\rangle$, we have:**
+<!-- CORRECT: Unindented $$ at Column 0 with blank lines -->
+1. The physical radius is:
 
 $$
-B\omega = \frac{1}{2} ( |B 1_0\rangle \langle 1_1| + |B 1_1\rangle \langle 1_0| ) = \frac{1}{2} |1\rangle \langle 1|
+R_c = \frac{c}{H_0 \sqrt{\lvert \Omega_K \rvert}}
 $$
 
-- **2. For $\omega B$, the adjoint action maps...**
+2. The injectivity radius is:
+
+$$
+r_{\mathrm{inj}} = \frac{\pi R_c}{10}
+$$
 ```
 
-This formatting ensures the list header renders beautifully, and the math blocks are parsed at the root level by the math engine without indentation conflicts.
+### Display Math inside Blockquotes (`>`)
+When using display math inside Markdown callouts or blockquotes, maintain clean `>` prefixing without extra 4-space indentation:
+
+```markdown
+> **Theorem 1.1 (Volume).**
+> The volume of the quotient manifold is:
+>
+> $$
+> \mathrm{Vol}(S^3 / I^\ast) = \frac{\pi^2 R_c^3}{60}.
+> $$
+>
+> where $R_c$ is the curvature radius.
+```
 
 ---
 
-## 4. Balancing Delimiters
+## 7. Matplotlib Text Formatting Best Practices (Publication Graphics)
 
-A single unclosed `$` will cause the GFM parser to treat subsequent text (often up to the next paragraph or the end of the file) as inline math, resulting in corrupted formatting.
-*   Always audit files for unmatched dollar signs.
-*   Use automated parsing tools (like `scratch/check_all_docs_unbalanced.py`) to verify that the math parser state returns to `text` at the end of every line/paragraph.
+Matplotlib's internal mathtext renderer (`mathtext.fontset = 'cm'`) is **not** a full LaTeX compiler. Raw LaTeX text macros will render as literal unparsed strings if LaTeX is not explicitly invoked via system binaries.
+
+### Rules for Publication Figures:
+1.  **Do NOT use `\textbf{...}` or `\textit{...}` in mathtext strings**:
+    *   **Correct**: `ax.set_title('(a) CMB Multipole Modes', fontsize=11, fontweight='bold')`
+    *   **Correct**: `ax.annotate('Emergence Mode', fontweight='bold', ...)`
+    *   **Incorrect**: `ax.set_title(r'\textbf{(a) CMB Multipole Modes}')`
+2.  **Use `$\mathbf{...}$` or `$\mathrm{...}$` inside math mode**:
+    *   **Correct**: `$m_L^{\mathrm{SO}(3)} = 0$`
+    *   **Incorrect**: `$m_L^{\text{SO}(3)} = 0$`
+3.  **Literal `%` in Legends/Labels**:
+    *   In matplotlib standard strings, write `%` directly, not `\%`.
+    *   **Correct**: `label=r'Poincaré $S^3/I^\ast$ EDE (68% / 95% CL)'`
+    *   **Incorrect**: `label=r'Poincaré $S^3/I^*\ast$ EDE (68\% / 95\% CL)'`
+4.  **Vector Output & High-DPI Rendering**:
+    *   Always export both vector PDF and 300+ DPI PNG:
+    ```python
+    plt.savefig('fig.pdf', bbox_inches='tight')
+    plt.savefig('fig.png', dpi=300, bbox_inches='tight')
+    ```
+
+---
+
+## 8. Automated Verification Checklist
+
+Before publishing or committing GFM math papers:
+- [x] All inline math `$...$` has no leading/trailing spaces.
+- [x] All math asterisks use `\ast` (`$I^\ast$`).
+- [x] All table absolute values use `\lvert ... \rvert` or `\vert ... \vert`.
+- [x] All figure and table captions use bold prefixes (`**Figure N:** ...`).
+- [x] All display math blocks (`$$`) are unindented at Column 0 with blank lines before/after.
+- [x] All set delimiters use clean `\{ ... \mid ... \}` or `\left\{ ... \;\middle|\; ... \right\}` syntax.
+- [x] Python figure scripts avoid raw `\textbf{...}` macros in non-LaTeX matplotlib text.
