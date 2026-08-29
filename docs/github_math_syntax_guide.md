@@ -132,8 +132,15 @@ $$
 ### Post-Equation Text Indentation
 Never indent prose lines following a display math block by $\ge 4$ spaces (e.g. `     where W = C^{-1}...`). CommonMark parses any line indented by 4 or more spaces following a blank line as an **indented code block**, which prints the prose and math as literal code text inside a gray box. Keep follow-up descriptions flush with the list indentation or at Column 0.
 
-### Display Math inside Blockquotes (`>`)
-When using display math inside Markdown callouts or blockquotes, maintain clean `>` prefixing without extra 4-space indentation:
+### Set-Builder Delimiters
+In KaTeX / MathJax on GitHub, never use `\left\{ ... \;\middle|\; ... \right\}` or `;\middle|;` for set definitions. Instead, use standard LaTeX set notation with `\{ ... \mid ... \}` or `\{ ... : ... \}`:
+
+```markdown
+<!-- CORRECT: Universal, never fails in KaTeX or GFM -->
+$$
+S^3 = \{ q \in \mathbb{H} \mid \lvert q \rvert^2 = 1 \}
+$$
+```
 
 ```markdown
 > **Theorem 1.1 (Volume).**
