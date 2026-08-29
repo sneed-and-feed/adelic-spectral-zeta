@@ -11,10 +11,17 @@ Inline math delimiters (`$`) **must** be tightly coupled to their content. There
 *   **Correct (Renders)**: `$x$` or `$\sigma \in [0.1, 0.9]$`
 *   **Incorrect (Fails)**: `$ x$` or `$x $` or `$ \sigma \in [0.1, 0.9] $`
 
-### Hyphen-Attached Math Expressions (`low-$\ell$`, `high-$\ell$`, `small-$t$`)
+### Prohibition Against Backtick Math (`$` `...` `$`) and Mixed Delimiters
+Never use backtick-enclosed math delimiters (`$` `code` `$`).
+*   **The Problem**: Mixing backtick math with standard dollar math (`$...$`) triggers catastrophic GFM delimiter matching collisions. The parser matches an opening `$ ` from a backtick block with a closing `$` from a standard inline math block further down the document. This turns entire paragraphs, section headers, tables, and lists into single mangled math strings, producing widespread **"Unable to render expression."** errors and destroying document structure.
+*   **Strict Rule**: Always use clean, standard `$expression$` for inline math and `$$\n...\n$$` for display math blocks. Never use backticks inside math delimiters.
+    *   **Correct (Renders)**: `$H_0 = 70.93 \pm 0.70\text{ km s}^{-1}\text{Mpc}^{-1}$`
+    *   **Incorrect (Fails / Mangling Hazard)**: `$ `H_0 = 70.93 \pm 0.70\text{ km s}^{-1}\text{Mpc}^{-1}` $`
+
+### Hyphen-Attached Math Expressions (`$\text{low-}\ell$`, `$\text{high-}\ell$`, `$\text{small-}t$`)
 In CommonMark / GFM, the regex detecting opening math delimiters `$math$` requires the dollar sign to be preceded by whitespace or recognized opening punctuation. A preceding hyphen (`-`) is treated as a word character, which prevents the parser from recognizing the dollar sign as an opening math delimiter.
-*   **Incorrect (Fails to compile / shows raw text)**: `low-$\ell$`, `high-$\ell$`, `small-$t$`, `Low-$L$`, `Lyman-$\alpha$`
-*   **Correct (Compiles cleanly in KaTeX)**: `$\text{low-}\ell$`, `$\text{high-}\ell$`, `$\text{small-}t$`, `$\text{Low-}L$`, `$\text{Lyman-}\alpha$`
+*   **Incorrect (Fails to compile / shows raw text)**: `low-$\ell$`, `high-$\ell$`, `small-$t$`, `Low-$L$`, `Lyman-$\alpha$`, `low-$z$`
+*   **Correct (Compiles cleanly in KaTeX)**: `$\text{low-}\ell$`, `$\text{high-}\ell$`, `$\text{small-}t$`, `$\text{Low-}L$`, `$\text{Lyman-}\alpha$`, `$\text{low-}z$` (or `low $\ell$`, `high $\ell$`)
 
 ### Character Mangling and Escaping
 The GFM parser processes standard Markdown rules (like italics via `_` and HTML tags via `<` and `>`) **before** the math engine compiles. To prevent character mangling:
@@ -56,12 +63,41 @@ Always use `\ast` or `\star` inside LaTeX math mode:
 
 ---
 
-## 4. Table Pipe Delimiter Protection (`\lvert ... \rvert` vs `|...|`)
+## 4. KaTeX Font Formatting Restrictions (`\mathbf{...}`)
+
+### The Problem: Operators & Relations Inside `\mathbf`
+In KaTeX, `\mathbf{...}` is strictly an alphabet font modifier intended for alphanumeric characters (letters and numbers). Placing mathematical operators (`\pm`, `+`, `-`, `\times`), relation symbols (`=`), or entire equations inside `\mathbf{...}` causes KaTeX parser failure and renders **"Unable to render expression."**.
+
+### The Solution: Bold Only Symbols
+Apply `\mathbf` solely to the target vector, matrix, or variable symbol, keeping operators and values outside:
+*   **Incorrect (Fails)**: `$\mathbf{S_8 = 0.776 \pm 0.014}$`
+*   **Correct (Renders)**: `$\mathbf{S}_8 = 0.776 \pm 0.014$` or `$\mathbf{S_8} = 0.776 \pm 0.014$`
+*   **Incorrect (Fails)**: `$\mathbf{H_0 = 73.24 \pm 0.82}$`
+*   **Correct (Renders)**: `$\mathbf{H}_0 = 73.24 \pm 0.82$`
+*   **If bolding entire equation in prose**: Wrap the dollar delimiters in Markdown bold: `**$S_8 = 0.776 \pm 0.014$**`.
+
+---
+
+## 5. Prohibition of `\text{--}` (En-Dashes) in Math Mode
+
+### The Problem: LaTeX Ligature En-Dashes
+In standard LaTeX documents, numerical ranges are frequently written with en-dash ligatures like `\text{--}` or `--` inside math mode (e.g. `$\approx 11\text{--}12\%$`, `$z_c \sim 3600\text{--}3800$`). KaTeX does not expand LaTeX font ligatures inside `\text{...}` and fails with a syntax error.
+
+### The Solution: Hyphens in Math or En-Dashes in Markdown
+*   **Inside Math Mode**: Use a single hyphen/minus `\text{-}` or `-`:
+    *   **Correct (Renders)**: `$\approx 11\text{-}12\%$`, `$z_c \sim 3600\text{-}3800$`
+*   **In Markdown Prose**: Split the range into two separate inline math expressions separated by Markdown en-dash (`--`):
+    *   **Correct (Renders)**: `$\sim 11\%$--$12\%$`, `$z_c \sim 3600$--$3800$`
+*   **Incorrect (Fails)**: `$\approx 11\text{--}12\%$`, `$z_c \sim 3600\text{--}3800$`
+
+---
+
+## 6. Table Pipe Delimiter Protection (`\lvert ... \rvert` vs `|...|`)
 
 ### The Problem
-In Markdown tables, the pipe character `|` is the structural cell delimiter. If raw vertical bars `|` are used inside inline math (e.g. `$|x|$`, `$|C_i|$`, `$|\psi\rangle$`), GFM splits the cell at the pipe character **before** passing content to KaTeX, destroying the table layout.
+In Markdown tables, the pipe character `|` is the structural cell delimiter. If raw vertical bars `|` are used inside inline math (e.g. `$|x|$`, `$|C_i|$`, `$|\psi\rangle$`, `$\gcd(a, b) = 1 | c$`), GFM splits the cell at the pipe character **before** passing content to KaTeX, destroying the table layout.
 
-### The Solution: Absolute Value Macros
+### The Solution: Absolute Value & Conditioning Macros
 Always use LaTeX delimiter macros inside table cells:
 *   **Absolute values / Cardinality**: Use `\lvert ... \rvert` or `\vert ... \vert`.
     *   **Correct**: `$\lvert C_i \rvert = 120$`, `$\lvert q \rvert^2 = 1$`
@@ -69,12 +105,13 @@ Always use LaTeX delimiter macros inside table cells:
 *   **Norms**: Use `\lVert ... \rVert`.
     *   **Correct**: `$\lVert v \rVert \le 1$`
     *   **Incorrect**: `$||v|| \le 1$`
-*   **Set Conditioning in Tables**: Use `\mid`.
-    *   **Correct**: `$\{x \in X \mid f(x) = 0\}$`
+*   **Set Conditioning & Divisibility in Tables**: Use `\mid` or `\parallel`.
+    *   **Correct**: `$\{x \in X \mid f(x) = 0\}$`, `$k \mid d$`
+    *   **Incorrect**: `$\{x \in X | f(x) = 0\}$`, `$k | d$`
 
 ---
 
-## 5. KaTeX Delimiter Matching Rules for Sets
+## 7. KaTeX Delimiter Matching Rules for Sets
 
 ### The Problem
 Constructs using improper delimiter balancing (such as `\left\{ ... ;\middle\vert; ... \right\}`) cause KaTeX syntax errors because `\middle` requires an exact delimiter symbol without attached punctuation.
@@ -95,7 +132,7 @@ Constructs using improper delimiter balancing (such as `\left\{ ... ;\middle\ver
 
 ---
 
-## 6. Display Math Blocks (`$$ ... $$`) & Column 0 Alignment
+## 8. Display Math Blocks (`$$ ... $$`) & Column 0 Alignment
 
 Display math must be written on its own lines with blank lines before and after:
 
@@ -165,7 +202,7 @@ $$
 
 ---
 
-## 7. Matplotlib Text Formatting Best Practices (Publication Graphics)
+## 9. Matplotlib Text Formatting Best Practices (Publication Graphics)
 
 Matplotlib's internal mathtext renderer (`mathtext.fontset = 'cm'`) is **not** a full LaTeX compiler. Raw LaTeX text macros will render as literal unparsed strings if LaTeX is not explicitly invoked via system binaries.
 
@@ -190,13 +227,17 @@ Matplotlib's internal mathtext renderer (`mathtext.fontset = 'cm'`) is **not** a
 
 ---
 
-## 8. Automated Verification Checklist
+## 10. Automated Verification Checklist
 
 Before publishing or committing GFM math papers:
-- [x] All inline math `$...$` has no leading/trailing spaces.
-- [x] All math asterisks use `\ast` (`$I^\ast$`).
-- [x] All table absolute values use `\lvert ... \rvert` or `\vert ... \vert`.
-- [x] All figure and table captions use bold prefixes (`**Figure N:** ...`).
-- [x] All display math blocks (`$$`) are unindented at Column 0 with blank lines before/after.
-- [x] All set delimiters use clean `\{ ... \mid ... \}` or `\left\{ ... \;\middle|\; ... \right\}` syntax.
-- [x] Python figure scripts avoid raw `\textbf{...}` macros in non-LaTeX matplotlib text.
+- [x] **0 backtick math tokens**: Never use `$ `...` $` — use standard `$math$` and `$$\n...\n$$`.
+- [x] **Inline math spacing**: All inline math `$...$` has no leading or trailing spaces.
+- [x] **`\mathbf` syntax**: Bold only alphanumeric symbols (`$\mathbf{S}_8 = 0.776 \pm 0.014$`); no operators (`=`, `\pm`) inside `\mathbf{...}`.
+- [x] **No `\text{--}` in math**: Use single hyphens `$\text{-}$` inside math or `--` in markdown prose.
+- [x] **Hyphen-attached expressions**: Use `$\text{low-}\ell$` format, not `low-$\ell$`.
+- [x] **Asterisk escaping**: All math asterisks use `\ast` (`$I^\ast$`).
+- [x] **Table delimiters**: All table absolute values use `\lvert ... \rvert` or `\vert ... \vert` and conditioning/divisibility uses `\mid`.
+- [x] **Captions**: All figure and table captions use bold prefixes (`**Figure N:** ...`).
+- [x] **Display math alignment**: All display math blocks (`$$`) are unindented at Column 0 with blank lines before/after.
+- [x] **Set delimiters**: All set delimiters use clean `\{ ... \mid ... \}` or `\left\{ ... \;\middle|\; ... \right\}` syntax.
+- [x] **Matplotlib figures**: Python figure scripts avoid raw `\textbf{...}` macros in non-LaTeX matplotlib text.
