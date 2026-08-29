@@ -129,6 +129,9 @@ r_{\mathrm{inj}} = \frac{\pi R_c}{10}
 $$
 ```
 
+### Post-Equation Text Indentation
+Never indent prose lines following a display math block by $\ge 4$ spaces (e.g. `     where W = C^{-1}...`). CommonMark parses any line indented by 4 or more spaces following a blank line as an **indented code block**, which prints the prose and math as literal code text inside a gray box. Keep follow-up descriptions flush with the list indentation or at Column 0.
+
 ### Display Math inside Blockquotes (`>`)
 When using display math inside Markdown callouts or blockquotes, maintain clean `>` prefixing without extra 4-space indentation:
 
