@@ -11,6 +11,11 @@ Inline math delimiters (`$`) **must** be tightly coupled to their content. There
 *   **Correct (Renders)**: `$x$` or `$\sigma \in [0.1, 0.9]$`
 *   **Incorrect (Fails)**: `$ x$` or `$x $` or `$ \sigma \in [0.1, 0.9] $`
 
+### Hyphen-Attached Math Expressions (`low-$\ell$`, `high-$\ell$`, `small-$t$`)
+In CommonMark / GFM, the regex detecting opening math delimiters `$math$` requires the dollar sign to be preceded by whitespace or recognized opening punctuation. A preceding hyphen (`-`) is treated as a word character, which prevents the parser from recognizing the dollar sign as an opening math delimiter.
+*   **Incorrect (Fails to compile / shows raw text)**: `low-$\ell$`, `high-$\ell$`, `small-$t$`, `Low-$L$`, `Lyman-$\alpha$`
+*   **Correct (Compiles cleanly in KaTeX)**: `$\text{low-}\ell$`, `$\text{high-}\ell$`, `$\text{small-}t$`, `$\text{Low-}L$`, `$\text{Lyman-}\alpha$`
+
 ### Character Mangling and Escaping
 The GFM parser processes standard Markdown rules (like italics via `_` and HTML tags via `<` and `>`) **before** the math engine compiles. To prevent character mangling:
 *   Avoid using raw `<` or `>` inside inline math. Instead, use `\lt`, `\gt`, `\le`, `\ge`.
