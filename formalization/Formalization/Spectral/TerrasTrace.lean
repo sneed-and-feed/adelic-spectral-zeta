@@ -8,6 +8,8 @@ structure ArtinSchreierExt (F : Type*) [CommRing F] (nu : F) where
 
 namespace ArtinSchreierExt
 
+section TerrasTrace
+
 variable {F : Type*} [Field F] {nu : F}
 
 def add (a b : ArtinSchreierExt F nu) : ArtinSchreierExt F nu :=
@@ -71,5 +73,7 @@ def action (g : Matrix (Fin 2) (Fin 2) F) (z : ArtinSchreierExt F nu) : ArtinSch
   let c := ArtinSchreierExt.mk (g 1 0) 0
   let d := ArtinSchreierExt.mk (g 1 1) 0
   (a * z + b) / (c * z + d)
+
+end TerrasTrace
 
 end ArtinSchreierExt

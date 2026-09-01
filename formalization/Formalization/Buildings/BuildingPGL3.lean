@@ -153,6 +153,8 @@ def aptNeighbors2 (v : ApartmentSite) : Finset ApartmentSite :=
 -- Section 3: Radial Weyl Chamber Difference Operators
 -- ============================================================================
 
+section RadialPGL3
+
 variable {R : Type*} [CommRing R]
 
 /-- Radial Hecke difference operator T₁ acting on functions f : ℤ × ℤ → R:
@@ -203,14 +205,14 @@ theorem radial_commute (q : R) (f : ℤ × ℤ → R) :
     radialT1 q (radialT2 q f) = radialT2 q (radialT1 q f) := by
   ext ⟨m, n⟩
   dsimp [radialT1, radialT2]
-  ring
+  ring_nf
 
 /-- The radial commutator is identically zero on all lattice functions. -/
 theorem radialCommutator_eq_zero (q : R) (f : ℤ × ℤ → R) :
     radialCommutator q f = 0 := by
   ext ⟨m, n⟩
   dsimp [radialCommutator, radialT1, radialT2]
-  ring
+  ring_nf
 
 /-- The 7-point symmetric convolution stencil for the composition T₁ ∘ T₂. -/
 theorem radial_comp_stencil (q : R) (f : ℤ × ℤ → R) (m n : ℤ) :
@@ -223,7 +225,7 @@ theorem radial_comp_stencil (q : R) (f : ℤ × ℤ → R) (m n : ℤ) :
       q * f (m - 2, n + 1) +
       f (m - 1, n - 1) := by
   dsimp [radialT1, radialT2]
-  ring
+  ring_nf
 
 /-- The identical 7-point convolution stencil for T₂ ∘ T₁. -/
 theorem radial_comp_stencil_T2_T1 (q : R) (f : ℤ × ℤ → R) (m n : ℤ) :
@@ -236,7 +238,7 @@ theorem radial_comp_stencil_T2_T1 (q : R) (f : ℤ × ℤ → R) (m n : ℤ) :
       q * f (m - 2, n + 1) +
       f (m - 1, n - 1) := by
   dsimp [radialT1, radialT2]
-  ring
+  ring_nf
 
 -- ============================================================================
 -- Section 4: Satake Parameters and Macdonald Spherical Recurrence Relations
@@ -295,10 +297,7 @@ theorem macdonald_eigenvalue_T1 (S : SatakeSystem R) (ψ : ℤ × ℤ → R)
   dsimp [radialT1, SatakeSystem.e1]
   rw [h.shift_e1, h.shift_e2, h.shift_e3]
   have hq : S.q^2 * (S.q_inv * S.z1 * ψ (m, n)) = S.q * S.z1 * ψ (m, n) := by
-    calc
-      S.q^2 * (S.q_inv * S.z1 * ψ (m, n)) = (S.q * (S.q * S.q_inv)) * S.z1 * ψ (m, n) := by ring
-      _ = (S.q * 1) * S.z1 * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q * S.z1 * ψ (m, n) := by ring
+    linear_combination (S.q * S.z1 * ψ (m, n)) * S.mul_q_inv
   rw [hq]
   ring
 
@@ -311,10 +310,7 @@ theorem macdonald_eigenvalue_T2 (S : SatakeSystem R) (ψ : ℤ × ℤ → R)
   dsimp [radialT2, SatakeSystem.e2]
   rw [h.shift_f1, h.shift_f2, h.shift_f3]
   have hq : S.q^2 * (S.q_inv * (S.z1 * S.z2) * ψ (m, n)) = S.q * (S.z1 * S.z2) * ψ (m, n) := by
-    calc
-      S.q^2 * (S.q_inv * (S.z1 * S.z2) * ψ (m, n)) = (S.q * (S.q * S.q_inv)) * (S.z1 * S.z2) * ψ (m, n) := by ring
-      _ = (S.q * 1) * (S.z1 * S.z2) * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q * (S.z1 * S.z2) * ψ (m, n) := by ring
+    linear_combination (S.q * (S.z1 * S.z2) * ψ (m, n)) * S.mul_q_inv
   rw [hq]
   ring
 
@@ -350,51 +346,31 @@ def weylAct (w : WeylA2) (S : SatakeSystem R) : SatakeSystem R :=
       z1_inv := S.z2_inv, z2_inv := S.z1_inv, z3_inv := S.z3_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z2_inv, mul_z2_inv := S.mul_z1_inv, mul_z3_inv := S.mul_z3_inv
-      det_one := by
-        have h := S.det_one
-        calc
-          S.z2 * S.z1 * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-          _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylA2.s23 =>
     { q := S.q, z1 := S.z1, z2 := S.z3, z3 := S.z2
       z1_inv := S.z1_inv, z2_inv := S.z3_inv, z3_inv := S.z2_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z1_inv, mul_z2_inv := S.mul_z3_inv, mul_z3_inv := S.mul_z2_inv
-      det_one := by
-        have h := S.det_one
-        calc
-          S.z1 * S.z3 * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-          _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylA2.s13 =>
     { q := S.q, z1 := S.z3, z2 := S.z2, z3 := S.z1
       z1_inv := S.z3_inv, z2_inv := S.z2_inv, z3_inv := S.z1_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z3_inv, mul_z2_inv := S.mul_z2_inv, mul_z3_inv := S.mul_z1_inv
-      det_one := by
-        have h := S.det_one
-        calc
-          S.z3 * S.z2 * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-          _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylA2.c123 =>
     { q := S.q, z1 := S.z2, z2 := S.z3, z3 := S.z1
       z1_inv := S.z2_inv, z2_inv := S.z3_inv, z3_inv := S.z1_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z2_inv, mul_z2_inv := S.mul_z3_inv, mul_z3_inv := S.mul_z1_inv
-      det_one := by
-        have h := S.det_one
-        calc
-          S.z2 * S.z3 * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-          _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylA2.c132 =>
     { q := S.q, z1 := S.z3, z2 := S.z1, z3 := S.z2
       z1_inv := S.z3_inv, z2_inv := S.z1_inv, z3_inv := S.z2_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z3_inv, mul_z2_inv := S.mul_z1_inv, mul_z3_inv := S.mul_z2_inv
-      det_one := by
-        have h := S.det_one
-        calc
-          S.z3 * S.z1 * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-          _ = 1 := h }
+      det_one := by linear_combination S.det_one }
 
 /-- The parameter q is preserved under all Weyl actions. -/
 theorem weyl_q (w : WeylA2) (S : SatakeSystem R) : (weylAct w S).q = S.q := by
@@ -403,20 +379,12 @@ theorem weyl_q (w : WeylA2) (S : SatakeSystem R) : (weylAct w S).q = S.q := by
 /-- The first elementary symmetric invariant e₁(z) is invariant under the entire Weyl group S₃. -/
 theorem weyl_invar_e1 (w : WeylA2) (S : SatakeSystem R) :
     (weylAct w S).e1 = S.e1 := by
-  cases w
-  · rfl
-  all_goals
-    dsimp [weylAct, SatakeSystem.e1]
-    ring
+  cases w <;> dsimp [weylAct, SatakeSystem.e1] <;> first | rfl | ring
 
 /-- The second elementary symmetric invariant e₂(z) is invariant under the entire Weyl group S₃. -/
 theorem weyl_invar_e2 (w : WeylA2) (S : SatakeSystem R) :
     (weylAct w S).e2 = S.e2 := by
-  cases w
-  · rfl
-  all_goals
-    dsimp [weylAct, SatakeSystem.e2]
-    ring
+  cases w <;> dsimp [weylAct, SatakeSystem.e2] <;> first | rfl | ring
 
 /-- A symmetrized Macdonald spherical wavefunction formed by summing Weyl components with weights. -/
 def symmetrizedMacdonald
@@ -529,3 +497,5 @@ theorem ramanujan_gap_formula (q : R) :
     0 - maxTemperedLaplacianEigenvalue q = 2 * (q - 1)^2 := by
   dsimp [maxTemperedLaplacianEigenvalue, regularDegree]
   ring
+
+end RadialPGL3

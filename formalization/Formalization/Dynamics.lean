@@ -2,6 +2,7 @@ import Formalization.Dynamics.CollatzGalois
 import Formalization.Dynamics.CollatzRelMatrix
 import Formalization.Dynamics.CollatzZ2
 import Formalization.Dynamics.CollatzZeta
+import Formalization.Dynamics.MonomialOperator
 import Formalization.Dynamics.TwistedBlockPow
 import Formalization.Dynamics.RationalZeta
 import Formalization.Dynamics.InductiveTower

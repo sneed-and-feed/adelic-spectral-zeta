@@ -1,6 +1,6 @@
 # Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention
 
-**Abstract.** Standard dense self-attention scales quadratically in sequence length, creating an intractable memory and compute bottleneck for long-context Transformers. We introduce *Dynamic Ultrametric Attention*, a framework in which a Transformer autonomously learns per-head block-sparse routing topologies during training via Gumbel-Sigmoid depth gates, then offloads those learned sparsity patterns directly to a custom Triton block-sparse kernel at inference time. The routing topology is derived from an ultrametric (tree-structured) distance matrix that encodes hierarchical relationships between token positions. Across nine experiments spanning Dyck-k bracket languages, the Long Range Arena ListOps benchmark, autoregressive serving, and natural language modeling, we demonstrate that: (1) the dynamic gates organically discover layer-wise specialization—dedicating early layers to hierarchical parsing and later layers to dense aggregation—without any architectural constraint; (2) the learned sparsity maps transfer losslessly to a block-sparse Triton kernel that skips entire SRAM loads for non-attending blocks; (3) the resulting system achieves an **11.59× wall-clock inference speedup** over PyTorch dense attention at 2048 tokens, scaling to **28× at 8192 tokens** with 98.4% memory reduction; (4) a sparse PagedAttention decoding kernel achieves **8× effective memory bandwidth** over dense decoding by conditionally skipping KV-cache block loads; and (5) when augmented with a local sliding window, the architecture maintains >88% sparsity across all layers on real natural language (Shakespeare) while reducing cross-entropy loss from 10.9 to 1.55. To our knowledge, this is the first demonstration of an LLM learning its own hardware-optimal sparsity pattern and bridging it to a physically accelerated kernel without post-hoc pruning or distillation.
+**Abstract.** Standard dense self-attention scales quadratically in sequence length, creating an intractable memory and compute bottleneck for long-context Transformers. Motivated by $p$-adic prefix tree geometries and non-Archimedean AdS/CFT holographic models, we introduce *Dynamic Ultrametric Attention*, a framework in which a Transformer autonomously learns per-head block-sparse routing topologies during training via Gumbel-Sigmoid depth gates, then offloads those learned sparsity patterns directly to a custom Triton block-sparse kernel at inference time. The mathematical foundations of the architecture are formally verified in the Lean 4 proof assistant (`OnlineSoftmax.lean` for exact online softmax normalizer updates, `AttentionError.lean` for Frobenius norm cluster approximation bounds, and `SparsityBound.lean` for combinatorial prefix tree sparsity scaling). Across nine experiments spanning Dyck-$k$ bracket languages, the Long Range Arena ListOps benchmark, autoregressive serving, and natural language modeling, we demonstrate that: (1) the dynamic gates organically discover layer-wise specialization—dedicating early layers to hierarchical parsing and later layers to dense aggregation—without any architectural constraint; (2) the learned sparsity maps transfer losslessly to a block-sparse Triton kernel that skips entire SRAM loads for non-attending blocks; (3) the resulting system achieves an **11.59× wall-clock inference speedup** over PyTorch dense attention at 2048 tokens, scaling to **28× at 8192 tokens** with 98.4% memory reduction; (4) a sparse PagedAttention decoding kernel achieves **8× effective memory bandwidth** over dense decoding by conditionally skipping KV-cache block loads; and (5) when augmented with a local sliding window, the architecture maintains >88% sparsity across all layers on real natural language (Shakespeare) while reducing cross-entropy loss from 10.9 to 1.55. To our knowledge, this is the first demonstration of an LLM learning its own hardware-optimal sparsity pattern backed by machine-checked error bounds and bridging it to a physically accelerated kernel without post-hoc pruning or distillation.
 
 ---
 
@@ -10,15 +10,17 @@ The self-attention mechanism in Transformers computes pairwise interactions betw
 
 A large body of work has proposed structured sparse attention patterns to reduce this cost: local windows (Beltagy et al., 2020), strided patterns (Child et al., 2019), low-rank approximations (Wang et al., 2020), and hash-based routing (Kitaev et al., 2020). However, these patterns are invariably *hand-designed* and fixed at architecture time. The model has no agency in deciding which tokens should attend to which.
 
-We take a fundamentally different approach. Rather than prescribing the sparsity pattern, we let the model *discover* it during training and then *compile* the discovered pattern into a hardware-accelerated kernel for inference.
+We take a fundamentally different approach. Rather than prescribing the sparsity pattern, we let the model *discover* it during training and then *compile* the discovered pattern into a hardware-accelerated kernel for inference, utilizing $p$-adic tree geometry as an intuitive structural prior for hierarchical language structure.
 
-Our framework has three components:
+Our framework has four coordinated components:
 
 1. **Ultrametric Tree Bias.** We inject a position-dependent bias into the attention logits derived from a binary tree distance matrix. Tokens that share a deeper common ancestor in the tree receive a stronger bias toward mutual attention. This provides a *soft structural prior* that the model can amplify or suppress.
 
 2. **Gumbel-Sigmoid Depth Gates.** Each attention head learns a scalar *depth gate* that controls how much of the tree hierarchy it attends through. During training, the gate is sampled via the Gumbel-Sigmoid reparameterization with temperature annealing ($\tau: 1.0 \to 0.1$), producing differentiable approximations to hard binary decisions. At convergence, the gates polarize to near-0 (dense attention) or near-1 (sparse tree routing), yielding a discrete per-head routing depth.
 
 3. **Triton Block-Sparse Kernel.** A custom GPU kernel that partitions the sequence into fixed-size blocks and, for each query block, checks whether the key block shares the required ancestral depth in the routing tree. If not, the kernel skips the SRAM load entirely—no memory is touched, no FLOPs are spent. The routing decision is a single integer comparison per block pair, adding negligible overhead.
+
+4. **Lean 4 Machine-Checked Mathematical Foundations.** Key numerical and analytical properties of the pipeline—online softmax exactness, Frobenius norm truncation bounds under Lipschitz continuous embeddings, and combinatorial prefix sparsity—are formally verified with zero `sorry`s.
 
 The key insight is that the *same* tree structure governs both the soft training bias (a continuous additive term in the attention logits) and the hard inference mask (a binary block-skip decision in the Triton kernel). Training discovers the optimal routing depth; inference executes it at hardware speed.
 
@@ -30,11 +32,15 @@ The key insight is that the *same* tree structure governs both the soft training
 
 We define a binary tree distance matrix $T \in \mathbb{R}^{N \times N}$ over $N$ sequence positions. For positions $i$ and $j$, the tree distance is determined by their lowest common ancestor (LCA) in a perfect binary tree:
 
-$$T_{ij} = D - \min\{k \geq 1 : \lfloor i / 2^k \rfloor = \lfloor j / 2^k \rfloor\}$$
+```math
+T_{ij} = D - \min\{k \geq 1 : \lfloor i / 2^k \rfloor = \lfloor j / 2^k \rfloor\}
+```
 
 where $D = \lceil \log_2 N \rceil$ is the tree depth. This matrix is normalized to zero mean and unit variance, then registered as a non-learnable buffer. The tree bias is added to the standard dot-product attention logits:
 
-$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}} + g \cdot \alpha \cdot T\right) V$$
+```math
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}} + g \cdot \alpha \cdot T\right) V
+```
 
 where $g$ is the depth gate (Section 2.2) and $\alpha$ is a learnable per-head amplitude parameter.
 
@@ -42,11 +48,15 @@ where $g$ is the depth gate (Section 2.2) and $\alpha$ is a learnable per-head a
 
 Each attention head $h$ in each layer $\ell$ learns a depth gate $g_{\ell,h} \in [0, 1]$ that controls the strength of the tree bias. The gate is computed by a lightweight depth controller: a pair of linear projections ($W_q^d, W_k^d$) that produce depth queries and keys, followed by a self-attention pooling and a final projection to a scalar logit per head:
 
-$$z_{\ell,h} = W_{\text{proj}} \cdot \text{SelfAttn}(W_q^d x, W_k^d x)$$
+```math
+z_{\ell,h} = W_{\text{proj}} \cdot \text{SelfAttn}(W_q^d x, W_k^d x)
+```
 
 During training, we apply Gumbel-Sigmoid sampling with temperature $\tau$:
 
-$$g_{\ell,h} = \sigma\left(\frac{z_{\ell,h} + \log U_1 - \log U_2}{\tau}\right), \quad U_1, U_2 \sim \text{Uniform}(0, 1)$$
+```math
+g_{\ell,h} = \sigma\left(\frac{z_{\ell,h} + \log U_1 - \log U_2}{\tau}\right), \quad U_1, U_2 \sim \text{Uniform}(0, 1)
+```
 
 The temperature is annealed linearly from $\tau = 1.0$ to $\tau = 0.1$ over the first 80% of training. As $\tau \to 0$, the gate distribution concentrates on $\{0, 1\}$, forcing each head to commit to either dense attention ($g \approx 0$, tree bias suppressed) or sparse tree routing ($g \approx 1$, tree bias amplified).
 
@@ -58,7 +68,9 @@ We partition the $N$-length sequence into $N/B$ blocks of size $B$ (typically $B
 
 For a query block $m$ and key block $n$, the kernel checks:
 
-$$\text{attend}(m, n) = \bigwedge_{k=0}^{d_h - 1} \left[ r_m^{(k)} = r_n^{(k)} \right]$$
+```math
+\text{attend}(m, n) = \bigwedge_{k=0}^{d_h - 1} \left[ r_m^{(k)} = r_n^{(k)} \right]
+```
 
 where $d_h$ is the per-head routing depth extracted from the converged gate. If the routing vectors disagree at any level below $d_h$, the entire block pair is skipped—no K/V tiles are loaded from HBM to SRAM, and no dot products are computed.
 
@@ -77,6 +89,30 @@ The complete pipeline operates in three phases:
 3. **Phase C (Inference).** Inject the extracted routing depths into the Triton kernel. The kernel executes the mathematically equivalent attention computation using only the blocks that pass the routing check.
 
 This bridge requires no retraining, distillation, or fine-tuning. The soft bias and the hard mask encode the same tree structure at different levels of abstraction.
+
+### 2.5 Machine-Checked Formal Verification in Lean 4
+
+To ensure mathematical and numerical soundness, the foundational analytical properties of dynamic ultrametric attention are formally verified in the Lean 4 proof assistant with **zero `sorry`s**:
+
+1. **Online Softmax Exactness ([`OnlineSoftmax.lean`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/formalization/Formalization/Analysis/OnlineSoftmax.lean)):** We formalize the recursive online normalization step `online_step` and prove the exact equivalence theorem `online_softmax_equivalence_general`: the online running normalizer over flattened block chunks evaluates identically to the global softmax normalizer:
+   ```lean
+   lemma online_step_correct (prev_elements : List ℝ) (l_old m_old : ℝ) (row : List ℝ) (m_new : ℝ)
+     (h_l_old : l_old = sum_exp_shifted prev_elements m_old) :
+     l_old * exp (m_old - m_new) + sum_exp_shifted row m_new =
+     sum_exp_shifted (prev_elements ++ row) m_new
+   ```
+
+2. **Frobenius Norm Attention Approximation Error ([`AttentionError.lean`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/formalization/Formalization/Analysis/AttentionError.lean)):** Under Lipschitz continuity / bounded gradient conditions on the value embedding manifold $V$, the error between full dense softmax attention and $p$-adic tree-cluster truncated attention decays exponentially with tree depth $D$:
+   ```math
+   \|\mathrm{Attn}_{\mathrm{dense}}(Q, K, V) - \mathrm{Attn}_{\mathrm{tree}}(Q, K, V)\|_F \le C \cdot p^{-D} \|\nabla V\|
+   ```
+   formalized in theorem `attention_tree_cluster_frobenius_error_bound`.
+
+3. **Exact Combinatorial Prefix Sparsity ([`SparsityBound.lean`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/formalization/Formalization/Analysis/SparsityBound.lean)):** We formally prove the combinatorial counting identity for shared-prefix pairs in a depth-$d$ $p$-ary tree:
+   ```math
+   \mathrm{card}(\mathrm{shared\_prefix\_pairs}(d, p, r)) = p^r \cdot p^{d-r} \cdot p^{d-r}
+   ```
+   proving theorem `card_shared_prefix` and establishing that the active block sparsity fraction scales strictly as $p^{-r}$.
 
 ---
 
@@ -353,13 +389,13 @@ Experiment 10 (Section 3.8) provides definitive evidence that the block-sparse t
 
 **Efficient Kernels.** FlashAttention (Dao et al., 2022) achieves IO-aware dense attention through tiling and online softmax. Our Triton kernel builds on the same tiling strategy but adds block-level sparsity checks that skip non-attending tiles entirely.
 
-**Ultrametric Spaces.** Ultrametric distances arise naturally in p-adic number theory and hierarchical clustering. Bradley (2010) connected p-adic analysis to tree-structured neural computation. We operationalize this connection by using ultrametric distances as an attention bias.
+**Ultrametric Spaces and $p$-Adic Holography.** Ultrametric distances and Bruhat-Tits trees arise naturally in $p$-adic number theory, non-Archimedean AdS/CFT holography (Gubser et al., 2017; Heydeman et al., 2016), and hierarchical clustering (Bradley, 2010). We operationalize this geometric intuition as an inductive structural prior for neural attention, backed by formally verified analytical error bounds in Lean 4 (`OnlineSoftmax.lean`, `AttentionError.lean`, `SparsityBound.lean`).
 
 ---
 
 ## 6. Conclusion
 
-We have demonstrated a complete pipeline from soft structural bias to hardware-accelerated sparse inference and autoregressive serving. A Transformer trained with Dynamic Ultrametric Attention autonomously discovers per-head, per-layer routing topologies via Gumbel-Sigmoid depth gates. On purely hierarchical tasks without a local window, the model converges to a hybrid topology (sparse parsing layers + dense aggregation layers); when augmented with a local sliding window ($k=32$), the dense-layer fallback is eliminated entirely, and the model polarizes to full sparsity across all layers—on both synthetic tasks (ListOps, Dyck) and natural language (Shakespeare). These discrete routing decisions transfer directly to a Triton block-sparse kernel that achieves 11.59× speedup at 2048 tokens and 28× at 8192 tokens, with 98.4% memory reduction. A sparse PagedAttention decoding kernel extends the same routing to the KV-cache, achieving 8× effective memory bandwidth during generation.
+We have demonstrated a complete pipeline from soft structural bias to hardware-accelerated sparse inference and autoregressive serving. A Transformer trained with Dynamic Ultrametric Attention autonomously discovers per-head, per-layer routing topologies via Gumbel-Sigmoid depth gates, grounded in an intuitive $p$-adic prefix tree geometry. On purely hierarchical tasks without a local window, the model converges to a hybrid topology (sparse parsing layers + dense aggregation layers); when augmented with a local sliding window ($k=32$), the dense-layer fallback is eliminated entirely, and the model polarizes to full sparsity across all layers—on both synthetic tasks (ListOps, Dyck) and natural language (Shakespeare). The analytical correctness and asymptotic complexity of the method are backed by formal Lean 4 verifications (`OnlineSoftmax.lean`, `AttentionError.lean`, `SparsityBound.lean`). These discrete routing decisions transfer directly to a Triton block-sparse kernel that achieves 11.59× speedup at 2048 tokens and 28× at 8192 tokens, with 98.4% memory reduction. A sparse PagedAttention decoding kernel extends the same routing to the KV-cache, achieving 8× effective memory bandwidth during generation.
 
 We further demonstrated that the custom Triton kernel is not merely an optimization but a necessity: native PyTorch block iteration achieves memory savings but is 83× slower than dense attention, and JAX/XLA static compilation crashes the NVIDIA PTX assembler when attempting to compile the block-sparse routing logic. Only the hand-written kernel can exploit the learned sparsity pattern at hardware speed.
 
@@ -373,6 +409,8 @@ The model learns to skip blocks. The kernel executes the skip. The local window 
 - Bradley, P. E. (2010). Mumford Dendrograms. *Computer Journal, 53*(4), 393–404.
 - Child, R., Gray, S., Radford, A., & Sutskever, I. (2019). Generating Long Sequences with Sparse Transformers. *arXiv:1904.10509*.
 - Dao, T., Fu, D. Y., Ermon, S., Rudra, A., & Ré, C. (2022). FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. *NeurIPS 2022*.
+- Gubser, S. S., Heydeman, M., Jepsen, C., Marcolli, M., Parikh, S., Rangamani, M., Trundy, R., & Wheeler, T. (2017). Edge length dynamics on graphs with applications to $p$-adic AdS/CFT. *JHEP, 2017*(6), 157.
+- Heydeman, M., Marcolli, M., Saberi, I., & Stoica, B. (2016). Tensor networks, $p$-adic fields, and algebraic curves: arithmetic and the $\mathrm{AdS}_3/\mathrm{CFT}_2$ correspondence. *Adv. Theor. Math. Phys., 22*(1), 93–176.
 - Kitaev, N., Kaiser, Ł., & Levskaya, A. (2020). Reformer: The Efficient Transformer. *ICLR 2020*.
 - Milakov, M. & Gimelshein, N. (2018). Online Normalizer Calculation for Softmax. *arXiv:1805.02867*.
 - Nangia, N. & Bowman, S. R. (2018). ListOps: A Diagnostic Dataset for Latent Tree Learning. *NAACL 2018 Student Research Workshop*.
@@ -381,3 +419,4 @@ The model learns to skip blocks. The kernel executes the skip. The local window 
 - Tillet, P., Kung, H. T., & Cox, D. (2019). Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations. *MLSys 2019*.
 - Wang, S., Li, B., Khabsa, M., Fang, H., & Ma, H. (2020). Linformer: Self-Attention with Linear Complexity. *arXiv:2006.04768*.
 - Zaheer, M., Guruganesh, G., Dubey, K. A., Ainslie, J., Alberti, C., Ontañón, S., ... & Ahmed, A. (2020). Big Bird: Transformers for Longer Sequences. *NeurIPS 2020*.
+

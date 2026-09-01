@@ -235,6 +235,8 @@ theorem card_aptAllRoots : aptAllRoots.card = 12 := by
 -- Section 3: Radial Difference Operators T_short and T_long
 -- ============================================================================
 
+section RadialG2
+
 variable {R : Type*} [CommRing R]
 
 /-- Radial Hecke difference operator T_short acting on functions f : ℤ × ℤ → R:
@@ -321,21 +323,21 @@ theorem radial_g2_commute (q : R) (f : ℤ × ℤ → R) :
     radialT_short q (radialT_long q f) = radialT_long q (radialT_short q f) := by
   ext ⟨m, n⟩
   dsimp [radialT_short, radialT_long]
-  ring
+  ring_nf
 
 /-- The radial G₂ commutator is identically zero on all lattice functions. -/
 theorem radialG2Commutator_eq_zero (q : R) (f : ℤ × ℤ → R) :
     radialG2Commutator q f = 0 := by
   ext ⟨m, n⟩
   dsimp [radialG2Commutator, radialT_short, radialT_long]
-  ring
+  ring_nf
 
 /-- Exact symmetric convolution stencil identity for T_short ∘ T_long. -/
 theorem radial_g2_comp_stencil (q : R) (f : ℤ × ℤ → R) (m n : ℤ) :
     radialT_short q (radialT_long q f) (m, n) =
       radialT_long q (radialT_short q f) (m, n) := by
   dsimp [radialT_short, radialT_long]
-  ring
+  ring_nf
 
 -- ============================================================================
 -- Section 4: G₂ Satake Parameter System and Macdonald Spherical Recurrence
@@ -408,15 +410,9 @@ theorem macdonald_eigenvalue_T_short (S : SatakeSystemG2 R) (ψ : ℤ × ℤ →
   dsimp [radialT_short, SatakeSystemG2.e1, SatakeSystemG2.e2]
   rw [h.shift_s1, h.shift_s2, h.shift_s3, h.shift_s4, h.shift_s5, h.shift_s6]
   have hq1 : S.q^2 * (S.q_inv * S.z1 * ψ (m, n)) = S.q * S.z1 * ψ (m, n) := by
-    calc
-      S.q^2 * (S.q_inv * S.z1 * ψ (m, n)) = (S.q * (S.q * S.q_inv)) * S.z1 * ψ (m, n) := by ring
-      _ = (S.q * 1) * S.z1 * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q * S.z1 * ψ (m, n) := by ring
+    linear_combination (S.q * S.z1 * ψ (m, n)) * S.mul_q_inv
   have hq2 : S.q^2 * (S.q_inv * (S.z1 * S.z2) * ψ (m, n)) = S.q * (S.z1 * S.z2) * ψ (m, n) := by
-    calc
-      S.q^2 * (S.q_inv * (S.z1 * S.z2) * ψ (m, n)) = (S.q * (S.q * S.q_inv)) * (S.z1 * S.z2) * ψ (m, n) := by ring
-      _ = (S.q * 1) * (S.z1 * S.z2) * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q * (S.z1 * S.z2) * ψ (m, n) := by ring
+    linear_combination (S.q * (S.z1 * S.z2) * ψ (m, n)) * S.mul_q_inv
   rw [hq1, hq2]
   ring
 
@@ -428,37 +424,15 @@ theorem macdonald_eigenvalue_T_long (S : SatakeSystemG2 R) (ψ : ℤ × ℤ → 
   rw [h.shift_l1, h.shift_l2, h.shift_l3, h.shift_l4, h.shift_l5, h.shift_l6]
   have hq4 : S.q^4 * (S.q_inv^2 * (S.z1^2 * S.z2) * ψ (m, n)) =
       S.q^2 * (S.z1^2 * S.z2) * ψ (m, n) := by
-    calc
-      S.q^4 * (S.q_inv^2 * (S.z1^2 * S.z2) * ψ (m, n)) =
-        (S.q^2 * (S.q * S.q_inv)^2) * (S.z1^2 * S.z2) * ψ (m, n) := by ring
-      _ = (S.q^2 * 1^2) * (S.z1^2 * S.z2) * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q^2 * (S.z1^2 * S.z2) * ψ (m, n) := by ring
+    linear_combination (S.q^2 * (S.q * S.q_inv + 1) * (S.z1^2 * S.z2) * ψ (m, n)) * S.mul_q_inv
   have hq3a : S.q^3 * (S.q_inv * (S.z1^2 * S.z3) * ψ (m, n)) =
       S.q^2 * (S.z1^2 * S.z3) * ψ (m, n) := by
-    calc
-      S.q^3 * (S.q_inv * (S.z1^2 * S.z3) * ψ (m, n)) =
-        (S.q^2 * (S.q * S.q_inv)) * (S.z1^2 * S.z3) * ψ (m, n) := by ring
-      _ = (S.q^2 * 1) * (S.z1^2 * S.z3) * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q^2 * (S.z1^2 * S.z3) * ψ (m, n) := by ring
+    linear_combination (S.q^2 * (S.z1^2 * S.z3) * ψ (m, n)) * S.mul_q_inv
   have hq3b : S.q^3 * (S.q_inv * (S.z2^2 * S.z3) * ψ (m, n)) =
       S.q^2 * (S.z2^2 * S.z3) * ψ (m, n) := by
-    calc
-      S.q^3 * (S.q_inv * (S.z2^2 * S.z3) * ψ (m, n)) =
-        (S.q^2 * (S.q * S.q_inv)) * (S.z2^2 * S.z3) * ψ (m, n) := by ring
-      _ = (S.q^2 * 1) * (S.z2^2 * S.z3) * ψ (m, n) := by rw [S.mul_q_inv]
-      _ = S.q^2 * (S.z2^2 * S.z3) * ψ (m, n) := by ring
+    linear_combination (S.q^2 * (S.z2^2 * S.z3) * ψ (m, n)) * S.mul_q_inv
   rw [hq4, hq3a, hq3b]
-  have hdet := S.det_one
-  calc
-    S.q^2 * (S.z1^2 * S.z2) * ψ (m, n) +
-    S.q^2 * (S.z1^2 * S.z3) * ψ (m, n) +
-    S.q^2 * (S.z2^2 * S.z3) * ψ (m, n) +
-    S.q * (S.q * (S.z1 * S.z3^2) * ψ (m, n)) +
-    S.q * (S.q * (S.z2^2 * S.z1) * ψ (m, n)) +
-    (S.q^2 * (S.z2 * S.z3^2) * ψ (m, n))
-      = S.q^2 * ((S.z1 + S.z2 + S.z3) * (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) - 3 * (S.z1 * S.z2 * S.z3)) * ψ (m, n) := by ring
-    _ = S.q^2 * ((S.z1 + S.z2 + S.z3) * (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) - 3 * 1) * ψ (m, n) := by rw [hdet]
-    _ = S.q^2 * ((S.z1 + S.z2 + S.z3) * (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) - 3) * ψ (m, n) := by ring
+  linear_combination (-3 * S.q^2 * ψ (m, n)) * S.det_one
 
 /-- **Theorem (Discrete Laplacian Eigenvalue on G̃₂ Buildings)**:
     The discrete Laplacian Δ_G2 = T_short + T_long - d_reg(q) I acts on Macdonald waves with eigenvalue:
@@ -500,172 +474,79 @@ def weylActG2 (w : WeylG2) (S : SatakeSystemG2 R) : SatakeSystemG2 R :=
       z1_inv := S.z2_inv, z2_inv := S.z1_inv, z3_inv := S.z3_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z2_inv, mul_z2_inv := S.mul_z1_inv, mul_z3_inv := S.mul_z3_inv
-      det_one := by
-        have h := S.det_one
-        calc S.z2 * S.z1 * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylG2.s23 =>
     { q := S.q, z1 := S.z1, z2 := S.z3, z3 := S.z2
       z1_inv := S.z1_inv, z2_inv := S.z3_inv, z3_inv := S.z2_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z1_inv, mul_z2_inv := S.mul_z3_inv, mul_z3_inv := S.mul_z2_inv
-      det_one := by
-        have h := S.det_one
-        calc S.z1 * S.z3 * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylG2.s13 =>
     { q := S.q, z1 := S.z3, z2 := S.z2, z3 := S.z1
       z1_inv := S.z3_inv, z2_inv := S.z2_inv, z3_inv := S.z1_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z3_inv, mul_z2_inv := S.mul_z2_inv, mul_z3_inv := S.mul_z1_inv
-      det_one := by
-        have h := S.det_one
-        calc S.z3 * S.z2 * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylG2.c123 =>
     { q := S.q, z1 := S.z2, z2 := S.z3, z3 := S.z1
       z1_inv := S.z2_inv, z2_inv := S.z3_inv, z3_inv := S.z1_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z2_inv, mul_z2_inv := S.mul_z3_inv, mul_z3_inv := S.mul_z1_inv
-      det_one := by
-        have h := S.det_one
-        calc S.z2 * S.z3 * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylG2.c132 =>
     { q := S.q, z1 := S.z3, z2 := S.z1, z3 := S.z2
       z1_inv := S.z3_inv, z2_inv := S.z1_inv, z3_inv := S.z2_inv, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
       mul_z1_inv := S.mul_z3_inv, mul_z2_inv := S.mul_z1_inv, mul_z3_inv := S.mul_z2_inv
-      det_one := by
-        have h := S.det_one
-        calc S.z3 * S.z1 * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h }
+      det_one := by linear_combination S.det_one }
   | WeylG2.inv_id =>
     { q := S.q, z1 := S.z2 * S.z3, z2 := S.z1 * S.z3, z3 := S.z1 * S.z2
       z1_inv := S.z1, z2_inv := S.z2, z3_inv := S.z3, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
-      mul_z1_inv := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z2_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z3_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      det_one := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * (S.z1 * S.z3) * (S.z1 * S.z2) = (S.z1 * S.z2 * S.z3) * (S.z1 * S.z2 * S.z3) := by ring
-        _ = 1 * 1 := by rw [h]
-        _ = 1 := by ring }
+      mul_z1_inv := by linear_combination S.det_one
+      mul_z2_inv := by linear_combination S.det_one
+      mul_z3_inv := by linear_combination S.det_one
+      det_one := by linear_combination (S.z1 * S.z2 * S.z3 + 1) * S.det_one }
   | WeylG2.inv_s12 =>
     { q := S.q, z1 := S.z1 * S.z3, z2 := S.z2 * S.z3, z3 := S.z1 * S.z2
       z1_inv := S.z2, z2_inv := S.z1, z3_inv := S.z3, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
-      mul_z1_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z2_inv := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z3_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      det_one := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * (S.z2 * S.z3) * (S.z1 * S.z2) = (S.z1 * S.z2 * S.z3) * (S.z1 * S.z2 * S.z3) := by ring
-        _ = 1 * 1 := by rw [h]
-        _ = 1 := by ring }
+      mul_z1_inv := by linear_combination S.det_one
+      mul_z2_inv := by linear_combination S.det_one
+      mul_z3_inv := by linear_combination S.det_one
+      det_one := by linear_combination (S.z1 * S.z2 * S.z3 + 1) * S.det_one }
   | WeylG2.inv_s23 =>
     { q := S.q, z1 := S.z2 * S.z3, z2 := S.z1 * S.z2, z3 := S.z1 * S.z3
       z1_inv := S.z1, z2_inv := S.z3, z3_inv := S.z2, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
-      mul_z1_inv := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z2_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z3_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      det_one := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * (S.z1 * S.z2) * (S.z1 * S.z3) = (S.z1 * S.z2 * S.z3) * (S.z1 * S.z2 * S.z3) := by ring
-        _ = 1 * 1 := by rw [h]
-        _ = 1 := by ring }
+      mul_z1_inv := by linear_combination S.det_one
+      mul_z2_inv := by linear_combination S.det_one
+      mul_z3_inv := by linear_combination S.det_one
+      det_one := by linear_combination (S.z1 * S.z2 * S.z3 + 1) * S.det_one }
   | WeylG2.inv_s13 =>
     { q := S.q, z1 := S.z1 * S.z2, z2 := S.z1 * S.z3, z3 := S.z2 * S.z3
       z1_inv := S.z3, z2_inv := S.z2, z3_inv := S.z1, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
-      mul_z1_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z2_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z3_inv := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      det_one := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * (S.z1 * S.z3) * (S.z2 * S.z3) = (S.z1 * S.z2 * S.z3) * (S.z1 * S.z2 * S.z3) := by ring
-        _ = 1 * 1 := by rw [h]
-        _ = 1 := by ring }
+      mul_z1_inv := by linear_combination S.det_one
+      mul_z2_inv := by linear_combination S.det_one
+      mul_z3_inv := by linear_combination S.det_one
+      det_one := by linear_combination (S.z1 * S.z2 * S.z3 + 1) * S.det_one }
   | WeylG2.inv_c123 =>
     { q := S.q, z1 := S.z1 * S.z3, z2 := S.z1 * S.z2, z3 := S.z2 * S.z3
       z1_inv := S.z2, z2_inv := S.z3, z3_inv := S.z1, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
-      mul_z1_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z2_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z3_inv := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      det_one := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * (S.z1 * S.z2) * (S.z2 * S.z3) = (S.z1 * S.z2 * S.z3) * (S.z1 * S.z2 * S.z3) := by ring
-        _ = 1 * 1 := by rw [h]
-        _ = 1 := by ring }
+      mul_z1_inv := by linear_combination S.det_one
+      mul_z2_inv := by linear_combination S.det_one
+      mul_z3_inv := by linear_combination S.det_one
+      det_one := by linear_combination (S.z1 * S.z2 * S.z3 + 1) * S.det_one }
   | WeylG2.inv_c132 =>
     { q := S.q, z1 := S.z1 * S.z2, z2 := S.z2 * S.z3, z3 := S.z1 * S.z3
       z1_inv := S.z3, z2_inv := S.z1, z3_inv := S.z2, q_inv := S.q_inv
       mul_q_inv := S.mul_q_inv
-      mul_z1_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * S.z3 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z2_inv := by
-        have h := S.det_one
-        calc (S.z2 * S.z3) * S.z1 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      mul_z3_inv := by
-        have h := S.det_one
-        calc (S.z1 * S.z3) * S.z2 = S.z1 * S.z2 * S.z3 := by ring
-        _ = 1 := h
-      det_one := by
-        have h := S.det_one
-        calc (S.z1 * S.z2) * (S.z2 * S.z3) * (S.z1 * S.z3) = (S.z1 * S.z2 * S.z3) * (S.z1 * S.z2 * S.z3) := by ring
-        _ = 1 * 1 := by rw [h]
-        _ = 1 := by ring }
+      mul_z1_inv := by linear_combination S.det_one
+      mul_z2_inv := by linear_combination S.det_one
+      mul_z3_inv := by linear_combination S.det_one
+      det_one := by linear_combination (S.z1 * S.z2 * S.z3 + 1) * S.det_one }
 
 /-- The parameter q is preserved under all 12 Weyl actions. -/
 theorem weyl_q_g2 (w : WeylG2) (S : SatakeSystemG2 R) : (weylActG2 w S).q = S.q := by
@@ -674,98 +555,14 @@ theorem weyl_q_g2 (w : WeylG2) (S : SatakeSystemG2 R) : (weylActG2 w S).q = S.q 
 /-- The short root invariant (e₁ + e₂) is invariant under the entire Weyl group W(G₂). -/
 theorem weyl_invar_short (w : WeylG2) (S : SatakeSystemG2 R) :
     (weylActG2 w S).e1 + (weylActG2 w S).e2 = S.e1 + S.e2 := by
-  have hdet := S.det_one
-  cases w
-  · rfl
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_id
-    calc (weylActG2 WeylG2.inv_id S).e1 + (weylActG2 WeylG2.inv_id S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) + (S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 + 1 * S.e1 := by rw [hdet]; rfl
-      _ = S.e1 + S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_s12
-    calc (weylActG2 WeylG2.inv_s12 S).e1 + (weylActG2 WeylG2.inv_s12 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) + (S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 + 1 * S.e1 := by rw [hdet]; rfl
-      _ = S.e1 + S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_s23
-    calc (weylActG2 WeylG2.inv_s23 S).e1 + (weylActG2 WeylG2.inv_s23 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) + (S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 + 1 * S.e1 := by rw [hdet]; rfl
-      _ = S.e1 + S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_s13
-    calc (weylActG2 WeylG2.inv_s13 S).e1 + (weylActG2 WeylG2.inv_s13 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) + (S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 + 1 * S.e1 := by rw [hdet]; rfl
-      _ = S.e1 + S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_c123
-    calc (weylActG2 WeylG2.inv_c123 S).e1 + (weylActG2 WeylG2.inv_c123 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) + (S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 + 1 * S.e1 := by rw [hdet]; rfl
-      _ = S.e1 + S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_c132
-    calc (weylActG2 WeylG2.inv_c132 S).e1 + (weylActG2 WeylG2.inv_c132 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) + (S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 + 1 * S.e1 := by rw [hdet]; rfl
-      _ = S.e1 + S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
+  cases w <;> dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2] <;>
+    first | rfl | linear_combination (S.z1 + S.z2 + S.z3) * S.det_one | linear_combination
 
 /-- The long root invariant (e₁ e₂) is invariant under the entire Weyl group W(G₂). -/
 theorem weyl_invar_long (w : WeylG2) (S : SatakeSystemG2 R) :
     (weylActG2 w S).e1 * (weylActG2 w S).e2 = S.e1 * S.e2 := by
-  have hdet := S.det_one
-  cases w
-  · rfl
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_id
-    calc (weylActG2 WeylG2.inv_id S).e1 * (weylActG2 WeylG2.inv_id S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) * ((S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3)) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 * (1 * S.e1) := by rw [hdet]; rfl
-      _ = S.e1 * S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_s12
-    calc (weylActG2 WeylG2.inv_s12 S).e1 * (weylActG2 WeylG2.inv_s12 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) * ((S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3)) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 * (1 * S.e1) := by rw [hdet]; rfl
-      _ = S.e1 * S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_s23
-    calc (weylActG2 WeylG2.inv_s23 S).e1 * (weylActG2 WeylG2.inv_s23 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) * ((S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3)) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 * (1 * S.e1) := by rw [hdet]; rfl
-      _ = S.e1 * S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_s13
-    calc (weylActG2 WeylG2.inv_s13 S).e1 * (weylActG2 WeylG2.inv_s13 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) * ((S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3)) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 * (1 * S.e1) := by rw [hdet]; rfl
-      _ = S.e1 * S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_c123
-    calc (weylActG2 WeylG2.inv_c123 S).e1 * (weylActG2 WeylG2.inv_c123 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) * ((S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3)) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 * (1 * S.e1) := by rw [hdet]; rfl
-      _ = S.e1 * S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-  · -- inv_c132
-    calc (weylActG2 WeylG2.inv_c132 S).e1 * (weylActG2 WeylG2.inv_c132 S).e2
-        = (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1) * ((S.z1 * S.z2 * S.z3) * (S.z1 + S.z2 + S.z3)) := by
-          dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
-      _ = S.e2 * (1 * S.e1) := by rw [hdet]; rfl
-      _ = S.e1 * S.e2 := by dsimp [SatakeSystemG2.e1, SatakeSystemG2.e2]; ring
+  cases w <;> dsimp [weylActG2, SatakeSystemG2.e1, SatakeSystemG2.e2] <;>
+    first | rfl | linear_combination ((S.z1 + S.z2 + S.z3) * (S.z1 * S.z2 + S.z2 * S.z3 + S.z3 * S.z1)) * S.det_one | linear_combination
 
 /-- The fundamental short root character χ_short is invariant under the entire Weyl group W(G₂). -/
 theorem weyl_invar_chiShort (w : WeylG2) (S : SatakeSystemG2 R) :
@@ -932,3 +729,5 @@ theorem ramanujan_gap_formula_g2 (q : R) :
     0 - maxTemperedG2Eigenvalue q = (q - 1)^2 * (q + 1) * (q + 3) := by
   dsimp [maxTemperedG2Eigenvalue, regularDegreeG2]
   ring
+
+end RadialG2

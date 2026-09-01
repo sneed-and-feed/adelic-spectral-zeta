@@ -18,7 +18,7 @@ open Classical
 
 set_option linter.unusedSectionVars false
 
-noncomputable section
+noncomputable section AttentionError
 
 /-!
 # Formal Attention Approximation Bounds
@@ -186,21 +186,11 @@ lemma tree_truncated_rowDiffL1_eq_two_eps (A : Matrix I I ℝ) (hA : IsRowStocha
       intro j hj
       dsimp [treeTruncatedAttention, m]
       simp [hj]
-      have : A i j - A i j / m ≤ 0 := by
-        have : 1 ≤ 1 / m := (one_le_div₀ hm).mpr hm_le
-        have : A i j ≤ A i j / m := by
-          calc A i j = A i j * 1 := (mul_one _).symm
-          _ ≤ A i j * (1 / m) := mul_le_mul_of_nonneg_left ‹1 ≤ 1 / m› (hA.1 i j)
-          _ = A i j / m := mul_one_div (A i j) m
-        linarith
+      have : A i j - A i j / m ≤ 0 := by rw [sub_nonpos, le_div_iff₀ hm]; nlinarith [hm_le, hA.1 i j]
       rw [abs_of_nonpos this]
       ring
     rw [Finset.sum_congr rfl h_term, ← Finset.sum_mul]
-    have h_m_sum : (∑ j ∈ T i, A i j) = m := rfl
-    rw [h_m_sum]
-    calc m * (1 / m - 1) = m * (1 / m) - m * 1 := mul_sub m (1 / m) 1
-    _ = 1 - m := by rw [mul_one_div_cancel hm.ne', mul_one]
-    _ = eps := by linarith
+    linear_combination (mul_one_div_cancel hm.ne') - h_sum
   have h_out : (∑ j ∈ (T i)ᶜ, |A i j - treeTruncatedAttention A T i j|) = eps := by
     refine Finset.sum_congr rfl fun j hj => ?_
     dsimp [treeTruncatedAttention, m]
@@ -283,3 +273,5 @@ theorem attention_tree_cluster_frobenius_error_bound (A : Matrix I I ℝ) (V : M
   attention_frobenius_error_bound A (treeTruncatedAttention A T) V hA
     (treeTruncatedAttention_rowStochastic A hA T hm) p D C
     (pAdicTailBound_of_tree_tail A hA T p D C hm htail) grad_V hV hC hgrad
+
+end AttentionError

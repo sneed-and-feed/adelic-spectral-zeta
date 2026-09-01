@@ -5,6 +5,8 @@ import Formalization.Spectral.IharaZeta
 open Matrix
 open scoped Matrix
 
+section IharaBass
+
 variable {V : Type*} [Fintype V] [DecidableEq V]
 variable (G : SimpleGraph V) [DecidableRel G.Adj]
 variable (R : Type*) [CommRing R]
@@ -62,3 +64,5 @@ theorem ihara_bass_polynomial :
     _ = det (M_Bass G R u * N_Bass G R u * L_Bass G R) := by simp [det_mul, det_M_Bass, det_N_Bass, det_L_Bass]; ring
     _ = det (KL_Bass G R u) := by rw [M_Bass_mul_N_Bass, K_Bass_mul_L_Bass]
     _ = _ := by simp [det_KL_Bass]
+
+end IharaBass

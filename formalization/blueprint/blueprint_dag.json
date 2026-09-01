@@ -200,9 +200,9 @@
       "domain": "Analysis",
       "lean_decl": "Formalization.Analysis.Partition.p",
       "uses": [],
-      "leanok": false,
+      "leanok": true,
       "lean_file": "Formalization/Analysis/Partition.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "thm:ramanujan_partition_congruences": {
@@ -215,9 +215,9 @@
       "uses": [
         "def:partition_function"
       ],
-      "leanok": false,
+      "leanok": true,
       "lean_file": "Formalization/Analysis/Partition.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "def:ramanujan_bdg_hamiltonian": {
@@ -230,9 +230,9 @@
       "uses": [
         "def:partition_function"
       ],
-      "leanok": false,
+      "leanok": true,
       "lean_file": "Formalization/Analysis/Partition.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "thm:ramanujan_superconductor_gap": {
@@ -246,9 +246,9 @@
         "def:ramanujan_bdg_hamiltonian",
         "thm:ramanujan_partition_congruences"
       ],
-      "leanok": false,
+      "leanok": true,
       "lean_file": "Formalization/Analysis/Partition.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "def:online_softmax_step": {
@@ -892,13 +892,13 @@
       "uses": [],
       "leanok": true,
       "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "def:qec_parity_check": {
       "label": "def:qec_parity_check",
       "env": "definition",
-      "name": "Ad\u00e8lic Parity Check Matrix and Syndrome Mapping",
+      "name": "Adèlic Parity Check Matrix and Syndrome Mapping",
       "file": "content/quantum.tex",
       "domain": "Quantum",
       "lean_decl": "Formalization.Quantum.AdelicTopologicalQEC.adelicParityCheck",
@@ -907,7 +907,7 @@
       ],
       "leanok": true,
       "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "def:qec_noise_and_failure": {
@@ -922,13 +922,13 @@
       ],
       "leanok": true,
       "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "thm:qec_threshold_exists": {
       "label": "thm:qec_threshold_exists",
       "env": "theorem",
-      "name": "Ad\u00e8lic Topological Error-Correction Threshold",
+      "name": "Adèlic Topological Error-Correction Threshold",
       "file": "content/quantum.tex",
       "domain": "Quantum",
       "lean_decl": "Formalization.Quantum.AdelicTopologicalQEC.adelic_code_threshold_exists",
@@ -937,7 +937,7 @@
       ],
       "leanok": true,
       "lean_file": "Formalization/Quantum/AdelicTopologicalQEC.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "def:many_body_entanglement": {
@@ -1416,7 +1416,7 @@
       ],
       "leanok": true,
       "lean_file": "Formalization/Spectral/RamanujanTauCompute.lean",
-      "file_has_sorry": true,
+      "file_has_sorry": false,
       "decl_found": true
     },
     "def:spectral_grh_operator": {

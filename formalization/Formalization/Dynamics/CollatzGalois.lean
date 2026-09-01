@@ -16,8 +16,9 @@ def P_d : ℕ → ℚ[X]
 
 def P_9 : ℚ[X] := P_d 5
 
-axiom P9_irreducible : Irreducible P_9
+/-- Hypothesis structure capturing the Galois-theoretic assumptions on the iterate polynomial P_9. -/
+structure CollatzGaloisAssumptions : Prop where
+  P9_irreducible : Irreducible P_9
+  P9_galois_is_2_group : IsPGroup 2 (P_9.Gal)
+  P9_galois_transitive : MulAction.IsPretransitive (P_9.Gal) (P_9.rootSet P_9.SplittingField)
 
-axiom P9_galois_is_2_group : IsPGroup 2 (P_9.Gal)
-
-axiom P9_galois_transitive : MulAction.IsPretransitive (P_9.Gal) (P_9.rootSet P_9.SplittingField)

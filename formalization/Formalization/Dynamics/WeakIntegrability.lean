@@ -5,22 +5,41 @@ import Mathlib.Data.Finset.Basic
 
 open Classical
 
-/-- Spin-1/2 state representation on a 1D lattice -/
+/-!
+# Decay Transfer Lemma for Exponentially Dampened Functions
+
+This module formalizes definitions of algebraic and exponential decay for real-valued functions
+and proves a transfer lemma: multiplying an algebraically decaying function $f_{\mathrm{int}}(t)$ by
+an explicit exponential damping factor $\exp(-\gamma |J| t)$ (with $\gamma > 0$ and $|J| > 0$)
+yields an exponentially decaying function $f_{\mathrm{broken}}(t)$.
+
+## Scope & De-Inflation Note:
+The theorem `integrability_breaking_decay_shift` is an **analytical transfer lemma** for exponentially
+dampened functions: when the damping relation $f_{\mathrm{broken}}(t) = f_{\mathrm{int}}(t) e^{-\gamma |J| t}$
+is provided as a hypothesis (`h_link`), the result proves that $f_{\mathrm{broken}}$ satisfies the
+definition of exponential decay. It does not establish the dynamical derivation of the damping factor
+from underlying Hamiltonian perturbations from first principles.
+-/
+
+/-- Spin-1/2 state representation on a 1D lattice index set `I`. -/
 def SpinState (I : Type) [DecidableEq I] := I → ℝ
 
 /-- The Parity String Operator product for a subsystem J ⊆ I -/
 noncomputable def ParityString {I : Type} [DecidableEq I] (J : Finset I) (s : SpinState I) : ℝ :=
   J.prod (fun j => s j)
 
-/-- Definition of Algebraic Decay (Integrable behavior) -/
+/-- Definition of Algebraic Decay (Integrable behavior): $|f(t)| \le C t^{-\alpha}$ for $t \ge 1$ with $\alpha > 0$. -/
 def IsAlgebraicDecay (f : ℝ → ℝ) : Prop :=
   ∃ (C α : ℝ), α > 0 ∧ ∀ t ≥ 1, |f t| ≤ C * t^(-α)
 
-/-- Definition of Exponential Decay (Integrability broken behavior) -/
+/-- Definition of Exponential Decay: $|f(t)| \le C e^{-\gamma t}$ for $t \ge 1$ with $\gamma > 0$. -/
 def IsExponentialDecay (f : ℝ → ℝ) : Prop :=
   ∃ (C γ : ℝ), γ > 0 ∧ ∀ t ≥ 1, |f t| ≤ C * Real.exp (-γ * t)
 
-/-- Core Theorem Statement: Integrability breaking shifts string correlation from algebraic to exponential decay -/
+/-- **Transfer Lemma for Exponentially Dampened Functions**:
+If `f_int` exhibits algebraic decay bounded by $C t^{-\alpha}$ for $t \ge 1$ and `f_broken` is defined
+as `f_int` multiplied by the exponential damping factor $\exp(-\gamma |J| t)$ with $\gamma > 0$ and
+$|J| > 0$ (via hypothesis `h_link`), then `f_broken` satisfies exponential decay with decay rate $\gamma |J|$. -/
 theorem integrability_breaking_decay_shift {I : Type} [DecidableEq I] (J : Finset I) 
     (f_int f_broken : ℝ → ℝ) (h_int : IsAlgebraicDecay f_int) (γ : ℝ) (hγ : γ > 0)
     (hJ : J.card > 0)

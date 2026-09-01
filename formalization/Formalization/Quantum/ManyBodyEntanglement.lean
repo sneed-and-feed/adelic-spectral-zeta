@@ -5,7 +5,11 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
+set_option linter.unusedSectionVars false
+
 namespace ManyBodyPhaseTransition
+
+section Entanglement
 
 variable {I : Type} [Fintype I] [DecidableEq I]
 
@@ -38,7 +42,7 @@ def basisEquivFin2 (I : Type) : BasisState I ≃ (I → Fin 2) where
   left_inv n := Subtype.ext (funext (fun i => rfl))
   right_inv f := funext (fun i => Fin.ext rfl)
 
-instance basisStateFintype [Fintype I] [DecidableEq I] : Fintype (BasisState I) :=
+instance basisStateFintype : Fintype (BasisState I) :=
   Fintype.ofEquiv (I → Fin 2) (basisEquivFin2 I).symm
 
 /-- A quantum state in the Hilbert space is a linear combination of basis states. -/
@@ -77,5 +81,7 @@ noncomputable def Purity (bp : Bipartition I) (ψ : QuantumState I) : ℂ :=
 /-- Rényi-2 entropy S^{(2)}_A = -log(γ) -/
 noncomputable def Renyi2Entropy (bp : Bipartition I) (ψ : QuantumState I) : ℝ :=
   - Real.log (Complex.re (Purity bp ψ))
+
+end Entanglement
 
 end ManyBodyPhaseTransition

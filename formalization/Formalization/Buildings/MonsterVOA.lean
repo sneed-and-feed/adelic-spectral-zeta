@@ -13,43 +13,54 @@ import Mathlib.Tactic
 open BigOperators
 
 /-!
-# Vector 1: Non-Archimedean Monster VOA & Borcherds Automorphic Products
+# Vector 1: Non-Archimedean Monster VOA & Borcherds Automorphic Products (Finite-Order Models)
 
-This module formalizes:
-1. **The Graded Monster Vertex Operator Algebra $V^♮ = \bigoplus_{n=0}^\infty V_n$**:
+This module formalizes finite-order algebraic models, canonical low-degree table calculations,
+and polynomial identities associated with the Monster Vertex Operator Algebra $V^♮$ and the
+Borcherds Lie superalgebra:
+
+1. **Canonical Low-Degree Moonshine Character & Graded Dimensions**:
+   - Explicit canonical low-degree table calculations (degrees 0 to 6) of the modular $j$-invariant
+     Fourier coefficients `moonshineCoeff` ($c(-1) = 1, c(0) = 0, c(1) = 196884, \dots, c(5) = 333202640600$).
+   - Canonical low-degree table calculations of graded dimensions `dimVNatural` for the Frenkel-Lepowsky-Meurman (FLM)
+     Moonshine module $V^♮ = \bigoplus_{n=0}^\infty V_n$ up to degree 6 ($V_0 \cong R$, $V_1 = 0$, $\dim V_2 = 196884 = 1 + 196883$).
+   - Finite-order dimension decompositions into minimal Monster irreducible representations.
+
+2. **Vertex Operator State-Field Correspondence & Virasoro Relations**:
    - Central charge $c = 24$.
-   - Graded dimensions: $V_0 = R$ (vacuum, dim 1), $V_1 = 0$ (no dimension-1 currents),
-     $V_2 = \text{Griess algebra}$ ($\dim V_2 = 196,884 = 1 + 196,883$).
-   - Higher McKay-Thompson dimensions $\dim V_n = c(n-1)$.
-2. **Vertex Operator State-Field Correspondence $Y(v, z)$ & Virasoro Relations**:
-   - Mode expansion $Y(v, z) = \sum_{n \in \mathbb{Z}} v_{(n)} z^{-n-1}$.
-   - Virasoro algebra with central charge $c = 24$:
+   - Virasoro commutator relations at central charge $c = 24$:
      $[L_m, L_n] = (m - n) L_{m+n} + 2 m(m^2 - 1) \delta_{m+n, 0} \mathrm{id}$.
-   - Borcherds commutator formula and Griess algebra product on $V_2$.
-3. **Borcherds Fake Monster Lie Superalgebra $\mathfrak{m}$**:
-   - Hyperbolic root lattice $\mathrm{II}_{1,1}$ with metric $\alpha^2 = -2 m n$.
-   - Root multiplicities $\mathrm{mult}(m, n) = c(mn) = \dim V_{1 + mn}$.
-   - Real roots $(1, -1), (-1, 1)$ with multiplicity $c(-1) = 1$.
-   - Imaginary root spaces with multiplicities $c(1) = 196884, c(2) = 21493760, \dots$
-4. **Automorphic Borcherds Product $\Phi(p, q)$ on Building Quotient $\mathcal{B}(E_8)/\mathrm{PGL}_2(\mathbb{Z})$**:
-   - Borcherds product expansion:
-     $\Phi(p, q) = p^{-1} \prod_{m>0, n} (1 - p^m q^n)^{c(mn)} = j(p) - j(q)$.
-   - Polynomial & series identity $\Phi(p, q) = j(p) - j(q)$ for arbitrary truncation order.
-5. **Graded Character Trace Identity**:
-   - Proof that $\mathrm{Tr}_{V^♮}(q^{L_0 - c/24}) = j(\tau) - 744$ matches the graded trace with 0 sorrys.
+   - Borcherds commutator binomial coefficient evaluation and Griess algebra product on $V_2$.
+
+3. **Hyperbolic Root Lattice $\mathrm{II}_{1,1}$ & Low-Degree Multiplicities**:
+   - Lorentzian root lattice $\mathrm{II}_{1,1}$ with norm $\alpha^2 = -2 m n$.
+   - Root space multiplicities $\mathrm{mult}(m, n) = c(mn)$ for real and low-degree imaginary roots.
+   - Real roots $(1, -1)$ with norm 2 and multiplicity $c(-1) = 1$.
+   - Imaginary roots $(1, 1), (1, 2), (1, 3)$ with multiplicities $c(1) = 196884, c(2) = 21493760, c(3) = 864299970$.
+
+4. **Truncated Borcherds Difference Identities**:
+   - Formal algebraic polynomial identities $\Phi_N(p, q) = J_N(p) - J_N(q)$ relating truncated difference
+     series to differences of truncated modular $J$-polynomials at orders $N = 0, 1, 2, 3, 4, 5$.
+   - General summation difference identity `borcherds_product_general_identity` proved for all truncation orders $N$.
+
+5. **Truncated Graded Character Trace Identities**:
+   - Graded trace polynomial models $\mathrm{Tr}_{V^♮}(q^{L_0 - c/24}) = q^{-1} \sum_{n=0}^N (\dim V_n) q^n$.
+   - Exact algebraic equivalence with truncated modular polynomials $J_{N-1}(q)$ under $q^{-1} q = 1$ for orders 0 to 5.
 
 All theorems are formally verified with **zero sorrys**.
 -/
 
 -- ============================================================================
--- Section 1: The Graded Monster Vertex Operator Algebra V^♮
+-- Section 1: Canonical Low-Degree Dimensions of the Graded Monster VOA V^♮
 -- ============================================================================
 
 /-- Central charge of the Monster Vertex Operator Algebra V^♮: c = 24. -/
 def monsterCentralCharge : ℕ := 24
 
-/-- Fourier coefficients c(n) of the normalized elliptic modular function
-    J(τ) = j(τ) - 744 = q⁻¹ + 196884 q + 21493760 q² + 864299970 q³ + ... -/
+/-- Canonical low-degree Fourier coefficients c(n) of the normalized elliptic modular function
+    J(τ) = j(τ) - 744 = q⁻¹ + 196884 q + 21493760 q² + 864299970 q³ + ...
+    This definition provides the canonical low-degree table calculation for n ∈ {-1, 0, 1, 2, 3, 4, 5}
+    and evaluates to 0 for all other degrees outside this truncated computational window. -/
 def moonshineCoeff (n : ℤ) : ℤ :=
   if n = -1 then 1
   else if n = 0 then 0
@@ -68,15 +79,17 @@ def moonshineCoeff (n : ℤ) : ℤ :=
 @[simp] theorem moonshineCoeff_four : moonshineCoeff 4 = 20245856256 := rfl
 @[simp] theorem moonshineCoeff_five : moonshineCoeff 5 = 333202640600 := rfl
 
-/-- Graded dimensions of the Monster VOA V^♮ = ⨁_{n=0}^∞ V_n.
-    By Frenkel-Lepowsky-Meurman (FLM) Moonshine construction:
+/-- Canonical low-degree table calculation of the graded dimensions of the Monster VOA
+    V^♮ = ⨁_{n=0}^∞ V_n up to degree 6.
+    By the Frenkel-Lepowsky-Meurman (FLM) Moonshine construction:
     - dim V_0 = c(-1) = 1 (vacuum state |0⟩)
     - dim V_1 = c(0) = 0 (no dimension-1 currents / no affine Lie algebra at level 1)
     - dim V_2 = c(1) = 196,884 (Griess algebra: Virasoro line + minimal Monster irrep)
     - dim V_3 = c(2) = 21,493,760
     - dim V_4 = c(3) = 864,299,970
     - dim V_5 = c(4) = 20,245,856,256
-    - dim V_6 = c(5) = 333,202,640,600 -/
+    - dim V_6 = c(5) = 333,202,640,600
+    Evaluates to 0 for degrees n > 6 outside this finite truncation window. -/
 def dimVNatural (n : ℕ) : ℕ :=
   if n = 0 then 1
   else if n = 1 then 0
@@ -95,24 +108,25 @@ def dimVNatural (n : ℕ) : ℕ :=
 @[simp] theorem dimVNatural_five : dimVNatural 5 = 20245856256 := rfl
 @[simp] theorem dimVNatural_six : dimVNatural 6 = 333202640600 := rfl
 
-/-- Theorem: Vacuum space V_0 is 1-dimensional (V_0 = R). -/
+/-- Vacuum space V_0 canonical low-degree table calculation (V_0 = R, dim = 1). -/
 theorem dimV0_eq_one : dimVNatural 0 = 1 := rfl
 
-/-- Theorem: Degree-1 space V_1 is 0-dimensional (no weight-1 Lie algebra). -/
+/-- Degree-1 space V_1 canonical low-degree table calculation (dim = 0, no weight-1 Lie algebra). -/
 theorem dimV1_eq_zero : dimVNatural 1 = 0 := rfl
 
-/-- Theorem: Degree-2 space V_2 is the 196,884-dimensional Griess algebra. -/
+/-- Degree-2 space V_2 canonical low-degree table calculation (196,884-dimensional Griess algebra). -/
 theorem dimV2_eq_griess : dimVNatural 2 = 196884 := rfl
 
-/-- Theorem: McKay-Thompson Griess algebra dimension decomposition:
+/-- McKay-Thompson Griess algebra dimension decomposition identity:
     196,884 = 1 (conformal Virasoro vector ω) + 196,883 (minimal Monster irrep). -/
 theorem dimV2_griess_decomposition : dimVNatural 2 = 1 + 196883 := by rfl
 
-/-- Theorem: Degree-3 space V_3 decomposition into Monster irreducible representations:
+/-- Degree-3 space V_3 decomposition into Monster irreducible representation dimensions:
     21,493,760 = 1 + 196,883 + 21,296,876. -/
 theorem dimV3_decomposition : dimVNatural 3 = 1 + 196883 + 21296876 := by rfl
 
-/-- Graded Monster VOA structure over a commutative base ring R. -/
+/-- Simplified finite-dimensional algebraic skeleton model of the Monster VOA V^♮
+    capturing central charge c = 24 and the Griess algebra dimension decomposition. -/
 structure MonsterVOA (R : Type*) [CommRing R] where
   /-- Vacuum state |0⟩ in V_0 -/
   vacuum : R
@@ -135,6 +149,8 @@ structure MonsterVOA (R : Type*) [CommRing R] where
 
 namespace MonsterVOA
 
+section
+
 variable {R : Type*} [CommRing R] (V : MonsterVOA R)
 
 /-- The central charge c/24 equals 1 in the base ring R. -/
@@ -143,6 +159,8 @@ theorem central_charge_over_24 (_h24 : (24 : R) = V.c) : (24 : R) = 24 := rfl
 /-- Griess algebra dimension identity theorem. -/
 theorem griess_dim_identity : V.dim_griess = 1 + 196883 := by
   rw [V.griess_split, V.dim_monster_min_irrep_eq]
+
+end
 
 end MonsterVOA
 
@@ -192,7 +210,7 @@ theorem borcherds_griess_mode_bracket :
   constructor <;> rfl
 
 -- ============================================================================
--- Section 3: Borcherds Fake Monster Lie Superalgebra
+-- Section 3: Low-Degree Root Multiplicities on Hyperbolic Lattice II_{1,1}
 -- ============================================================================
 
 /-- A 2D root α = (m, n) in the hyperbolic root lattice II_{1,1}. -/
@@ -211,7 +229,7 @@ def innerProduct (α β : RootII11) : ℤ :=
 def normSq (α : RootII11) : ℤ :=
   -2 * α.m * α.n
 
-/-- Root space multiplicity in the Borcherds Monster Lie algebra:
+/-- Root space multiplicity lookup in the hyperbolic root lattice II_{1,1} using low-degree moonshine coefficients:
     mult(α) = c(m n) = dim V_{1 + m n}. -/
 def multiplicity (α : RootII11) : ℤ :=
   moonshineCoeff (α.m * α.n)
@@ -255,8 +273,10 @@ theorem mult_lightlike_root : (RootII11.mk 1 0).multiplicity = 0 := rfl
 end RootII11
 
 -- ============================================================================
--- Section 4: Automorphic Borcherds Product on B(E_8)/PGL_2(ℤ)
+-- Section 4: Truncated Borcherds Product Difference Polynomial Identities
 -- ============================================================================
+
+section BorcherdsPolynomialIdentities
 
 variable {R : Type*} [CommRing R]
 
@@ -276,58 +296,58 @@ def borcherdsPhi3 (p_inv q_inv p q : R) : R := (p_inv - q_inv) + 196884 * (p - q
 def borcherdsPhi4 (p_inv q_inv p q : R) : R := (p_inv - q_inv) + 196884 * (p - q) + 21493760 * (p^2 - q^2) + 864299970 * (p^3 - q^3) + 20245856256 * (p^4 - q^4)
 def borcherdsPhi5 (p_inv q_inv p q : R) : R := (p_inv - q_inv) + 196884 * (p - q) + 21493760 * (p^2 - q^2) + 864299970 * (p^3 - q^3) + 20245856256 * (p^4 - q^4) + 333202640600 * (p^5 - q^5)
 
-/-- **Theorem (Borcherds Product Difference Identity - Order 0)**:
-    Φ_0(p, q) = j_0(p) - j_0(q). -/
+/-- **Theorem (Truncated Borcherds Difference Identity - Order 0)**:
+    Algebraic polynomial identity Φ_0(p, q) = j_0(p) - j_0(q). -/
 theorem borcherds_product_order0_identity (p_inv q_inv : R) :
     borcherdsPhi0 p_inv q_inv = modularJ0 p_inv - modularJ0 q_inv := rfl
 
-/-- **Theorem (Borcherds Product Difference Identity - Order 1)**:
-    Φ_1(p, q) = j_1(p) - j_1(q). -/
+/-- **Theorem (Truncated Borcherds Difference Identity - Order 1)**:
+    Algebraic polynomial identity Φ_1(p, q) = j_1(p) - j_1(q). -/
 theorem borcherds_product_order1_identity (p_inv q_inv p q : R) :
     borcherdsPhi1 p_inv q_inv p q = modularJ1 p_inv p - modularJ1 q_inv q := by
   dsimp [borcherdsPhi1, modularJ1]
   ring
 
-/-- **Theorem (Borcherds Product Difference Identity - Order 2)**:
-    Φ_2(p, q) = j_2(p) - j_2(q). -/
+/-- **Theorem (Truncated Borcherds Difference Identity - Order 2)**:
+    Algebraic polynomial identity Φ_2(p, q) = j_2(p) - j_2(q). -/
 theorem borcherds_product_order2_identity (p_inv q_inv p q : R) :
     borcherdsPhi2 p_inv q_inv p q = modularJ2 p_inv p - modularJ2 q_inv q := by
   dsimp [borcherdsPhi2, modularJ2]
   ring
 
-/-- **Theorem (Borcherds Product Difference Identity - Order 3)**:
-    Φ_3(p, q) = j_3(p) - j_3(q). -/
+/-- **Theorem (Truncated Borcherds Difference Identity - Order 3)**:
+    Algebraic polynomial identity Φ_3(p, q) = j_3(p) - j_3(q). -/
 theorem borcherds_product_order3_identity (p_inv q_inv p q : R) :
     borcherdsPhi3 p_inv q_inv p q = modularJ3 p_inv p - modularJ3 q_inv q := by
   dsimp [borcherdsPhi3, modularJ3]
   ring
 
-/-- **Theorem (Borcherds Product Difference Identity - Order 4)**:
-    Φ_4(p, q) = j_4(p) - j_4(q). -/
+/-- **Theorem (Truncated Borcherds Difference Identity - Order 4)**:
+    Algebraic polynomial identity Φ_4(p, q) = j_4(p) - j_4(q). -/
 theorem borcherds_product_order4_identity (p_inv q_inv p q : R) :
     borcherdsPhi4 p_inv q_inv p q = modularJ4 p_inv p - modularJ4 q_inv q := by
   dsimp [borcherdsPhi4, modularJ4]
   ring
 
-/-- **Theorem (Borcherds Product Difference Identity - Order 5)**:
-    Φ_5(p, q) = j_5(p) - j_5(q). -/
+/-- **Theorem (Truncated Borcherds Difference Identity - Order 5)**:
+    Algebraic polynomial identity Φ_5(p, q) = j_5(p) - j_5(q). -/
 theorem borcherds_product_order5_identity (p_inv q_inv p q : R) :
     borcherdsPhi5 p_inv q_inv p q = modularJ5 p_inv p - modularJ5 q_inv q := by
   dsimp [borcherdsPhi5, modularJ5]
   ring
 
-/-- General summation formulation of modular J-invariant:
+/-- General summation formulation of the truncated modular J-invariant polynomial:
     J_sum(q, N) = q⁻¹ + ∑_{k=0}^{N-1} c(k+1) q^(k+1). -/
 def modularJSum (q_inv : R) (q : R) (N : ℕ) : R :=
   q_inv + ∑ k ∈ Finset.range N, (moonshineCoeff (k + 1 : ℤ) : R) * q^(k + 1)
 
-/-- General summation formulation of Borcherds difference:
+/-- General summation formulation of the truncated Borcherds difference polynomial:
     Φ_sum(p, q, N) = (p⁻¹ - q⁻¹) + ∑_{k=0}^{N-1} c(k+1) (p^(k+1) - q^(k+1)). -/
 def borcherdsProductDiffSum (p_inv q_inv p q : R) (N : ℕ) : R :=
   (p_inv - q_inv) + ∑ k ∈ Finset.range N, (moonshineCoeff (k + 1 : ℤ) : R) * (p^(k + 1) - q^(k + 1))
 
-/-- **General Theorem (Borcherds Product Difference Identity for all Orders N)**:
-    For any truncation order N, the difference series ∑ c(k)(p^k - q^k) equals
+/-- **General Theorem (Truncated Borcherds Difference Identity for all Orders N)**:
+    For any truncation order N, the difference polynomial series ∑ c(k)(p^k - q^k) equals
     (∑ c(k) p^k) - (∑ c(k) q^k). -/
 theorem borcherds_product_general_identity (p_inv q_inv p q : R) (N : ℕ) :
     borcherdsProductDiffSum p_inv q_inv p q N =
@@ -342,11 +362,17 @@ theorem borcherds_product_general_identity (p_inv q_inv p q : R) (N : ℕ) :
   rw [Finset.sum_sub_distrib]
   ring
 
+end BorcherdsPolynomialIdentities
+
 -- ============================================================================
--- Section 5: Graded Monster Character Trace Identity
+-- Section 5: Graded Monster Character Trace Polynomial Identities
 -- ============================================================================
 
-/-- Graded character trace representations of the Monster VOA V^♮:
+section GradedCharacterTrace
+
+variable {R : Type*} [CommRing R]
+
+/-- Graded character trace representations of the truncated Monster VOA character:
     Tr_{V^♮}(q^{L_0 - c/24}) = q⁻¹ ∑_{n=0}^N (dim V_n) q^n. -/
 def gradedTrace0 (q_inv : R) : R := q_inv * 1
 def gradedTrace1 (q_inv q : R) : R := q_inv * (1 + 0 * q)
@@ -355,22 +381,23 @@ def gradedTrace3 (q_inv q : R) : R := q_inv * (1 + 0 * q + 196884 * q^2 + 214937
 def gradedTrace4 (q_inv q : R) : R := q_inv * (1 + 0 * q + 196884 * q^2 + 21493760 * q^3 + 864299970 * q^4)
 def gradedTrace5 (q_inv q : R) : R := q_inv * (1 + 0 * q + 196884 * q^2 + 21493760 * q^3 + 864299970 * q^4 + 20245856256 * q^5)
 
-/-- **Theorem (Graded Character Trace Order 0 - Vacuum Contribution)**:
-    At degree 0, the graded trace is exactly q⁻¹. -/
+/-- **Theorem (Truncated Graded Character Trace - Order 0)**:
+    At degree 0, the truncated graded trace polynomial is exactly q⁻¹. -/
 theorem graded_trace_order0 (q_inv : R) :
     gradedTrace0 q_inv = modularJ0 q_inv := by
   dsimp [gradedTrace0, modularJ0]
   ring
 
-/-- **Theorem (Graded Character Trace Order 1 - Vanishing Level 1)**:
-    At degree 1, since dim V_1 = 0, the graded trace remains q⁻¹. -/
+/-- **Theorem (Truncated Graded Character Trace - Order 1)**:
+    At degree 1, since dim V_1 = 0, the truncated graded trace polynomial remains q⁻¹. -/
 theorem graded_trace_order1 (q_inv q : R) :
     gradedTrace1 q_inv q = modularJ0 q_inv := by
   dsimp [gradedTrace1, modularJ0]
   ring
 
-/-- **Theorem (Graded Character Trace Order 2 - Griess Algebra)**:
-    At degree 2, the graded trace is q⁻¹ * (1 + 196884 q²) = q⁻¹ + 196884 q = J₁(q). -/
+/-- **Theorem (Truncated Graded Character Trace - Order 2)**:
+    At degree 2, the graded trace polynomial q⁻¹ * (1 + 196884 q²) algebraically
+    matches the modular polynomial J₁(q) = q⁻¹ + 196884 q under q_inv * q = 1. -/
 theorem graded_trace_order2 (q_inv q : R) (hq : q_inv * q = 1) :
     gradedTrace2 q_inv q = modularJ1 q_inv q := by
   dsimp [gradedTrace2, modularJ1]
@@ -378,8 +405,9 @@ theorem graded_trace_order2 (q_inv q : R) (hq : q_inv * q = 1) :
        _ = q_inv + 196884 * 1 * q := by rw [hq]
        _ = q_inv + 196884 * q := by ring
 
-/-- **Theorem (Graded Character Trace Order 3 - Weight 3 States)**:
-    At degree 3, the graded trace is q⁻¹ + 196884 q + 21493760 q² = J₂(q). -/
+/-- **Theorem (Truncated Graded Character Trace - Order 3)**:
+    At degree 3, the graded trace polynomial matches the modular polynomial J₂(q)
+    under q_inv * q = 1. -/
 theorem graded_trace_order3 (q_inv q : R) (hq : q_inv * q = 1) :
     gradedTrace3 q_inv q = modularJ2 q_inv q := by
   dsimp [gradedTrace3, modularJ2]
@@ -388,8 +416,9 @@ theorem graded_trace_order3 (q_inv q : R) (hq : q_inv * q = 1) :
        _ = q_inv + 196884 * 1 * q + 21493760 * 1 * q^2 := by rw [hq]
        _ = q_inv + 196884 * q + 21493760 * q^2 := by ring
 
-/-- **Theorem (Graded Character Trace Order 4 - Weight 4 States)**:
-    At degree 4, the graded trace is q⁻¹ + 196884 q + 21493760 q² + 864299970 q³ = J₃(q). -/
+/-- **Theorem (Truncated Graded Character Trace - Order 4)**:
+    At degree 4, the graded trace polynomial matches the modular polynomial J₃(q)
+    under q_inv * q = 1. -/
 theorem graded_trace_order4 (q_inv q : R) (hq : q_inv * q = 1) :
     gradedTrace4 q_inv q = modularJ3 q_inv q := by
   dsimp [gradedTrace4, modularJ3]
@@ -399,8 +428,9 @@ theorem graded_trace_order4 (q_inv q : R) (hq : q_inv * q = 1) :
        _ = q_inv + 196884 * 1 * q + 21493760 * 1 * q^2 + 864299970 * 1 * q^3 := by rw [hq]
        _ = q_inv + 196884 * q + 21493760 * q^2 + 864299970 * q^3 := by ring
 
-/-- **Theorem (Graded Character Trace Order 5 - Weight 5 States)**:
-    At degree 5, the graded trace matches J₄(q). -/
+/-- **Theorem (Truncated Graded Character Trace - Order 5)**:
+    At degree 5, the graded trace polynomial matches the modular polynomial J₄(q)
+    under q_inv * q = 1. -/
 theorem graded_trace_order5 (q_inv q : R) (hq : q_inv * q = 1) :
     gradedTrace5 q_inv q = modularJ4 q_inv q := by
   dsimp [gradedTrace5, modularJ4]
@@ -410,3 +440,5 @@ theorem graded_trace_order5 (q_inv q : R) (hq : q_inv * q = 1) :
        _ = q_inv + 196884 * 1 * q + 21493760 * 1 * q^2 +
            864299970 * 1 * q^3 + 20245856256 * 1 * q^4 := by rw [hq]
        _ = q_inv + 196884 * q + 21493760 * q^2 + 864299970 * q^3 + 20245856256 * q^4 := by ring
+
+end GradedCharacterTrace

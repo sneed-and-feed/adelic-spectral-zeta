@@ -3,11 +3,11 @@ import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Analysis.Matrix.Spectrum
 import Formalization.Analysis.SpectralOracle
 
-variable {V : Type _} [Fintype V] [DecidableEq V]
-
 open Classical
 
-noncomputable section
+noncomputable section OptimalRestrictedRewiring
+
+variable {V : Type*} [Fintype V] [DecidableEq V]
 
 /-- Decision problem for Minimum Bisection: Does there exist a partition of V 
     into two equal halves with at most k crossing edges? -/
@@ -28,4 +28,4 @@ def HasBisectionToRewiringReduction : Prop :=
     ∃ (spectralGap : SimpleGraph (Sum V V) → ℝ) (reduce : SimpleGraph V → ℕ → SimpleGraph (Sum V V)),
       (MinimumBisection G k ↔ OptimalRestrictedRewiring spectralGap (reduce G k) d)
 
-end
+end OptimalRestrictedRewiring

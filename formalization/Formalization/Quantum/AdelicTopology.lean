@@ -7,11 +7,34 @@ open Complex
 open scoped ComplexConjugate
 open InnerProductSpace
 
+/-!
+# Adelic Topology & Dirac Operator Cayley Decomposition
+
+This module formalizes an abstract Hilbert space model for the algebraic decomposition of a
+deformed Cayley transform.
+
+## Structural Hypotheses:
+The structure `DiracDecomposition` axiomatizes two bounded linear operators `V` and `W` satisfying:
+- `bulk_boundary_sum`: $V^* V + W^* W = 1$ (orthogonal resolution of identity / norm conservation)
+- `ortho_VW`: $V^* W = 0$ (mutual orthogonality)
+- `ortho_WV`: $W^* V = 0$ (adjoint mutual orthogonality)
+
+These algebraic conditions capture an abstract orthogonal decomposition (e.g. bulk vs. boundary modes)
+rather than an explicit geometric Dirac operator on a specific manifold or adelic space.
+Under these structural hypotheses, deformation by a complex parameter $C$ yields
+`‖D.deformed_U C x‖² = ‖D.V x‖² + |C|² ‖D.W x‖²`.
+-/
+
+section AdelicTopology
+
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-/-- The algebraic decomposition of the Dirac operator's Cayley transform.
-`V` represents the bulk topology, `W` represents the boundary mapping.
-Together, `V + W` forms a unitary self-adjoint extension on the critical line. -/
+/-- Abstract orthogonal decomposition model for the Cayley transform of an operator.
+The operators `V` and `W` act on a Hilbert space `H` subject to structural algebraic hypotheses:
+- `bulk_boundary_sum` ($V^* V + W^* W = 1$): abstract resolution of identity / isometry condition on the critical line.
+- `ortho_VW` ($V^* W = 0$) and `ortho_WV` ($W^* V = 0$): abstract mutual orthogonality between the two subspaces.
+
+These hypotheses model the algebraic structure of bulk and boundary components. -/
 structure DiracDecomposition (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] where
   V : H →L[ℂ] H
   W : H →L[ℂ] H
@@ -63,9 +86,10 @@ lemma inner_sum_eq_inner (x : H) :
   rw [D.bulk_boundary_sum]
   rfl
 
-/-- The final theorem. This proves algebraically that a phase deformation (moving off the 
-critical line) causes the extension to lose unitarity, as the cross-terms vanish leaving
-an unbalanced norm summation for `|C| ≠ 1`. -/
+/-- Algebraic identity for the deformed operator inner product:
+Under the structural orthogonality and decomposition hypotheses of `DiracDecomposition`,
+evaluating the inner product of `deformed_U C x` with itself yields `‖V x‖² + |C|² ‖W x‖²`.
+When `|C| ≠ 1`, this shows algebraically that the deformed operator deviates from isometry. -/
 lemma inner_deformed_U_self (C : ℂ) (x : H) : 
     @inner ℂ _ _ (D.deformed_U C x) (D.deformed_U C x) = 
     @inner ℂ _ _ (D.V x) (D.V x) + (conj C * C) * @inner ℂ _ _ (D.W x) (D.W x) := by
@@ -76,3 +100,5 @@ lemma inner_deformed_U_self (C : ℂ) (x : H) :
   rw [inner_smul_left, inner_smul_right, mul_assoc]
 
 end DiracDecomposition
+
+end AdelicTopology

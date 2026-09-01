@@ -54,10 +54,10 @@ $$\text{Gap}(d) = 2.0 - 2^{1 / 2^{d-1}}$$
    - Strictly positive spectral expansion guaranteeing connectivity and expansion.
    - Monotonic growth of spectral expansion lower bounds.
 
-5. **Conjecture A Formulation & Expander Theorems**:
+5. **Conjecture A Formulation & Expander Properties**:
    - `ProgressionFreeExpanderConjecture`: Formal statement of Conjecture A.
-   - `ProgressionFreeExpanderTheorem_base`: Base expansion at $d = 2$.
-   - `ProgressionFreeExpanderTheorem_asymptotic`: Asymptotic expansion to 1.
+   - `ProgressionFreeExpanderTheorem_base`: Conditional evaluation lemma evaluating the base spectral gap $c(2 - \sqrt{2})$ from hypothesis `ProgressionFreeExpanderBound`.
+   - `ProgressionFreeExpanderTheorem_asymptotic`: Asymptotic behavior of the decay factor as $d \to \infty$.
 -/
 
 -- ============================================================================
@@ -256,7 +256,10 @@ def ProgressionFreeExpanderConjecture : Prop :=
           S.card > 0 →
           HasSpectralGap n S (c * restrictedSpectralGap k)
 
-/-- Base Expander Theorem at dimension d = 2: The spectral gap bound evaluates to c * (2 - √2). -/
+/-- Conditional evaluation lemma at base dimension $d = 2$: Evaluates the spectral gap bound
+to $c(2 - \sqrt{2})$ under the explicit hypothesis `h_bound : ProgressionFreeExpanderBound n k 2 S c`
+and progression-freeness `h_free`. Note: This is an evaluation lemma conditioned on `ProgressionFreeExpanderBound`,
+not an unconditional proof of graph expansion. -/
 theorem ProgressionFreeExpanderTheorem_base (n k : ℕ) (S : Finset (ZMod n)) (c : ℝ)
     (h_bound : ProgressionFreeExpanderBound n k 2 S c) (h_free : IsProgressionFreeZMod n S k) :
     HasSpectralGap n S (c * (2 - Real.sqrt 2)) := by

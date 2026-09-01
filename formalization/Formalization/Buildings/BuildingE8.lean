@@ -48,17 +48,16 @@ modular moonshine structures associated with the exceptional Lie group E₈ and 
    - Connection between Hecke eigenvalues and adjoint representation traces:
      `q χ_{E8}(z) = q (Tr(ad₂₄₈) - 8)`.
 
-6. **Leech Lattice Λ₂₄ ≅ E₈³ Boundary CFT Partition Function and Monstrous Moonshine**:
+6. **Leech Lattice Λ₂₄ ≅ E₈³ Boundary CFT Formal Models**:
    - Theta series relations: `Θ_{E8}(τ) = E₄(τ)`, `Θ_{E8³}(τ) = E₄(τ)³`.
-   - Leech lattice partition function: `Z_{Λ24}(τ) = Θ_{Λ24}(τ) / η(τ)²⁴ = (E₄(τ)³ - 720 Δ(τ)) / Δ(τ) = j(τ) - 720`.
-   - Monster CFT partition function: `Z_{CFT}(τ) = Tr_{V^♮}(q^{L₀ - 1}) = j(τ) - 744`.
-   - Exact CFT difference identity: `Z_{Λ24}(j) - Z_{CFT}(j) = 24`.
-   - McKay-Thompson moonshine dimension relation: `196884 = 1 + 196883`.
-   - Kissing number of the Leech lattice: 196,560 minimal vectors of norm 4.
+   - Leech lattice formal partition function: `Z_{Λ24} = j - 720`.
+   - Monster CFT formal partition function: `Z_{CFT} = j - 744`.
+   - Exact algebraic difference identity: `Z_{Λ24} - Z_{CFT} = 24`.
+   - Structural constants for McKay-Thompson coefficient `c₁ = 196884`, minimal irrep dimension `196883`, and Leech kissing number `196560 = 24 * 8190`.
 
-7. **Non-Archimedean Ramanujan Spectral Gap on Ẽ₈ Buildings**:
-   - Maximum tempered eigenvalue `λ_{temp, max}(q) = 240 q - d_reg(q)`.
-   - Exact Ramanujan spectral gap identity:
+7. **Non-Archimedean Ramanujan Spectral Gap Polynomial Identities**:
+   - Maximum tempered eigenvalue model `λ_{temp, max}(q) = 240 q - d_reg(q)`.
+   - Exact Ramanujan spectral gap polynomial identity:
      `Gap(Δ_{E8}) = 0 - λ_{temp, max} = 240 (q⁴ + q³ + q² + 1) = 240 ((q - 1)(q³ + 2q² + 3q + 3) + 4)`.
 
 All theorems are formally verified with **zero sorrys**.
@@ -67,6 +66,8 @@ All theorems are formally verified with **zero sorrys**.
 -- ============================================================================
 -- Section 1: Abstract Building Structure of Type Ẽ₈ and Adjacency Operators
 -- ============================================================================
+
+section BuildingGeometry
 
 /-- Structure representing an 8D affine Bruhat-Tits building of exceptional Lie type Ẽ₈
     with base prime power parameter q. -/
@@ -128,9 +129,13 @@ theorem discreteLaplacian_const (B : BuildingE8 V q) (c : R) (v : V) :
 
 end BuildingE8
 
+end BuildingGeometry
+
 -- ============================================================================
 -- Section 2: 8D Apartment Model and 240 Root Vectors on ℤ⁸
 -- ============================================================================
+
+section ApartmentModel
 
 /-- Apartment lattice site in ℤ⁸. -/
 abbrev ApartmentSiteE8 := ℤ × ℤ × ℤ × ℤ × ℤ × ℤ × ℤ × ℤ
@@ -197,9 +202,13 @@ theorem norm_sq_integer_root : (1 : ℤ)^2 + 1^2 = 2 := by rfl
 /-- In scaled coordinates (where half-integers are ±1), the scaled squared norm is 8. -/
 theorem norm_sq_scaled_half_root : (1 : ℤ)^2 + 1^2 + 1^2 + 1^2 + 1^2 + 1^2 + 1^2 + 1^2 = 8 := by rfl
 
+end ApartmentModel
+
 -- ============================================================================
 -- Section 3: 240-Neighbor Radial Hecke Difference Operators on ℤ⁸
 -- ============================================================================
+
+section RadialDifferenceOperators
 
 variable {R : Type*} [CommRing R]
 
@@ -265,9 +274,13 @@ theorem radialE8Commutator_eq_zero (T1 T2 : (ApartmentSiteE8 → R) → Apartmen
   rw [hcomm f]
   ring
 
+end RadialDifferenceOperators
+
 -- ============================================================================
 -- Section 4: E₈ Satake Parameter System and Macdonald Spherical Recurrence
 -- ============================================================================
+
+section SatakeMacdonald
 
 /-- A system of unramified Satake parameters for the exceptional Lie group E₈
     with base prime power parameter q.
@@ -304,7 +317,7 @@ structure SatakeSystemE8 (R : Type*) [CommRing R] where
 
 namespace SatakeSystemE8
 
-variable (S : SatakeSystemE8 R)
+variable {R : Type*} [CommRing R] (S : SatakeSystemE8 R)
 
 /-- Coordinate traces x_i = z_i + z_i⁻¹ on the E₈ maximal torus. -/
 def x1 : R := S.z1 + S.z1_inv
@@ -344,6 +357,8 @@ def ad248Trace : R := S.chiE8 + 8
 
 end SatakeSystemE8
 
+variable {R : Type*} [CommRing R]
+
 /-- A Macdonald plane wave component associated with the E₈ Satake system S.
     Satisfies spatial root shift relations across the 240 root directions. -/
 structure MacdonaldWaveE8 (S : SatakeSystemE8 R) (ψ : ApartmentSiteE8 → R) : Prop where
@@ -370,9 +385,15 @@ theorem macdonald_eigenvalue_laplacian_e8 (S : SatakeSystemE8 R) (ψ : Apartment
   rw [hT v]
   ring
 
+end SatakeMacdonald
+
 -- ============================================================================
 -- Section 5: 248-Dimensional Adjoint Representation & Hecke Correspondence
 -- ============================================================================
+
+section AdjointRepresentation
+
+variable {R : Type*} [CommRing R]
 
 /-- **Fundamental Adjoint Trace Theorem for E₈**:
     The trace of the 248D adjoint representation equals the root character plus 8. -/
@@ -387,9 +408,13 @@ theorem macdonald_hecke_eq_ad248_trace (S : SatakeSystemE8 R) :
   dsimp [SatakeSystemE8.ad248Trace]
   ring
 
+end AdjointRepresentation
+
 -- ============================================================================
--- Section 6: Leech Lattice Λ₂₄ ≅ E₈³ Boundary CFT Partition Function & Moonshine
+-- Section 6: Leech Lattice Λ₂₄ ≅ E₈³ Boundary CFT Formal Models & Moonshine
 -- ============================================================================
+
+section LeechMoonshine
 
 /-- Structure capturing the modular moonshine relations between the Leech lattice Λ₂₄,
     the Niemeier lattice E₈³, and the chiral Monster CFT module V^♮. -/
@@ -407,7 +432,7 @@ structure LeechMoonshineCFT (R : Type*) [CommRing R] where
 
 namespace LeechMoonshineCFT
 
-variable (M : LeechMoonshineCFT R)
+variable {R : Type*} [CommRing R] (M : LeechMoonshineCFT R)
 
 /-- Partition function of 24 chiral bosons compactified on the Leech lattice Λ₂₄:
     Z_{Λ24}(τ) = Θ_{Λ24}(τ) / η(τ)²⁴ = (E₄(τ)³ - 720 Δ(τ)) / Δ(τ) = j(τ) - 720. -/
@@ -421,20 +446,26 @@ def Z_CFT : R := M.j - 744
     Θ_{E8³}(τ) = (Θ_{E8}(τ))³ = E₄(τ)³. -/
 def thetaE8_cubed : R := M.E4^3
 
-/-- Kissing number (number of minimal vectors of norm 4) in the Leech lattice Λ₂₄. -/
+/-- Kissing number (number of minimal vectors of norm 4) in the Leech lattice Λ₂₄:
+    `196560 = 24 * 8190`. -/
 def kissingNumberLeech : ℕ := 196560
 
-/-- Dimension of the smallest non-trivial irreducible representation of the Monster group M. -/
+/-- Dimension of the smallest non-trivial irreducible representation of the Monster group M:
+    `196883`. -/
 def monsterSmallestIrrepDim : ℕ := 196883
 
-/-- First non-trivial McKay-Thompson Moonshine Fourier coefficient c₁ = 196,884. -/
+/-- First non-trivial McKay-Thompson Moonshine Fourier coefficient `c₁ = 196884 = 1 + 196883`
+    (Griess algebra dimension decomposition into vacuum line + minimal Monster irrep). -/
 def moonshineCoeff_c1 : ℕ := 196884
 
 end LeechMoonshineCFT
 
+variable {R : Type*} [CommRing R]
+
 /-- **Theorem (Leech Lattice CFT vs Monster CFT Partition Function Identity)**:
-    The difference between the Leech lattice partition function Z_{Λ24} and the
-    chiral Monster CFT partition function Z_{CFT} is the constant central charge c = 24:
+    Algebraic difference identity between the formal polynomial definitions `Z_Leech := j - 720`
+    (formal partition function model for the Leech lattice Λ₂₄) and `Z_CFT := j - 744`
+    (formal partition function model for the Monster CFT module V^♮), yielding constant 24:
     Z_{Λ24}(j) - Z_{CFT}(j) = 24. -/
 theorem leech_cft_difference_identity (M : LeechMoonshineCFT R) :
     M.Z_Leech - M.Z_CFT = 24 := by
@@ -450,29 +481,15 @@ theorem leech_theta_relation (M : LeechMoonshineCFT R) :
   have hj := M.j_def
   linear_combination -hj
 
-/-- **Theorem (McKay-Thompson Monstrous Moonshine Dimension Identity)**:
-    The first Fourier coefficient c₁ = 196,884 of the modular j-invariant j(τ) - 744
-    decomposes into the trivial 1D vacuum and the 196,883-dimensional Griess algebra representation:
-    196884 = 1 + 196883. -/
-theorem monstrous_moonshine_c1_identity :
-    (196884 : ℕ) = 1 + 196883 := by rfl
-
-/-- **Theorem (Leech Kissing Number from E₈³ Niemeier Construction)**:
-    The Leech lattice kissing number 196,560 decomposes into the Niemeier E₈³ root frame:
-    196560 = 24 * (8190). -/
-theorem leech_kissing_number_arithmetic :
-    (196560 : ℕ) = 24 * 8190 := by rfl
-
-/-- **Theorem (Kissing Number and Moonshine Griess Dimension Bound)**:
-    The Leech kissing number 196,560 and the Griess algebra dimension 196,883 differ by exactly
-    323 = 24 + 299:
-    196883 - 196560 = 323. -/
-theorem moonshine_leech_kissing_difference :
-    (196883 : ℕ) - 196560 = 323 := by rfl
+end LeechMoonshine
 
 -- ============================================================================
 -- Section 7: Non-Archimedean Ramanujan Spectral Gap on Ẽ₈ Buildings
 -- ============================================================================
+
+section RamanujanSpectralGap
+
+variable {R : Type*} [CommRing R]
 
 /-- The maximum tempered eigenvalue for the discrete Laplacian on Ẽ₈ buildings:
     When |χ_{E8}(z)| ≤ 240 on the unitary tempered Satake locus,
@@ -480,10 +497,11 @@ theorem moonshine_leech_kissing_difference :
 def maxTemperedE8Eigenvalue (q : R) (d_reg : R) : R :=
   240 * q - d_reg
 
-/-- **Theorem (Non-Archimedean Ramanujan Spectral Gap on Ẽ₈ Buildings)**:
-    The spectral gap separating the trivial bound state λ₀ = 0 from the continuous
-    tempered spectrum band on the Ẽ₈ building with degree d_reg(q) = 240 (q⁴ + q³ + q² + q + 1)
-    is given by the exact polynomial identity:
+/-- **Theorem (Non-Archimedean Ramanujan Spectral Gap Polynomial Identity on Ẽ₈ Buildings)**:
+    Algebraic polynomial identity on parameter `q` formalizing the spectral gap formula
+    `Gap(Δ_{E8}) = 0 - λ_{temp, max} = 240 * (q - 1) * (q^3 + 2 * q^2 + 3 * q + 3) + 240 * 4`
+    for the regular degree polynomial `d_reg(q) = 240 (q⁴ + q³ + q² + q + 1)` and tempered bound `240 q`,
+    rather than an operator spectrum bound on an infinite building quotient complex:
     Gap(Δ_{E8}) = 0 - λ_{temp, max} = 240 * (q - 1) * (q^3 + 2 * q^2 + 3 * q + 3) + 240 * 4. -/
 theorem ramanujan_spectral_gap_identity_e8 (q : R) :
     0 - (240 * q - 240 * (q^4 + q^3 + q^2 + q + 1)) =
@@ -491,8 +509,10 @@ theorem ramanujan_spectral_gap_identity_e8 (q : R) :
   ring
 
 /-- **Theorem (Factorized Ramanujan Gap Polynomial for Ẽ₈ Building)**:
-    The leading gap factor is strictly positive for all prime powers q ≥ 2:
-    240 (q⁴ + q³ + q² + 1) = 240 ((q - 1)(q³ + 2q² + 3q + 3) + 4). -/
+    Algebraic factorization of the Ramanujan gap polynomial
+    `240 (q⁴ + q³ + q² + 1) = 240 ((q - 1)(q³ + 2q² + 3q + 3) + 4)` over any commutative ring `R`. -/
 theorem ramanujan_gap_factorization_e8 (q : R) :
     240 * (q^4 + q^3 + q^2 + 1) = 240 * ((q - 1) * (q^3 + 2 * q^2 + 3 * q + 3) + 4) := by
   ring
+
+end RamanujanSpectralGap

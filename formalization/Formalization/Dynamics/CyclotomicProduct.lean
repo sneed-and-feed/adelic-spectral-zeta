@@ -7,6 +7,8 @@ import Mathlib.Tactic.Positivity
 open Polynomial
 open Finset
 
+section CyclotomicProduct
+
 variable {F : Type*} [Field F] {n : ℕ} (zeta : F)
 
 def W_1 (C_1 : Finset (ZMod (2^n))) : F := ∏ x ∈ C_1, (1 + zeta ^ (-x).val)
@@ -114,3 +116,5 @@ lemma eigenvalue_magnitude_squared_eq (hzeta : IsPrimitiveRoot zeta (2^n)) (lamb
     (h_neg : C_2 = C_1.image (fun x ↦ -x)) :
     (lambda * lambda_conj) ^ (2^(n-2)) = 2 := by
   rw [mul_pow, h_lambda, h_lambda_conj, W_1_mul_W_2_eq_two zeta hzeta hn C_1 C_2 h_partition h_union h_neg]
+
+end CyclotomicProduct

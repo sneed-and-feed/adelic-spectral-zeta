@@ -4,6 +4,8 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 import Formalization.Spectral.SchreierSpectral
+import Formalization.Util.ZMod2
+import Formalization.Util.Hadamard
 /-!
 # CollatzRelMatrix
 
@@ -377,11 +379,11 @@ noncomputable def D'_block_diag_target {n : ℕ} (hn : n ≥ 2) :
 
 /-- The inverse Hadamard conjugation block matrix for the directed decomposition. -/
 noncomputable def conjBlockInv_dir {n : ℕ} : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ :=
-  fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then SchreierSpectral.hadamardInv j1 j2 else 0
+  conjBlockInv (ZMod (2^(n-1)))
 
 /-- The Hadamard conjugation block matrix for the directed decomposition. -/
 noncomputable def conjBlock_dir {n : ℕ} : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ :=
-  fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then SchreierSpectral.hadamardBlock j1 j2 else 0
+  conjBlock (ZMod (2^(n-1)))
 
 /-- The Hadamard conjugation block-diagonalizes the directed matrix.
     Structurally identical to `A'_block_diag` in SchreierSpectral.lean. -/
@@ -390,7 +392,7 @@ theorem D'_block_diag {n : ℕ} (hn : n ≥ 2) :
     D'_block_diag_target hn := by
   ext ⟨s1, s2⟩ ⟨r1, r2⟩
   simp only [Matrix.mul_apply, Fintype.sum_prod_type]
-  simp only [conjBlockInv_dir, conjBlock_dir, D'_matrix, D'_block_diag_target]
+  simp only [conjBlockInv_dir, conjBlock_dir, conjBlockInv, conjBlock, D'_matrix, D'_block_diag_target]
   simp only [Finset.sum_mul, mul_ite, ite_mul, mul_zero, zero_mul]
 
   simp_rw [Finset.sum_comm (s := Finset.univ (α := ZMod (2^(n-1))))
@@ -406,9 +408,9 @@ theorem D'_block_diag {n : ℕ} (hn : n ≥ 2) :
   have hr : r2 = 0 ∨ r2 = 1 := by fin_cases r2 <;> tauto
   rcases hs with rfl | rfl <;> rcases hr with rfl | rfl <;>
   · dsimp [D'_block_diag_target, weightedDirMatrix, twistedDirMatrix, D'_matrix]
-    simp only [SchreierSpectral.sum_zmod_two]
+    simp only [sum_zmod_two]
     rw [hA10, hA11]
-    dsimp [SchreierSpectral.hadamardInv, SchreierSpectral.hadamardBlock, Matrix.smul_apply]
+    dsimp [hadamardInv, hadamardBlock, Matrix.smul_apply]
     ring
 
 -- ============================================================================

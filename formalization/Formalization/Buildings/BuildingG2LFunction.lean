@@ -42,6 +42,8 @@ $$L_p(s, \pi_{G_2}, \mathrm{std}_7) = \left( (1 - p^{-s}) \prod_{i=1}^3 (1 - \al
 All theorems are formally verified with **zero sorrys**.
 -/
 
+section BuildingG2LFunction
+
 variable {R : Type*} [CommRing R]
 
 -- ============================================================================
@@ -355,3 +357,5 @@ theorem secular_imaginary_critical_line (weights : Finset ℕ) (w : ℕ → R) (
 theorem normal_dirac_spectral_lower_bound (mu eta : R) :
     (mu^2 + eta^2) - eta^2 = mu^2 := by
   ring
+
+end BuildingG2LFunction

@@ -1,8 +1,35 @@
+/-
+Copyright (c) 2026 Antigravity Mathematical Research Team. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Antigravity Mathematical Research Team
+-/
 import Mathlib.RingTheory.PowerSeries.Basic
 import Mathlib.RingTheory.PowerSeries.WellKnown
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Data.Complex.Basic
+import Mathlib.Data.Nat.Factorial.Basic
 import Formalization.Dynamics.CollatzRelMatrix
+
+/-!
+# Truncated Transfer Operators, Trace Power Series, and Dynamical Zeta Functions
+
+This module formalizes the finite-level truncated transfer operator matrix $S_n$ over $\mathbb{C}$,
+its trace sequence $a_k = \operatorname{Tr}(S_n^k)$, the associated formal trace power series
+$S_n(t) = \sum_{k=1}^\infty \frac{a_k}{k} t^k$, the dynamical zeta function $Z_n(t) = \exp(S_n(t))$,
+the Fredholm determinant $\det(I - t S_n)$, and the Rational Zeta Conjecture relating them.
+
+It also formalizes the truncation quotient rings $\mathbb{C}[[t]] / (t^{2^{n+1}})$ and their
+canonical projection homomorphisms.
+
+### Mathematical Notes
+- **Rational Zeta Formulation:** The dynamical zeta function $Z_n(t)$ is defined as the formal
+  power series exponential of the trace series $S_n(t)$. The Rational Zeta Conjecture states that
+  $Z_n(t) \cdot \det(I - t S_n) = 1$, representing the Fredholm determinant identity at level $n$.
+- **Projective Limit Inconsistency:** As documented below, local trace cycles do not form a
+  compatible projective system across covering sheet levels (e.g. $a_2(S_2) = 4$ while $a_2(S_3) = 0$),
+  so global dynamical zeta behavior is analyzed via the factored Fredholm determinant tower rather
+  than naive projective limits of trace series.
+-/
 
 open scoped BigOperators
 open CollatzDirMatrix
@@ -11,24 +38,41 @@ namespace Collatz
 
 noncomputable section
 
--- The truncated transfer operator as a matrix over ℂ
+/-- The truncated transfer operator at level $n$ as a matrix over $\mathbb{C}$. -/
 def Sn (n : ℕ) (hn : n ≥ 2) : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) ℂ :=
   Matrix.map (twistedDirMatrix hn) (fun x => (x : ℂ))
 
--- The sequence of traces a_k = Tr(Sn^k)
+/-- The sequence of traces $a_k = \operatorname{Tr}(S_n^k)$. -/
 def trace_k (n : ℕ) (hn : n ≥ 2) (k : ℕ) : ℂ :=
   Matrix.trace (Sn n hn ^ k)
 
 open PowerSeries
 
--- The formal power series S_n(t) = sum_{k=1}^infty (a_k / k) t^k
+/-- The formal trace power series $S_n(t) = \sum_{k=1}^\infty \frac{\operatorname{Tr}(S_n^k)}{k} t^k$. -/
 def Sn_series (n : ℕ) (hn : n ≥ 2) : PowerSeries ℂ :=
   PowerSeries.mk (fun k => if k = 0 then 0 else trace_k n hn k / (k : ℂ))
 
--- The statement of the rational zeta theorem for the finite truncations
-theorem Zn_eq_det_inv (n : ℕ) (hn : n ≥ 2) :
-  (Sn_series n hn) = Sn_series n hn := by
-  rfl
+/-- Formal power series exponential for power series over a commutative $\mathbb{Q}$-algebra.
+    Given $f(t) \in R[[t]]$ with $f(0) = 0$, $\exp(f(t)) = \sum_{j=0}^\infty \frac{f(t)^j}{j!}$.
+    Since the $m$-th coefficient only depends on $j \le m$, this is a well-defined formal power series. -/
+def PowerSeries.exp (R : Type*) [CommRing R] [Algebra ℚ R] (f : PowerSeries R) : PowerSeries R :=
+  PowerSeries.mk fun m => ∑ j ∈ Finset.range (m + 1), (algebraMap ℚ R (1 / Nat.factorial j)) * (coeff m) (f ^ j)
+
+/-- The finite-level dynamical zeta function $Z_n(t) = \exp(S_n(t))$ defined via the trace series. -/
+def DynamicalZeta (n : ℕ) (hn : n ≥ 2) : PowerSeries ℂ :=
+  PowerSeries.exp ℂ (Sn_series n hn)
+
+/-- The Fredholm determinant $\det(I - t S_n)$ as a formal power series over $\mathbb{C}$. -/
+def det_I_minus_t_Sn (n : ℕ) (hn : n ≥ 2) : PowerSeries ℂ :=
+  let I : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) (PowerSeries ℂ) := 1
+  let tSn : Matrix (ZMod (2^(n-1))) (ZMod (2^(n-1))) (PowerSeries ℂ) :=
+    (PowerSeries.X : PowerSeries ℂ) • (Matrix.map (Sn n hn) (algebraMap ℂ (PowerSeries ℂ)))
+  (I - tSn).det
+
+/-- The Rational Zeta Conjecture stating that the dynamical zeta function agrees with the
+inverse Fredholm determinant $\det(I - t S_n)^{-1}$, i.e., $Z_n(t) \cdot \det(I - t S_n) = 1$. -/
+def RationalZetaConjecture (n : ℕ) (hn : n ≥ 2) : Prop :=
+  DynamicalZeta n hn * det_I_minus_t_Sn n hn = 1
 
 -- The n-th truncation ring: ℂ[[t]] / (t^L)
 def TruncRing (n : ℕ) :=

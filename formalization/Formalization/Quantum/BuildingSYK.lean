@@ -87,6 +87,8 @@ structure MajoranaAlgebra (C : Type*) [DecidableEq C] (A : Type*) [Ring A] [Alge
 
 namespace MajoranaAlgebra
 
+section MajoranaSection
+
 variable {C : Type*} [DecidableEq C] {A : Type*} [Ring A] [Algebra ℝ A]
 variable (M : MajoranaAlgebra C A)
 
@@ -161,6 +163,8 @@ theorem comm_fourFermion_last {c1 c2 c3 a : C}
         rw [M.psi_sq, mul_one]
   rw [hR, hL, sub_neg_eq_add, two_mul]
 
+end MajoranaSection
+
 end MajoranaAlgebra
 
 -- ============================================================================
@@ -175,6 +179,8 @@ structure CouplingTensor (C : Type*) where
   antisymm34 : ∀ c1 c2 c3 c4, J c1 c2 c3 c4 = - J c1 c2 c4 c3
 
 namespace CouplingTensor
+
+section CouplingSection
 
 variable {C : Type*} (T : CouplingTensor C)
 
@@ -195,6 +201,8 @@ def isBuildingLocal (CS : ChamberSpace C) (R_loc : ℕ) : Prop :=
   ∀ c1 c2 c3 c4,
     CS.dist c1 c2 > R_loc ∨ CS.dist c1 c3 > R_loc ∨ CS.dist c1 c4 > R_loc →
       T.J c1 c2 c3 c4 = 0
+
+end CouplingSection
 
 end CouplingTensor
 

@@ -33,6 +33,8 @@ open scoped Matrix
 
 set_option linter.unusedSectionVars false
 
+section RegularIharaZeta
+
 variable {V : Type*} [Fintype V] [DecidableEq V]
 variable (G : SimpleGraph V) [DecidableRel G.Adj]
 variable {d : ℕ}
@@ -116,3 +118,5 @@ theorem ihara_bass_4regular_polynomial (h_reg : G.IsRegularOfDegree 4) :
     ring
   rw [h4] at h
   exact h
+
+end RegularIharaZeta

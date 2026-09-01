@@ -12,51 +12,51 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
 /-!
-# Quantum Chaos, Macdonald OTOC Kernel & Non-Archimedean MSS Bound
+# 1D Scalar Parameter Model: OTOC Ladder Kernel & Non-Archimedean MSS Bound
 
-This module formalizes:
-1. **Macdonald Joint Eigenbasis Connection**:
-   - Connection with spherical Macdonald functions `Φ_z(m, n)` on `BuildingPGL3.SatakeSystem`.
-   - 4-point Out-of-Time-Order Correlator (OTOC) expanded in Macdonald eigenfunctions.
+This module formalizes a simplified 1D scalar parameter model of the Out-of-Time-Order
+Correlator (OTOC) Bethe-Salpeter ladder kernel eigenvalue equation and the Maldacena-Shenker-Stanford
+(MSS) chaos bound over real parameters:
 
-2. **OTOC Ladder Kernel Operator**:
-   - Retarded Bethe-Salpeter ladder kernel `k_p(β, h) = ((p - 1) / (p + 1)) * (2π / (β h))`.
-   - Iwahori-Hecke branching factor `(p - 1) / (p + 1)`.
+1. **1D Scalar OTOC Ladder Kernel Model**:
+   - Scalar parameter model for the ladder kernel: `k_p(β, h) = ((p - 1) / (p + 1)) * (2π / (β h))` over $p, \beta, h \in \mathbb{R}$.
+   - Branching factor parametrization: `(p - 1) / (p + 1)`.
 
-3. **Exact Derivation of Lyapunov Exponent**:
-   - Closed-form solution: `λ_L(p, β) = (2π / β) * ((p - 1) / (p + 1))`.
-   - Proof that `λ_L(p, β)` solves the ladder kernel eigenvalue equation `k_p(β, λ_L) = 1`.
+2. **Scalar Lyapunov Exponent Solution**:
+   - Closed-form parameter expression: `λ_L(p, β) = (2π / β) * ((p - 1) / (p + 1))`.
+   - Proof that `λ_L(p, β)` solves the 1D scalar ladder kernel algebraic equation `k_p(β, λ_L) = 1`.
 
-4. **Strict Non-Archimedean Maldacena-Shenker-Stanford (MSS) Bound**:
-   - Universal maximal chaos bound `λ_MSS(β) = 2π / β`.
-   - Exact chaos deficit `λ_MSS(β) - λ_L(p, β) = (2π / β) * (2 / (p + 1))`.
-   - Strict inequality `λ_L(p, β) < 2π / β` for all branching degrees `p ≥ 2` and `β > 0`.
-   - Strict positivity `λ_L(p, β) > 0`.
+3. **1D Scalar Model MSS Chaos Bound**:
+   - Scalar MSS bound parameter: `λ_MSS(β) = 2π / β`.
+   - Exact algebraic deficit: `λ_MSS(β) - λ_L(p, β) = (2π / β) * (2 / (p + 1))`.
+   - Strict inequality `λ_L(p, β) < 2π / β` for all branching parameters `p > 1` and `β > 0`.
+   - Positivity `λ_L(p, β) > 0`.
 
-5. **Monotonicity & Archimedean Saturation**:
-   - Strict monotonicity: `p < q ⟹ λ_L(p, β) < λ_L(q, β)`.
-   - Archimedean decomposition: `λ_L(p, β) = λ_MSS(β) * (1 - 2 / (p + 1))`.
+4. **Monotonicity & Saturation Properties in the 1D Model**:
+   - Strict monotonicity in $p$: `p < q ⟹ λ_L(p, β) < λ_L(q, β)`.
+   - Parametric decomposition: `λ_L(p, β) = λ_MSS(β) * (1 - 2 / (p + 1))`.
 
-All theorems are formally verified with **zero sorrys** and **zero custom axioms**.
+All theorems in this 1D parameter model are formally verified with **zero sorrys** and **zero custom axioms**.
 -/
 
 namespace BuildingOTOC
 
 -- ============================================================================
--- Section 1: OTOC Ladder Kernel on Macdonald Eigenbasis
+-- ============================================================================
+-- Section 1: OTOC Ladder Kernel in 1D Scalar Parameter Model
 -- ============================================================================
 
-/-- Conformal 4-point OTOC ladder kernel on Macdonald eigenbasis with branching degree p:
-    `k_p(β, h) = ((p - 1) / (p + 1)) * (2π / (β * h))`. -/
+/-- 1D scalar parameter model of the conformal 4-point OTOC ladder kernel with branching parameter p:
+    `k_p(β, h) = ((p - 1) / (p + 1)) * (2π / (β * h))` defined over real variables. -/
 noncomputable def otocLadderKernel (p : ℝ) (β : ℝ) (h : ℝ) : ℝ :=
   ((p - 1) / (p + 1)) * (2 * Real.pi / (β * h))
 
-/-- Exact Lyapunov exponent for the Building-SYK model on Ã₂ affine buildings:
+/-- Scalar Lyapunov exponent parameter in the 1D model:
     `λ_L(p, β) = (2π / β) * ((p - 1) / (p + 1))`. -/
 noncomputable def lyapunovExponent (p : ℝ) (β : ℝ) : ℝ :=
   (2 * Real.pi / β) * ((p - 1) / (p + 1))
 
-/-- Universal Maldacena-Shenker-Stanford (MSS) maximal chaos bound:
+/-- Scalar Maldacena-Shenker-Stanford (MSS) maximal chaos bound parameter:
     `λ_MSS(β) = 2π / β`. -/
 noncomputable def mssBound (β : ℝ) : ℝ :=
   2 * Real.pi / β
@@ -66,8 +66,8 @@ noncomputable def mssBound (β : ℝ) : ℝ :=
 -- ============================================================================
 
 /-- **Theorem (Lyapunov Exponent Solves Ladder Kernel Equation)**:
-    The Lyapunov exponent `λ_L(p, β)` satisfies the exact Bethe-Salpeter ladder eigenvalue
-    condition `k_p(β, λ_L) = 1`. -/
+    The scalar Lyapunov exponent parameter `λ_L(p, β)` satisfies the exact Bethe-Salpeter ladder eigenvalue
+    condition `k_p(β, λ_L) = 1` in the 1D parameter model. -/
 theorem lyapunov_solves_ladder (p β : ℝ) (hp : p > 1) (hβ : β > 0) :
     otocLadderKernel p β (lyapunovExponent p β) = 1 := by
   dsimp [otocLadderKernel, lyapunovExponent]
@@ -77,7 +77,7 @@ theorem lyapunov_solves_ladder (p β : ℝ) (hp : p > 1) (hβ : β > 0) :
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
   field_simp
 
-/-- Positivity of the Lyapunov exponent for all branching degrees p > 1 and inverse temperature β > 0. -/
+/-- Positivity of the scalar Lyapunov exponent for all branching parameters p > 1 and inverse temperature β > 0. -/
 theorem lyapunovExponent_pos (p β : ℝ) (hp : p > 1) (hβ : β > 0) :
     lyapunovExponent p β > 0 := by
   dsimp [lyapunovExponent]
@@ -85,7 +85,7 @@ theorem lyapunovExponent_pos (p β : ℝ) (hp : p > 1) (hβ : β > 0) :
   positivity
 
 -- ============================================================================
--- Section 3: Strict Non-Archimedean MSS Chaos Bound
+-- Section 3: Strict Non-Archimedean MSS Chaos Bound in 1D Model
 -- ============================================================================
 
 /-- Exact Archimedean ratio identity: `(p - 1)/(p + 1) = 1 - 2/(p + 1)`. -/
@@ -93,7 +93,7 @@ theorem archimedean_ratio_identity (p : ℝ) (hp : p + 1 ≠ 0) :
     (p - 1) / (p + 1) = 1 - 2 / (p + 1) := by
   field_simp; ring
 
-/-- Exact algebraic identity for the deficit between the MSS bound and the Building-SYK Lyapunov exponent:
+/-- Exact algebraic identity for the deficit between the scalar MSS bound and the Lyapunov exponent:
     `λ_MSS(β) - λ_L(p, β) = (2π / β) * (2 / (p + 1))`. -/
 theorem chaos_deficit_identity (p β : ℝ) (hp : p + 1 ≠ 0) :
     mssBound β - lyapunovExponent p β = (2 * Real.pi / β) * (2 / (p + 1)) := by
@@ -101,9 +101,9 @@ theorem chaos_deficit_identity (p β : ℝ) (hp : p + 1 ≠ 0) :
   rw [archimedean_ratio_identity p hp]
   ring
 
-/-- **Main Theorem (Strict Non-Archimedean MSS Chaos Bound)**:
-    For any finite non-Archimedean branching degree `p > 1` (in particular all primes `p ≥ 2`)
-    and inverse temperature `β > 0`, the Lyapunov exponent strictly satisfies:
+/-- **Main Theorem (Strict Non-Archimedean MSS Chaos Bound in 1D Model)**:
+    For any real branching parameter `p > 1` (in particular all prime branching degrees `p ≥ 2`)
+    and inverse temperature `β > 0`, the scalar Lyapunov exponent strictly satisfies:
     `λ_L(p, β) < 2π / β`. -/
 theorem non_archimedean_mss_bound (p β : ℝ) (hp : p > 1) (hβ : β > 0) :
     lyapunovExponent p β < mssBound β := by
@@ -116,7 +116,7 @@ theorem non_archimedean_mss_bound (p β : ℝ) (hp : p > 1) (hβ : β > 0) :
 -- Section 4: Monotonicity & Archimedean Saturation Limit
 -- ============================================================================
 
-/-- The Iwahori-Hecke branching factor `(p - 1)/(p + 1)` is strictly monotonically increasing with p. -/
+/-- The branching factor `(p - 1)/(p + 1)` is strictly monotonically increasing with p > 1. -/
 theorem p_factor_strict_mono (p q : ℝ) (hp : p > 1) (hpq : p < q) :
     (p - 1) / (p + 1) < (q - 1) / (q + 1) := by
   have hp1 : p + 1 > 0 := by linarith
@@ -124,8 +124,8 @@ theorem p_factor_strict_mono (p q : ℝ) (hp : p > 1) (hpq : p < q) :
   rw [div_lt_div_iff₀ hp1 hq1]
   nlinarith
 
-/-- **Theorem (Monotonicity with Prime Branching Degree)**:
-    For `1 < p < q` and `β > 0`, the Lyapunov exponent strictly increases:
+/-- **Theorem (Monotonicity with Branching Parameter)**:
+    For `1 < p < q` and `β > 0`, the scalar Lyapunov exponent strictly increases:
     `λ_L(p, β) < λ_L(q, β)`. -/
 theorem lyapunov_strict_mono (p q β : ℝ) (hp : p > 1) (hpq : p < q) (hβ : β > 0) :
     lyapunovExponent p β < lyapunovExponent q β := by
@@ -133,7 +133,7 @@ theorem lyapunov_strict_mono (p q β : ℝ) (hp : p > 1) (hpq : p < q) (hβ : β
   have h_pref : 2 * Real.pi / β > 0 := by positivity
   exact mul_lt_mul_of_pos_left (p_factor_strict_mono p q hp hpq) h_pref
 
-/-- Exact Archimedean decomposition of the Lyapunov exponent:
+/-- Exact algebraic decomposition of the scalar Lyapunov exponent:
     `λ_L(p, β) = λ_MSS(β) * (1 - 2/(p + 1))`. -/
 theorem lyapunov_archimedean_decomposition (p β : ℝ) (hp : p + 1 ≠ 0) :
     lyapunovExponent p β = mssBound β * (1 - 2 / (p + 1)) := by

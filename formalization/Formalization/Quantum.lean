@@ -1,3 +1,4 @@
+import Formalization.Quantum.BratteliAF
 import Formalization.Quantum.AFAlgebraBratteli
 import Formalization.Quantum.AFAlgebraCategory
 import Formalization.Quantum.AdelicTopology
@@ -10,3 +11,4 @@ import Formalization.Quantum.ProlateScaling
 import Formalization.Quantum.ArithmeticChernSimons
 import Formalization.Quantum.BuildingSYK
 import Formalization.Quantum.BuildingOTOC
+import Formalization.Quantum.HolographicTensorNetwork

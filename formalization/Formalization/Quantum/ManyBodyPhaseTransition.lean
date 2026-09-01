@@ -17,6 +17,8 @@ This degeneracy is the exact mechanism that causes the macroscopic entanglement 
 (phase transitions) observed in the thermodynamic limit `L ≥ 14`.
 -/
 
+set_option linter.unusedSectionVars false
+
 namespace ManyBodyPhaseTransition
 
 open scoped BigOperators
@@ -28,6 +30,8 @@ structure CompletedLFunction where
 
 def IsZero (L : CompletedLFunction) (s : ℂ) : Prop :=
   L.Λ s = 0
+
+section PhaseTransition
 
 -- A physical quantum system with a finite set of modes `I`
 variable {I : Type} [Fintype I] [DecidableEq I]
@@ -134,5 +138,7 @@ theorem degeneracy_from_zero_mode (E : I → ℂ) (i₀ : I) (h_zero_mode : E i�
   use state1, state2
   refine ⟨h_valid1, h_valid2, h_distinct, ?_⟩
   rw [h_E1, h_E2]
+
+end PhaseTransition
 
 end ManyBodyPhaseTransition

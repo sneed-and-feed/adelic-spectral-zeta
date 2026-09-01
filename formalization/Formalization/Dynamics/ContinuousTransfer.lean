@@ -320,11 +320,11 @@ theorem spectral_circle_radius_eq_spectralRadius (n : ℕ) :
 
 /-- Bridge to `Formalization.Dynamics.SpectralCircle.spectral_circle`:
     every non-trivial twisted eigenvalue μ has exact magnitude |μ| = r(n). -/
-theorem spectral_circle_magnitude_eq (n : ℕ) (hn : n ≥ 3) (μ : ℂ)
+theorem spectral_circle_magnitude_eq (n : ℕ) (h : TwistedBlockHypothesis n) (hn : n ≥ 3) (μ : ℂ)
     (hμ : μ ∈ spectrum ℂ (Matrix.map (twistedDirMatrix (show n ≥ 2 by omega)) (algebraMap ℚ ℂ))) :
     ‖μ‖ = spectralRadius n := by
   rw [← spectral_circle_radius_eq_spectralRadius]
-  exact spectral_circle n hn μ hμ
+  exact spectral_circle n h hn μ hμ
 
 /-- Bridge to `Formalization.Dynamics.DynamicalZetaFactorization`:
     the roots u of the k-th cyclotomic factor (1 + 2u^{2^{k-1}}) lie on the reciprocal circle

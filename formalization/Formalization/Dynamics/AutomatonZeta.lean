@@ -35,15 +35,6 @@ lemma collatzMatrix_apply (x y : ZMod (2 : ℕ+)) : collatzMatrix x y = 1 := by
       exact (h (Finset.mem_univ _)).elim
   exact h_single
 
-def zmodTwoEquivFinTwo : ZMod (2 : ℕ+) ≃ Fin 2 where
-  toFun x := match x with
-    | 0 => 0
-    | 1 => 1
-  invFun i := match i with
-    | 0 => 0
-    | 1 => 1
-  left_inv := by intro x; fin_cases x <;> rfl
-  right_inv := by intro i; fin_cases i <;> rfl
 
 noncomputable def collatzMatrixPoly : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ) :=
   collatzMatrix.map Polynomial.C
@@ -53,18 +44,11 @@ noncomputable def collatzCharDet : Polynomial ℂ :=
 
 lemma collatzCharDet_eq : collatzCharDet = 1 - 2 * Polynomial.X := by
   unfold collatzCharDet collatzMatrixPoly
-  rw [← Matrix.det_reindex_self zmodTwoEquivFinTwo]
+  erw [← Matrix.det_reindex_self zmodTwoEquivFinTwo]
   rw [Matrix.det_fin_two]
-  change ((1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 0 0 - X * Polynomial.C (collatzMatrix 0 0)) *
-         ((1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 1 1 - X * Polynomial.C (collatzMatrix 1 1)) -
-         ((1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 0 1 - X * Polynomial.C (collatzMatrix 0 1)) *
-         ((1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 1 0 - X * Polynomial.C (collatzMatrix 1 0)) = 1 - 2 * Polynomial.X
-  rw [collatzMatrix_apply 0 0, collatzMatrix_apply 1 1, collatzMatrix_apply 0 1, collatzMatrix_apply 1 0]
-  have h01 : (1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 0 1 = 0 := rfl
-  have h10 : (1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 1 0 = 0 := rfl
-  have h00 : (1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 0 0 = 1 := rfl
-  have h11 : (1 : Matrix (ZMod (2 : ℕ+)) (ZMod (2 : ℕ+)) (Polynomial ℂ)) 1 1 = 1 := rfl
-  rw [h00, h11, h01, h10, Polynomial.C_1]
+  change (1 - X * Polynomial.C (collatzMatrix 0 0)) * (1 - X * Polynomial.C (collatzMatrix 1 1)) -
+         (0 - X * Polynomial.C (collatzMatrix 0 1)) * (0 - X * Polynomial.C (collatzMatrix 1 0)) = _
+  simp [collatzMatrix_apply]
   ring
 
 noncomputable def collatzZeta : RatFunc ℂ :=

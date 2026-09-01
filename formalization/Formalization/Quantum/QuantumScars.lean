@@ -5,27 +5,55 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
+/-!
+# Entanglement Entropy of Pure Product States and Toy Model of ETH
+
+This module formalizes the entanglement properties of the pure product state
+$Z = |0\dots 0\rangle$ across a spatial bipartition $I \simeq A \oplus B$.
+
+## Mathematical Content
+- **Pure Product State**: The all-zero occupation configuration $Z = \mathbf{0}$ represents
+  the unentangled product state $|0\dots 0\rangle$.
+- **Reduced Density Matrix & Purity**: The bipartite reduced density matrix
+  $\rho_A = \mathrm{Tr}_B(|Z\rangle\langle Z|)$ is a rank-1 projection onto the local zero
+  state $Z_A$, with purity $\gamma = \mathrm{Tr}(\rho_A^2) = 1$.
+- **Rényi-2 Entanglement Entropy**: $S_A^{(2)}(Z) = -\ln(\mathrm{Tr}(\rho_A^2)) = -\ln 1 = 0$.
+- **Toy Model of ETH & Sub-Thermal Entropy**: In a simplified finite-dimensional toy model
+  where maximal thermal volume-law entropy is defined as $|A|$ and every energy level is
+  treated as in the spectral bulk (`InBulk _ := True`), the zero-entropy state $Z$ satisfies
+  $S_A^{(2)}(Z) = 0 < |A|$ whenever $|A| > 0$. This provides a concrete toy illustration
+  of sub-thermal entanglement entropy (analogous to quantum many-body scars / failure of
+  uniform volume-law ETH in such toy models).
+-/
+
 open Classical
 open scoped BigOperators
 open Matrix
 
+set_option linter.unusedSectionVars false
+
 namespace ManyBodyPhaseTransition
+
+section QuantumScars
 
 variable {I : Type} [Fintype I] [DecidableEq I]
 variable (bp : Bipartition I)
 
-/-- Energy is in the bulk of the spectrum. -/
-def InBulk (_E_val : ℂ) : Prop := True
+/-- In this simplified toy model of eigenstate thermalization, all energy levels
+are trivially considered to lie in the spectral bulk. -/
+def InBulk (_ : ℂ) : Prop := True
 
-/-- Thermal entropy (Volume Law). -/
-noncomputable def ThermalEntropy (_E_val : ℂ) : ℝ :=
+/-- Maximal / thermal subsystem entropy in the toy model (volume-law scaling
+proportional to subsystem size $|A|$). -/
+noncomputable def ThermalEntropy (_ : ℂ) : ℝ :=
   (Fintype.card bp.A : ℝ)
 
-/-- Helper to turn a valid FermionState into a QuantumState. -/
+/-- Helper to turn a valid `FermionState` into a single-basis-state `QuantumState`. -/
 noncomputable def quantumStateOf (state : FermionState I) (h : ValidFermionState state) : QuantumState I :=
   fun n => if n = ⟨state, h⟩ then (1 : ℂ) else (0 : ℂ)
 
-/-- Strong ETH: Volume Law applies to all bulk eigenstates. -/
+/-- Toy Model Strong ETH: all bulk eigenstates are required to exhibit maximal
+thermal volume-law entanglement entropy $|A|$. -/
 def StrongETH (E : I → ℂ) : Prop :=
   ∀ (state : FermionState I) (h : ValidFermionState state),
     InBulk (ManyBodyEnergy E state) →
@@ -33,22 +61,32 @@ def StrongETH (E : I → ℂ) : Prop :=
 
 variable (E : I → ℂ)
 
-/-- Quantum Many-Body Scar: sub-thermal / Area Law entropy for a bulk eigenstate. -/
+/-- Sub-thermal / Area-Law entanglement entropy for an eigenstate in the toy model
+(analogous to a quantum many-body scar state). -/
 def IsQuantumScar (state : FermionState I) : Prop :=
   ∃ (h : ValidFermionState state),
     InBulk (ManyBodyEnergy E state) ∧
     Renyi2Entropy bp (quantumStateOf state h) < ThermalEntropy bp (ManyBodyEnergy E state)
 
-/-- Step 2.4: Link Adèlic Zero-Modes to QMBS -/
+/-- The unentangled all-zero product state $Z = |0\dots 0\rangle$. -/
 noncomputable def Z : FermionState I := fun _ => 0
+
+set_option linter.unusedSectionVars false in
+/-- The all-zero state is a valid fermionic occupation state (all occupations are 0). -/
 lemma Z_valid : ValidFermionState (Z : FermionState I) := by intro i; left; rfl
 
+/-- The quantum state representation of the all-zero product state $|Z\rangle$. -/
 noncomputable def Z_state : QuantumState I :=
   fun n => if n = ⟨Z (I:=I), Z_valid (I:=I)⟩ then (1 : ℂ) else (0 : ℂ)
 
+/-- The restriction of the all-zero state to subsystem $A$. -/
 noncomputable def Z_A : BasisState bp.A := ⟨fun _ => 0, fun _ => Or.inl rfl⟩
+
+/-- The restriction of the all-zero state to subsystem $B$. -/
 noncomputable def Z_B : BasisState bp.B := ⟨fun _ => 0, fun _ => Or.inl rfl⟩
 
+/-- A joined basis state `nA ⊕ nB` equals the all-zero state $Z$ if and only if
+both `nA` and `nB` are the local all-zero states $Z_A$ and $Z_B$. -/
 lemma joinBasisState_eq_Z_iff (nA : BasisState bp.A) (nB : BasisState bp.B) :
     joinBasisState nA nB = ⟨Z (I:=I), Z_valid (I:=I)⟩ ↔ nA = Z_A bp ∧ nB = Z_B bp := by
   constructor
@@ -76,6 +114,8 @@ lemma joinBasisState_eq_Z_iff (nA : BasisState bp.A) (nB : BasisState bp.B) :
     dsimp [joinBasisState, joinState, Z_A, Z_B, Z]
     cases bp.equiv i <;> rfl
 
+/-- The reduced density matrix $\rho_A = \mathrm{Tr}_B(|Z\rangle\langle Z|)$ is the
+rank-1 projection $|Z_A\rangle\langle Z_A|$. -/
 lemma Z_ReducedDensityMatrix (nA1 nA2 : BasisState bp.A) :
     ReducedDensityMatrix bp (Z_state (I:=I)) nA1 nA2 = if nA1 = Z_A bp ∧ nA2 = Z_A bp then 1 else 0 := by
   unfold ReducedDensityMatrix Z_state
@@ -108,6 +148,8 @@ lemma Z_ReducedDensityMatrix (nA1 nA2 : BasisState bp.A) :
     simp_rw [h_zero]
     rw [Finset.sum_const_zero]
 
+/-- The purity $\gamma = \mathrm{Tr}(\rho_A^2)$ of the reduced density matrix of the
+pure product state $|Z\rangle$ is identically 1. -/
 lemma Z_purity : Purity bp (Z_state (I:=I)) = 1 := by
   unfold Purity
   have h_mul : ∀ nA1 nA2 : BasisState bp.A,
@@ -137,6 +179,9 @@ lemma Z_purity : Purity bp (Z_state (I:=I)) = 1 := by
   rw [Finset.sum_ite_eq']
   simp
 
+/-- The pure product state $Z = |0\dots 0\rangle$ has Rényi-2 entanglement entropy
+$-\ln 1 = 0$, which is strictly less than the maximal thermal entropy $|A|$ whenever
+$|A| > 0$, thereby satisfying the toy sub-thermal / scar condition. -/
 theorem adelic_zero_mode_is_scar (h_pos : 0 < Fintype.card bp.A) : IsQuantumScar bp E (Z (I:=I)) := by
   unfold IsQuantumScar
   use (Z_valid (I:=I))
@@ -151,7 +196,9 @@ theorem adelic_zero_mode_is_scar (h_pos : 0 < Fintype.card bp.A) : IsQuantumScar
     unfold ThermalEntropy
     exact Nat.cast_pos.mpr h_pos
 
-/-- Step 2.5: Prove Violation of Strong ETH -/
+/-- In the toy ETH formulation, Strong ETH fails because the unentangled state $Z = |0\dots 0\rangle$
+has zero entanglement entropy, contradicting the requirement that all bulk states have
+maximal thermal entropy $|A| > 0$. -/
 theorem strong_eth_violation (h_pos : 0 < Fintype.card bp.A) : ¬ StrongETH bp E := by
   unfold StrongETH
   intro h_eth
@@ -160,5 +207,7 @@ theorem strong_eth_violation (h_pos : 0 < Fintype.card bp.A) : ¬ StrongETH bp E
   rcases h_scar with ⟨h_val, h_bulk, h_lt⟩
   have h_eq := h_eth (Z (I:=I)) h_val h_bulk
   linarith
+
+end QuantumScars
 
 end ManyBodyPhaseTransition

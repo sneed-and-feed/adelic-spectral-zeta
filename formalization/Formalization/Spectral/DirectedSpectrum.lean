@@ -4,7 +4,9 @@ import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 
 open Polynomial
 
-variable {F : Type _} [Field F] {n : ℕ} (zeta : F) (hzeta : IsPrimitiveRoot zeta (2^n))
+section DirectedSpectrum
+
+variable {F : Type*} [Field F] {n : ℕ} (zeta : F) (hzeta : IsPrimitiveRoot zeta (2^n))
 
 /--
 The Fourier characters over ZMod (2^n).
@@ -100,3 +102,5 @@ lemma D_n_chi (hzeta : IsPrimitiveRoot zeta (2^n)) (k : ZMod (2^n)) :
   have eq3 : zeta ^ (-k + 3 * k * x).val = zeta ^ (-k).val * zeta ^ (3 * k * x).val := pow_val_add zeta hzeta (-k) (3 * k * x)
   rw [eq3]
   ring
+
+end DirectedSpectrum

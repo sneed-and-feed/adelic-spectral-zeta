@@ -46,6 +46,8 @@ closed geodesics, and Selberg / Ihara zeta Euler factors.
 
 namespace TreeGroupTranslation
 
+section Translation
+
 variable {V : Type*}
 
 /-- A group action of `Γ` on the vertices of a simple graph `T` is an isometric graph action
@@ -250,5 +252,7 @@ lemma isHyperbolic_conj [Fintype V] [Nonempty V] (h_iso : PreservesAdj T Γ) (g 
     IsHyperbolic T (h * g * h⁻¹) ↔ IsHyperbolic T g := by
   unfold IsHyperbolic
   rw [translation_length_conj_invariant h_iso]
+
+end Translation
 
 end TreeGroupTranslation

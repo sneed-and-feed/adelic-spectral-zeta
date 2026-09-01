@@ -37,13 +37,14 @@ lemma isIrreducible_of_connected {n : Type _} [Fintype n] [DecidableEq n] [Nonem
     exact add_pos_of_nonneg_of_pos (hA_nn i i) zero_lt_one
 
 lemma isPerronFrobeniusMax_of_connected {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
+    (hPF : Matrix.PerronFrobeniusAssumptions n)
     (A : Matrix n n ℝ) (hA_herm : A.IsHermitian)
     (hB_irr : Matrix.IsPerronIrreducible (A + 1))
     (hA_nn : ∀ i j, 0 ≤ A i j)
     (hA_conn : (supportGraph A (symm_of_herm hA_herm)).Connected) :
     IsPerronFrobeniusMax A hA_herm := by
   let B := A + 1
-  obtain ⟨μ_B, v_B, _, hv_pos, hv_eig⟩ := perron_frobenius hB_irr
+  obtain ⟨μ_B, v_B, _, hv_pos, hv_eig⟩ := hPF.perron_frobenius hB_irr
   have hB_symm : ∀ i j, B i j = B j i := by
     intro i j
     change (A + 1) i j = (A + 1) j i
@@ -164,27 +165,27 @@ lemma isPerronFrobeniusMax_of_connected {n : Type _} [Fintype n] [DecidableEq n]
 
 variable {d : ℕ} (hd : d ≥ 3)
 
-lemma isPerronFrobeniusMax_realWeightedMatrix :
+lemma isPerronFrobeniusMax_realWeightedMatrix (hPF : Matrix.PerronFrobeniusAssumptions (ZMod (2^(d-2)))) :
     IsPerronFrobeniusMax (realWeightedMatrix hd) (realWeightedMatrix_isHermitian hd) := 
-  isPerronFrobeniusMax_of_connected _ _ (isIrreducible_of_connected _ _ (weightedMatrix_nonneg hd) (weighted_support_connected hd)) (weightedMatrix_nonneg hd) (weighted_support_connected hd)
+  isPerronFrobeniusMax_of_connected hPF _ _ (isIrreducible_of_connected _ _ (weightedMatrix_nonneg hd) (weighted_support_connected hd)) (weightedMatrix_nonneg hd) (weighted_support_connected hd)
 
-lemma isPerronFrobeniusMax_realAdjacencyMatrix (hd : d ≥ 3) :
+lemma isPerronFrobeniusMax_realAdjacencyMatrix (hd : d ≥ 3) (hPF : Matrix.PerronFrobeniusAssumptions (ZMod (2^(d-1)))) :
     IsPerronFrobeniusMax (@realAdjacencyMatrix d) (@realAdjacencyMatrix_isHermitian d) := by
   have hd2 : d ≥ 2 := by omega
-  exact isPerronFrobeniusMax_of_connected _ _ (isIrreducible_of_connected _ _ adjacencyMatrix_nonneg (adjacency_support_connected hd2)) adjacencyMatrix_nonneg (adjacency_support_connected hd2)
+  exact isPerronFrobeniusMax_of_connected hPF _ _ (isIrreducible_of_connected _ _ adjacencyMatrix_nonneg (adjacency_support_connected hd2)) adjacencyMatrix_nonneg (adjacency_support_connected hd2)
 
 end SchreierSpectral
 
-theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
+theorem weightedMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) (hPF : Matrix.PerronFrobeniusAssumptions (ZMod (2^(d-2)))) :
     ∃ (i : ZMod (2^(d-2))), ∀ (j : ZMod (2^(d-2))),
       (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues j ≤ (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues i
       ∧ ((SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues j = (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvalues i → j = i)
       ∧ ((∀ x, 0 < (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvectorBasis i x) ∨ (∀ x, (SchreierSpectral.realWeightedMatrix_isHermitian hd).eigenvectorBasis i x < 0)) := by
-  exact SchreierSpectral.isPerronFrobeniusMax_realWeightedMatrix hd
+  exact SchreierSpectral.isPerronFrobeniusMax_realWeightedMatrix hd hPF
 
-theorem adjacencyMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) :
+theorem adjacencyMatrix_spectral_gap_positive {d : ℕ} (hd : d ≥ 3) (hPF : Matrix.PerronFrobeniusAssumptions (ZMod (2^(d-1)))) :
     ∃ (i : ZMod (2^(d-1))), ∀ (j : ZMod (2^(d-1))),
       (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues j ≤ (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues i
       ∧ ((SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues j = (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvalues i → j = i)
       ∧ ((∀ x, 0 < (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvectorBasis i x) ∨ (∀ x, (SchreierSpectral.realAdjacencyMatrix_isHermitian (d := d)).eigenvectorBasis i x < 0)) := by
-  exact SchreierSpectral.isPerronFrobeniusMax_realAdjacencyMatrix hd
+  exact SchreierSpectral.isPerronFrobeniusMax_realAdjacencyMatrix hd hPF

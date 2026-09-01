@@ -5,6 +5,8 @@ import Mathlib.Analysis.Matrix.Spectrum
 import Formalization.Spectral.MathlibSpectral
 import Mathlib.LinearAlgebra.Matrix.Gershgorin
 import Formalization.Spectral.SchreierConnectivity
+import Formalization.Util.ZMod2
+import Formalization.Util.Hadamard
 /-!
 # SchreierSpectral
 
@@ -230,56 +232,15 @@ lemma tau_adjacency_commute {d : ℕ} (hd : d ≥ 3) :
 -- Phase 1c: Hadamard Transformation
 -- ============================================================================
 
-lemma sum_zmod_two {β : Type*} [AddCommMonoid β] (f : ZMod 2 → β) :
-    ∑ i : ZMod 2, f i = f 0 + f 1 := by
-  have : (Finset.univ : Finset (ZMod 2)) = {0, 1} := rfl
-  rw [this]
-  simp
-
-/-- Internal API. -/
-def hadamardBlock : Matrix (ZMod 2) (ZMod 2) ℚ
-  | 0, 0 => 1
-  | 0, 1 => 1
-  | 1, 0 => 1
-  | 1, 1 => -1
-
-lemma hadamardBlock_00 : hadamardBlock (0 : ZMod 2) (0 : ZMod 2) = 1 := rfl
-lemma hadamardBlock_01 : hadamardBlock (0 : ZMod 2) (1 : ZMod 2) = 1 := rfl
-lemma hadamardBlock_10 : hadamardBlock (1 : ZMod 2) (0 : ZMod 2) = 1 := rfl
-lemma hadamardBlock_11 : hadamardBlock (1 : ZMod 2) (1 : ZMod 2) = -1 := rfl
-
-lemma hadamard_mul_self : hadamardBlock * hadamardBlock = (2 : ℚ) • (1 : Matrix (ZMod 2) (ZMod 2) ℚ) := by
-  ext i j
-  simp only [Matrix.mul_apply, sum_zmod_two, Matrix.smul_apply, Matrix.one_apply]
-  have hi : i = 0 ∨ i = 1 := by fin_cases i <;> tauto
-  have hj : j = 0 ∨ j = 1 := by fin_cases j <;> tauto
-  rcases hi with rfl | rfl <;> rcases hj with rfl | rfl <;> (dsimp [hadamardBlock]; ring)
-
 @[nolint unusedArguments]
 lemma hadamard_sq {d : ℕ} (_hd : d ≥ 3) :
     hadamardBlock * hadamardBlock = (2 : ℚ) • (1 : Matrix (ZMod 2) (ZMod 2) ℚ) :=
   hadamard_mul_self
 
-/-- Internal API. -/
-def hadamardInv : Matrix (ZMod 2) (ZMod 2) ℚ := (2 : ℚ)⁻¹ • hadamardBlock
-
--- Entry-level evaluation of hadamardInv
-lemma hadamardInv_00 : hadamardInv (0 : ZMod 2) (0 : ZMod 2) = (2:ℚ)⁻¹ := by
-  dsimp [hadamardInv, hadamardBlock, Matrix.smul_apply]; ring
-lemma hadamardInv_01 : hadamardInv (0 : ZMod 2) (1 : ZMod 2) = (2:ℚ)⁻¹ := by
-  dsimp [hadamardInv, hadamardBlock, Matrix.smul_apply]; ring
-lemma hadamardInv_10 : hadamardInv (1 : ZMod 2) (0 : ZMod 2) = (2:ℚ)⁻¹ := by
-  dsimp [hadamardInv, hadamardBlock, Matrix.smul_apply]; ring
-lemma hadamardInv_11 : hadamardInv (1 : ZMod 2) (1 : ZMod 2) = -(2:ℚ)⁻¹ := by
-  dsimp [hadamardInv, hadamardBlock, Matrix.smul_apply]; ring
-
-lemma hadamardInv_left_inv {d : ℕ} (hd : d ≥ 3) :
-    hadamardInv * hadamardBlock = 1 := by
-  simp only [hadamardInv]
-  rw [Matrix.smul_mul, hadamard_sq hd]
-  ext i j
-  simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
-  split_ifs <;> norm_num
+@[nolint unusedArguments]
+lemma hadamardInv_left_inv {d : ℕ} (_hd : d ≥ 3) :
+    hadamardInv * hadamardBlock = 1 :=
+  hadamard_inv_mul
 
 -- Phase 2a: Block Indices
 -- ============================================================================
@@ -355,19 +316,19 @@ noncomputable def A'_block_diag_target {d : ℕ} (hd : d ≥ 3) : Matrix (ZMod (
 -- The tensor product of identity and Hadamard inverse
 /-- Internal API. -/
 noncomputable def conjBlockInv {d : ℕ} : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
-  fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then hadamardInv j1 j2 else 0
+  _root_.conjBlockInv (ZMod (2^(d-2)))
 
 -- The tensor product of identity and Hadamard
 /-- Internal API. -/
 noncomputable def conjBlock {d : ℕ} : Matrix (ZMod (2^(d-2)) × ZMod 2) (ZMod (2^(d-2)) × ZMod 2) ℚ :=
-  fun ⟨i1, j1⟩ ⟨i2, j2⟩ => if i1 = i2 then hadamardBlock j1 j2 else 0
+  _root_.conjBlock (ZMod (2^(d-2)))
 
 lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
     conjBlockInv * (A'_matrix hd) * conjBlock = A'_block_diag_target hd := by
   ext ⟨s1, s2⟩ ⟨r1, r2⟩
   simp only [Matrix.mul_apply, Fintype.sum_prod_type]
-  simp only [conjBlockInv, conjBlock, A'_matrix, A'_block_diag_target,
-             Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
+  simp only [conjBlockInv, conjBlock, _root_.conjBlockInv, _root_.conjBlock, A'_matrix, A'_block_diag_target,
+             Matrix.reindex_apply, Matrix.submatrix_apply]
   simp only [Finset.sum_mul, mul_ite, ite_mul, mul_zero, zero_mul]
   
   -- The LHS is now ∑ l1 l2 (if l1=r1 then ∑ k1 k2 (if s1=k1 then H⁻¹ * A' * H else 0) else 0)
@@ -381,7 +342,7 @@ lemma A'_block_diag {d : ℕ} (hd : d ≥ 3) :
   have hA11 : A'_matrix hd (s1, 1) (r1, 1) = A'_matrix hd (s1, 0) (r1, 0) := A'_tau_sym_11_00 hd s1 r1
   
   -- Unfold A'_matrix everywhere so terms exactly match the sum output
-  simp only [A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply] at hA10 hA11 ⊢
+  simp only [A'_matrix, Matrix.reindex_apply, Matrix.submatrix_apply] at hA10 hA11 ⊢
   
   have hs : s2 = 0 ∨ s2 = 1 := by fin_cases s2 <;> tauto
   have hr : r2 = 0 ∨ r2 = 1 := by fin_cases r2 <;> tauto
@@ -482,26 +443,8 @@ lemma s_card_eq_double {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     intro p₁ _
     exact h_sum_subset_y p₁
 
-  have h_neq : ∀ z : ZMod (2^(d-1)), z ≠ tau z := by
-    intro z h_eq
-    have h_tau : tau z = z + ((2^(d-2) : ℕ) : ZMod (2^(d-1))) := rfl
-    rw [h_tau] at h_eq
-    have h_zero : ((2^(d-2) : ℕ) : ZMod (2^(d-1))) = 0 := by
-      calc ((2^(d-2) : ℕ) : ZMod (2^(d-1))) = z + ((2^(d-2) : ℕ) : ZMod (2^(d-1))) - z := by ring
-        _ = z - z := by rw [← h_eq]
-        _ = 0 := by ring
-    have h_pow : 2^(d-2) < 2^(d-1) := by
-      have h_lt : d - 2 < d - 1 := by omega
-      exact Nat.pow_lt_pow_right (by decide) h_lt
-    have h_val : ((2^(d-2) : ℕ) : ZMod (2^(d-1))).val = 2^(d-2) := ZMod.val_natCast_of_lt h_pow
-    rw [h_zero] at h_val
-    have h_val_zero : (0 : ZMod (2^(d-1))).val = 0 := ZMod.val_zero
-    rw [h_val_zero] at h_val
-    have h_pos : 0 < 2^(d-2) := by positivity
-    linarith
-
-  have h_x_neq : x ≠ tau x := h_neq x
-  have h_y_neq : y ≠ tau y := h_neq y
+  have h_x_neq : x ≠ tau x := (tau_neq hd x).symm
+  have h_y_neq : y ≠ tau y := (tau_neq hd y).symm
 
   have h_pi_x : pi x = v := pi_canonicalLift v
   have h_pi_tau_x : pi (tau x) = v := by rw [tau_pi hd, h_pi_x]
@@ -576,15 +519,7 @@ lemma weighted_adj_bounds {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
 open Classical in
 lemma two_add_eq_two_iff (A B : Prop) [Decidable A] [Decidable B] :
   ((if A then (1 : ℚ) else 0) + (if B then 1 else 0) = 2) ↔ A ∧ B := by
-  constructor
-  · intro h
-    by_cases hA : A <;> by_cases hB : B
-    · exact ⟨hA, hB⟩
-    · simp [hA, hB] at h
-    · simp [hA, hB] at h
-    · simp [hA, hB] at h
-  · rintro ⟨hA, hB⟩
-    simp [hA, hB]; norm_num
+  split_ifs <;> (try constructor) <;> (try norm_num) <;> (try tauto)
 
 open Classical in
 /-- Internal API. -/
@@ -667,58 +602,28 @@ lemma lift_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
     rw [pi_canonicalLift, tau_pi hd, pi_canonicalLift] at h2
     exact h_ne h2
   rcases h_cases with h | h | h | h
-  · -- v = 3u
-    have h_pi : pi (canonicalLift v - 3 * canonicalLift u) = 0 := by
+  · have h_pi : pi (canonicalLift v - 3 * canonicalLift u) = 0 := by
       rw [pi_sub, pi_mul_three, pi_canonicalLift, pi_canonicalLift, h, sub_self]
     rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
-    · left
-      refine ⟨hx, Or.inl ?_⟩
-      exact sub_eq_zero.mp h0
-    · right
-      refine ⟨hy, Or.inl ?_⟩
-      exact tau_eq_of_sub_eq_pow hd (canonicalLift v) (3 * canonicalLift u) h2
-  · -- v = 3u - 1
-    have h_pi : pi (canonicalLift v - (3 * canonicalLift u - 1)) = 0 := by
+    · exact Or.inl ⟨hx, Or.inl (sub_eq_zero.mp h0)⟩
+    · exact Or.inr ⟨hy, Or.inl (tau_eq_of_sub_eq_pow hd _ _ h2)⟩
+  · have h_pi : pi (canonicalLift v - (3 * canonicalLift u - 1)) = 0 := by
       rw [pi_sub, pi_mul_three_sub_one, pi_canonicalLift, pi_canonicalLift, h, sub_self]
     rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
-    · left
-      refine ⟨hx, Or.inr (Or.inl ?_)⟩
-      calc canonicalLift v = canonicalLift v - (3 * canonicalLift u - 1) + (3 * canonicalLift u - 1) := by ring
-        _ = 0 + (3 * canonicalLift u - 1) := by rw [h0]
-        _ = 3 * canonicalLift u - 1 := by ring
-    · right
-      refine ⟨hy, Or.inr (Or.inl ?_)⟩
-      exact tau_eq_of_sub_eq_pow hd (canonicalLift v) (3 * canonicalLift u - 1) h2
-  · -- u = 3v
-    have h_pi : pi (canonicalLift u - 3 * canonicalLift v) = 0 := by
+    · exact Or.inl ⟨hx, Or.inr (Or.inl (sub_eq_zero.mp h0))⟩
+    · exact Or.inr ⟨hy, Or.inr (Or.inl (tau_eq_of_sub_eq_pow hd _ _ h2))⟩
+  · have h_pi : pi (canonicalLift u - 3 * canonicalLift v) = 0 := by
       rw [pi_sub, pi_mul_three, pi_canonicalLift, pi_canonicalLift, h, sub_self]
     rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
-    · left
-      refine ⟨hx, Or.inr (Or.inr (Or.inl ?_))⟩
-      calc canonicalLift u = canonicalLift u - 3 * canonicalLift v + 3 * canonicalLift v := by ring
-        _ = 0 + 3 * canonicalLift v := by rw [h0]
-        _ = 3 * canonicalLift v := by ring
-    · right
-      refine ⟨hy, Or.inr (Or.inr (Or.inl ?_))⟩
-      calc canonicalLift u = canonicalLift u - 3 * canonicalLift v + 3 * canonicalLift v := by ring
-        _ = (2^(d-2) : ZMod (2^(d-1))) + 3 * canonicalLift v := by rw [h2]
-        _ = 3 * canonicalLift v + (2^(d-2) : ZMod (2^(d-1))) := by ring
-        _ = 3 * tau (canonicalLift v) := (three_mul_tau hd (canonicalLift v)).symm
-  · -- u = 3v - 1
-    have h_pi : pi (canonicalLift u - (3 * canonicalLift v - 1)) = 0 := by
+    · exact Or.inl ⟨hx, Or.inr (Or.inr (Or.inl (sub_eq_zero.mp h0)))⟩
+    · refine Or.inr ⟨hy, Or.inr (Or.inr (Or.inl ?_))⟩
+      rw [three_mul_tau hd, ← h2]; ring
+  · have h_pi : pi (canonicalLift u - (3 * canonicalLift v - 1)) = 0 := by
       rw [pi_sub, pi_mul_three_sub_one, pi_canonicalLift, pi_canonicalLift, h, sub_self]
     rcases (pi_eq_zero_iff hd _).mp h_pi with h0 | h2
-    · left
-      refine ⟨hx, Or.inr (Or.inr (Or.inr ?_))⟩
-      calc canonicalLift u = canonicalLift u - (3 * canonicalLift v - 1) + (3 * canonicalLift v - 1) := by ring
-        _ = 0 + (3 * canonicalLift v - 1) := by rw [h0]
-        _ = 3 * canonicalLift v - 1 := by ring
-    · right
-      refine ⟨hy, Or.inr (Or.inr (Or.inr ?_))⟩
-      calc canonicalLift u = canonicalLift u - (3 * canonicalLift v - 1) + (3 * canonicalLift v - 1) := by ring
-        _ = (2^(d-2) : ZMod (2^(d-1))) + (3 * canonicalLift v - 1) := by rw [h2]
-        _ = 3 * canonicalLift v + (2^(d-2) : ZMod (2^(d-1))) - 1 := by ring
-        _ = 3 * tau (canonicalLift v) - 1 := by rw [three_mul_tau hd (canonicalLift v)]
+    · exact Or.inl ⟨hx, Or.inr (Or.inr (Or.inr (sub_eq_zero.mp h0)))⟩
+    · refine Or.inr ⟨hy, Or.inr (Or.inr (Or.inr ?_))⟩
+      rw [three_mul_tau hd, ← h2]; ring
 
 open Classical in
 /-- Internal API. -/
@@ -748,79 +653,15 @@ lemma weighted_adj_ge_adj {d : ℕ} (hd : d ≥ 3) (u v : ZMod (2^(d-2))) :
 -- Phase 4: Spectral Decomposition & The Main Bound
 -- ============================================================================
 
-/-- The fundamental theorem of the Schreier graphs of affine maps.
-    The adjacency operator of G_d decomposes completely into two orthogonal sectors:
-    1. A symmetric block identical to the weighted adjacency of G_{d-1}.
-    2. An antisymmetric block capturing the sheet-exchange dynamics. -/
-lemma hadamard_inv_mul :
-    hadamardInv * hadamardBlock = 1 := by
-  unfold hadamardInv
-  rw [Matrix.smul_mul, hadamard_mul_self]
-  ext i j
-  simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
-  split_ifs <;> norm_num
+@[nolint unusedArguments]
+lemma conjBlockInv_mul_conjBlock {d : ℕ} (_hd : d ≥ 3) :
+    @conjBlockInv d * @conjBlock d = 1 :=
+  _root_.conjBlockInv_mul_conjBlock (ZMod (2^(d-2)))
 
-lemma hadamard_mul_inv :
-    hadamardBlock * hadamardInv = 1 := by
-  unfold hadamardInv
-  rw [Matrix.mul_smul, hadamard_mul_self]
-  ext i j
-  simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
-  split_ifs <;> norm_num
-
-lemma conjBlockInv_mul_conjBlock {d : ℕ} (hd : d ≥ 3) :
-    @conjBlockInv d * @conjBlock d = 1 := by
-  ext ⟨i1, j1⟩ ⟨i2, j2⟩
-  simp only [conjBlockInv, conjBlock, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
-  by_cases h : i1 = i2
-  · subst h
-    have : ∀ k1, (∑ k2, (if i1 = k1 then hadamardInv j1 k2 else 0) * (if k1 = i1 then hadamardBlock k2 j2 else 0))
-        = if i1 = k1 then ∑ k2, hadamardInv j1 k2 * hadamardBlock k2 j2 else 0 := by
-      intro k1
-      by_cases hk : i1 = k1 <;> simp [hk]
-    simp_rw [this]
-    have h_inv : (∑ k2 : ZMod 2, hadamardInv j1 k2 * hadamardBlock k2 j2) = if j1 = j2 then (1 : ℚ) else 0 := by
-      calc (∑ k2 : ZMod 2, hadamardInv j1 k2 * hadamardBlock k2 j2)
-        _ = (hadamardInv * hadamardBlock) j1 j2 := rfl
-        _ = (1 : Matrix (ZMod 2) (ZMod 2) ℚ) j1 j2 := by rw [hadamard_inv_mul]
-        _ = if j1 = j2 then (1 : ℚ) else 0 := by rw [Matrix.one_apply]
-    simp_rw [h_inv]
-    simp
-  · -- i1 ≠ i2
-    have : ∀ k1 k2, (if i1 = k1 then hadamardInv j1 k2 else 0) * (if k1 = i2 then hadamardBlock k2 j2 else 0) = (0 : ℚ) := by
-      intro k1 k2
-      by_cases hk1 : i1 = k1
-      · subst hk1; simp [h]
-      · simp [hk1]
-    simp_rw [this]
-    simp [h]
-
-lemma conjBlock_mul_conjBlockInv {d : ℕ} (hd : d ≥ 3) :
-    @conjBlock d * @conjBlockInv d = 1 := by
-  ext ⟨i1, j1⟩ ⟨i2, j2⟩
-  simp only [conjBlock, conjBlockInv, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
-  by_cases h : i1 = i2
-  · subst h
-    have : ∀ k1, (∑ k2, (if i1 = k1 then hadamardBlock j1 k2 else 0) * (if k1 = i1 then hadamardInv k2 j2 else 0))
-        = if i1 = k1 then ∑ k2, hadamardBlock j1 k2 * hadamardInv k2 j2 else 0 := by
-      intro k1
-      by_cases hk : i1 = k1 <;> simp [hk]
-    simp_rw [this]
-    have h_inv : (∑ k2 : ZMod 2, hadamardBlock j1 k2 * hadamardInv k2 j2) = if j1 = j2 then (1 : ℚ) else 0 := by
-      calc (∑ k2 : ZMod 2, hadamardBlock j1 k2 * hadamardInv k2 j2)
-        _ = (hadamardBlock * hadamardInv) j1 j2 := rfl
-        _ = (1 : Matrix (ZMod 2) (ZMod 2) ℚ) j1 j2 := by rw [hadamard_mul_inv]
-        _ = if j1 = j2 then (1 : ℚ) else 0 := by rw [Matrix.one_apply]
-    simp_rw [h_inv]
-    simp
-  · -- i1 ≠ i2
-    have : ∀ k1 k2, (if i1 = k1 then hadamardBlock j1 k2 else 0) * (if k1 = i2 then hadamardInv k2 j2 else 0) = (0 : ℚ) := by
-      intro k1 k2
-      by_cases hk1 : i1 = k1
-      · subst hk1; simp [h]
-      · simp [hk1]
-    simp_rw [this]
-    simp [h]
+@[nolint unusedArguments]
+lemma conjBlock_mul_conjBlockInv {d : ℕ} (_hd : d ≥ 3) :
+    @conjBlock d * @conjBlockInv d = 1 :=
+  _root_.conjBlock_mul_conjBlockInv (ZMod (2^(d-2)))
 
 @[nolint unusedArguments]
 lemma reindex_mul {α : Type*} [CommRing α] {m m' n n' o o' : Type*} [Fintype m'] [Fintype n] [Fintype n'] [Fintype o] [Fintype o']

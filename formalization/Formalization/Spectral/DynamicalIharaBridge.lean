@@ -51,6 +51,8 @@ namespace DynamicalIharaBridge
 
 set_option linter.unusedSectionVars false
 
+section IharaBridge
+
 variable {V : Type*} [Fintype V] [DecidableEq V]
 
 -- ============================================================================
@@ -247,5 +249,7 @@ theorem regular_ihara_bass_perron_kernel_general
   simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
   field_simp [hd_sub_ne]
   ring
+
+end IharaBridge
 
 end DynamicalIharaBridge

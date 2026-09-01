@@ -117,9 +117,13 @@ structure BuildingA2 (V : Type*) (q : ℕ) where
 
 The radial Hecke difference operators on functions $f : \mathbb{Z} \times \mathbb{Z} \to R$ on the triangular apartment $\mathcal{A} \cong \mathbb{Z}^2$ are:
 
-$$(T_1 f)(m, n) = q^2 f(m+1, n) + q f(m-1, n+1) + f(m, n-1),$$
+```math
+(T_1 f)(m, n) = q^2 f(m+1, n) + q f(m-1, n+1) + f(m, n-1)
+```
 
-$$(T_2 f)(m, n) = q^2 f(m, n+1) + q f(m+1, n-1) + f(m-1, n).$$
+```math
+(T_2 f)(m, n) = q^2 f(m, n+1) + q f(m+1, n-1) + f(m-1, n)
+```
 
 #### Theorem 3.1 (Machine-Checked Commutation $[T_1, T_2] = 0$)
 ```lean
@@ -154,7 +158,9 @@ theorem ramanujan_gap_formula (q : R) :
 
 Coupling the 2D transfer operator $\mathcal{T}_p(u_1, u_2) = u_1 T_{p, 1} + u_2 T_{p, 2}$ to the Arthur-Selberg trace formula yields the explicit identity connecting the automorphic spectrum to simplicial paths in the positive Weyl chamber $\mathcal{A}^+$:
 
-$$\sum_{\pi \text{ cusp}} \Phi_\pi(u_1, u_2) + \int_{\text{Eis}} \Phi_{\text{cont}}(u_1, u_2) \, d\mu = \mathrm{Vol}(G(\mathbb{Q})\backslash G(\mathbb{A})^1) f(1) + \sum_{p < \infty} \sum_{(m, n) \in \mathcal{A}^+} \frac{\ln p}{p^{\frac{m+n}{2}}} c_{m, n}(p) \mathrm{Tr}(\mathcal{T}_p(u_1, u_2)^{m+n}).$$
+```math
+\sum_{\pi \text{ cusp}} \Phi_\pi(u_1, u_2) + \int_{\text{Eis}} \Phi_{\text{cont}}(u_1, u_2) \, d\mu = \mathrm{Vol}(G(\mathbb{Q})\backslash G(\mathbb{A})^1) f(1) + \sum_{p < \infty} \sum_{(m, n) \in \mathcal{A}^+} \frac{\ln p}{p^{\frac{m+n}{2}}} c_{m, n}(p) \mathrm{Tr}(\mathcal{T}_p(u_1, u_2)^{m+n})
+```
 
 ### Numerical Validation Summary
 | Representation | Prime $p$ | Hecke Commutator $\max |[T_1, T_2]|$ | Macdonald Eigenvalue Residual | ASTF Trace Residual |

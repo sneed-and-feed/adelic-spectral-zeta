@@ -10,25 +10,27 @@ import Mathlib.Data.Complex.Basic
 import Formalization.Buildings.BuildingPGL3
 
 /-!
-# Horizon 2: Arithmetic Chern-Simons Theory, Arithmetic Topology & Adelic TQFT
+# Arithmetic Topology Analogy: Quadratic Reciprocity & Discrete Chern-Simons Functional
 
-This module formalizes:
-1. **Arithmetic Topology Dictionary (Mazur, Kapranov, Reznikov, Morishita, Kim, Ueki)**:
-   - Arithmetic knots $K_p \hookrightarrow \mathrm{Spec}(\mathbb{Z})$ associated with prime ideals $(p)$.
-   - The arithmetic linking number $\mathrm{Lk}(p, q) \in \mathbb{Z}/2\mathbb{Z}$ via the Legendre symbol.
+This module formalizes the arithmetic topology dictionary (Mazur, Kapranov, Reznikov, Morishita, Kim, Ueki)
+as a topological analogy for standard number-theoretic quadratic reciprocity:
+
+1. **Arithmetic Topology Dictionary & Quadratic Reciprocity**:
+   - Arithmetic knots $K_p \hookrightarrow \mathrm{Spec}(\mathbb{Z})$ associated with prime ideals $(p)$ (topological analogy for primes).
+   - The arithmetic linking number $\mathrm{Lk}(p, q) \in \mathbb{Z}/2\mathbb{Z}$ defined via the Legendre symbol.
    - Exact Legendre symbol evaluation theorem: $\left(\frac{q}{p}\right) = (-1)^{\mathrm{Lk}(p, q)}$.
    - **Arithmetic Linking Reciprocity Theorem**:
-     $\mathrm{Lk}(p, q) + \mathrm{Lk}(q, p) \equiv \frac{p-1}{2} \frac{q-1}{2} \pmod 2$.
+     $\mathrm{Lk}(p, q) + \mathrm{Lk}(q, p) \equiv \frac{p-1}{2} \frac{q-1}{2} \pmod 2$, reformulating Gauss's Quadratic Reciprocity Law.
    - Symmetric arithmetic linking when $p \equiv 1 \pmod 4$ or $q \equiv 1 \pmod 4$.
    - Skew-symmetric arithmetic linking when $p \equiv q \equiv 3 \pmod 4$.
 
-2. **1-Loop Arithmetic Chern-Simons Holonomy & Unitary Phase**:
+2. **1-Loop Arithmetic Chern-Simons Holonomy Analogy**:
    - Arithmetic Chern-Simons holonomy $\mathrm{Hol}(p, q) = (-1)^{\mathrm{Lk}(p, q)} \in \mathrm{U}(1) \subset \mathbb{C}^\times$.
    - Unitarity proof: $\mathrm{normSq}(\mathrm{Hol}(p, q)) = 1$.
    - Holonomy-Legendre identification: $\mathrm{Hol}(p, q) = \left(\frac{q}{p}\right)$.
    - Holonomy reciprocity product: $\mathrm{Hol}(p, q) \cdot \mathrm{Hol}(q, p) = (-1)^{\frac{p-1}{2} \frac{q-1}{2}}$.
 
-3. **Discrete Chern-Simons Theory on the Bruhat-Tits 2-Skeleton $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$**:
+3. **Discrete Abelian Gauge Theory on Bruhat-Tits 2-Skeleton $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$**:
    - Oriented 2-simplices (triangles / chamber faces) on `BuildingA2`.
    - Discrete 1-cochains / abelian gauge fields $A : V \times V \to R$.
    - Gauge transformations $A \mapsto A + d\chi$.
@@ -38,12 +40,10 @@ This module formalizes:
    - Discrete abelian Chern-Simons action $S_{CS}(A)$ and finite partition function $Z_{CS}$.
    - Exact vanishing of CS action on flat gauge configurations.
 
-4. **Euler Product Phase Duality**:
-   - Local Euler factors in the global Fredholm determinant.
-   - Exact identification of the odd-prime unitary phase with the 1-loop arithmetic CS holonomy.
-   - Pairwise Fredholm Euler product factor $\mathcal{Z}_{\mathrm{Euler}}(s; p, q)$.
+4. **Euler Product Phase Relations**:
+   - Local Euler factors and pairwise Fredholm factors with quadratic character phases.
    - Euler phase symmetry for primes $1 \pmod 4$ and chiral phase anti-symmetry for primes $3 \pmod 4$.
-   - Global phase duality product connecting arithmetic topology to adelic TQFT S-matrix phases.
+   - Phase reciprocity product connecting quadratic reciprocity to Euler factor phases.
 
 All theorems are formally verified with **zero sorrys**.
 -/
@@ -63,11 +63,11 @@ structure ArithmeticKnot where
   [prime : Fact p.Prime]
 
 /-- The arithmetic linking number Lk(p, q) ∈ ℤ/2ℤ of two primes p and q,
-    defined via the Legendre symbol (q / p). -/
+    defined via the Legendre symbol (q / p) as the parity indicator of quadratic non-residues. -/
 def arithmeticLinking (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] : ZMod 2 :=
   if legendreSym p (q : ℤ) = -1 then 1 else 0
 
-/-- Arithmetic linking number between two arithmetic knots. -/
+/-- Arithmetic linking number between two arithmetic knots in the arithmetic topology analogy. -/
 def arithmeticLinkingKnots (K₁ K₂ : ArithmeticKnot) : ZMod 2 :=
   @arithmeticLinking K₁.p K₂.p K₁.prime K₂.prime
 
@@ -100,8 +100,9 @@ lemma neg_one_pow_nat_eq_neg_one_pow_zmod2_val (n : ℕ) :
   exact (neg_one_pow_eq_pow_mod_two n).symm
 
 /-- **Arithmetic Linking Reciprocity Theorem**:
+    Gauss's Quadratic Reciprocity Law reformulated in arithmetic linking notation:
     For distinct odd primes p and q, the sum of their arithmetic linking numbers in ℤ/2ℤ
-    equals (p - 1)/2 * (q - 1)/2 mod 2, matching Gauss's Quadratic Reciprocity Law. -/
+    equals (p - 1)/2 * (q - 1)/2 mod 2. -/
 theorem arithmetic_linking_reciprocity
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
     (hp : p ≠ 2) (hq : q ≠ 2) (hpq : p ≠ q) :
@@ -116,6 +117,7 @@ lemma zmod2_add_eq_zero_iff (a b : ZMod 2) : a + b = 0 ↔ a = b := by
   revert a b; decide
 
 /-- **Symmetric Arithmetic Linking**:
+    Symmetric case of quadratic reciprocity in arithmetic linking notation:
     If at least one prime is 1 mod 4, the arithmetic linking number is symmetric. -/
 theorem arithmetic_linking_symmetric_of_one_mod_four
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
@@ -135,6 +137,7 @@ theorem arithmetic_linking_symmetric_of_one_mod_four
   rw [← zmod2_add_eq_zero_iff, arithmetic_linking_reciprocity hp hq hpq, h0]
 
 /-- **Skew-Symmetric Arithmetic Linking**:
+    Skew-symmetric case of quadratic reciprocity in arithmetic linking notation:
     If both primes are 3 mod 4, the sum of their arithmetic linking numbers is 1 mod 2. -/
 theorem arithmetic_linking_skew_symmetric_of_three_mod_four
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
@@ -150,7 +153,8 @@ theorem arithmetic_linking_skew_symmetric_of_three_mod_four
 -- Section 2: 1-Loop Arithmetic Chern-Simons Holonomy & Unitary Phase
 -- ============================================================================
 
-/-- 1-loop Arithmetic Chern-Simons Holonomy / Unitary Phase associated with the link (p, q). -/
+/-- Unitary phase Hol(p, q) = (-1)^Lk(p, q) ∈ ℂ associated with the Legendre symbol,
+    motivated by the arithmetic Chern-Simons topological analogy. -/
 def arithmeticHolonomy (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] : ℂ :=
   (-1 : ℂ) ^ (arithmeticLinking p q).val
 
@@ -163,14 +167,14 @@ theorem arithmeticHolonomy_normSq (p q : ℕ) [Fact (Nat.Prime p)] [Fact (Nat.Pr
     Complex.normSq (arithmeticHolonomy p q) = 1 := by
   simp [arithmeticHolonomy]
 
-/-- Identification theorem: The 1-loop Chern-Simons holonomy equals the Legendre symbol. -/
+/-- Identification theorem: The holonomy phase Hol(p, q) equals the standard number-theoretic Legendre symbol (q / p). -/
 theorem arithmetic_holonomy_eq_legendre
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)] (hpq : p ≠ q) :
     arithmeticHolonomy p q = (legendreSym p (q : ℤ) : ℂ) := by
   simp [arithmeticHolonomy, legendreSym_eq_neg_one_pow_arithmeticLinking hpq]
 
 /-- **Holonomy Reciprocity Product Theorem**:
-    The product of mutual arithmetic Chern-Simons holonomies satisfies
+    Gauss's Quadratic Reciprocity Law expressed as a product of holonomy phases:
     Hol(p, q) * Hol(q, p) = (-1)^((p-1)/2 * (q-1)/2). -/
 theorem arithmetic_holonomy_reciprocity_product
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
@@ -183,6 +187,8 @@ theorem arithmetic_holonomy_reciprocity_product
 -- ============================================================================
 -- Section 3: Discrete Chern-Simons Theory on Bruhat-Tits 2-Skeleton B(PGL₃(ℚ_p))
 -- ============================================================================
+
+section BuildingChernSimons
 
 variable {V : Type*} {q : ℕ} (B : BuildingA2 V q)
 
@@ -268,8 +274,10 @@ theorem discreteChernSimonsAction_of_flat {R : Type*} [CommRing R]
   dsimp [discreteChernSimonsAction]
   rw [Finset.sum_eq_zero (fun t ht => by simp [h_flat t ht]), mul_zero]
 
+end BuildingChernSimons
+
 -- ============================================================================
--- Section 4: Euler Product Phase Duality
+-- Section 4: Euler Product Phase Duality & Quadratic Reciprocity
 -- ============================================================================
 
 /-- Local Euler factor at prime p associated with the arithmetic knot q, evaluated at weight factor z : ℂ. -/
@@ -287,8 +295,8 @@ theorem euler_factor_phase_eq_legendre
   simp [localEulerFactor, arithmetic_holonomy_eq_legendre hpq]
 
 /-- **Euler Phase Symmetry Theorem**:
-    When p ≡ 1 mod 4 or q ≡ 1 mod 4, the Euler product phases for the mutual link
-    are symmetric: Hol(p, q) = Hol(q, p). -/
+    Quadratic reciprocity phase symmetry: When p ≡ 1 mod 4 or q ≡ 1 mod 4,
+    the mutual holonomy phases are symmetric: Hol(p, q) = Hol(q, p). -/
 theorem euler_phase_symmetry_of_one_mod_four
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
     (hp : p ≠ 2) (hq : q ≠ 2) (hpq : p ≠ q)
@@ -302,8 +310,8 @@ lemma zmod2_add_eq_one_iff (a b : ZMod 2) :
   revert a b; decide
 
 /-- **Euler Phase Anti-Symmetry Theorem**:
-    When p ≡ q ≡ 3 mod 4, the Euler product phases are anti-symmetric:
-    Hol(p, q) = - Hol(q, p) (chiral / anti-symmetric phase duality). -/
+    Quadratic reciprocity chiral phase anti-symmetry: When p ≡ q ≡ 3 mod 4,
+    the mutual holonomy phases are anti-symmetric: Hol(p, q) = - Hol(q, p). -/
 theorem euler_phase_antisymmetry_of_three_mod_four
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
     (hp : p ≠ 2) (hq : q ≠ 2) (hpq : p ≠ q)
@@ -313,9 +321,9 @@ theorem euler_phase_antisymmetry_of_three_mod_four
     (arithmetic_linking_skew_symmetric_of_three_mod_four hp hq hpq h3) with ⟨h0, h1⟩ | ⟨h1, h0⟩ <;>
     simp [arithmeticHolonomy, h0, h1, ZMod.val_one]
 
-/-- **Global Fredholm Euler Phase Duality**:
-    The product of phases in the pairwise Fredholm determinant matches the
-    arithmetic Chern-Simons S-matrix reciprocity phase. -/
+/-- **Global Fredholm Euler Phase Reciprocity**:
+    The product of phases in the pairwise Fredholm determinant evaluates to the
+    quadratic reciprocity phase factor (-1)^((p-1)/2 * (q-1)/2). -/
 theorem euler_phase_duality_product
     {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
     (hp : p ≠ 2) (hq : q ≠ 2) (hpq : p ≠ q) :

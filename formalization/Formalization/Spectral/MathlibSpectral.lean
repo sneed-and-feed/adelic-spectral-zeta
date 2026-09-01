@@ -40,7 +40,9 @@ set_option linter.unusedSectionVars false
 
 namespace Matrix
 
-variable {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
+section MathlibSpectral
+
+variable {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
 
 
 /-- The support graph of a non-negative symmetric matrix, where edges correspond to positive entries. -/
@@ -474,9 +476,12 @@ lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n]
 def IsPerronIrreducible (A : Matrix n n ℝ) : Prop :=
   (∀ i j, 0 ≤ A i j) ∧ (∀ i j : n, ∃ k : ℕ, 0 < k ∧ 0 < (A ^ k) i j) ∧ (∃ i : n, 0 < A i i)
 
-/-- The Perron–Frobenius theorem: an irreducible non-negative matrix has a positive eigenvalue
+/-- Hypothesis structure for the Perron–Frobenius theorem: an irreducible non-negative matrix has a positive eigenvalue
 with a strictly positive eigenvector. -/
-axiom perron_frobenius {A : Matrix n n ℝ} (hA : Matrix.IsPerronIrreducible A) :
+structure PerronFrobeniusAssumptions (n : Type*) [Fintype n] [DecidableEq n] : Prop where
+  perron_frobenius : ∀ {A : Matrix n n ℝ} (_hA : Matrix.IsPerronIrreducible A),
     ∃ (μ : ℝ) (v : n → ℝ), 0 < μ ∧ (∀ i, 0 < v i) ∧ A.mulVec v = μ • v
+
+end MathlibSpectral
 
 end Matrix

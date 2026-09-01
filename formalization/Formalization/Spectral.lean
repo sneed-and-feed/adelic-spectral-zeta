@@ -11,6 +11,7 @@ import Formalization.Spectral.SchreierConnectivity
 import Formalization.Spectral.SchreierSpectral
 import Formalization.Spectral.SchreierSpectralGap
 import Formalization.Spectral.SchreierTrace
+import Formalization.Spectral.SchreierDynamicalTrace
 import Formalization.Spectral.SchreierPerronFrobenius
 import Formalization.Spectral.AsymptoticGap
 import Formalization.Spectral.RamanujanTau

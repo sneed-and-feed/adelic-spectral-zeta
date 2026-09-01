@@ -43,9 +43,9 @@ building upon `CyclicWeightCharpoly.lean` and `CyclotomicProduct.lean`.
 
 open Polynomial Finset
 
-variable {R : Type*} [CommRing R]
+noncomputable section DynamicalZetaFactorization
 
-noncomputable section
+variable {R : Type*} [CommRing R]
 
 namespace DynamicalZeta
 
@@ -227,3 +227,5 @@ theorem total_state_space_dimension (n : ℕ) (hn : 2 ≤ n) :
   omega
 
 end DynamicalZeta
+
+end DynamicalZetaFactorization

@@ -42,14 +42,15 @@ def sum_map : L2Space n →ₗ[ℂ] ℂ :=
 def L2_0 : Submodule ℂ (L2Space n) :=
   LinearMap.ker (sum_map n)
 
-/-- The spectral bound proved in Phase 3: λ_max ≤ √2 for non-trivial blocks,
-    which corresponds to operator norm bounded by 1/√2 for P_n. -/
-axiom spectral_bound_phase3 {f : L2Space n} (hf : f ∈ L2_0 n) :
-  ‖(P_n n) f‖ ≤ (1 / Real.sqrt 2) * ‖f‖
+/-- Hypothesis structure capturing the L^2 spectral decay assumptions on P_n. -/
+structure L2MixingAssumptions (n : ℕ) : Prop where
+  spectral_bound_phase3 : ∀ {f : L2Space n} (_hf : f ∈ L2_0 n),
+    ‖(P_n n) f‖ ≤ (1 / Real.sqrt 2) * ‖f‖
 
-/-- The main L2 decay bound on the mean-zero subspace. -/
-theorem L2_decay_bound (f : L2Space n) (hf : f ∈ L2_0 n) :
-  ‖(P_n n) f‖ ≤ (1 / Real.sqrt 2) * ‖f‖ := by
-  exact spectral_bound_phase3 n hf
+/-- The main L2 decay bound on the mean-zero subspace, conditional on L2MixingAssumptions. -/
+theorem L2_decay_bound (h : L2MixingAssumptions n) (f : L2Space n) (hf : f ∈ L2_0 n) :
+    ‖(P_n n) f‖ ≤ (1 / Real.sqrt 2) * ‖f‖ :=
+  h.spectral_bound_phase3 hf
 
 end
+

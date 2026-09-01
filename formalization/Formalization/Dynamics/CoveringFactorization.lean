@@ -5,6 +5,8 @@ import Mathlib.LinearAlgebra.Matrix.SchurComplement
 import Mathlib.Tactic
 import Formalization.Dynamics.CollatzRelMatrix
 import Formalization.Spectral.SchreierSpectral
+import Formalization.Util.ZMod2
+import Formalization.Util.Hadamard
 
 open Matrix
 open scoped Matrix
@@ -125,15 +127,8 @@ lemma D'_matrix_eq_reindex {n : ℕ} (hn : n ≥ 2) :
   dsimp [D'_matrix, sheetSplitDirEquiv, Matrix.reindex_apply, Matrix.submatrix_apply]
 
 /-- Internal equivalence between sum type and product type. -/
-def sumProdEquivDir {n : ℕ} : (ZMod (2^(n-1))) ⊕ (ZMod (2^(n-1))) ≃ ZMod (2^(n-1)) × ZMod 2 where
-  toFun := fun x => match x with
-    | Sum.inl a => (a, 0)
-    | Sum.inr a => (a, 1)
-  invFun := fun p => match p.2 with
-    | 0 => Sum.inl p.1
-    | 1 => Sum.inr p.1
-  left_inv := by intro x; cases x <;> rfl
-  right_inv := by rintro ⟨v, b⟩; fin_cases b <;> rfl
+def sumProdEquivDir {n : ℕ} : (ZMod (2^(n-1))) ⊕ (ZMod (2^(n-1))) ≃ ZMod (2^(n-1)) × ZMod 2 :=
+  sumProdEquiv (ZMod (2^(n-1)))
 
 noncomputable def blockDiagDirMatrix {n : ℕ} (hn : n ≥ 2) : 
   Matrix ((ZMod (2^(n-1))) ⊕ (ZMod (2^(n-1)))) ((ZMod (2^(n-1))) ⊕ (ZMod (2^(n-1)))) ℚ :=
@@ -144,38 +139,15 @@ lemma D'_block_diag_target_eq_blockDiagDirMatrix {n : ℕ} (hn : n ≥ 2) :
   ext ⟨v1, b1⟩ ⟨v2, b2⟩
   fin_cases b1 <;> fin_cases b2 <;> rfl
 
+@[nolint unusedArguments]
 lemma conjBlockInv_mul_conjBlock_dir {n : ℕ} (_hn : n ≥ 2) :
-  conjBlockInv_dir * conjBlock_dir = (1 : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ) := by
-  ext ⟨i1, j1⟩ ⟨i2, j2⟩
-  simp only [conjBlockInv_dir, conjBlock_dir, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_prod_type]
-  by_cases h : i1 = i2
-  · subst h
-    have : ∀ k1, (∑ k2, (if i1 = k1 then SchreierSpectral.hadamardInv j1 k2 else 0) * (if k1 = i1 then SchreierSpectral.hadamardBlock k2 j2 else 0))
-        = if i1 = k1 then ∑ k2, SchreierSpectral.hadamardInv j1 k2 * SchreierSpectral.hadamardBlock k2 j2 else 0 := by
-      intro k1
-      by_cases hk : i1 = k1 <;> simp [hk]
-    simp_rw [this]
-    have h_inv : (∑ k2 : ZMod 2, SchreierSpectral.hadamardInv j1 k2 * SchreierSpectral.hadamardBlock k2 j2) = if j1 = j2 then (1 : ℚ) else 0 := by
-      calc (∑ k2 : ZMod 2, SchreierSpectral.hadamardInv j1 k2 * SchreierSpectral.hadamardBlock k2 j2)
-        _ = (SchreierSpectral.hadamardInv * SchreierSpectral.hadamardBlock) j1 j2 := rfl
-        _ = (1 : Matrix (ZMod 2) (ZMod 2) ℚ) j1 j2 := by rw [SchreierSpectral.hadamard_inv_mul]
-        _ = if j1 = j2 then (1 : ℚ) else 0 := by rw [Matrix.one_apply]
-    simp_rw [h_inv]
-    simp
-  · -- i1 ≠ i2
-    have : ∀ k1 k2, (if i1 = k1 then SchreierSpectral.hadamardInv j1 k2 else 0) * (if k1 = i2 then SchreierSpectral.hadamardBlock k2 j2 else 0) = (0 : ℚ) := by
-      intro k1 k2
-      by_cases h1 : i1 = k1
-      · by_cases h2 : k1 = i2
-        · exfalso; exact h (Eq.trans h1 h2)
-        · simp [h1, h2]
-      · simp [h1]
-    simp_rw [this]
-    simp [h]
+  conjBlockInv_dir * conjBlock_dir = (1 : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ) :=
+  conjBlockInv_mul_conjBlock (ZMod (2^(n-1)))
 
-lemma conjBlock_mul_conjBlockInv_dir {n : ℕ} (hn : n ≥ 2) :
-  conjBlock_dir (n := n) * conjBlockInv_dir (n := n) = (1 : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ) := by
-  exact (Matrix.mul_eq_one_comm_of_equiv (Equiv.refl _)).mp (conjBlockInv_mul_conjBlock_dir hn)
+@[nolint unusedArguments]
+lemma conjBlock_mul_conjBlockInv_dir {n : ℕ} (_hn : n ≥ 2) :
+  conjBlock_dir (n := n) * conjBlockInv_dir (n := n) = (1 : Matrix (ZMod (2^(n-1)) × ZMod 2) (ZMod (2^(n-1)) × ZMod 2) ℚ) :=
+  conjBlock_mul_conjBlockInv (ZMod (2^(n-1)))
 
 /-- The main determinant factorization for the Collatz 2-cover -/
 theorem det_collatzDirMatrix_factorization (n : ℕ) (hn : n ≥ 2) (u : ℚ) :

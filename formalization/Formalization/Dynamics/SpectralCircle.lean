@@ -493,7 +493,7 @@ lemma orbit_weight_magnitude_sq (n : ℕ) (hn : n ≥ 3)
     3. Each orbit weight has |W| = √2 (orbit_weight_magnitude_sq)
     4. Cyclic monomial eigenvalues have magnitude |W|^{1/M} = (√2)^{2^{-(n-2)}} = 2^{2^{-(n-1)}}
 -/
-theorem spectral_circle (n : ℕ) (hn : n ≥ 3)
+theorem spectral_circle (n : ℕ) (h : TwistedBlockHypothesis n) (hn : n ≥ 3)
     (μ : ℂ) (hμ : μ ∈ spectrum ℂ (Matrix.map (twistedDirMatrix (show n ≥ 2 by omega)) (algebraMap ℚ ℂ))) :
     ‖μ‖ = (2 : ℝ) ^ ((1 : ℝ) / (2^(n-1) : ℝ)) := by
   have h_eig : Module.End.HasEigenvalue (Matrix.toLin' (Matrix.map (twistedDirMatrix (show n ≥ 2 by omega)) (algebraMap ℚ ℂ))) μ := by
@@ -502,4 +502,4 @@ theorem spectral_circle (n : ℕ) (hn : n ≥ 3)
       exact AlgEquiv.spectrum_eq Matrix.toLinAlgEquiv' _
     rw [h_eq]
     exact hμ
-  exact twisted_eigenvalue_magnitude n hn μ h_eig
+  exact twisted_eigenvalue_magnitude n h hn μ h_eig

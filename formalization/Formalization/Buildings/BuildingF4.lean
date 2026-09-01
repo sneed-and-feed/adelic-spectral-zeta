@@ -270,6 +270,8 @@ theorem root_rel_long_e1_e4_pos : l_e1_pos_e4_pos = (s_e1_pos.1 + s_e4_pos.1, s_
 -- Section 3: Radial Difference Operators T_short and T_long
 -- ============================================================================
 
+section RadialF4
+
 variable {R : Type*} [CommRing R]
 
 -- Modular block decomposition of T_short into 3 8-term sub-operators:
@@ -761,3 +763,5 @@ theorem ramanujan_gap_formula_f4 (q : R) :
     0 - maxTemperedF4Eigenvalue q = 2 * (q - 1)^2 * (q + 1) * (q + 3) := by
   dsimp [maxTemperedF4Eigenvalue, regularDegreeF4]
   ring
+
+end RadialF4
