@@ -41,9 +41,9 @@ The exceptional Lie algebra $\mathfrak{e}_8$ is the largest of the five exceptio
 
 On $\mathbb{R}^8$, the root system $\Phi(E_8)$ decomposes into two disjoint subsets:
 - **112 Integer Roots $\Phi_{\mathrm{int}}$**:
-  $$\Phi_{\mathrm{int}} = \left\{ \pm e_i \pm e_j \;\middle|\; 1 \le i < j \le 8 \right\}, \quad |\Phi_{\mathrm{int}}| = 4 \times \binom{8}{2} = 4 \times 28 = 112.$$
+  $$\Phi_{\mathrm{int}} = \left\lbrace \pm e_i \pm e_j \;\middle|\; 1 \le i < j \le 8 \right\rbrace, \quad |\Phi_{\mathrm{int}}| = 4 \times \binom{8}{2} = 4 \times 28 = 112.$$
 - **128 Half-Integer Roots $\Phi_{\mathrm{half}}$**:
-  $$\Phi_{\mathrm{half}} = \left\{ \frac{1}{2}\sum_{i=1}^8 s_i e_i \;\middle|\; s_i \in \{\pm 1\}, \; \prod_{i=1}^8 s_i = +1 \right\}, \quad |\Phi_{\mathrm{half}}| = 2^{8-1} = 128.$$
+  $$\Phi_{\mathrm{half}} = \left\lbrace \frac{1}{2}\sum_{i=1}^8 s_i e_i \;\middle|\; s_i \in \{\pm 1\}, \; \prod_{i=1}^8 s_i = +1 \right\rbrace, \quad |\Phi_{\mathrm{half}}| = 2^{8-1} = 128.$$
 
 ```
 =============================================================================

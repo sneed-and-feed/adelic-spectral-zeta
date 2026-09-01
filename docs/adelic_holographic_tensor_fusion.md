@@ -57,7 +57,7 @@ Let $\mathbb{Q}$ be the field of rational numbers. The places of $\mathbb{Q}$ co
    with completion $\mathbb{Q}_p$ and maximal compact ring of integers $\mathbb{Z}_p = \{x \in \mathbb{Q}_p : |x|_p \le 1\}$.
 
 The ring of adèles $\mathbb{A}_\mathbb{Q}$ is the restricted direct product:
-$$\mathbb{A}_\mathbb{Q} = \mathbb{R} \times {\prod_{p < \infty}}' \mathbb{Q}_p = \left\{ (x_\infty, x_2, x_3, \dots) : x_p \in \mathbb{Z}_p \text{ for almost all } p \right\}.$$
+$$\mathbb{A}_\mathbb{Q} = \mathbb{R} \times {\prod_{p < \infty}}' \mathbb{Q}_p = \left\lbrace (x_\infty, x_2, x_3, \dots) : x_p \in \mathbb{Z}_p \text{ for almost all } p \right\rbrace.$$
 
 ### 1.2 Archimedean Place Bulk: Continuous $AdS_3 / H^3$
 At $v = \infty$, the Euclidean bulk is the 3-dimensional hyperbolic space $\mathbb{H}^3$ (or spatial slice of $AdS_3$):
@@ -87,7 +87,7 @@ $$G_N^{(p)} = \frac{3}{2 c_p \ln p} = \frac{G_N^{(\infty)}}{\ln p} \quad (\text{
 
 ### 1.4 Global Adelic Bulk Definition
 The global adelic bulk manifold is the restricted direct product of the Archimedean hyperbolic space and all $p$-adic Bruhat-Tits trees:
-$$\mathcal{M}_\mathbb{A} = \mathbb{H}^3 \times {\prod_{p < \infty}}' \mathcal{T}_{p+1} = \left\{ (z_\infty, x_\infty; \{v_p\}_{p \in \mathcal{P}}) : v_p = v_{p,0} \text{ (the standard root lattice class) for almost all } p \right\}.$$
+$$\mathcal{M}_\mathbb{A} = \mathbb{H}^3 \times {\prod_{p < \infty}}' \mathcal{T}_{p+1} = \left\lbrace (z_\infty, x_\infty; \{v_p\}_{p \in \mathcal{P}}) : v_p = v_{p,0} \text{ (the standard root lattice class) for almost all } p \right\rbrace.$$
 
 The global holographic entanglement entropy for an adelic boundary region $A = A_\infty \times \prod'_p A_p$ is:
 $$S_\mathbb{A}(A) = S_\infty(A_\infty) + \sum_{p < \infty} \frac{\mathrm{Length}(\gamma_{A_p})}{4 G_N^{(p)}} = \frac{c}{3} \left[ \ln\left(\frac{L_\infty}{\epsilon_\infty}\right) + \sum_{p < \infty} \ln\left(\frac{L_p}{\epsilon_p}\right) \right].$$

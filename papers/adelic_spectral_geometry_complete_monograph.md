@@ -221,7 +221,7 @@ $$\psi_n(x) = x^{-1/2 - i n \pi / \ln \lambda}, \quad x \in \mathbb{R}_+^\times$
 The unperturbed Archimedean Dirac operator $D_0$ acts diagonally on $\mathcal{H}_\infty = \ell^2(\mathbb{Z})$:
 $$D_0 |n\rangle = \lambda_n |n\rangle, \quad \lambda_n = \frac{n \pi}{\ln \lambda}$$
 with dense domain:
-$$\mathrm{Dom}(D_0) = \left\{ u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\}$$
+$$\mathrm{Dom}(D_0) = \left\lbrace u \in \ell^2(\mathbb{Z}) : \sum_{n=-\infty}^\infty \lambda_n^2 |u_n|^2 < \infty \right\rbrace$$
 
 The global coupling functional $\xi$ is defined component-wise by:
 $$\xi_n = \sum_{p} A_p \frac{\log p}{\sqrt{p}} p^{-i n \pi / \ln \lambda} + \xi_{\text{arch}}(n)$$
@@ -230,7 +230,7 @@ where $A_p$ are the local Langlands-Satake parameters and $\xi_{\text{arch}}(n) 
 To rigorously construct $D_{\mathrm{glob}}$:
 1. The linear functional $\langle \xi, \cdot \rangle : u \mapsto \sum_n \bar{\xi}_n u_n$ is continuous on $\mathrm{Dom}(D_0)$ under the graph norm $\|u\|_{D_0} = \sqrt{\|u\|^2 + \|D_0 u\|^2}$ because $\sum_{n \neq 0} \frac{\ln^2|n|}{n^2} < \infty$.
 2. The closed symmetric restriction $D_{\mathrm{sym}} = D_0 |_{\mathrm{Dom}(D_{\mathrm{sym}})}$ has domain:
-   $$\mathrm{Dom}(D_{\mathrm{sym}}) = \left\{ u \in \mathrm{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\}$$
+   $$\mathrm{Dom}(D_{\mathrm{sym}}) = \left\lbrace u \in \mathrm{Dom}(D_0) : \sum_{n=-\infty}^\infty \bar{\xi}_n u_n = 0 \right\rbrace$$
 3. The deficiency spaces $\mathcal{K}_\pm = \ker(D_{\mathrm{sym}}^* \mp i \mathbb{I})$ are spanned by the deficiency vectors:
    $$g_{\pm, n} = \frac{\xi_n}{\lambda_n \mp i} \in \ell^2(\mathbb{Z})$$
    establishing exact deficiency indices $(1, 1)$.
@@ -366,7 +366,7 @@ The local Artin $L$-factor at unramified primes is:
 $$L_p(s, \rho) = \det(I - \rho(\mathrm{Frob}_p) p^{-s})^{-1} = \left(1 - \mathrm{Tr}(\rho(\mathrm{Frob}_p)) p^{-s} + \det(\rho(\mathrm{Frob}_p)) p^{-2s}\right)^{-1}$$
 
 Because the Galois group is $A_5$, the Frobenius traces take values in the discrete set of icosahedral character values:
-$$\mathrm{Tr}(\rho(\mathrm{Frob}_p)) \in \left\{ 3, \, \frac{1+\sqrt{5}}{2}, \, 0, \, \frac{1-\sqrt{5}}{2}, \, -1 \right\}$$
+$$\mathrm{Tr}(\rho(\mathrm{Frob}_p)) \in \left\lbrace 3, \, \frac{1+\sqrt{5}}{2}, \, 0, \, \frac{1-\sqrt{5}}{2}, \, -1 \right\rbrace$$
 
 ### 7.2 Off-Critical Line Secular Gap Behavior
 Let $D_{\mathrm{phys}}(\sigma, t)$ be the compressed model Artin Dirac operator. We evaluate the minimal singular value $\sigma_{\min}(D_{\mathrm{phys}}(\sigma, t))$ across a 2D complex grid $\sigma \in [0.1, 0.9], t \in [5, 25]$.

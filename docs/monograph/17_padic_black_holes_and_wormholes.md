@@ -176,7 +176,7 @@ At late times $t > t_{\mathrm{Page}}$, $S_{\mathrm{Hawking}}(t) > S_{\mathrm{BH}
 ### 4.2 Quantum Extremal Surface (QES) & The Island Formula
 In the $p$-adic gravitational path integral, non-trivial topology saddles (quantum replica wormholes) introduce an **entanglement island** $\mathrm{Is}(t)$ in the black hole interior. The fine-grained radiation entropy is computed by extremizing the generalized entropy functional:
 
-$$S_{\mathrm{rad}}(t) = \min_{\mathrm{QES}} \left\{ \mathrm{ext}_{\mathrm{Is}} \left[ \frac{\mathrm{Area}(\partial \mathrm{Is})}{4 G_N^{(p)}} + S_{\mathrm{bulk}}(\mathrm{rad} \cup \mathrm{Is}) \right] \right\}.$$
+$$S_{\mathrm{rad}}(t) = \min_{\mathrm{QES}} \left\lbrace \mathrm{ext}_{\mathrm{Is}} \left[ \frac{\mathrm{Area}(\partial \mathrm{Is})}{4 G_N^{(p)}} + S_{\mathrm{bulk}}(\mathrm{rad} \cup \mathrm{Is}) \right] \right\rbrace.$$
 
 Two extremal surfaces compete:
 1. **No-Island Saddle ($\mathrm{Is} = \emptyset$):**

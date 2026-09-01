@@ -199,7 +199,7 @@ $$A_p(s, t, u) = \frac{\zeta_p(z_1) \zeta_p(z_2) \zeta_p(z_3)}{\zeta_p(z_1+z_2) 
 
 ### 3.1 The Ring of Adèles $\mathbb{A}_\mathbb{Q}$
 The ring of adèles $\mathbb{A}_\mathbb{Q}$ is the restricted topological product:
-$$\mathbb{A}_\mathbb{Q} = \mathbb{R} \times {\prod_{p < \infty}}' \mathbb{Q}_p = \left\{ (x_\infty, x_2, x_3, x_5, \dots) : x_p \in \mathbb{Z}_p \text{ for almost all } p \right\}.$$
+$$\mathbb{A}_\mathbb{Q} = \mathbb{R} \times {\prod_{p < \infty}}' \mathbb{Q}_p = \left\lbrace (x_\infty, x_2, x_3, x_5, \dots) : x_p \in \mathbb{Z}_p \text{ for almost all } p \right\rbrace.$$
 The global adelic 4-point string scattering amplitude is the product of local amplitudes across all Archimedean and non-Archimedean places:
 $$A_\mathbb{A}(s, t, u) = A_\infty^{(\mathrm{Tate})}(s, t, u) \prod_{p < \infty} A_p(s, t, u).$$
 

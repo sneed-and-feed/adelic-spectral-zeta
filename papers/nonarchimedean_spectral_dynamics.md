@@ -140,7 +140,7 @@ $$
 where $D_{n-1}$ is the projected relation matrix at scale $n-1$, and $S_n \in \mathrm{Mat}_{2^{n-1} \times 2^{n-1}}(\mathbb{Q})$ is the **twisted sector operator** acting on the odd-character subspace:
 
 $$
-V_{\mathrm{odd}} = \mathrm{span}\left\{ \chi_k \mid k \in (\mathbb{Z}/2^n\mathbb{Z})^\times \right\}
+V_{\mathrm{odd}} = \mathrm{span}\left\lbrace \chi_k \mid k \in (\mathbb{Z}/2^n\mathbb{Z})^\times \right\rbrace
 $$
 
 ### 3.2 Orbit Structure of Multiplication by 3
@@ -237,7 +237,7 @@ This theorem is formally verified in [`Formalization/Dynamics/TwistedBlockPow.le
 For every $n \ge 2$, the spectrum of the directed relation operator $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$ decomposes as:
 
 $$
-\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^n \left\{ \lambda \in \mathbb{C} \;\middle|\; |\lambda| = 2^{2^{-(k-1)}} \right\}
+\mathrm{spec}(D_n) = \{2, 0\} \cup \bigcup_{k=2}^n \left\lbrace \lambda \in \mathbb{C} \;\middle|\; |\lambda| = 2^{2^{-(k-1)}} \right\rbrace
 $$
 
 In particular, all $2^{n-1}$ eigenvalues of the twisted sector $S_n$ lie on a single circle of radius:
@@ -576,13 +576,13 @@ A causal computation graph over $N$ sequence positions is a Directed Acyclic Gra
 At scale $k \le \lfloor \log_p N \rfloor$, two tokens $u, v \in V$ share a $p$-ary ancestral cluster if $\lfloor u / p^k \rfloor = \lfloor v / p^k \rfloor$. The $p$-ary tree visibility neighborhood of token $u$ is:
 
 $$
-\mathcal{N}_p(u) = \left\{ v \in V \;\middle|\; \exists k \le \lfloor \log_p N \rfloor, \; \lfloor u / p^k \rfloor = \lfloor v / p^k \rfloor \right\}
+\mathcal{N}_p(u) = \left\lbrace v \in V \;\middle|\; \exists k \le \lfloor \log_p N \rfloor, \; \lfloor u / p^k \rfloor = \lfloor v / p^k \rfloor \right\rbrace
 $$
 
 The **Adèlic Multi-Prime Visibility Union** is defined by:
 
 $$
-\mathcal{N}_{\mathcal{P}}(u) = \bigcup_{p \in \mathcal{P}} \mathcal{N}_p(u) = \left\{ v \in V \;\middle|\; \exists p \in \mathcal{P}, \; v \in \mathcal{N}_p(u) \right\}
+\mathcal{N}_{\mathcal{P}}(u) = \bigcup_{p \in \mathcal{P}} \mathcal{N}_p(u) = \left\lbrace v \in V \;\middle|\; \exists p \in \mathcal{P}, \; v \in \mathcal{N}_p(u) \right\rbrace
 $$
 
 ```

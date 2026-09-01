@@ -114,7 +114,7 @@ Always use LaTeX delimiter macros inside table cells:
 ## 7. KaTeX Delimiter Matching Rules for Sets
 
 ### The Problem
-Constructs using improper delimiter balancing (such as `\left\{ ... ;\middle\vert; ... \right\}`) cause KaTeX syntax errors because `\middle` requires an exact delimiter symbol without attached punctuation.
+Constructs using improper delimiter balancing (such as `\left\lbrace ... ;\middle\vert; ... \right\rbrace`) cause KaTeX syntax errors because `\middle` requires an exact delimiter symbol without attached punctuation.
 
 ### The Solution: Clean Set Notation
 *   **Standard Set Notation (Preferred)**:
@@ -123,11 +123,11 @@ Constructs using improper delimiter balancing (such as `\left\{ ... ;\middle\ver
     ```
 *   **Scalable Delimiter Set Notation**:
     ```latex
-    \left\{ q \in \mathbb{H} \;\middle|\; \lvert q \rvert^2 = 1 \right\}
+    \left\lbrace q \in \mathbb{H} \;\middle|\; \lvert q \rvert^2 = 1 \right\rbrace
     ```
     or
     ```latex
-    \left\{ q \in \mathbb{H} \;\middle\vert\; \lvert q \rvert^2 = 1 \right\}
+    \left\lbrace q \in \mathbb{H} \;\middle\vert\; \lvert q \rvert^2 = 1 \right\rbrace
     ```
 
 ---
@@ -239,5 +239,5 @@ Before publishing or committing GFM math papers:
 - [x] **Table delimiters**: All table absolute values use `\lvert ... \rvert` or `\vert ... \vert` and conditioning/divisibility uses `\mid`.
 - [x] **Captions**: All figure and table captions use bold prefixes (`**Figure N:** ...`).
 - [x] **Display math alignment**: All display math blocks (`$$`) are unindented at Column 0 with blank lines before/after.
-- [x] **Set delimiters**: All set delimiters use clean `\{ ... \mid ... \}` or `\left\{ ... \;\middle|\; ... \right\}` syntax.
+- [x] **Set delimiters**: All set delimiters use clean `\{ ... \mid ... \}` or `\left\lbrace ... \;\middle|\; ... \right\rbrace` syntax.
 - [x] **Matplotlib figures**: Python figure scripts avoid raw `\textbf{...}` macros in non-LaTeX matplotlib text.
