@@ -24,3 +24,6 @@ import Formalization.Dynamics.OrbitShadowing
 import Formalization.Dynamics.L2Mixing
 import Formalization.Dynamics.BuildingSkinEffect
 import Formalization.Dynamics.ContinuousTransfer
+import Formalization.Dynamics.PadicLipschitz
+import Formalization.Dynamics.LasotaYorke2Adic
+import Formalization.Dynamics.RuelleResonances

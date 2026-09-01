@@ -218,7 +218,7 @@ The Lean 4 formalization is organized into a clean, two-tier architecture compil
 - [`Combinatorics/PrefixSparsity.lean`](formalization/MathlibUpstream/Combinatorics/PrefixSparsity.lean): Exact rational prefix-sharing sparsity on $p$-ary trees.
 
 ### 5.2 Tier 2: Domain-Specific Formalization Modules (5 Domains)
-78 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
+92 specialized domain modules plus 5 domain aggregators, 3 utility modules, and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
 
 #### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 16 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
 Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and online numerical operators:
@@ -239,9 +239,12 @@ Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and 
 - [`TrigSum.lean`](formalization/Formalization/Analysis/TrigSum.lean): Trigonometric exponential sums and character orthogonality identities.
 - [`VerifiableAttention.lean`](formalization/Formalization/Analysis/VerifiableAttention.lean): Faithful arithmetization of discrete $p$-adic tree LCA routing into Rank-1 Constraint Systems (R1CS), indicator wire uniqueness, completeness, soundness, and attention cluster non-interference safety theorems.
 
-#### Domain 2: Buildings (`formalization/Formalization/Buildings/` — 8 modules + [`Buildings.lean`](formalization/Formalization/Buildings.lean))
+#### Domain 2: Buildings (`formalization/Formalization/Buildings/` — 11 modules + [`Buildings.lean`](formalization/Formalization/Buildings.lean))
 Higher-rank Bruhat-Tits buildings, spherical Hecke algebras, exceptional root systems, and vertex operator algebras:
 - [`BuildingPGL3.lean`](formalization/Formalization/Buildings/BuildingPGL3.lean): Formalization of 2D simplicial building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$, commuting Hecke adjacencies $[T_1, T_2] = 0$, Macdonald joint eigenbasis, and Ramanujan spectral gap $2(q-1)^2 = 8$.
+- [`BuildingAn.lean`](formalization/Formalization/Buildings/BuildingAn.lean): General-rank affine Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ of type $\widetilde{A}_{n-1}$ for arbitrary dimension $n$, with regular stratum degrees $d_{n, r}(q) = \binom{n}{r}_q$.
+- [`RadialAn.lean`](formalization/Formalization/Buildings/RadialAn.lean): Radial difference operators on $\mathbb{Z}^{n-1}$ apartments and proof of mutual commutativity $[A_r, A_s] = 0$ for all $1 \le r, s \le n-1$.
+- [`MacdonaldAn.lean`](formalization/Formalization/Buildings/MacdonaldAn.lean): Joint Macdonald spherical wave eigenfunctions $\Phi_z(x)$ for $\widetilde{A}_{n-1}$ and Satake elementary symmetric polynomial eigenvalue formulas.
 - [`BuildingG2.lean`](formalization/Formalization/Buildings/BuildingG2.lean): Exceptional $\widetilde{G}_2$ 12-neighbor root system and simplicial apartment flow.
 - [`BuildingG2LFunction.lean`](formalization/Formalization/Buildings/BuildingG2LFunction.lean): Degree-7 standard automorphic $L$-function and Aronszajn-Krein rigidity on $\widetilde{G}_2$.
 - [`BuildingF4.lean`](formalization/Formalization/Buildings/BuildingF4.lean): Exceptional $\widetilde{F}_4$ 48-root affine building, radial difference operator commutativity $[T_{\mathrm{short}}, T_{\mathrm{long}}] = 0$, and standard 26D $L$-functions.
@@ -250,9 +253,13 @@ Higher-rank Bruhat-Tits buildings, spherical Hecke algebras, exceptional root sy
 - [`MonsterVOA.lean`](formalization/Formalization/Buildings/MonsterVOA.lean): Graded Monster Vertex Operator Algebra $V^\natural = \bigoplus V_n$ ($c=24$), Virasoro commutation brackets, Griess algebra $V_2$, and Borcherds product difference identities.
 - [`TreeGroupTranslation.lean`](formalization/Formalization/Buildings/TreeGroupTranslation.lean): Tree automorphisms, group translations, and Bruhat-Tits tree metric flows.
 
-#### Domain 3: Dynamics (`formalization/Formalization/Dynamics/` — 25 modules + [`Dynamics.lean`](formalization/Formalization/Dynamics.lean))
+#### Domain 3: Dynamics (`formalization/Formalization/Dynamics/` — 29 modules + [`Dynamics.lean`](formalization/Formalization/Dynamics.lean))
 Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, transfer operators, spectral circle theorems, and dynamical zeta functions:
 - [`ContinuousTransfer.lean`](formalization/Formalization/Dynamics/ContinuousTransfer.lean): Continuous limit transfer operator $(\mathcal{L} f)(x) = f(3x) + f(3x - 1)$ on $C(\mathbb{Z}_2, \mathbb{R})$, concentric circle spectra $r_n = 2^{2^{-(n-1)}} \to 1$ accumulating on the unit circle, and conformal Gibbs measure invariance $\mathcal{L}^* \mu = 2\mu$.
+- [`PadicLipschitz.lean`](formalization/Formalization/Dynamics/PadicLipschitz.lean): Non-Archimedean metric space $\mathbb{Z}_2$, Lipschitz semi-norms, and boundedness of the 2-adic transfer operator $\mathcal{L}_2$ on $C^1(\mathbb{Z}_2, \mathbb{C})$.
+- [`LasotaYorke2Adic.lean`](formalization/Formalization/Dynamics/LasotaYorke2Adic.lean): Lasota-Yorke type contraction inequalities on Lipschitz 2-adic function spaces.
+- [`RuelleResonances.lean`](formalization/Formalization/Dynamics/RuelleResonances.lean): Quasi-compactness of $\mathcal{L}_2$, essential spectral radius $r_{\text{ess}} = 1/2 < 1$, and isolated Ruelle resonances on concentric circles.
+- [`MonomialOperator.lean`](formalization/Formalization/Dynamics/MonomialOperator.lean): Coordinate-free monomial linear endomorphisms on permutation orbits and minimal polynomial power evaluation.
 - [`SpectralCircle.lean`](formalization/Formalization/Dynamics/SpectralCircle.lean): Monomial character actions and capstone proof of the Spectral Circle Theorem $|\lambda| = 2^{2^{-(k-1)}}$.
 - [`DynamicalZetaFactorization.lean`](formalization/Formalization/Dynamics/DynamicalZetaFactorization.lean): Tower factorization $\det(I - u D_n) = (1 - 2u)(1 - 2u^2)\prod_{k=3}^n (1 + 2u^{2^{k-1}})$.
 - [`CollatzRelMatrix.lean`](formalization/Formalization/Dynamics/CollatzRelMatrix.lean): Full 2-adic Collatz relation matrix $D_n$, monomial Pontryagin character action, and block decomposition.
@@ -267,7 +274,7 @@ Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, t
 - [`InductiveTower.lean`](formalization/Formalization/Dynamics/InductiveTower.lean): Inductive tower construction connecting $\mathbb{Z}/2^{n-1}\mathbb{Z} \to \mathbb{Z}/2^n\mathbb{Z}$.
 - [`ProfiniteTower.lean`](formalization/Formalization/Dynamics/ProfiniteTower.lean): Inverse limits and profinite topology on $\varprojlim \mathbb{Z}/2^n\mathbb{Z} \cong \mathbb{Z}_2$.
 - [`RationalZeta.lean`](formalization/Formalization/Dynamics/RationalZeta.lean): Rationality of dynamical zeta functions for piecewise-linear non-Archimedean systems.
-- [`TwistedBlockPow.lean`](formalization/Formalization/Dynamics/TwistedBlockPow.lean): Powers of twisted block cyclic matrices and trace identities.
+- [`TwistedBlockPow.lean`](formalization/Formalization/Dynamics/TwistedBlockPow.lean): Powers of twisted block cyclic matrices, $S_n^{2^{n-1}} = -2 I$, and trace identities.
 - [`FinalInduction.lean`](formalization/Formalization/Dynamics/FinalInduction.lean): Inductive step closing the full tower spectrum across all levels $n \ge 3$.
 - [`ConjectureB.lean`](formalization/Formalization/Dynamics/ConjectureB.lean): Formal verification of Conjecture B on spectral circle uniform distribution.
 - [`WeakIntegrability.lean`](formalization/Formalization/Dynamics/WeakIntegrability.lean): Breakdown of full integrability and transition to quantum chaos.
@@ -278,9 +285,10 @@ Arithmetic dynamical systems on $\mathbb{Z}/2^n\mathbb{Z}$ and $\mathbb{Z}_2$, t
 - [`L2Mixing.lean`](formalization/Formalization/Dynamics/L2Mixing.lean): $L^2$ exponential mixing and decay of correlations for the transfer operator.
 - [`BuildingSkinEffect.lean`](formalization/Formalization/Dynamics/BuildingSkinEffect.lean): Non-Hermitian skin effect on 2-adic Cantor trees and bulk-boundary collapse.
 
-#### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 12 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
+#### Domain 4: Quantum (`formalization/Formalization/Quantum/` — 17 modules + [`Quantum.lean`](formalization/Formalization/Quantum.lean))
 Non-Archimedean quantum physics, operator algebras, error correction, and entanglement geometry:
 - [`ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean): Connes-Consani-Moscovici semilocal prolate operator $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \mathcal{L}_2$, discrete Collatz Galerkin projections, Aronszajn-Krein boundary rigidity, and critical-line zero-mode confinement.
+- [`BratteliAF.lean`](formalization/Formalization/Quantum/BratteliAF.lean): Bratteli diagram sequences, incidence matrix direct limits, and proof of Elliott dimension group $K_0(M_{2^\infty}) \cong \mathbb{Z}[1/2]$.
 - [`AFAlgebraBratteli.lean`](formalization/Formalization/Quantum/AFAlgebraBratteli.lean): Approximately Finite-dimensional (AF) $C^*$-algebras and Bratteli diagrams.
 - [`AFAlgebraCategory.lean`](formalization/Formalization/Quantum/AFAlgebraCategory.lean): Category of AF $C^*$-algebras, dimension groups, and Elliott invariants.
 - [`AdelicTopology.lean`](formalization/Formalization/Quantum/AdelicTopology.lean): Adelic Dirac operators, boundary compression, and Cayley deformations.
@@ -289,18 +297,22 @@ Non-Archimedean quantum physics, operator algebras, error correction, and entang
 - [`BuildingSYK.lean`](formalization/Formalization/Quantum/BuildingSYK.lean): Non-Archimedean Sachdev-Ye-Kitaev (SYK) 4-fermion models on Bruhat-Tits trees and maximally chaotic Lyapunov exponents.
 - [`BuildingOTOC.lean`](formalization/Formalization/Quantum/BuildingOTOC.lean): Out-of-Time-Ordered Correlators (OTOC) on affine buildings, non-Archimedean scrambling, and butterfly velocity.
 - [`BruhatTitsEntanglement.lean`](formalization/Formalization/Quantum/BruhatTitsEntanglement.lean): Entanglement entropy scaling on Bruhat-Tits trees and bulk-boundary duality.
+- [`HolographicTensorNetwork.lean`](formalization/Formalization/Quantum/HolographicTensorNetwork.lean): Multi-scale dyadic binary tree MPO contraction and discrete Ryu-Takayanagi minimal cut entropy $S = k \ln 2$.
+- [`AMEPentagonTensor.lean`](formalization/Formalization/Quantum/AMEPentagonTensor.lean): 5-qubit Absolutely Maximally Entangled (AME(5, 2)) tensors and perfect state isometries.
+- [`HyperbolicApartmentTiling.lean`](formalization/Formalization/Quantum/HyperbolicApartmentTiling.lean): $\{5, 4\}$ hyperbolic apartment tilings and geodesic boundary cuts.
+- [`HaPPYCodeReconstruction.lean`](formalization/Formalization/Quantum/HaPPYCodeReconstruction.lean): Pastawski-Yoshida-Harlow-Preskill (HaPPY) holographic quantum error correcting code and greedy entanglement wedge reconstruction.
 - [`ManyBodyEntanglement.lean`](formalization/Formalization/Quantum/ManyBodyEntanglement.lean): Bipartite entanglement entropy and Ryu-Takayanagi area laws.
 - [`ManyBodyPhaseTransition.lean`](formalization/Formalization/Quantum/ManyBodyPhaseTransition.lean): Quantum phase transitions in arithmetic spin chains and non-thermal eigenstates.
 - [`QuantumScars.lean`](formalization/Formalization/Quantum/QuantumScars.lean): Quantum many-body scars, ETH violation, and exact zero-entropy eigenstates.
 
-
-#### Domain 5: Spectral (`formalization/Formalization/Spectral/` — 17 modules + [`Spectral.lean`](formalization/Formalization/Spectral.lean))
+#### Domain 5: Spectral (`formalization/Formalization/Spectral/` — 19 modules + [`Spectral.lean`](formalization/Formalization/Spectral.lean))
 Graph zeta functions, Ramanujan graphs, Schreier coset spectra, and trace formulas:
 - [`IharaBass.lean`](formalization/Formalization/Spectral/IharaBass.lean): Bass-Ihara determinant formula $\det(I - u A + u^2(D - I)) = (1 - u^2)^{r - 1} \zeta_G(u)^{-1}$.
 - [`IharaZeta.lean`](formalization/Formalization/Spectral/IharaZeta.lean): Ihara zeta function definition, prime cycle Euler product, and Perron radius.
 - [`RegularIharaZeta.lean`](formalization/Formalization/Spectral/RegularIharaZeta.lean): Ihara-Bass formula specialized for $d$-regular graphs and Ramanujan bounds.
 - [`DynamicalIharaBridge.lean`](formalization/Formalization/Spectral/DynamicalIharaBridge.lean): Bridge linking dynamical zeta functions to Ihara-Bass graph geodesics.
 - [`TerrasTrace.lean`](formalization/Formalization/Spectral/TerrasTrace.lean): Terras trace formula for 2-regular directed graphs and parity filtering.
+- [`DirectedTerrasTrace.lean`](formalization/Formalization/Spectral/DirectedTerrasTrace.lean): Non-Hermitian directed Terras trace formula for directed multigraphs over rings with zero-divisors $\mathbb{Z}/p^n\mathbb{Z}$.
 - [`MathlibSpectral.lean`](formalization/Formalization/Spectral/MathlibSpectral.lean): Spectral radius, Gelfand formula, and operator norm identities integrated with Mathlib.
 - [`DirectedSpectrum.lean`](formalization/Formalization/Spectral/DirectedSpectrum.lean): Complete spectrum of directed relation matrices and non-Hermitian point gaps.
 - [`UndirectedGapExponent.lean`](formalization/Formalization/Spectral/UndirectedGapExponent.lean): Formal verification of $\alpha = 3/2 - \log_2(1 + \sqrt{2})$.
@@ -309,6 +321,7 @@ Graph zeta functions, Ramanujan graphs, Schreier coset spectra, and trace formul
 - [`SchreierSpectral.lean`](formalization/Formalization/Spectral/SchreierSpectral.lean): Full spectral decomposition of Schreier coset adjacency operators.
 - [`SchreierSpectralGap.lean`](formalization/Formalization/Spectral/SchreierSpectralGap.lean): Uniform positive spectral gap for Schreier coset graphs.
 - [`SchreierTrace.lean`](formalization/Formalization/Spectral/SchreierTrace.lean): Exact trace formulas for powers of Schreier operators and closed walk enumeration.
+- [`SchreierDynamicalTrace.lean`](formalization/Formalization/Spectral/SchreierDynamicalTrace.lean): Directed Schreier dynamical character fixed-point trace on $\mathrm{Aff}(\mathbb{Z}/2^n\mathbb{Z})$.
 - [`SchreierPerronFrobenius.lean`](formalization/Formalization/Spectral/SchreierPerronFrobenius.lean): Perron-Frobenius theorem for irreducible non-negative Schreier matrices.
 - [`AsymptoticGap.lean`](formalization/Formalization/Spectral/AsymptoticGap.lean): Asymptotic spectral gap bounds for expanding Schreier graphs.
 - [`RamanujanTau.lean`](formalization/Formalization/Spectral/RamanujanTau.lean): Ramanujan $\tau(n)$ function, modular discriminant $\Delta \in S_{12}$, and Deligne bounds.

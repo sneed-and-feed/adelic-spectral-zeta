@@ -2,6 +2,7 @@ import Formalization.Spectral.IharaZeta
 import Formalization.Spectral.IharaBass
 import Formalization.Spectral.RegularIharaZeta
 import Formalization.Spectral.TerrasTrace
+import Formalization.Spectral.DirectedTerrasTrace
 import Formalization.Spectral.DynamicalIharaBridge
 import Formalization.Spectral.MathlibSpectral
 import Formalization.Spectral.DirectedSpectrum

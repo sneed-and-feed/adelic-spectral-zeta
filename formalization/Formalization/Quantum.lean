@@ -12,3 +12,6 @@ import Formalization.Quantum.ArithmeticChernSimons
 import Formalization.Quantum.BuildingSYK
 import Formalization.Quantum.BuildingOTOC
 import Formalization.Quantum.HolographicTensorNetwork
+import Formalization.Quantum.AMEPentagonTensor
+import Formalization.Quantum.HyperbolicApartmentTiling
+import Formalization.Quantum.HaPPYCodeReconstruction
