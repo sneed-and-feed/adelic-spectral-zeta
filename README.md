@@ -2,6 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/20327753.svg)](https://doi.org/10.5281/zenodo.20327753)
 [![Complete Monograph Markdown](https://img.shields.io/badge/Monograph-Complete_Treatise_MD-blue.svg)](papers/adelic_spectral_geometry_complete_monograph.md)
+[![Spectral Dynamics Paper](https://img.shields.io/badge/Paper-Spectral_Dynamics_MD-blue.svg)](papers/nonarchimedean_spectral_dynamics.md)
 [![Interactive HTML Edition](https://img.shields.io/badge/Publication-Interactive_HTML_Edition-cyan.svg)](docs/adelic_spectral_geometry_complete_monograph.html)
 [![3D WebGL Building Visualizer](https://img.shields.io/badge/Interactive_3D-WebGL_Building_Visualizer-purple.svg)](docs/building_visualizer.html)
 [![Lean 4 Formalization](https://img.shields.io/badge/Lean_4-0_sorry_%7C_v4.34.0--rc1-brightgreen.svg)](formalization/Formalization/)
@@ -217,9 +218,9 @@ The Lean 4 formalization is organized into a clean, two-tier architecture compil
 - [`Combinatorics/PrefixSparsity.lean`](formalization/MathlibUpstream/Combinatorics/PrefixSparsity.lean): Exact rational prefix-sharing sparsity on $p$-ary trees.
 
 ### 5.2 Tier 2: Domain-Specific Formalization Modules (5 Domains)
-76 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
+78 specialized domain modules plus 5 domain aggregators and root [`Formalization.lean`](formalization/Formalization.lean) organized into 5 mathematical domains:
 
-#### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 14 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
+#### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 16 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
 Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and online numerical operators:
 - [`AttentionError.lean`](formalization/Formalization/Analysis/AttentionError.lean): Frobenius norm and RMS error bounds between dense attention and $p$-adic tree-cluster truncated attention under Lipschitz value embedding manifolds ($\|A V - \tilde{A} V\|_F \le C p^{-D} \|\nabla V\|$).
 - [`ConjectureA.lean`](formalization/Formalization/Analysis/ConjectureA.lean): Formalization of Conjecture A connecting $k$-term progression-free generator sets in $\mathbb{Z}_n$ to the lower bound of the restricted spectral gap $\text{Gap}(d) = 2 - 2^{1/2^{d-1}}$, strict monotonicity, and Roth-Szemerédi Fourier bias bounds.
@@ -228,9 +229,11 @@ Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and 
 - [`ErdosSimilarity.lean`](formalization/Formalization/Analysis/ErdosSimilarity.lean): Erdős similarity problem bounds and spectral projections on Cantor sets.
 - [`MagnitudeProof.lean`](formalization/Formalization/Analysis/MagnitudeProof.lean): Magnitude and decay estimates for arithmetic oscillatory sums.
 - [`MemoryBound.lean`](formalization/Formalization/Analysis/MemoryBound.lean): Memory complexity and space bounds for ultrametric state traversals.
+- [`MultiPrimeCover.lean`](formalization/Formalization/Analysis/MultiPrimeCover.lean): Multi-Prime DAG Treewidth Covering Theorem, strict additive capacity scaling $\mathrm{Cap}(\mathcal{P}, N) = \sum \lfloor \log_{p_g} N \rfloor$ across coprime prime bases $\mathcal{P} = \{p_1, \dots, p_G\}$, and exponential attention sparsity scaling $p_g^{-r_g}$.
 - [`OnlineSoftmax.lean`](formalization/Formalization/Analysis/OnlineSoftmax.lean): Online softmax numerically stable dynamic update algebra.
 - [`OptimalRestrictedRewiring.lean`](formalization/Formalization/Analysis/OptimalRestrictedRewiring.lean): Optimal restricted graph rewiring for spectral gap optimization.
 - [`Partition.lean`](formalization/Formalization/Analysis/Partition.lean): Finite partitions of compact ultrametric spaces.
+- [`RoPECoherence.lean`](formalization/Formalization/Analysis/RoPECoherence.lean): $\mathrm{SO}(2)$ rotational geometry of Rotary Position Embeddings (RoPE), proof of key centroid attenuation ($\|k_{\mathrm{avg}}\| < \|k_0\|$) under phase variance, medoid key relative phase invariance, and exact logit scaling under synthetic temporal variance decay ($\langle \mathcal{R}_{m\theta} q, k_{\mathrm{condensed}} \rangle = \gamma \langle q, \mathcal{R}_{(n_{\mathrm{medoid}} - m)\theta} k_{\mathrm{medoid}} \rangle$).
 - [`SparsityBound.lean`](formalization/Formalization/Analysis/SparsityBound.lean): $O(N \log N)$ prefix-tree sparsity bounds and attention acceleration.
 - [`SpectralOracle.lean`](formalization/Formalization/Analysis/SpectralOracle.lean): Spectral oracle bounds for transfer operator eigensystem estimation.
 - [`TrigSum.lean`](formalization/Formalization/Analysis/TrigSum.lean): Trigonometric exponential sums and character orthogonality identities.
@@ -321,7 +324,7 @@ The **Bass-Ihara determinant formula** is cross-verified across two independent 
 ## 6. Adèlic Spectral Triples, Dirac Operators & Quantum Physics
 
 - **Singular Rank-1 Perturbation**: The global Dirac operator $D_{\text{glob}}$ has deficiency indices $(1, 1)$ on $\mathcal{H} = \ell^2(\mathbb{Z})$.
-- **Zeta Spectral Triples & Semilocal Prolate Operators**: Connects Alain Connes, Caterina Consani, and Henri Moscovici's framework (*Zeta Spectral Triples*, 2024/2026) to the repository's adelic transfer kernel $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \widetilde{\mathcal{L}}_2$ on $\mathbb{A}_{\mathbb{Q}, \{2\}}$, proving discrete zero-mode confinement to $\operatorname{Re}(s) = 1/2$ via Aronszajn-Krein resolvent rigidity ([`ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean)).
+- **Zeta Spectral Triples & Semilocal Prolate Operators**: Connects Alain Connes, Caterina Consani, and Henri Moscovici's framework (*Zeta Spectral Triples*, 2024/2026) to the repository's adelic transfer kernel $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \widetilde{\mathcal{L}}_2$ on $\mathbb{A}_{\mathbb{Q}, \{2\}}$, proving discrete zero-mode confinement to $\mathrm{Re}(s) = 1/2$ via Aronszajn-Krein resolvent rigidity ([`ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean)).
 - **Weierstrass Canonical Determinant**: $\mathfrak{D}_{\text{glob}}(z) = \mathcal{C} \cdot \Lambda(z)$, matching the non-trivial zeros of completed $L$-functions.
 - **Quantum Many-Body Scars**: The arithmetic zero-mode $|Z\rangle$ violates Strong ETH with an exact Area Law entropy $S_A^{(2)} = 0$ in Fermionic Fock space ([`ManyBodyPhaseTransition.lean`](formalization/Formalization/Quantum/ManyBodyPhaseTransition.lean)).
 
@@ -423,6 +426,7 @@ python -m pytest tests/test_zk_attention.py -v
 1. [*Spectral Circle Theorem for the Collatz Relation Matrix on $\mathbb{Z}/2^n\mathbb{Z}$*](papers/collatz_spectral_circle.md) ([LaTeX](papers/collatz_spectral_circle.tex))
 2. [*Learning to Skip Blocks: Self-Discovered Ultrametric Routing for Hardware-Accelerated Sparse Attention*](papers/learning_to_skip_blocks.md) ([LaTeX](papers/learning_to_skip_blocks.tex))
 3. [*Llama Surgery: Injecting Differentiable p-Adic Topology into Pre-Trained LLMs*](papers/llama_surgery.md) ([LaTeX](papers/llama_surgery.tex))
+4. [*Non-Archimedean Spectral Dynamics, Discrete Character Trace Formulas, and Provable Ultrametric Representation Invariance*](papers/nonarchimedean_spectral_dynamics.md) ([LaTeX](papers/nonarchimedean_spectral_dynamics.tex))
 
 ### 9.3 Interactive WebGL / WASM Visualizer
 - **[Live Bruhat-Tits Building & Macdonald Wave Visualizer](docs/building_visualizer.html)** (WebGL & 2D/3D Canvas) · [Visualizer Guide](docs/interactive_building_visualizer_guide.md)
@@ -488,7 +492,7 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
 
 1. **Zeta Spectral Triples & Semilocal Prolate Wave Operators (Connes-Consani-Moscovici Framework)** :white_check_mark: **[Completed]**:
    - Formalized the bridge connecting Alain Connes, Caterina Consani, and Henri Moscovici's framework (*Zeta Spectral Triples*, EMS Lectures 2026; *Annals of Functional Analysis*, 2024) to the repository's adelic transfer kernel $\mathcal{P}_S(s) = \mathcal{P}_\infty(s) \otimes \widetilde{\mathcal{L}}_2$ on restricted adèle space $\mathbb{A}_{\mathbb{Q}, \{2\}}$.
-   - Formally proved the deck transformation $\tau$-invariance of the complex Collatz matrix $D_n$, finite-rank Galerkin prolate basis projections $D_{n, K}^{\mathrm{Gal}} = V_K^* (D_n / 2) V_K$, Aronszajn-Krein secular determinant factorization $\operatorname{Im}(d_S(\sigma + i t)) = (\sigma - 1/2) \kappa \sum \dots$, strict non-vanishing off $\sigma = 1/2$, and the universal normal Dirac gap bound $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2|$ with **0 `sorry`s** in [`formalization/Formalization/Quantum/ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean).
+   - Formally proved the deck transformation $\tau$-invariance of the complex Collatz matrix $D_n$, finite-rank Galerkin prolate basis projections $D_{n, K}^{\mathrm{Gal}} = V_K^* (D_n / 2) V_K$, Aronszajn-Krein secular determinant factorization $\mathrm{Im}(d_S(\sigma + i t)) = (\sigma - 1/2) \kappa \sum \dots$, strict non-vanishing off $\sigma = 1/2$, and the universal normal Dirac gap bound $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2|$ with **0 `sorry`s** in [`formalization/Formalization/Quantum/ProlateScaling.lean`](formalization/Formalization/Quantum/ProlateScaling.lean).
    - Numerically verified finite-rank Galerkin trace-norm convergence $\|D_n^{\mathrm{Gal}} - H_{\mathrm{ref}}\|_{\mathrm{tr}} \to 0$ ($O(2^{-2.096 n})$ decay), semilocal spectrum $\mathcal{P}_S(s)$ at critical and off-critical parameters, and Aronszajn-Krein resolvent zero-mode spacing in [`experiments/prolate_adelic_scaling.py`](experiments/prolate_adelic_scaling.py) with telemetry figure saved to [`data/prolate_adelic_scaling_convergence.png`](data/prolate_adelic_scaling_convergence.png).
 
 2. **Non-Archimedean Vertex Operator Algebras (VOAs) & Automorphic Borcherds Products** :white_check_mark: **[Completed]**:
@@ -560,6 +564,15 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
     - Synthesized pure-Python algebraic R1CS compiler in [`src/adelic_spectral_zeta/circuits/padic_r1cs.py`](src/adelic_spectral_zeta/circuits/padic_r1cs.py) and Circom 2.1+ templates in [`circuits/padic_lca.circom`](circuits/padic_lca.circom).
     - Implemented end-to-end runtime prover in [`tools/zk_attention_prover.py`](tools/zk_attention_prover.py) with 23/23 tests passing in [`tests/test_zk_attention.py`](tests/test_zk_attention.py).
     - Documented in [`docs/zk_verifiable_ultrametric_attention.md`](docs/zk_verifiable_ultrametric_attention.md).
+
+15. **Non-Archimedean Spectral Dynamics, Monomial Matrix Power Theorem ($S_n^{2^{n-1}} = -2 \mathbf{I}$), RoPE Medoid Invariance & Multi-Prime DAG Covering** :white_check_mark: **[Completed]**:
+    - Formulated the exact finite transfer operator $D_n$ on $\mathbb{Z}/2^n\mathbb{Z}$ in the Pontryagin character basis as a monomial shift $(D_n \chi_k)(x) = (1 + \omega^{-k})\chi_{3k}(x)$.
+    - Formally proved the **Twisted Block Power Theorem** $S_n^{2^{n-1}} = -2 \cdot \mathbf{I}_{2^{n-1}}$ on the odd-character subspace $V_{\mathrm{odd}}$ via 2-cycle orbit factorization, establishing the **Concentric Spectral Circle Theorem** ($|\lambda| = 2^{2^{-(n-1)}}$) with critical scaling exponent $\sigma = 1/2$ and zero `sorry`s in [`formalization/Formalization/Dynamics/TwistedBlockPow.lean`](formalization/Formalization/Dynamics/TwistedBlockPow.lean), [`formalization/Formalization/Dynamics/MonomialOperator.lean`](formalization/Formalization/Dynamics/MonomialOperator.lean), and [`formalization/Formalization/Dynamics/SpectralCircle.lean`](formalization/Formalization/Dynamics/SpectralCircle.lean).
+    - Derived and machine-checked the **Discrete Schreier Dynamical Trace Formula** on $\mathrm{Aff}(\mathbb{Z}/2^n\mathbb{Z})$, proving that odd character contributions vanish identically for all intermediate powers $1 \le m < 2^{n-2}$ ($\mathrm{Tr}(D_n^m) = 2^m$) with exact periodic return evaluations $\mathrm{Tr}(D_n^{2^{n-2}}) = 2^{2^{n-2}}$ and $\mathrm{Tr}(D_n^{2^{n-1}}) = 2^{2^{n-1}} - 2^n$ in [`formalization/Formalization/Spectral/SchreierDynamicalTrace.lean`](formalization/Formalization/Spectral/SchreierDynamicalTrace.lean).
+    - Computed the stationary 2-adic Bratteli diagram dimension group $(K_0(M_{2^\infty}), K_0^+, [1]) \cong (\mathbb{Z}[1/2], \mathbb{Z}[1/2]^+, 1)$ in [`formalization/Formalization/Quantum/BratteliAF.lean`](formalization/Formalization/Quantum/BratteliAF.lean) and proved the discrete Ryu-Takayanagi minimal cut entropy $S(A) = k \ln 2$ on uniform binary tree tensor networks in [`formalization/Formalization/Quantum/HolographicTensorNetwork.lean`](formalization/Formalization/Quantum/HolographicTensorNetwork.lean).
+    - Established the **$\mathrm{SO}(2)$ RoPE Medoid Invariance Theorem**, proving that arithmetic centroid key averaging strictly attenuates key norms ($\|k_{\mathrm{avg}}\| < \|k_0\|$) and destroys rotational phase coherence, whereas medoid key anchor selection preserves relative angular phase shifts identically with exact logit scaling under synthetic temporal variance decay in [`formalization/Formalization/Analysis/RoPECoherence.lean`](formalization/Formalization/Analysis/RoPECoherence.lean).
+    - Proved the **Multi-Prime DAG Treewidth Covering Theorem**, showing that adèlic tree routing across coprime prime bases $\mathcal{P} = \{p_1, \dots, p_G\}$ provides additive routing capacity $\mathrm{Cap}(\mathcal{P}, N) = \sum \lfloor \log_{p_g} N \rfloor$ covering causal dependency DAGs with exponential sparsity scaling $p_g^{-r_g}$ in [`formalization/Formalization/Analysis/MultiPrimeCover.lean`](formalization/Formalization/Analysis/MultiPrimeCover.lean).
+    - Documented in the standalone publication [`papers/nonarchimedean_spectral_dynamics.md`](papers/nonarchimedean_spectral_dynamics.md) and [`papers/nonarchimedean_spectral_dynamics.tex`](papers/nonarchimedean_spectral_dynamics.tex).
 
 ### BibTeX Citation
 ```bibtex
