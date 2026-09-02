@@ -37,14 +37,14 @@
 \maketitle
 
 \begin{abstract}
-We construct a unified geometric, operator-theoretic, and formally verified mathematical framework for \textbf{Ad\`elic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas}. Synthesizing Connes' ad\`elic non-commutative geometry with modern higher-rank non-Archimedean symmetric spaces (Bruhat-Tits buildings), we define a global ad\`elic spectral triple $(\mathcal{A}, \mathcal{H}_{\mathrm{glob}}, D_{\mathrm{glob}})$ that regularizes the non-trivial zeros of completed $L$-functions as discrete eigenvalues of a compressed boundary Dirac operator.
+We construct a unified geometric, operator-theoretic, and formally verified mathematical framework for \textbf{Ad\`elic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas}. Synthesizing Connes' ad\`elic non-commutative geometry with modern higher-rank non-Archimedean symmetric spaces (Bruhat-Tits buildings), we formulate an ad\`elic operator-theoretic framework and model spectral triple $(\mathcal{A}, \mathcal{H}_{\mathrm{model}}, D_{\mathrm{model}})$ whose boundary compression regularizes the non-trivial zeros of completed $L$-functions as discrete eigenvalues of a compressed boundary Dirac operator.
 
 Our principal theorems and formal verification milestones encompass:
 \begin{enumerate}
-    \item \textbf{1D Ad\`elic Dynamics \& 2-Adic Transfer Operators:} The 2-regular directed transfer operator on $\mathbb{Z}_2$ exhibits an exact cyclic orbit weight of $\sqrt{2}$ on finite quotients $\mathbb{Z}/2^n\mathbb{Z}$, with concentric cyclotomic spectral circles. Under Aronszajn-Krein rank-1 boundary compression, the bulk Fredholm determinant poles invert into boundary zero-modes with Montgomery-Odlyzko GUE quantum chaos statistics.
+    \item \textbf{1D Ad\`elic Dynamics \& 2-Adic Transfer Operators:} The 2-regular directed transfer operator on $\mathbb{Z}_2$ exhibits an exact cyclic orbit weight of $\sqrt{2}$ on finite quotients $\mathbb{Z}/2^n\mathbb{Z}$, with concentric cyclotomic spectral circles. Under Aronszajn-Krein rank-1 boundary compression, the bulk Fredholm determinant poles invert into boundary zero-modes whose unfolded nearest-neighbor spacings numerically match Montgomery-Odlyzko GUE quantum chaos statistics.
     \item \textbf{Higher-Rank $\mathrm{GL}_n$ Satake Transfer Engine:} The Hecke transfer operators on Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ map geometric stratum degrees $d_{n, r}(p) = \binom{n}{r}_p$ directly to Langlands Satake parameters. We verify exact trace matching for $\mathrm{GL}_2$ (Ramanujan cusp form $\Delta_{12}$ on $T_{p+1}$ trees with Sato-Tate semi-circle distribution), $\mathrm{GL}_3$ (Gelbart-Jacquet symmetric square $\operatorname{Sym}^2(\Delta_{12})$ and Buhler's $A_5$ icosahedral Galois representation), and $\mathrm{GL}_4$ (Rankin-Selberg convolution $\Delta_{12} \times \Delta_{12} = \operatorname{Sym}^2(\Delta_{12}) \boxplus \mathbf{1}$).
     \item \textbf{Simplicial Lean 4 Formalization for $\tilde{A}_2$ Affine Buildings:} On the 2D affine building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$ of type $\tilde{A}_2$ with 3-colored vertices and regular degrees $d_{3, 1}(q) = d_{3, 2}(q) = q^2 + q + 1$, we formalize the type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$ and prove exact radial commutativity $[\mathcal{A}_1, \mathcal{A}_2] = 0$, the Macdonald spherical joint eigenbasis, and the explicit Ramanujan spectral gap $\operatorname{Gap}(\Delta) = 2(q-1)^2 = 8$ (for $q=3$) with \textbf{zero \texttt{sorry}s} in Lean 4.8.0.
-    \item \textbf{Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Model Deficiency Rigidity:} For cuspidal automorphic representations on $\mathrm{GL}_4$, the model boundary Dirac operator exhibits deficiency-index lower bounds $\sigma_{\min}(D_{\mathrm{phys}}(\sigma, t)) \ge |\sigma - 1/2| > 0$ for all $\sigma \neq 1/2$.
+    \item \textbf{Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Model Deficiency Rigidity:} For cuspidal automorphic representations on $\mathrm{GL}_4$, the dilation-shifted model boundary Dirac operator exhibits deficiency-index lower bounds $\sigma_{\min}(D_{\mathrm{phys}}(\sigma, t)) \ge |\sigma - 1/2| > 0$ for all $\sigma \neq 1/2$ (with the shifted normal operator lower bound verified in Lean 4), providing an operator-theoretic mechanism that rules out off-line zero-modes.
     \item \textbf{Multi-Variable Weil-Arthur-Selberg Trace Formula:} We couple 2D transfer operator traces $\operatorname{Tr}(\mathcal{T}_p^m)$ on the simplicial building to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$, establishing that non-Archimedean split torus orbital integrals evaluate identically to weighted 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$, validated with uniform numerical residuals $< 4.9 \times 10^{-14}$.
 \end{enumerate}
 \end{abstract}
@@ -53,13 +53,13 @@ Our principal theorems and formal verification milestones encompass:
 
 The Hilbert-P\'olya conjecture proposes that the non-trivial zeros of the Riemann zeta function $\zeta(s)$ (and generally of automorphic $L$-functions $L(s, \pi)$) are the eigenvalues of a self-adjoint operator on a Hilbert space. Alain Connes reformulated this program within non-commutative geometry over the ad\`ele class space $\mathbb{A}_\mathbb{Q} / \mathbb{Q}^\times$, where zeros originally appeared as an absorption spectrum in a continuous trace.
 
-In this monograph, we present a discrete, self-contained regularized realization through the synthesis of:
+In this monograph, we present a discrete, regularized realization through the synthesis of:
 \begin{enumerate}
     \item Archimedean regularized test spaces $\mathcal{S}_0(\mathbb{R})$ eliminating Gamma poles at $s=0, -2, -4, \dots$;
     \item 2-Adic dyadic scale anchoring ($\sigma = 1/2$) originating from the directed Collatz transfer operator;
     \item Non-Archimedean Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ driving the spherical Hecke algebra;
     \item Aronszajn-Krein rank-1 boundary compression mapping bulk poles to discrete boundary zeros;
-    \item Full formal verification in Lean 4 with 0 \texttt{sorry}s.
+    \item Formal verification in Lean 4 (0 \texttt{sorry}s) of the core algebraic foundations: the $\tilde{A}_2$ affine building Hecke algebra commutation, the joint Macdonald eigenbasis, the Ramanujan gap formula, non-Archimedean cyclotomic orbit products, and the conditional reduction of the Generalized Riemann Hypothesis to self-adjoint trace parameterizations.
 \end{enumerate}
 
 \section{The Three-Tier Visual Architecture}
@@ -68,7 +68,7 @@ The empirical and geometric verification of the framework is structured into thr
 \begin{itemize}
     \item \textbf{Figure 1 (1D Adelic Fusion \& 2-Adic Pole Seeding):} Demonstrates the $p=2$ conformal anchor at $\sigma = 1/2$, odd prime unitary shielding $\sigma = 0$, Chinese Remainder Theorem diagonal descent spectra, and Montgomery-Odlyzko GUE quantum chaos statistics.
     \item \textbf{Figure 2 (Higher-Rank $\mathrm{GL}_n$ Satake Torus Spectra):} Illustrates $\mathrm{GL}_2$ Deligne-bounded spectra on $T_{p+1}$ trees with Sato-Tate semi-circle distributions, $\mathrm{GL}_3$ $\operatorname{Sym}^2(\Delta_{12})$ continuous deltoid bands, $\mathrm{GL}_3$ Buhler $A_5$ rigid Galois eigenvalues, and $\mathrm{GL}_4$ Rankin-Selberg isobaric sums.
-    \item \textbf{Figure 3 (Langlands-Shahidi Rigidity \& 2D $\mathrm{PGL}_3$ Simplicial Flow):} Displays $\Lambda^2\mathrm{GL}_4$ deficiency-index rigidity $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2| > 0$, 2D triangular apartment Macdonald spherical waves, and the Multi-Variable Weil-Arthur-Selberg trace identity with residuals $< 4.9 \times 10^{-14}$.
+    \item \textbf{Figure 3 (Langlands-Shahidi Rigidity \& 2D $\mathrm{PGL}_3$ Simplicial Flow):} Displays $\Lambda^2\mathrm{GL}_4$ deficiency-index rigidity $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2| > 0$ (empirically confirmed across a 4,000-point complex grid in the model operator), 2D triangular apartment Macdonald spherical waves, and the Multi-Variable Weil-Arthur-Selberg trace identity with residuals $< 4.9 \times 10^{-14}$.
 \end{itemize}
 
 \section{Simplicial Bruhat-Tits Buildings of Type $\tilde{A}_2$ and Lean 4 Proofs}
@@ -130,6 +130,6 @@ The resulting Multi-Variable Weil-Arthur-Selberg explicit formula equates automo
 
 \section{Conclusion}
 
-This monograph completes the synthesis of non-Archimedean spectral geometry, higher-rank Bruhat-Tits buildings, and the Arthur-Selberg trace formula. Machine-checked formal proofs in Lean 4.8.0 establish the complete algebraic rigor of the simplicial building foundations with zero \texttt{sorry}s.
+This monograph presents a unified framework connecting non-Archimedean spectral geometry, higher-rank Bruhat-Tits buildings, and the Arthur-Selberg trace formula. Machine-checked formal proofs in Lean 4.8.0 establish the complete algebraic rigor of the simplicial building foundations, Hecke commutativity, Ramanujan gap, cyclotomic products, and conditional trace reductions with zero \texttt{sorry}s, providing a certified algebraic foundation for the broader analytic and numerical operator framework.
 
 \end{document}

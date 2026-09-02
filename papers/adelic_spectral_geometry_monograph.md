@@ -11,13 +11,13 @@
 
 ## Abstract
 
-We construct a unified geometric, operator-theoretic, and formally verified mathematical framework for **Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas**. Synthesizing Connes' adèlic non-commutative geometry with modern higher-rank non-Archimedean symmetric spaces (Bruhat-Tits buildings), we define a global adèlic spectral triple $(\mathcal{A}, \mathcal{H}_{\text{glob}}, D_{\text{glob}})$ that regularizes the non-trivial zeros of completed $L$-functions as discrete eigenvalues of a compressed boundary Dirac operator.
+We construct a unified geometric, operator-theoretic, and formally verified mathematical framework for **Adèlic Spectral Geometry, Bruhat-Tits Buildings, and Automorphic Trace Formulas**. Synthesizing Connes' adèlic non-commutative geometry with modern higher-rank non-Archimedean symmetric spaces (Bruhat-Tits buildings), we formulate an adèlic operator-theoretic framework and model spectral triple $(\mathcal{A}, \mathcal{H}_{\text{model}}, D_{\text{model}})$ whose boundary compression regularizes the non-trivial zeros of completed $L$-functions as discrete eigenvalues of a compressed boundary Dirac operator.
 
 Our principal theorems and formal verification milestones encompass:
-1. **1D Adèlic Dynamics & 2-Adic Transfer Operators:** The 2-regular directed transfer operator on $\mathbb{Z}_2$ exhibits an exact cyclic orbit weight of $\sqrt{2}$ on finite quotients $\mathbb{Z}/2^n\mathbb{Z}$, with concentric cyclotomic spectral circles. Under Aronszajn-Krein rank-1 boundary compression, the bulk Fredholm determinant poles invert into boundary zero-modes with Montgomery-Odlyzko GUE quantum chaos statistics.
+1. **1D Adèlic Dynamics & 2-Adic Transfer Operators:** The 2-regular directed transfer operator on $\mathbb{Z}_2$ exhibits an exact cyclic orbit weight of $\sqrt{2}$ on finite quotients $\mathbb{Z}/2^n\mathbb{Z}$, with concentric cyclotomic spectral circles. Under Aronszajn-Krein rank-1 boundary compression, the bulk Fredholm determinant poles invert into boundary zero-modes whose unfolded nearest-neighbor spacings numerically match Montgomery-Odlyzko GUE quantum chaos statistics.
 2. **Higher-Rank $\mathrm{GL}_n$ Satake Transfer Engine:** The Hecke transfer operators on Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$ map geometric stratum degrees $d_{n, r}(p) = \binom{n}{r}_p$ directly to Langlands Satake parameters. We verify exact trace matching for $\mathrm{GL}_2$ (Ramanujan cusp form $\Delta_{12}$ on $T_{p+1}$ trees with Sato-Tate semi-circle distribution), $\mathrm{GL}_3$ (Gelbart-Jacquet symmetric square $\mathrm{Sym}^2(\Delta_{12})$ and Buhler's $A_5$ icosahedral Galois representation), and $\mathrm{GL}_4$ (Rankin-Selberg convolution $\Delta_{12} \times \Delta_{12} = \mathrm{Sym}^2(\Delta_{12}) \boxplus \mathbf{1}$).
 3. **Simplicial Lean 4 Formalization for $\tilde{A}_2$ Affine Buildings:** On the 2D affine building $\mathcal{B}(\mathrm{PGL}_3(\mathbb{Q}_p))$ of type $\tilde{A}_2$ with 3-colored vertices and regular degrees $d_{3, 1}(q) = d_{3, 2}(q) = q^2 + q + 1$, we formalize the type-preserving adjacency operators $\mathcal{A}_1, \mathcal{A}_2$ and prove exact radial commutativity $[\mathcal{A}_1, \mathcal{A}_2] = 0$, the Macdonald spherical joint eigenbasis, and the explicit Ramanujan spectral gap $\mathrm{Gap}(\Delta) = 2(q-1)^2 = 8$ (for $q=3$) with **zero `sorry`s** in Lean 4.8.0.
-4. **Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Model Deficiency Rigidity:** For cuspidal automorphic representations on $\mathrm{GL}_4$, the model boundary Dirac operator exhibits deficiency-index lower bounds $\sigma_{\min}(D_{\mathrm{phys}}(\sigma, t)) \ge |\sigma - 1/2| > 0$ for $\sigma \neq 1/2$.
+4. **Langlands-Shahidi $\Lambda^2 \mathrm{GL}_4$ Model Deficiency Rigidity:** For cuspidal automorphic representations on $\mathrm{GL}_4$, the dilation-shifted model boundary Dirac operator exhibits deficiency-index lower bounds $\sigma_{\min}(D_{\mathrm{phys}}(\sigma, t)) \ge |\sigma - 1/2| > 0$ for $\sigma \neq 1/2$ (with the shifted normal operator lower bound verified in Lean 4), providing an operator-theoretic mechanism that rules out off-line zero-modes.
 5. **Multi-Variable Weil-Arthur-Selberg Trace Formula:** We couple 2D transfer operator traces $\mathrm{Tr}(\mathcal{T}_p^m)$ on the simplicial building to the Arthur-Selberg trace formula for $\mathrm{GL}_3(\mathbb{A}_\mathbb{Q})$, establishing that non-Archimedean split torus orbital integrals evaluate identically to weighted 2D simplicial lattice paths in the positive Weyl chamber $\mathcal{A}^+$, validated with uniform numerical residuals $\lt 4.9 \times 10^{-14}$.
 
 ---
@@ -26,7 +26,7 @@ Our principal theorems and formal verification milestones encompass:
 
 The Hilbert-Pólya conjecture proposes that the non-trivial zeros of the Riemann zeta function $\zeta(s)$ (and generally of automorphic $L$-functions $L(s, \pi)$) are the eigenvalues of a self-adjoint operator on a Hilbert space. Alain Connes reformulated this program within non-commutative geometry over the adèle class space $\mathbb{A}_\mathbb{Q} / \mathbb{Q}^\times$, where zeros originally appeared as a continuous absorption spectrum.
 
-In this monograph, we establish a discrete, self-contained regularized realization:
+In this monograph, we establish a discrete, regularized realization:
 ```
 +---------------------------------------------------------------------------------------------------+
 |                                 ADÈLIC SPECTRAL ARCHITECTURE                                      |
@@ -50,7 +50,7 @@ In this monograph, we establish a discrete, self-contained regularized realizati
 |   HIGHER LANGLANDS FUNCTORIALITY|                               |    TWO-TIER FORMAL PROOFS       |
 | • GL(2) -> GL(3) -> GL(4) Lifts |                               | • Lean 4 (v4.8.0, 0 sorrys)     |
 | • A~2 Macdonald Spherical Flow  |                               | • [A_1, A_2] = 0 & Ramanujan Gap|
-| • Arthur-Selberg Path Duality   |                               | • Bass-Ihara (Lean 4 + Rocq)    |
+| • Arthur-Selberg Path Duality   |                               | • Building & GRH Reductions     |
 +---------------------------------+                               +---------------------------------+
 ```
 
@@ -88,7 +88,7 @@ The complete empirical, geometric, and topological behavior of the adèlic frame
 ![Figure 3: Langlands-Shahidi & Simplicial Apartment Flow](../figures/multivariable_weil_arthur_selberg.png)
 
 * **Panel A ($\Lambda^2 \mathrm{GL}_4$ Aronszajn-Krein Secular Imaginary Shift):** Confirms $\mathrm{sgn}(\mathrm{Im} d_{\Lambda^2}(\sigma, t)) = \mathrm{sgn}(\sigma - 1/2) \neq 0$ for all $\sigma \neq 1/2$.
-* **Panel B (Universal Spectral Lower Bound $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2|$):** Evaluates $4,000$ grid points in the complex plane with zero violations, proving the exclusion of off-line zeros.
+* **Panel B (Universal Spectral Lower Bound $\sigma_{\min}(D_{\mathrm{phys}}) \ge |\sigma - 1/2|$):** Evaluates $4,000$ grid points in the complex plane with zero violations, empirically confirming the exclusion of off-line zero-modes in the model Dirac spectrum.
 * **Panel C (2D Triangular Apartment Macdonald Waves):** Visualizes the joint eigenfunctions $\Phi_z(m, n)$ on $\mathcal{A} \cong \mathbb{Z}^2$ for the commuting Hecke difference operators $T_1, T_2$.
 * **Panel D (Non-Archimedean Ramanujan Gap on $\tilde{A}_2$):** Demonstrates the exact spectral gap $\mathrm{Gap}(\Delta) = 2(q-1)^2 = 8$ (for $q=3$).
 * **Panel E (Arthur-Selberg Orbital Integrals vs. Simplicial Lattice Paths in $\mathcal{A}^+$):** Confirms that maximal split torus orbital integrals match positive Weyl chamber walks with zero error.
@@ -176,4 +176,4 @@ Coupling the 2D transfer operator $\mathcal{T}_p(u_1, u_2) = u_1 T_{p, 1} + u_2 
 
 ## 5. Conclusion & Verification Summary
 
-The synthesis of 1D dyadic dynamics on $\mathbb{Z}_2$, higher-rank Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$, and the multi-variable Arthur-Selberg trace formula establishes a rigorous and machine-verified foundation for adèlic spectral geometry. All Lean 4 theorems in [`formalization/Formalization/BuildingPGL3.lean`](file:///c:/Users/x/Documents/antigravity/adelic_spectral_zeta/formalization/Formalization/BuildingPGL3.lean) compile with **0 errors and 0 `sorry`s**, closing the loop between non-Archimedean geometry and automorphic representation theory.
+The synthesis of 1D dyadic dynamics on $\mathbb{Z}_2$, higher-rank Bruhat-Tits buildings $\mathcal{B}(\mathrm{PGL}_n(\mathbb{Q}_p))$, and the multi-variable Arthur-Selberg trace formula establishes a unified framework for adèlic spectral geometry. Machine-checked formal proofs in Lean 4.8.0 establish the complete algebraic rigor of the simplicial building foundations, Hecke commutativity, Ramanujan gap, cyclotomic products, and conditional trace reductions with **0 errors and 0 `sorry`s**, providing a certified algebraic backbone for the broader analytic and numerical operator framework.
