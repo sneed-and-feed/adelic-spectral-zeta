@@ -1,0 +1,42 @@
+name: Lean 4 Formalization CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'formalization/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'formalization/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Lean 4 Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: formalization
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Verify Lean & Lake versions
+        run: |
+          lean --version
+          lake --version
+
+      - name: Fetch Mathlib precompiled olean cache
+        run: |
+          lake exe cache get
+
+      - name: Build Formalization Libraries
+        run: |
+          lake build MathlibUpstream Formalization
