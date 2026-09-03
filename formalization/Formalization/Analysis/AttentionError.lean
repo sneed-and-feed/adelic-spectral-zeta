@@ -16,8 +16,6 @@ import Formalization.Analysis.SparsityBound
 open scoped BigOperators Matrix
 open Classical
 
-set_option linter.unusedSectionVars false
-
 noncomputable section AttentionError
 
 /-!
@@ -99,27 +97,33 @@ lemma norm_linear_comb_le (c : I → ℝ) (v : I → EuclideanSpace ℝ J) :
     ‖∑ j, c j • v j‖ ≤ ∑ j, |c j| * ‖v j‖ :=
   (norm_sum_le _ _).trans_eq (by simp only [norm_smul, Real.norm_eq_abs])
 
+omit [Fintype J] in
 lemma row_mul_eq_sum (A : Matrix I I ℝ) (V : Matrix I J ℝ) (i : I) :
     (A * V) i = ∑ j, A i j • V j := by
   ext k
   simp only [Matrix.mul_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
 
+omit [Fintype J] in
 lemma rowVec_mul (A : Matrix I I ℝ) (V : Matrix I J ℝ) (i : I) :
     rowVec (A * V) i = ∑ j, A i j • rowVec V j := by
   dsimp [rowVec]
   rw [row_mul_eq_sum]
   exact map_sum (WithLp.linearEquiv 2 ℝ (J → ℝ)).symm _ _
 
+omit [Fintype I] [Fintype J] in
 lemma row_sub (A B : Matrix I J ℝ) (i : I) : (A - B) i = A i - B i := rfl
 
+omit [Fintype I] [Fintype J] in
 lemma rowVec_sub (A B : Matrix I J ℝ) (i : I) : rowVec (A - B) i = rowVec A i - rowVec B i :=
   map_sub (WithLp.linearEquiv 2 ℝ (J → ℝ)).symm (A i) (B i)
 
+omit [Fintype J] in
 lemma sum_sub_smul_eq_zero (A B : Matrix I I ℝ) (hA : IsRowStochastic A) (hB : IsRowStochastic B)
     (i : I) (c : EuclideanSpace ℝ J) :
     ∑ j, (A i j - B i j) • c = 0 := by
   rw [← Finset.sum_smul, Finset.sum_sub_distrib, hA.2 i, hB.2 i, sub_self, zero_smul]
 
+omit [Fintype J] in
 /-- Center-invariance: for any center vector c, the row difference can be centered at c. -/
 lemma row_diff_centered (A B : Matrix I I ℝ) (V : Matrix I J ℝ)
     (hA : IsRowStochastic A) (hB : IsRowStochastic B) (i : I) (c : EuclideanSpace ℝ J) :
@@ -138,6 +142,7 @@ lemma row_norm_bound (A B : Matrix I I ℝ) (V : Matrix I J ℝ)
   exact (norm_linear_comb_le _ _).trans
     (Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hV j i) (abs_nonneg _))
 
+omit [Fintype I] in
 /-- Lipschitz embeddings over bounded diameter spaces have bounded gradients. -/
 lemma boundedGradient_of_lipschitz (V : Matrix I J ℝ) (dist : I → I → ℝ) (L_V diam : ℝ)
     (hLip : LipschitzEmbedding V dist L_V)

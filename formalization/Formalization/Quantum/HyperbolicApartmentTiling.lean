@@ -12,9 +12,6 @@ import Formalization.Quantum.AMEPentagonTensor
 
 open scoped BigOperators Real
 
-set_option linter.unusedSimpArgs false
-set_option linter.dupNamespace false
-
 namespace HyperbolicApartmentTiling
 
 /-!
@@ -131,7 +128,7 @@ instance (d : ℕ) : Fintype (InternalBond d) :=
 /-- The total number of boundary legs in a depth-`d` patch is `5 * 3^d`. -/
 theorem card_boundaryLeg (d : ℕ) : Fintype.card (BoundaryLeg d) = numBoundaryLegs d := by
   rw [Fintype.card_congr (equivBoundary d)]
-  simp [Fintype.card_prod, Fintype.card_fun, numBoundaryLegs]
+  simp [Fintype.card_prod, numBoundaryLegs]
 
 /-- The total number of pentagon tiles in a depth-`d` patch is `numTiles d`. -/
 theorem card_pentagonTile (d : ℕ) : Fintype.card (PentagonTile d) = numTiles d := by

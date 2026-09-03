@@ -49,11 +49,9 @@ open scoped Matrix
 
 namespace DynamicalIharaBridge
 
-set_option linter.unusedSectionVars false
-
 section IharaBridge
 
-variable {V : Type*} [Fintype V] [DecidableEq V]
+variable {V : Type*} [Fintype V]
 
 -- ============================================================================
 -- 1. Symmetrized Operator Definition & Symmetry
@@ -115,7 +113,7 @@ lemma trace_symmetrized_eq_two_mul_trace {R : Type*} [CommRing R]
 /-- **Trace of Symmetrized Operator Squared ($m = 2$)**:
 The trace of the squared symmetrized operator decomposes into directed 2-cycles and bidirectional edges:
 $$ \operatorname{Tr}((D + D^T)^2) = 2 \operatorname{Tr}(D^2) + 2 \operatorname{Tr}(D D^T) $$ -/
-lemma trace_symmetrized_sq {R : Type*} [CommRing R]
+lemma trace_symmetrized_sq [DecidableEq V] {R : Type*} [CommRing R]
     (D : Matrix V V R) :
     (symmetrizedAdjMatrix D ^ 2).trace = 2 * (D ^ 2).trace + 2 * (D * D.transpose).trace := by
   unfold symmetrizedAdjMatrix
@@ -142,13 +140,13 @@ lemma trace_mul_transpose_eq_sum_sq {R : Type*} [CommRing R]
 /-- The Schreier Ihara-Bass characteristic matrix for a 4-regular Schreier graph
 induced by a directed transfer operator $D$:
 $$ \mathcal{B}(D, u) = (1 + 3 u^2) I - u (D + D^T) $$ -/
-noncomputable def schreierIharaBassMatrix {R : Type*} [CommRing R]
+noncomputable def schreierIharaBassMatrix [DecidableEq V] {R : Type*} [CommRing R]
     (D : Matrix V V R) (u : R) : Matrix V V R :=
   regularIharaBassMatrix 4 (symmetrizedAdjMatrix D) u
 
 /-- **Explicit Form of the Schreier Ihara-Bass Matrix**:
 $$ \mathcal{B}(D, u) = (1 + 3 u^2) I - u (D + D^T) $$ -/
-theorem schreierIharaBassMatrix_eq {R : Type*} [CommRing R]
+theorem schreierIharaBassMatrix_eq [DecidableEq V] {R : Type*} [CommRing R]
     (D : Matrix V V R) (u : R) :
     schreierIharaBassMatrix D u = (1 + 3 * u^2) • 1 - u • (D + D.transpose) := by
   unfold schreierIharaBassMatrix regularIharaBassMatrix symmetrizedAdjMatrix
@@ -158,7 +156,7 @@ theorem schreierIharaBassMatrix_eq {R : Type*} [CommRing R]
   rw [h4]
 
 /-- The Schreier Ihara-Bass matrix is self-transpose (symmetric). -/
-theorem schreierIharaBassMatrix_transpose {R : Type*} [CommRing R]
+theorem schreierIharaBassMatrix_transpose [DecidableEq V] {R : Type*} [CommRing R]
     (D : Matrix V V R) (u : R) :
     (schreierIharaBassMatrix D u).transpose = schreierIharaBassMatrix D u := by
   rw [schreierIharaBassMatrix_eq]
@@ -204,7 +202,7 @@ At $u = 1/3$, the Ihara-Bass characteristic factor $(1 + 3 u^2) I - u A$ on a 4-
 Schreier graph annihilates the Perron eigenvector $\mathbf{1}$:
 $$ \left( \left(1 + 3 \left(\frac{1}{3}\right)^2\right) I - \frac{1}{3} (D + D^T) \right) \mathbf{1} = \left(\frac{4}{3} - \frac{4}{3}\right) \mathbf{1} = \mathbf{0} $$
 -/
-theorem ihara_bass_perron_kernel
+theorem ihara_bass_perron_kernel [DecidableEq V]
     {D : Matrix V V ℚ}
     (h_row : HasUniformRowSum D 2) (h_col : HasUniformRowSum D.transpose 2) :
     (schreierIharaBassMatrix D (1/3 : ℚ)) *ᵥ (fun _ => (1 : ℚ)) = 0 := by
@@ -227,7 +225,7 @@ For any $d$-regular adjacency matrix $A$ with uniform row sum $d$ and $d \ge 2$,
 the regular Ihara-Bass matrix at $u = 1 / (d - 1)$ annihilates the constant vector $\mathbf{1}$:
 $$ \left( \left(1 + (d - 1) \left(\frac{1}{d-1}\right)^2\right) I - \frac{1}{d-1} A \right) \mathbf{1} = \left( \frac{d}{d-1} - \frac{d}{d-1} \right) \mathbf{1} = \mathbf{0} $$
 -/
-theorem regular_ihara_bass_perron_kernel_general
+theorem regular_ihara_bass_perron_kernel_general [DecidableEq V]
     (d : ℕ) (hd : d ≥ 2) {A : Matrix V V ℚ}
     (h_row : HasUniformRowSum A (d : ℚ)) :
     (regularIharaBassMatrix d A (1 / ((d : ℚ) - 1))) *ᵥ (fun _ => (1 : ℚ)) = 0 := by

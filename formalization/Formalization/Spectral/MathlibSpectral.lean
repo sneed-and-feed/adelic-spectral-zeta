@@ -36,13 +36,11 @@ perron-frobenius, spectral theory, support graph, non-negative matrix, symmetric
 open Matrix Classical
 open scoped InnerProductSpace
 
-set_option linter.unusedSectionVars false
-
 namespace Matrix
 
 section MathlibSpectral
 
-variable {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
+variable {n : Type*} [Fintype n]
 
 
 /-- The support graph of a non-negative symmetric matrix, where edges correspond to positive entries. -/
@@ -50,6 +48,10 @@ def supportGraph (A : Matrix n n ℝ) (h_symm : ∀ i j, A i j = A j i) : Simple
   Adj i j := 0 < A i j ∧ i ≠ j
   symm := ⟨fun {i j} h => ⟨by rw [h_symm]; exact h.1, h.2.symm⟩⟩
   loopless := ⟨fun i h => h.2 rfl⟩
+
+section Powers
+
+variable [DecidableEq n]
 
 /-- The powers of a non-negative matrix have non-negative entries. -/
 @[simp]
@@ -111,6 +113,8 @@ lemma pow_le_add_one_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k 
       · simp [h, add_apply, one_apply_ne]
     exact mul_le_mul h1 (ih l j) (pow_nonneg hA_nn k l j) hA1_nn
 
+end Powers
+
 
 /-- A non-negative eigenvector that is zero at one vertex must be zero along any connected walk. -/
 lemma eq_zero_of_walk_of_eigenvector {A : Matrix n n ℝ}
@@ -146,6 +150,7 @@ lemma eigenvector_unique_of_connected {A : Matrix n n ℝ}
     (μ : ℝ) (v w : n → ℝ) (hv_pos : ∀ i, 0 < v i)
     (hv_eig : A.mulVec v = μ • v) (hw_eig : A.mulVec w = μ • w) :
     ∃ c : ℝ, w = c • v := by
+  have : Nonempty n := hA_conn.nonempty
   let ratios := fun i => w i / v i
   let t := Finset.inf' Finset.univ Finset.univ_nonempty ratios
   use t
@@ -473,7 +478,7 @@ lemma eigenvalue_le_maxEig_add_one {n : Type*} [Fintype n] [DecidableEq n]
 (1) all entries are nonneg,
 (2) for every pair (i, j) there exists k > 0 such that (A^k)_{ij} > 0, and
 (3) there exists a vertex with a positive self-loop. -/
-def IsPerronIrreducible (A : Matrix n n ℝ) : Prop :=
+def IsPerronIrreducible [DecidableEq n] (A : Matrix n n ℝ) : Prop :=
   (∀ i j, 0 ≤ A i j) ∧ (∀ i j : n, ∃ k : ℕ, 0 < k ∧ 0 < (A ^ k) i j) ∧ (∃ i : n, 0 < A i i)
 
 /-- Hypothesis structure for the Perron–Frobenius theorem: an irreducible non-negative matrix has a positive eigenvalue

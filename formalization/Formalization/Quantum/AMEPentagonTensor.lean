@@ -11,9 +11,6 @@ import Mathlib.Tactic
 
 open scoped BigOperators Real Matrix
 
-set_option linter.unusedSimpArgs false
-set_option linter.dupNamespace false
-
 namespace AMEPentagonTensor
 
 /-!
@@ -279,9 +276,6 @@ structure PentagonAME where
   is_ame : ∀ (S : Finset (Fin 5)), S.card ≤ 2 →
     reducedDensityMatrix tensor S = (1 / ((2 : ℂ) ^ S.card)) • (1 : Matrix (LegState S) (LegState S) ℂ)
 
-/-- Abbreviation for `PentagonAME` as `AMEPentagonTensor`. -/
-abbrev AMEPentagonTensor := PentagonAME
-
 /-! ### 5. Canonical Constructive AME(5, 2) Tensor -/
 
 /-- Graph state phase function on the 5-cycle graph $C_5$:
@@ -432,3 +426,6 @@ theorem five_one_three_vector_recovery (T : PentagonAME) (E : Finset (Fin 5)) (h
   rw [Matrix.mulVec_mulVec, five_one_three_erasure_recovery T E hE, Matrix.one_mulVec]
 
 end AMEPentagonTensor
+
+/-- Global abbreviation for `PentagonAME` as `AMEPentagonTensor`. -/
+abbrev AMEPentagonTensor := AMEPentagonTensor.PentagonAME

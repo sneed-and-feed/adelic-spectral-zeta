@@ -8,8 +8,6 @@ import Formalization.Util.MatrixIndicator
 
 open Polynomial Matrix
 
-set_option linter.unusedSectionVars false
-
 section IharaZeta
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
@@ -95,6 +93,7 @@ lemma targetMatrix_mul_targetMatrix_transpose :
   · rw [ite_eq_right hne]
     exact Finset.sum_eq_zero fun x _ => by split_ifs <;> simp_all
 
+omit [DecidableRel G.Adj] in
 lemma targetMatrix_transpose_mul_sourceMatrix :
     (Dart.targetMatrix G R).transpose * Dart.sourceMatrix G R = HashimotoMatrix G R + Dart.involutionMatrix G R := by
   ext u v

@@ -30,8 +30,6 @@ open Classical
 open scoped BigOperators
 open Matrix
 
-set_option linter.unusedSectionVars false
-
 namespace ManyBodyPhaseTransition
 
 section QuantumScars

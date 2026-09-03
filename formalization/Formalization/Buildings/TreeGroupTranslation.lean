@@ -5,9 +5,6 @@ import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Tactic.Group
 import Mathlib.Algebra.Ring.Basic
 
-set_option linter.unusedSectionVars false
-set_option linter.unusedVariables false
-
 /-!
 # Module 2: Tree Group Translation and Selberg / Ihara Euler Factors
 
@@ -113,7 +110,7 @@ lemma displacement_one (T : SimpleGraph V) (v : V) :
   rw [one_smul, SimpleGraph.dist_self]
 
 /-- The displacement under the inverse element `g⁻¹` at `g • v` equals the displacement of `g` at `v`. -/
-lemma displacement_inv (h_iso : PreservesAdj T Γ) (g : Γ) (v : V) :
+lemma displacement_inv (_h_iso : PreservesAdj T Γ) (g : Γ) (v : V) :
     displacement T g⁻¹ (g • v) = displacement T g v := by
   unfold displacement
   rw [inv_smul_smul, SimpleGraph.dist_comm]
@@ -205,7 +202,7 @@ lemma translation_length_pos_of_free [Fintype V] [Nonempty V]
 
 /-- Variant of `translation_length_pos_of_free` accepting `h_iso` for interface generality. -/
 lemma translation_length_pos_of_free' [Fintype V] [Nonempty V]
-    (h_iso : PreservesAdj T Γ) (h_conn : T.Connected) (h_free : IsFixedPointFree Γ V) (g : Γ) (hg : g ≠ 1) :
+    (_h_iso : PreservesAdj T Γ) (h_conn : T.Connected) (h_free : IsFixedPointFree Γ V) (g : Γ) (hg : g ≠ 1) :
     0 < minTranslationLength T g :=
   translation_length_pos_of_free h_conn h_free g hg
 

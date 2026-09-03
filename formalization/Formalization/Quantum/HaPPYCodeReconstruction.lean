@@ -8,9 +8,6 @@ import Formalization.Quantum.HyperbolicApartmentTiling
 open scoped BigOperators Real Matrix
 open AMEPentagonTensor HyperbolicApartmentTiling Matrix Real
 
-set_option linter.unusedSimpArgs false
-set_option linter.dupNamespace false
-
 namespace HaPPYCodeReconstruction
 
 /-!

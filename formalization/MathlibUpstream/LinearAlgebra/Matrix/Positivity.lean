@@ -36,8 +36,6 @@ perron-frobenius, spectral theory, support graph, non-negative matrix, symmetric
 open Matrix Classical
 open scoped InnerProductSpace
 
-set_option linter.unusedSectionVars false
-
 namespace Matrix
 
 variable {n : Type _} [Fintype n] [DecidableEq n] [Nonempty n]
@@ -49,6 +47,7 @@ def supportGraph (A : Matrix n n ℝ) (h_symm : ∀ i j, A i j = A j i) : Simple
   symm := ⟨fun {i j} h => ⟨by rw [h_symm]; exact h.1, h.2.symm⟩⟩
   loopless := ⟨fun i h => h.2 rfl⟩
 
+omit [Nonempty n] in
 /-- The powers of a non-negative matrix have non-negative entries. -/
 @[simp]
 lemma pow_nonneg {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
@@ -67,6 +66,7 @@ lemma pow_nonneg {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
     intro x _
     exact mul_nonneg (hA_nn i x) (ih x j)
 
+omit [Nonempty n] in
 /-- If there is a walk in the support graph of a non-negative symmetric matrix, 
 the corresponding entry in the matrix power is strictly positive. -/
 lemma pow_pos_of_walk {A : Matrix n n ℝ}
@@ -88,6 +88,7 @@ lemma pow_pos_of_walk {A : Matrix n n ℝ}
       exact pow_nonneg hA_nn w_rest.length k w
     exact Finset.sum_pos' h_nonneg ⟨v, Finset.mem_univ v, h_term⟩
 
+omit [Nonempty n] in
 /-- Bounding the powers of a non-negative matrix by the powers of the matrix plus the identity. -/
 lemma pow_le_add_one_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k : ℕ) :
     ∀ i j, (A ^ k) i j ≤ ((A + 1) ^ k) i j := by
@@ -110,6 +111,7 @@ lemma pow_le_add_one_pow {A : Matrix n n ℝ} (hA_nn : ∀ i j, 0 ≤ A i j) (k 
     exact mul_le_mul h1 (ih l j) (pow_nonneg hA_nn k l j) hA1_nn
 
 
+omit [DecidableEq n] [Nonempty n] in
 /-- A non-negative eigenvector that is zero at one vertex must be zero along any connected walk. -/
 lemma eq_zero_of_walk_of_eigenvector {A : Matrix n n ℝ}
     (hA_symm : ∀ i j, A i j = A j i) (hA_nn : ∀ i j, 0 ≤ A i j)
@@ -137,6 +139,7 @@ lemma eq_zero_of_walk_of_eigenvector {A : Matrix n n ℝ}
     | inl h1 => exact False.elim (ne_of_gt h_adj_pos h1)
     | inr h2 => exact ih h2
 
+omit [DecidableEq n] in
 /-- The eigenspace of the Perron-Frobenius eigenvalue is one-dimensional for a connected support graph. -/
 lemma eigenvector_unique_of_connected {A : Matrix n n ℝ}
     (hA_symm : ∀ i j, A i j = A j i) (hA_nn : ∀ i j, 0 ≤ A i j)
@@ -173,6 +176,7 @@ lemma eigenvector_unique_of_connected {A : Matrix n n ℝ}
     exact h_diff_zero h_diff_zero_again
 
 
+omit [DecidableEq n] [Nonempty n] in
 /-- An eigenvector of a strictly positive matrix corresponding to a positive eigenvalue has constant sign. -/
 lemma eigenvector_constant_sign_of_pos {B : Matrix n n ℝ} (hB : ∀ i j, 0 < B i j)
     (μ : ℝ) (hμ : 0 < μ) (w : n → ℝ) (hw_nonzero : w ≠ 0)
@@ -239,6 +243,7 @@ lemma eigenvector_constant_sign_of_pos {B : Matrix n n ℝ} (hB : ∀ i j, 0 < B
     · exact not_le.mp hwi
 
 
+omit [DecidableEq n] [Nonempty n] in
 /-- The absolute value of an eigenvector is also an eigenvector for a non-negative symmetric matrix. -/
 lemma abs_eigenvector_of_symm {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j i)
     (hB_nn : ∀ i j, 0 ≤ B i j)
@@ -325,6 +330,7 @@ lemma abs_eigenvector_of_symm {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B
   rw [Pi.smul_apply, smul_eq_mul]
   exact eq_of_sub_eq_zero this
 
+omit [DecidableEq n] [Nonempty n] in
 /-- The Perron-Frobenius eigenvalue dominates all other eigenvalues for a non-negative symmetric matrix. -/
 lemma eigenvalue_le_of_symm_of_nonneg {B : Matrix n n ℝ} (hB_symm : ∀ i j, B i j = B j i)
     (hB_nn : ∀ i j, 0 ≤ B i j)

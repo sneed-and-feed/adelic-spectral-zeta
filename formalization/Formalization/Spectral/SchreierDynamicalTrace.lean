@@ -19,8 +19,6 @@ This module formalizes:
 
 open scoped BigOperators
 
-set_option linter.deprecated false
-
 namespace SchreierDynamicalTrace
 
 -- ============================================================================
@@ -145,9 +143,8 @@ theorem directed_trace_eq_fixed_point_sum {F : Type*} [Field F] (n : ℕ) (_hn :
   simp only [Matrix.trace, Matrix.diag, monomialMatrix_apply, fixedPointTrace]
   apply Finset.sum_congr rfl
   intro k _
-  by_cases h : (3 : ZMod (2^n))^m * k = k
-  · rw [if_pos h, if_pos h.symm]
-  · rw [if_neg h, if_neg (fun h' => h h'.symm)]
+  congr 1
+  exact propext eq_comm
 
 /-- Equivalent filter-sum expression for the fixed point trace. -/
 lemma fixedPointTrace_eq_filter_sum (n : ℕ) (zeta : F) (m : ℕ) :

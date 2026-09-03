@@ -31,8 +31,6 @@ arising from 2-adic trees, Bruhat-Tits buildings, and Schreier graphs.
 open Matrix
 open scoped Matrix
 
-set_option linter.unusedSectionVars false
-
 section RegularIharaZeta
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
@@ -47,6 +45,7 @@ noncomputable def regularIharaBassMatrix {V : Type*} [Fintype V] [DecidableEq V]
     (d : ℕ) (A : Matrix V V R) (u : R) : Matrix V V R :=
   (1 + ((d : R) - 1) * u^2) • 1 - u • A
 
+omit [DecidableEq V] in
 /-- For a $d$-regular graph, the number of directed darts equals $d \cdot |V|$. -/
 lemma card_dart_of_regular (h_reg : G.IsRegularOfDegree d) :
     Fintype.card G.Dart = d * Fintype.card V := by

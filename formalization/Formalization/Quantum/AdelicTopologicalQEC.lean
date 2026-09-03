@@ -8,7 +8,6 @@ import Mathlib.Topology.Order.Real
 
 open scoped Topology Filter NNReal ENNReal
 open Classical
-set_option linter.unusedSimpArgs false
 
 /-- The qubit lattice at truncation $N$, consisting of integers $k \in [2, N]$. -/
 def QubitLattice (N : ℕ) := {k : ℕ // 2 ≤ k ∧ k ≤ N}
@@ -17,10 +16,10 @@ def QubitLattice (N : ℕ) := {k : ℕ // 2 ≤ k ∧ k ≤ N}
 def PrimeStabilizers (N : ℕ) := {p : ℕ // p.Prime ∧ p ≤ N}
 
 instance (N : ℕ) : Fintype (QubitLattice N) :=
-  Fintype.subtype (Finset.Icc 2 N) (fun _ => by simp [QubitLattice])
+  Fintype.subtype (Finset.Icc 2 N) (fun _ => by simp)
 
 instance (N : ℕ) : Fintype (PrimeStabilizers N) :=
-  Fintype.subtype ((Finset.Iic N).filter Nat.Prime) (fun _ => by simp [PrimeStabilizers, and_comm])
+  Fintype.subtype ((Finset.Iic N).filter Nat.Prime) (fun _ => by simp [and_comm])
 
 /-- The Adèlic Parity Check Matrix $H_{p, k} \in \mathbb{F}_2$, where $H_{p, k} = 1$ iff $p \mid k$. -/
 def adelicParityCheck (N : ℕ) : Matrix (PrimeStabilizers N) (QubitLattice N) (ZMod 2) :=

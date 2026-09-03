@@ -5,8 +5,6 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
-set_option linter.unusedSectionVars false
-
 namespace ManyBodyPhaseTransition
 
 section Entanglement
@@ -54,6 +52,7 @@ def joinState {bp : Bipartition I} (nA : FermionState bp.A) (nB : FermionState b
     | Sum.inl a => nA a
     | Sum.inr b => nB b
 
+omit [Fintype I] [DecidableEq I] in
 theorem valid_join {bp : Bipartition I} (nA : BasisState bp.A) (nB : BasisState bp.B) :
     ValidFermionState (joinState nA.val nB.val) := by
   intro i

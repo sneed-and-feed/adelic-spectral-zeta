@@ -17,8 +17,6 @@ This degeneracy is the exact mechanism that causes the macroscopic entanglement 
 (phase transitions) observed in the thermodynamic limit `L ≥ 14`.
 -/
 
-set_option linter.unusedSectionVars false
-
 namespace ManyBodyPhaseTransition
 
 open scoped BigOperators

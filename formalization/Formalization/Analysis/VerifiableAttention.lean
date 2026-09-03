@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linarith
 open scoped BigOperators Matrix
 open Classical
 
-set_option linter.unusedSectionVars false
-
 noncomputable section
 
 namespace VerifiableAttention
