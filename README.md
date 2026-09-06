@@ -241,7 +241,7 @@ The Lean 4 formalization is organized into a clean, two-tier architecture compil
 #### Domain 1: Analysis (`formalization/Formalization/Analysis/` — 16 modules + [`Analysis.lean`](formalization/Formalization/Analysis.lean))
 Harmonic analysis, multiresolution wavelet decompositions, sparsity bounds, and online numerical operators:
 - [`AttentionError.lean`](formalization/Formalization/Analysis/AttentionError.lean): Frobenius norm and RMS error bounds between dense attention and $p$-adic tree-cluster truncated attention under Lipschitz value embedding manifolds ($\|A V - \tilde{A} V\|_F \le C p^{-D} \|\nabla V\|$).
-- [`ConjectureA.lean`](formalization/Formalization/Analysis/ConjectureA.lean): Formalization of Conjecture A connecting $k$-term progression-free generator sets in $\mathbb{Z}_n$ to the lower bound of the restricted spectral gap $\text{Gap}(d) = 2 - 2^{1/2^{d-1}}$, strict monotonicity, and Roth-Szemerédi Fourier bias bounds.
+- [`ConjectureA.lean`](formalization/Formalization/Analysis/ConjectureA.lean): Formalization of Conjecture A connecting $k$-term progression-free generator sets in $\mathbb Z_n$ to the lower bound of the restricted spectral gap $\text{Gap}(d) = 2 - 2^{1/2^{d-1}}$, strict monotonicity, and Roth-Szemerédi Fourier bias bounds.
 - [`DFT.lean`](formalization/Formalization/Analysis/DFT.lean): Discrete Fourier transform matrix algebra and character evaluations.
 - [`DetailSpaceDecomposition.lean`](formalization/Formalization/Analysis/DetailSpaceDecomposition.lean): Wavelet detail space orthogonal projections.
 - [`ErdosSimilarity.lean`](formalization/Formalization/Analysis/ErdosSimilarity.lean): Erdős similarity problem bounds and spectral projections on Cantor sets.
@@ -549,7 +549,7 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
    - Documented in [`docs/e8_moonshine_building_formalization.md`](docs/e8_moonshine_building_formalization.md) and [`figures/e8_moonshine_building.png`](figures/e8_moonshine_building.png).
 
 6. **Non-Archimedean Traversable Wormholes** ($p$-Adic $\text{ER}=\text{EPR}$) :white_check_mark: **[Completed]**:
-   - Modeled two entangled Mumford black holes $X_{\Gamma_p}, X_{\Gamma_q}$ across distinct prime places $p=2, q=3$ coupled via global adelic double-trace deformation $\Delta H_{\mathbb{A}} = h \int \int \mathcal{O}_p(x) \mathcal{O}_q(y) d\mu_p d\mu_q$.
+   - Modeled two entangled Mumford black holes $X_{\Gamma_p}, X_{\Gamma_q}$ across distinct prime places $p=2, q=3$ coupled via global adelic double-trace deformation $\Delta H_{\mathbb A} = h \int \int \mathcal O_p(x) \mathcal O_q(y) d\mu_p d\mu_q$.
    - Verified that inter-adic quantum entanglement generates negative Gao-Jafferis-Wall average null energy $\langle \mathcal{E}_{\mathbb{A}} \rangle = -0.163833 < 0$, inducing a positive Shapiro time advance $\Delta v = +0.096372 > 0$ that renders the non-Archimedean bridge traversable.
    - Verified resonant transmission peak $P_{\mathrm{trans}} = 0.7387$ at $t_r = t_w$ and non-Archimedean Lyapunov chaos $\lambda_L = \sqrt{\ln 2 \ln 3} \approx 0.8726$.
    - Documented in [`docs/padic_traversable_wormholes.md`](docs/padic_traversable_wormholes.md) and [`figures/padic_traversable_wormholes.png`](figures/padic_traversable_wormholes.png).
@@ -561,7 +561,7 @@ The foundational monograph treatise is systematically partitioned into 25 sequen
    - Documented in [`docs/monograph/18_padic_conformal_bootstrap.md`](docs/monograph/18_padic_conformal_bootstrap.md), [`docs/padic_conformal_bootstrap.md`](docs/padic_conformal_bootstrap.md) and [`figures/padic_conformal_bootstrap.png`](figures/padic_conformal_bootstrap.png).
 
 8. **Global Adelic Holographic Tensor Fusion** $(\mathrm{AdS}(3) \otimes {\bigotimes_p}' \mathrm{AdS}(p))$ :white_check_mark: **[Completed]**:
-   - Constructed the global bulk spacetime tensoring continuous hyperbolic space $\mathbb{H}^3 \cong \mathrm{AdS}(3)$ with the restricted product of Bruhat-Tits trees $\prod'_p \mathcal T_{p+1}$.
+   - Constructed the global bulk spacetime tensoring continuous hyperbolic space $\mathbb{H}^3 \cong \mathrm{AdS}(3)$ with the restricted product of Bruhat-Tits trees ${\prod_p}' \mathcal T_{p+1}$.
    - Proved and numerically verified the **Global Entanglement Conservation Law**: under rational boundary dilations $x \mapsto q x$ ($q \in \mathbb{Q}^\times$), the Artin Adèle product formula $\prod_v \lvert q \rvert_v = 1$ forces $\Delta S_{\mathbb{A}}(q A) \equiv 0$ with residual **$4.44 \times 10^{-16}$** across all places.
    - Documented in [`docs/adelic_holographic_tensor_fusion.md`](docs/adelic_holographic_tensor_fusion.md) and [`figures/adelic_holographic_tensor_fusion.png`](figures/adelic_holographic_tensor_fusion.png).
 
